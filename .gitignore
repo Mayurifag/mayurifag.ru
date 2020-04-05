@@ -1,2 +1,8 @@
-# Vagrant
-.vagrant/
+.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory
+.vagrant/machines
+.vagrant/rgloader
+*.log
+*.pyc
+*.retry
+secret
+self-hosted-mailserver

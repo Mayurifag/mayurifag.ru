@@ -1,0 +1,15 @@
+---
+- hosts: all
+  become: yes
+  become_method: sudo
+  roles:
+    - security
+    # - postfix
+    # - dovecot
+    # - opendkim
+    # - dspam
+    # - zpush
+    # - roundcube
+    # - ddclient
+    # - duplicity
+    # - owncloud

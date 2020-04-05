@@ -1,0 +1,98 @@
+- name: Install bsd-mailx
+  apt: pkg=bsd-mailx state=latest
+- name: Install fail2ban
+  apt: pkg=fail2ban state=latest
+- name: Install unattended-upgrades
+  apt: pkg=unattended-upgrades state=latest
+- name: Install logwatch
+  apt: pkg=logwatch state=latest
+- name: Add default user
+  user: name="{{ security.user_login }}" shell=/bin/bash
+- name: Set user password
+  shell: "echo \"{{ security.user_login }}:{{ security.user_password }}\" | chpasswd"
+- name: Create user .ssh directory
+  file: path="~{{ security.user_login }}/.ssh" mode=0700 state=directory owner="{{ security.user_login }}"
+- name: Create user authorized_keys
+  template: src=roles/security/templates/authorized_keys.j2 dest="~{{ security.user_login }}/.ssh/authorized_keys" owner="{{ security.user_login }}" mode=0400
+- name: "/etc/sudoers.d/user"
+  template: src=roles/security/templates/sudoers.j2 dest=/etc/sudoers.d/user
+- name: "/etc/ssh/sshd_config: Protocol 2"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^Protocol " line="Protocol 2"
+- name: "/etc/ssh/sshd_config: PermitRootLogin no"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no"
+- name: "/etc/ssh/sshd_config: PasswordAuthentication no"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no"
+- name: "/etc/ssh/sshd_config: ChallengeResponseAuthentication no"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^ChallengeResponseAuthentication" line="ChallengeResponseAuthentication no"
+- name: "/etc/ssh/sshd_config: KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^KexAlgorithms" line="KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256"
+- name: "/etc/ssh/sshd_config: #HostKey /etc/ssh/ssh_host_dsa_key"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^HostKey /etc/ssh/ssh_host_dsa_key" line="#HostKey /etc/ssh/ssh_host_dsa_key"
+- name: "/etc/ssh/sshd_config: #HostKey /etc/ssh/ssh_host_ecdsa_key"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^HostKey /etc/ssh/ssh_host_ecdsa_key" line="#HostKey /etc/ssh/ssh_host_ecdsa_key"
+- name: "/etc/ssh/sshd_config: Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^Ciphers" line="Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
+- name: "/etc/ssh/sshd_config: MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com"
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^MACs" line="MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com"
+- name: "Generate strong moduli keys (takes a very, VERY long time - up to several hours)"
+  shell: "ssh-keygen -G /etc/ssh/moduli.all -b 2048 && ssh-keygen -T /etc/ssh/moduli.safe -f /etc/ssh/moduli.all && mv /etc/ssh/moduli.safe /etc/ssh/moduli && rm /etc/ssh/moduli.all"
+  when: security.strong_primes
+- name: "Generate strong rsa and ed25519 keys"
+  shell: "rm /etc/ssh/ssh_host_*key* && ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key < /dev/null && ssh-keygen -t rsa -b 2048 -f /etc/ssh/ssh_host_rsa_key < /dev/null && chmod 600 /etc/ssh/ssh_host_*key"
+  when: security.strong_primes
+- name: Restart SSHD
+  service: state=restarted name=ssh
+- name: "/etc/apt/apt.conf.d/10periodic"
+  template: src=roles/security/templates/unattended-upgrades.j2 dest=/etc/apt/apt.conf.d/10periodic
+- name: "/etc/cron.daily/00logwatch"
+  lineinfile: dest=/etc/cron.daily/00logwatch regexp="^/usr/sbin/logwatch" line="/usr/sbin/logwatch --output mail --mailto {{ security.email }} --detail high"
+- name: "Create local jail for fail2ban"
+  shell: cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+- name: "/etc/fail2ban/jail.local - security email"
+  lineinfile: dest=/etc/fail2ban/jail.local regexp="^#?\s*destemail\s*=" line="destemail = {{ security.email }}"
+- name: "/etc/fail2ban/jail.local - enable emails"
+  lineinfile: dest=/etc/fail2ban/jail.local regexp="^#?\s*action\s*=\s*\%\(action_" line="action = %(action_mwl)s"
+- name: "/etc/fail2ban/jail.local - enable ssh watcher"
+  replace: dest=/etc/fail2ban/jail.local regexp="\[ssh\]\n*enabled\s*=[^\n]*" replace="[ssh]\n\nenabled = true"
+- name: "/etc/fail2ban/jail.local - enable ssh-ddos watcher"
+  replace: dest=/etc/fail2ban/jail.local regexp="\[ssh-ddos\]\n*enabled\s*=[^\n]*" replace="[ssh-ddos]\n\nenabled = true"
+- name: "/etc/fail2ban/jail.local - enable nginx-http-auth watcher"
+  replace: dest=/etc/fail2ban/jail.local regexp="\[nginx-http-auth\]\n*enabled\s*=[^\n]*" replace="[nginx-http-auth]\n\nenabled = true"
+- name: "/etc/fail2ban/jail.local - enable postfix watcher"
+  replace: dest=/etc/fail2ban/jail.local regexp="\[postfix\]\n*enabled\s*=[^\n]*" replace="[postfix]\n\nenabled = true"
+- name: "/etc/fail2ban/jail.local - enable dovecot watcher"
+  replace: dest=/etc/fail2ban/jail.local regexp="\[dovecot\]\n*enabled\s*=[^\n]*" replace="[dovecot]\n\nenabled = true"
+- name: "/etc/fail2ban/jail.local - enable recidive watcher"
+  replace: dest=/etc/fail2ban/jail.local regexp="\[recidive\]\n*enabled\s*=[^\n]*" replace="[recidive]\n\nenabled = true"
+- name: "/etc/sysctl.conf - Avoid a smurf attack"
+  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.icmp_echo_ignore_broadcasts\s*=" line="net.ipv4.icmp_echo_ignore_broadcasts = 1"
+- name: "/etc/sysctl.conf - Turn on protection for bad icmp error messages"
+  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.icmp_ignore_bogus_error_responses\s*=" line="net.ipv4.icmp_ignore_bogus_error_responses = 1"
+- name: "/etc/sysctl.conf - Turn on syncookies for SYN flood attack protection"
+  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.tcp_syncookies\s*=" line="net.ipv4.tcp_syncookies = 1"
+- name: "/etc/sysctl.conf - Turn on execshild"
+  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*kernel.exec-shield\s*=" line="kernel.exec-shield = 1"
+- name: "/etc/sysctl.conf - Turn on execshild"
+  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*kernel.randomize_va_space\s*=" line="kernel.randomize_va_space = 1"
+- name: "/etc/sysctl.conf - Do not accept ICMP redirects (IPv4)"
+  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.conf.all.accept_redirects\s*=" line="net.ipv4.conf.all.accept_redirects = 0"
+- name: "/etc/sysctl.conf - Do not accept ICMP redirects (IPv6)"
+  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv6.conf.all.accept_redirects\s*=" line="net.ipv6.conf.all.accept_redirects = 0"
+- name: "/etc/sysctl.conf - Do not accept ICMP redirects (IPv4)"
+  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.conf.all.secure_redirects\s*=" line="net.ipv4.conf.all.secure_redirects = 0"
+- name: "/etc/sysctl.conf - Do not accept ICMP redirects (IPv6)"
+  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv6.conf.all.secure_redirects\s*=" line="net.ipv6.conf.all.secure_redirects = 0"
+- name: "/etc/sysctl.conf - Don't act as a router (ip_forward IPV4)"
+  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.ip_forward\s*=" line="net.ipv4.ip_forward = 0"
+- name: "/etc/sysctl.conf - Don't act as a router (ip_forward IPV6)"
+  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv6.conf.all.forwarding\s*=" line="net.ipv6.conf.all.forwarding = 0"
+- name: "/etc/sysctl.conf - Don't act as a router (send_redirects / all)"
+  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.conf.all.send_redirects\s*=" line="net.ipv4.conf.all.send_redirects = 0"
+- name: "/etc/sysctl.conf - Don't act as a router (send_redirects / default)"
+  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.conf.default.send_redirects\s*=" line="net.ipv4.conf.default.send_redirects = 0"
+- name: "Load new /etc/sysctl.conf"
+  shell: "sysctl -p || true"
+- name: "/etc/apt/apt.conf.d/50unattended-upgrades - Set notification email"
+  lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="^/*\s*Unattended-Upgrade::Mail " line="Unattended-Upgrade::Mail \"{{ security.email }}\";"
+- name: "/etc/apt/apt.conf.d/50unattended-upgrades - Autoremove unused dependencies"
+  lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="^/*\s*Unattended-Upgrade::Remove-Unused-Dependencies " line="Unattended-Upgrade::Remove-Unused-Dependencies \"true\";"
