@@ -4,6 +4,7 @@ server {
 
     server_name _ ;
 
+    include extra/ssl;
     include extra/security;
     # include extra/z-push;
     # include extra/roundcube;
@@ -16,9 +17,4 @@ server {
     }
 }
 
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server ipv6only=on;
-
-    rewrite ^ https://$http_host$request_uri permanent;
-}
+include extra/redirect_to_https;

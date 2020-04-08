@@ -9,7 +9,7 @@
     # checksum: md5:a8496d00e6dc117be37f1688e87a34eb05ab9729
     dest: /tmp/v2rayplugin.tar.gz
 
-- name: Unpack v2ray
+- name: Unpack v2ray plugin
   unarchive:
     remote_src: yes
     src: /tmp/v2rayplugin.tar.gz
@@ -20,11 +20,14 @@
     remote_src: yes
     src: /tmp/v2ray-plugin_linux_amd64
     dest: /etc/shadowsocks-libev/v2ray-plugin
+    mode: 0777
+
+# TODO: cleanup
 
 - name: Set cap_net_bind_service+eip on /etc/shadowsocks-libev/v2ray-plugin
   capabilities:
     path: /etc/shadowsocks-libev/v2ray-plugin
-    capability: cap_net_bind_service=+eip
+    capability: cap_net_bind_service+eip
     state: present
 
 - name: Deploy shadowsocks config file

@@ -8,7 +8,7 @@
   apt:
     name: "{{ item }}"
     state: latest
-  loop: ["unzip", "apt-transport-https", "libc-bin", "curl", "ntp", "whois", "mysql-server", "python-mysqldb"]
+  loop: ["unzip", "apt-transport-https", "libc-bin", "curl", "ntp", "whois", "mysql-server", "python-mysqldb", "ca-certificates", "acl"]
 
 - name: Enable english locales
   lineinfile: dest=/etc/locale.gen regexp="^#?\s*en_US.UTF-8\s*UTF-8" line="en_US.UTF-8 UTF-8"

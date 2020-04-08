@@ -10,12 +10,14 @@
   file: src=/etc/nginx/sites-available/mail dest=/etc/nginx/sites-enabled/mail state=link
 - name: '/etc/nginx/nginx.conf remove all ssl_ params'
   lineinfile: dest=/etc/nginx/nginx.conf regexp="^[\s#]*ssl_" state=absent
-- name: '/etc/nginx/conf.d/ssl.conf'
-  template: src=roles/nginx/templates/ssl.conf.j2 dest=/etc/nginx/conf.d/ssl.conf
 - name: '/etc/nginx/extra'
   shell: mkdir -p /etc/nginx/extra
 - name: '/etc/nginx/extra/security'
   template: src=roles/nginx/templates/security.j2 dest=/etc/nginx/extra/security
+- name: '/etc/nginx/extra/ssl.conf'
+  template: src=roles/nginx/templates/ssl.j2 dest=/etc/nginx/extra/ssl
+- name: '/etc/nginx/extra/redirect_to_https'
+  template: src=roles/nginx/templates/redirect_to_https.j2 dest=/etc/nginx/extra/redirect_to_https
 # - name: 'enable HPKP'
 #   shell: echo "add_header Public-Key-Pins 'pin-sha256=\"$(openssl x509 -in /etc/ssl/ansible/mayurifag.ru.pem -pubkey -noout | openssl rsa -pubin -outform der | openssl dgst -sha256 -binary | base64)\"; pin-sha256=\"false\"; max-age=2592000';" >> /etc/nginx/extra/security
 #   when: nginx.hpkp_sha256
