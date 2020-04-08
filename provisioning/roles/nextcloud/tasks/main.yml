@@ -1,0 +1,24 @@
+- name: Check Nextcloud installed
+  stat: "path={{ nextcloud_webroot }}/index.php"
+  register: nc_nextcloud_installed
+
+- name: Downloading Nextcloud
+  include_tasks: ./nc_download.yml
+  when: not nc_nextcloud_installed.stat.exists
+
+- name: Check Nextcloud configuration exists.
+  stat: path="{{ nextcloud_webroot }}/config/config.php"
+  register: nc_nextcloud_conf
+
+- name: Check Nextcloud is configured
+  command: grep -q "{{ nextcloud_trusted_domain| first }}" {{ nextcloud_webroot }}/config/config.php
+  failed_when: False
+  changed_when: False
+  register: nc_nextcloud_configured
+  when: nc_nextcloud_conf.stat.exists
+
+- name: Nextcloud installation
+  include_tasks: ./nc_installation.yml
+  when: |
+    (not nc_nextcloud_conf.stat.exists) or
+    (nc_nextcloud_configured.rc is defined and nc_nextcloud_configured.rc != 0)

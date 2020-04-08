@@ -1,0 +1,22 @@
+---
+- name: "[NC-DL] - Create and set directory ownership & permissions for the webroot folder"
+  file:
+    path: "{{ nextcloud_webroot }}"
+    mode: "u=rwX,g=rX,o-rwx"
+    recurse: yes
+    state: directory
+    owner: "www-data"
+    group: "www-data"
+
+- block:
+  - name: "Download & extract Nextcloud to /tmp."
+    unarchive:
+      copy: no
+      src: "{{ nextcloud_full_url }}"
+      dest: "/tmp/"
+
+  - name: "[NC-DL] - Move extracted files to {{ nextcloud_webroot }}."
+    command: "cp -r /tmp/nextcloud/. {{ nextcloud_webroot }}/"
+
+  - name: "[NC-DL] - Remove nextcloud archive files"
+    file: path=/tmp/nextcloud state=absent

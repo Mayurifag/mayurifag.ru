@@ -6,7 +6,9 @@
 
 - name: "Create mailserver database"
   mysql_db:
-    name: "{{ maildb.database }}"
+    name:
+      - "{{ maildb.database }}"
+      - nextcloud
     state: present
 
 - name: "Import mailserver database"
@@ -19,7 +21,7 @@
   mysql_user:
     name: "{{ maildb.username }}"
     password: "{{ maildb.password }}"
-    priv: "{{ maildb.database }}.*:ALL"
+    priv: "{{ maildb.database }}.*:ALL/nextcloud.*:ALL"
 
 - name: "/tmp/maildb.sql: remove"
   file:

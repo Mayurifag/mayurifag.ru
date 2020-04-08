@@ -1,0 +1,4 @@
+nextcloud_webroot: "/opt/nextcloud"
+nextcloud_data_dir: "/data/nextcloud_data"
+
+nextcloud_full_url: "https://download.nextcloud.com/server/releases/nextcloud-15.0.12.zip"
