@@ -3,11 +3,18 @@
   become: yes
   become_method: sudo
   roles:
+    - base
     - security
-    # - postfix
-    # - dovecot
-    # - opendkim
-    # - dspam
+    - letsencrypt
+    - dante
+    - maildb
+    - postfix
+    - dovecot
+    - opendkim
+    - nginx
+
+
+    # - rspamd
     # - zpush
     # - roundcube
     # - ddclient
