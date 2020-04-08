@@ -1,1 +1,1 @@
-mayurifag.ru
+WIP: Ansible role for provisioning mayurifag.ru
