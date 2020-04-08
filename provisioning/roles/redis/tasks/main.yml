@@ -1,0 +1,10 @@
+---
+- name: "[REDIS] -  Required packages are installed."
+  package: "name=redis-server state=present"
+  notify: start redis
+
+- name: "[REDIS] -  Redis configuration is present."
+  template:
+    dest: /etc/redis/redis.conf
+    src: templates/redis.conf.j2
+  notify: restart redis
