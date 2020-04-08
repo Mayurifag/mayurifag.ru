@@ -130,10 +130,10 @@
 - name: "uncomment postscreen (tlsproxy)"
   lineinfile: dest=/etc/postfix/master.cf regexp="^#?\s*tlsproxy.*tlsproxy\s*$" line="tlsproxy  unix  -       -       -       -       0       tlsproxy"
 - name: "/etc/postfix/mysql-virtual-mailbox-domains.cf"
-  template: src=roles/postfix/templates/mysql-virtual-mailbox-domains.cf.j2 dest=/etc/postfix/mysql-virtual-mailbox-domains.cf
+  template: src=mysql-virtual-mailbox-domains.cf.j2 dest=/etc/postfix/mysql-virtual-mailbox-domains.cf
 - name: "/etc/postfix/mysql-virtual-mailbox-maps.cf"
-  template: src=roles/postfix/templates/mysql-virtual-mailbox-maps.cf.j2 dest=/etc/postfix/mysql-virtual-mailbox-maps.cf
+  template: src=mysql-virtual-mailbox-maps.cf.j2 dest=/etc/postfix/mysql-virtual-mailbox-maps.cf
 - name: "/etc/postfix/mysql-virtual-alias-maps.cf"
-  template: src=roles/postfix/templates/mysql-virtual-alias-maps.cf.j2 dest=/etc/postfix/mysql-virtual-alias-maps.cf
+  template: src=mysql-virtual-alias-maps.cf.j2 dest=/etc/postfix/mysql-virtual-alias-maps.cf
 - name: Restart postfix
   service: state=restarted name=postfix
