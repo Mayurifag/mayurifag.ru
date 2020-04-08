@@ -1,0 +1,24 @@
+server {
+    listen 443 default_server;
+    listen [::]:443 default_server ipv6only=on;
+
+    server_name _ ;
+
+    include extra/security;
+    # include extra/z-push;
+    # include extra/roundcube;
+    # include extra/owncloud;
+
+
+    location / {
+        proxy_pass https://mayurifag.github.io;
+        proxy_set_header Host mayurifag.github.io;
+    }
+}
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server ipv6only=on;
+
+    rewrite ^ https://$http_host$request_uri permanent;
+}

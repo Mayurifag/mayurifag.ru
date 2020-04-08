@@ -1,0 +1,13 @@
+ssl on;
+ssl_certificate /etc/ssl/ansible/mayurifag.ru.pem;
+ssl_certificate_key /etc/ssl/ansible/mayurifag.ru.key;
+
+ssl_protocols TLSv1.2;
+ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+ssl_prefer_server_ciphers on;
+ssl_session_cache shared:SSL:10m;
+ssl_session_timeout 10m;
+ssl_session_tickets off;
+ssl_stapling on;
+ssl_stapling_verify on;
+ssl_dhparam /etc/ssl/dhparams.pem;
