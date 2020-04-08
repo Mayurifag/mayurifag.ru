@@ -1,13 +1,25 @@
+- name: Add official nginx apt key.
+  apt_key:
+    url: http://nginx.org/keys/nginx_signing.key
+    state: present
+- name: Add official nginx repo.
+  apt_repository:
+    repo: "deb http://nginx.org/packages/mainline/debian/ {{ ansible_distribution_release }} nginx"
+    state: present
 - name: Install nginx
-  apt: pkg=nginx state=latest
-- name: '/etc/nginx/sites-enabled/default: remove'
-  file: path=/etc/nginx/sites-enabled/default state=absent
-- name: '/etc/nginx/sites-available/default: remove'
-  file: path=/etc/nginx/sites-available/default state=absent
-- name: 'Install mail vhost'
-  template: src=roles/nginx/templates/mail.j2 dest=/etc/nginx/sites-available/mail
-- name: '/etc/nginx/sites-enabled/mail'
-  file: src=/etc/nginx/sites-available/mail dest=/etc/nginx/sites-enabled/mail state=link
+  apt:
+    pkg: nginx
+    update_cache: true
+  notify: start nginx
+# - name: '/etc/nginx/sites-enabled/default: remove'
+#   file: path=/etc/nginx/sites-enabled/default state=absent
+# - name: '/etc/nginx/sites-available/default: remove'
+#   file: path=/etc/nginx/sites-available/default state=absent
+- name: 'Remove default nginx config'
+  file: path=/etc/nginx/conf.d/default.conf state=absent
+- name: 'Initialize main configuration'
+  template: src=roles/nginx/templates/main.j2 dest=/etc/nginx/conf.d/main.conf
+# TODO: gzip params maybe!
 - name: '/etc/nginx/nginx.conf remove all ssl_ params'
   lineinfile: dest=/etc/nginx/nginx.conf regexp="^[\s#]*ssl_" state=absent
 - name: '/etc/nginx/extra'
@@ -29,5 +41,4 @@
   shell: 'curl -f -o /etc/nginx/conf.d/blacklist.conf https://raw.githubusercontent.com/mariusv/nginx-badbot-blocker/master/blacklist.conf || cp /tmp/blacklist.conf /etc/nginx/conf.d/blacklist.conf'
 - name: 'blockips.conf install'
   shell: 'curl -f -o /etc/nginx/conf.d/blockips.conf https://raw.githubusercontent.com/mariusv/nginx-badbot-blocker/master/blockips.conf || cp /tmp/blockips.conf /etc/nginx/conf.d/blockips.conf'
-- name: restart nginx
-  command: /usr/bin/env nginx -s reload
+  notify: restart nginx

@@ -14,3 +14,5 @@
   lineinfile: dest=/etc/locale.gen regexp="^#?\s*en_US.UTF-8\s*UTF-8" line="en_US.UTF-8 UTF-8"
 - name: Regenerate locales
   shell: locale-gen
+
+# TODO: set timezone MSK

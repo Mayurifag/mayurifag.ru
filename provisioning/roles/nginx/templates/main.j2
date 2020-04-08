@@ -6,10 +6,6 @@ server {
 
     include extra/ssl;
     include extra/security;
-    # include extra/z-push;
-    # include extra/roundcube;
-    # include extra/owncloud;
-
 
     location / {
         proxy_pass https://mayurifag.github.io;

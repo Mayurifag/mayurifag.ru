@@ -1,10 +1,5 @@
 ---
 - name: create user proxyuser with super secret password (xd) # TODO: change this
-  tags:
-    - configuration
-    - user
-  become: yes
-  become_user: root
   user:
     name: proxyuser
     create_home: false

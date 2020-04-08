@@ -135,7 +135,7 @@
     - not acme_sh_uninstall
   become_user: "{{ acme_sh_become_user }}"
 
-- name: Issue acme.sh certificate(s) (this will sleep for dns_sleep seconds)
+- name: Issue acme.sh certificate(s) (this will sleep for {{ dns_sleep }} seconds)
   command: >-
     ./acme.sh --issue -d {{ item.domains | join(" -d ") }}
     --dns {{ item.dns_provider | default(acme_sh_default_dns_provider) }}
