@@ -1,3 +1,4 @@
+# TODO: refactor
 - name: Install postfix
   apt: pkg=postfix state=latest
 - name: Install postfix-mysql

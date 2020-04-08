@@ -1,0 +1,15 @@
+---
+- name: reload nginx
+  service:
+    name: "nginx"
+    state: reloaded
+
+- name: start php-fpm
+  service:
+    name: php{{ php_ver }}-fpm
+    state: started
+
+- name: reload php-fpm
+  service:
+    name: php{{ php_ver }}-fpm
+    state: reloaded
