@@ -30,3 +30,7 @@ sysctl_values:
   - { key: fs.suid_dumpable, value: 0 }
   - { key: fs.protected_hardlinks, value: 1 }
   - { key: fs.protected_symlinks, value: 1 }
+  #
+  # TODO: https://github.com/librehs/ansible-ss-v2ray/blob/master/roles/optimize-sysctl/templates/sysctl.conf.j2
+  # https://github.com/sparanoid/ansible-shadowsocks-libev/blob/master/defaults/main.yml
+  - { key: fs.file-max, value: 51200 }

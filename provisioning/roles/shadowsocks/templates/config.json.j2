@@ -1,0 +1,12 @@
+{
+    "server":"0.0.0.0",
+    "mode": "tcp_and_udp",
+    "reuse_port": true,
+    "server_port": 8888,
+    "password":"{{ shadowsocks.password }}",
+    "timeout":60,
+    "method":"xchacha20-ietf-poly1305",
+    "fast_open": true,
+    "plugin":"/etc/shadowsocks-libev/v2ray-plugin",
+    "plugin_opts":"server",
+}

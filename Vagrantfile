@@ -18,7 +18,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision :ansible do |ansible|
     ansible.playbook = 'provisioning/setup.yml'
     ansible.host_key_checking = false
-    # ansible.verbose = 'vv'
+    # ansible.verbose = 'vvvv'
   end
 
   config.vm.provider :virtualbox do |v|
@@ -34,7 +34,7 @@ Vagrant.configure("2") do |config|
     config.cache.scope = :box
   end
 
-  config.vm.box = "geerlingguy/debian8"
+  config.vm.box = "geerlingguy/debian9"
 
   # Email
   # config.vm.network "forwarded_port", guest: 22, host: 10022
