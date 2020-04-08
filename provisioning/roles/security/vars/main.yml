@@ -1,3 +1,4 @@
+---
 security:
   # Default non-root user login
   user_login: ""

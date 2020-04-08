@@ -96,3 +96,9 @@
   lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="^/*\s*Unattended-Upgrade::Mail " line="Unattended-Upgrade::Mail \"{{ security.email }}\";"
 - name: "/etc/apt/apt.conf.d/50unattended-upgrades - Autoremove unused dependencies"
   lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="^/*\s*Unattended-Upgrade::Remove-Unused-Dependencies " line="Unattended-Upgrade::Remove-Unused-Dependencies \"true\";"
+- name: "/etc/ssl/dhparams.pem (strong)"
+  shell: openssl dhparam -out /etc/ssl/dhparams.pem 4096
+  when: security.strong_primes
+- name: "/etc/ssl/dhparams.pem (weak)"
+  shell: openssl dhparam -out /etc/ssl/dhparams.pem 512
+  when: not security.strong_primes

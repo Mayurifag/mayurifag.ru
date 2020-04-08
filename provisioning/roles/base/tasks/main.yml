@@ -12,3 +12,11 @@
   apt: pkg=ntp state=latest
 - name: Install whois
   apt: pkg=whois state=latest
+- name: Install MySQL
+  apt: pkg=mysql-server state=latest
+- name: Install python-mysqldb
+  apt: pkg=python-mysqldb state=latest
+- name: Enable english locales
+  lineinfile: dest=/etc/locale.gen regexp="^#?\s*en_US.UTF-8\s*UTF-8" line="en_US.UTF-8 UTF-8"
+- name: Regenerate locales
+  shell: locale-gen

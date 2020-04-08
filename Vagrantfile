@@ -18,11 +18,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision :ansible do |ansible|
     ansible.playbook = 'provisioning/setup.yml'
     ansible.host_key_checking = false
-    # ansible.extra_vars = { ansible_ssh_user: 'vagrant', testing: true }
-
-    # ansible.tags = ['blog']
-    # ansible.skip_tags = ['openvpn']
-    # ansible.verbose = 'v'
+    # ansible.verbose = 'vv'
   end
 
   config.vm.provider :virtualbox do |v|
@@ -46,4 +42,5 @@ Vagrant.configure("2") do |config|
   # config.vm.network "forwarded_port", guest: 80, host: 10080
   # config.vm.network "forwarded_port", guest: 443, host: 10443
   # config.vm.network "forwarded_port", guest: 993, host: 10993
+  config.vm.network "forwarded_port", guest: 7777, host: 7777
 end
