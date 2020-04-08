@@ -1,0 +1,36 @@
+---
+- name: create user proxyuser with super secret password (xd) # TODO: change this
+  tags:
+    - configuration
+    - user
+  become: yes
+  become_user: root
+  user:
+    name: proxyuser
+    create_home: false
+    state: present
+    shell: /sbin/nologin
+    # mkpasswd --method=sha-512
+    password: $6$LHjo6eVU$FmNUnEzcKU/GFBUCiYRDZX71VinwWe2RKqIFYM/IyAlIaUjYRoO30e8Qjghjpt01EXR6CgsvY19SLoovTQJvY.
+    update_password: always
+
+- name: Install dante
+  import_tasks: dante.yml
+
+- name: Copy danted.conf
+  template:
+    src: danted.conf.j2
+    dest: /etc/danted.conf
+  notify: restart danted
+
+- name: Upload danted script
+  copy:
+    src: danted
+    dest: /etc/init.d/danted
+    mode: 0755
+
+- name: Start danted
+  service:
+    name: danted
+    state: started
+    enabled: yes

@@ -1,0 +1,3 @@
+---
+- name: restart danted
+  service: name=danted state=restarted
