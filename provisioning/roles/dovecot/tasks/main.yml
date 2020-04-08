@@ -33,9 +33,9 @@
 - name: "/etc/dovecot/conf.d/10-master.conf"
   template: src=roles/dovecot/templates/10-master.conf.j2 dest=/etc/dovecot/conf.d/10-master.conf
 - name: "/etc/dovecot/conf.d/10-ssl.conf"
-  lineinfile: dest=/etc/dovecot/conf.d/10-ssl.conf regexp="^#?\s*ssl_cert\s*=" line="ssl_cert = </etc/ssl/certs/this-machine.pem"
+  lineinfile: dest=/etc/dovecot/conf.d/10-ssl.conf regexp="^#?\s*ssl_cert\s*=" line="ssl_cert = </etc/ssl/ansible/mayurifag.ru.pem"
 - name: "/etc/dovecot/conf.d/10-ssl.conf"
-  lineinfile: dest=/etc/dovecot/conf.d/10-ssl.conf regexp="^#?\s*ssl_key\s*=" line="ssl_key = </etc/ssl/private/this-machine.pem"
+  lineinfile: dest=/etc/dovecot/conf.d/10-ssl.conf regexp="^#?\s*ssl_key\s*=" line="ssl_key = </etc/ssl/ansible/mayurifag.ru.key"
 - name: "/etc/dovecot/conf.d/10-ssl.conf"
   lineinfile: dest=/etc/dovecot/conf.d/10-ssl.conf regexp="^#?\s*ssl\s*=" line="ssl = required"
 - name: "/etc/dovecot/conf.d/10-ssl.conf"
