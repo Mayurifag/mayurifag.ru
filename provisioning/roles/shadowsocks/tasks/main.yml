@@ -6,13 +6,19 @@
 - name: Download v2ray plugin
   get_url:
     url: https://github.com/shadowsocks/v2ray-plugin/releases/download/v1.3.0/v2ray-plugin-linux-amd64-v1.3.0.tar.gz
-    checksum: md5:a8496d00e6dc117be37f1688e87a34eb05ab9729
+    # checksum: md5:a8496d00e6dc117be37f1688e87a34eb05ab9729
     dest: /tmp/v2rayplugin.tar.gz
 
 - name: Unpack v2ray
   unarchive:
     remote_src: yes
     src: /tmp/v2rayplugin.tar.gz
+    dest: /tmp
+
+- name: Copy plugin to dest
+  copy:
+    remote_src: yes
+    src: /tmp/v2ray-plugin_linux_amd64
     dest: /etc/shadowsocks-libev/v2ray-plugin
 
 - name: Set cap_net_bind_service+eip on /etc/shadowsocks-libev/v2ray-plugin

@@ -64,6 +64,7 @@
   replace: dest=/etc/fail2ban/jail.local regexp="\[dovecot\]\n*enabled\s*=[^\n]*" replace="[dovecot]\n\nenabled = true"
 - name: "/etc/fail2ban/jail.local - enable recidive watcher"
   replace: dest=/etc/fail2ban/jail.local regexp="\[recidive\]\n*enabled\s*=[^\n]*" replace="[recidive]\n\nenabled = true"
+# TODO: Move to sysctl config
 - name: "/etc/sysctl.conf - Avoid a smurf attack"
   lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.icmp_echo_ignore_broadcasts\s*=" line="net.ipv4.icmp_echo_ignore_broadcasts = 1"
 - name: "/etc/sysctl.conf - Turn on protection for bad icmp error messages"
