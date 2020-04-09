@@ -1,3 +1,4 @@
+# TODO: fix permission issues -> www-data to nginx user i guess :S
 - name: Check Nextcloud installed
   stat: "path={{ nextcloud_webroot }}/index.php"
   register: nc_nextcloud_installed
@@ -22,3 +23,9 @@
   when: |
     (not nc_nextcloud_conf.stat.exists) or
     (nc_nextcloud_configured.rc is defined and nc_nextcloud_configured.rc != 0)
+
+- name: "[NGINX] -  generate Nextcloud configuration for nginx"
+  template:
+    dest: /etc/nginx/conf.d/nextcloud.conf
+    src: "templates/nextcloud.conf.j2"
+  notify: reload nginx

@@ -2,3 +2,22 @@ nextcloud_webroot: "/opt/nextcloud"
 nextcloud_data_dir: "/data/nextcloud_data"
 
 nextcloud_full_url: "https://download.nextcloud.com/server/releases/nextcloud-15.0.12.zip"
+
+nextcloud_admin_name: "admin"
+nextcloud_admin_pwd: "secret"
+
+nextcloud_trusted_domain:
+  - "mayurifag.ru"
+  - "{{ ansible_default_ipv4.address }}"
+
+nextcloud_config_settings:
+  - { name: 'overwrite.cli.url', value: 'https://nextcloud.{{ nextcloud_trusted_domain | first }}' }
+  - { name: 'memcache.local', value: '\OC\Memcache\APCu' }
+  - { name: 'open_basedir', value: '/dev/urandom' }
+  - { name: 'mysql.utf8mb4', value: 'true' }
+  - { name: 'updater.release.channel', value: 'production' } # production | stable | daily | beta
+
+nextcloud_redis_settings:
+  - { name: 'redis host', value: '/var/run/redis/redis.sock' }
+  - { name: 'redis port', value: 0 }
+  - { name: 'memcache.locking', value: '\OC\Memcache\Redis' }
