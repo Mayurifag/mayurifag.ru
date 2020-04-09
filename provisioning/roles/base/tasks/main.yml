@@ -16,3 +16,8 @@
   shell: locale-gen
 
 # TODO: set timezone MSK
+
+- name: Set MySQL root password
+  mysql_user: name=root password={{ mysql_root_password }}
+- name: "/root/.my.cnf"
+  template: src=templates/my.cnf.j2 dest=/root/.my.cnf
