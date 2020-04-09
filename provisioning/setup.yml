@@ -6,9 +6,9 @@
     - base
     - sysctl-tweaks
     - security
-    - letsencrypt
     - dante
     - maildb
+    - letsencrypt
     - postfix
     - dovecot
     - opendkim

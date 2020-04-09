@@ -5,8 +5,8 @@
     mode: "u=rwX,g=rX,o-rwx"
     recurse: yes
     state: directory
-    owner: "www-data"
-    group: "www-data"
+    owner: "nginx"
+    group: "nginx"
 
 - block:
   - name: "Download & extract Nextcloud to /tmp."

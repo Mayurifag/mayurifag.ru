@@ -7,11 +7,11 @@ nextcloud_admin_name: "admin"
 nextcloud_admin_pwd: "secret"
 
 nextcloud_trusted_domain:
-  - "mayurifag.ru"
+  - "nextcloud.mayurifag.local"
   - "{{ ansible_default_ipv4.address }}"
 
 nextcloud_config_settings:
-  - { name: 'overwrite.cli.url', value: 'https://nextcloud.{{ nextcloud_trusted_domain | first }}' }
+  - { name: 'overwrite.cli.url', value: 'https://{{ nextcloud_trusted_domain | first }}' }
   - { name: 'memcache.local', value: '\OC\Memcache\APCu' }
   - { name: 'open_basedir', value: '/dev/urandom' }
   - { name: 'mysql.utf8mb4', value: 'true' }

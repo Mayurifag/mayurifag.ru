@@ -39,7 +39,14 @@
     regexp: '^\;env'
     state: absent
     # validate: "/usr/sbin/{{ php_bin }} -t #%s"
-  notify: reload php-fpm
+  notify: restart php-fpm
+
+- name: "[NGINX] - Dirty hack user and group in php-fpm conf"
+  replace:
+    dest: "{{ php_dir }}/fpm/pool.d/www.conf"
+    regexp: 'www-data'
+    replace: 'nginx'
+  notify: restart php-fpm
 
 - name: "[NGINX] -  Add path variable to php-fpm"
   blockinfile:
@@ -52,7 +59,7 @@
       env[TMP] = /tmp
       env[TMPDIR] = /tmp
       env[TEMP] = /tmp
-  notify: reload php-fpm
+  notify: restart php-fpm
 
 - name: "[NGINX] -  enable APC for php CLI"
   lineinfile:
@@ -61,7 +68,7 @@
     insertbefore: "^; End:$"
     state: present
     # validate: "/usr/sbin/{{ php_bin }} -t #%s"
-  notify: reload php-fpm
+  notify: restart php-fpm
 
 - name: "[NGINX] -  enable PHP OPcache for php.ini"
   lineinfile:
@@ -79,7 +86,7 @@
     - { regexp: 'opcache.save_comments', line: 'opcache.save_comments=1' }
     - { regexp: 'opcache.revalidate_freq', line: 'opcache.revalidate_freq=1' }
     # validate: "/usr/sbin/{{ php_bin }} -t #%s"
-  notify: reload php-fpm
+  notify: restart php-fpm
 
 - name: "[NGINX] -  php handler configuration is present."
   template:

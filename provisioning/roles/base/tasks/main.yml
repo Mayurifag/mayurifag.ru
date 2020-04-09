@@ -16,8 +16,29 @@
   shell: locale-gen
 
 # TODO: set timezone MSK
+# TODO: move into maildb task everything including packages
+
+- name: Ensure mysql is running and starts on boot
+  service:
+    name: mysql
+    state: started
+    enabled: yes
+  become: yes
 
 - name: Set MySQL root password
   mysql_user: name=root password={{ mysql_root_password }}
+
 - name: "/root/.my.cnf"
   template: src=templates/my.cnf.j2 dest=/root/.my.cnf
+
+- name: Ensure mysql root password is updated for all root accounts
+  mysql_user:
+    name: root
+    host: "{{ item }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    password: "{{ mysql_root_password }}"
+    priv: '*.*:ALL,GRANT'
+    check_implicit_admin: true
+  loop: "{{ dirtyhack_hosts }}"
+  become: yes
+  notify: Restart MySQL
