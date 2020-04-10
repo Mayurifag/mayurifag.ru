@@ -13,6 +13,8 @@
     - dovecot
     - opendkim
     - nginx
+    - netdata
+    - jffz.netdata
     - shadowsocks
     - php
     - redis

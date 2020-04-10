@@ -42,3 +42,7 @@
 - name: 'blockips.conf install'
   shell: 'curl -f -o /etc/nginx/conf.d/blockips.conf https://raw.githubusercontent.com/mariusv/nginx-badbot-blocker/master/blockips.conf || cp /tmp/blockips.conf /etc/nginx/conf.d/blockips.conf'
   notify: restart nginx
+
+
+# TODO: http v2 everywhere
+# TODO: stub maybe

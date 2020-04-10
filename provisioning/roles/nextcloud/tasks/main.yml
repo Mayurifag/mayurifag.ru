@@ -1,4 +1,4 @@
-# TODO: fix permission issues -> www-data to nginx user i guess :S
+# TODO: fix trusted domains
 - name: Check Nextcloud installed
   stat: "path={{ nextcloud_webroot }}/index.php"
   register: nc_nextcloud_installed

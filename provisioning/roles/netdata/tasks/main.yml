@@ -1,0 +1,12 @@
+---
+# TODO: maybe clean netdata folder for idempotency
+- name: Install package dependencies
+  package:
+    name: "{{ netdata_deps }}"
+    state: present
+
+- name: "Generate Netdata configuration for nginx"
+  template:
+    dest: /etc/nginx/conf.d/netdata.conf
+    src: "templates/netdata.conf.j2"
+  notify: reload nginx
