@@ -1,0 +1,31 @@
+---
+- name: Create needed directories
+  file:
+    path: /var/www/rainloop
+    state: directory
+
+- name: Get latest rainloop app
+  get_url:
+    url: https://www.rainloop.net/repository/webmail/rainloop-community-latest.zip
+    dest: /var/www/rainloop/
+    force: no
+
+- name: Unzip rainloop to directory
+  command: unzip /var/www/rainloop/rainloop-community-latest.zip -d /var/www/rainloop/
+  args:
+    creates: /var/www/rainloop/index.php
+
+- name: Set permissions for rainloop directory
+  file:
+    path: /var/www/rainloop
+    state: directory
+    mode: "u=rwX,g=rX,o=rX"
+    owner: nginx
+    group: nginx
+    recurse: yes
+
+- name: "[NGINX] -  generate rainloop configuration for nginx"
+  template:
+    dest: /etc/nginx/conf.d/rainloop.conf
+    src: "templates/rainloop.conf.j2"
+  notify: reload nginx

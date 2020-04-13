@@ -1,0 +1,59 @@
+server {
+    listen 443 ssl;
+
+    include extra/ssl;
+    include extra/security;
+
+    root /var/www/rainloop/;
+    index index.html index.htm;
+
+    server_name {{ rainloop_hostname }};
+    # To be able to send big attachments
+    client_max_body_size 100M;
+
+    # where logs should be placed
+    access_log /var/log/nginx/{{ rainloop_hostname }}.access.log;
+    error_log /var/log/nginx/{{ rainloop_hostname }}.error.log;
+
+    location / {
+        index   index.php;
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    #error_page  404              /404.html;
+
+    #location = /404.html {
+    #    root   /usr/share/nginx/html;
+    #}
+
+    location /doc/ {
+        alias /usr/share/doc/;
+        autoindex on;
+        allow 127.0.0.1;
+        deny all;
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+
+        # already done by php role
+        fastcgi_pass php-handler;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include /etc/nginx/fastcgi_params;
+    }
+
+    location ~ /\.ht {
+        deny  all;
+    }
+
+    location ^~ /data {
+        deny  all;
+    }
+
+    location /favicon.ico {
+        log_not_found   off;
+        access_log      off;
+    }
+}

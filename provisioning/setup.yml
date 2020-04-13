@@ -20,11 +20,4 @@
     - redis
     - nextcloud
     - rspamd # beware install after redis
-
-
-    # - rspamd
-    # - zpush
-    # - roundcube
-    # - ddclient
-    # - duplicity
-    # - owncloud
+    - rainloop
