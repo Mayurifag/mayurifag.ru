@@ -19,6 +19,7 @@
     - php
     - redis
     - nextcloud
+    - rspamd # beware install after redis
 
 
     # - rspamd

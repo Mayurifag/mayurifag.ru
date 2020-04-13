@@ -95,7 +95,15 @@
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtp_always_send_ehlo\s=" line="smtp_always_send_ehlo = yes"
 - name: "/etc/postfix/main.cf: smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtp_tls_CAfile\s=" line="smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt"
-
+- name: "/etc/postfix/main.cf: smtpd_milters"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_milters\s=" line="smtpd_milters = inet:localhost:11332"
+- name: add couchbase.host to properties, works like add or replace
+  lineinfile:
+    state: present
+    dest: /etc/postfix/main.cf
+    regexp: '^milter_protocol'
+    line: 'milter_protocol = 6'
+  
 - name: "/etc/postfix/main.cf: smtp_sasl_auth_enable = yes"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtp_sasl_auth_enable\s=" line="smtp_sasl_auth_enable = yes"
   when: postfix.relay_host
