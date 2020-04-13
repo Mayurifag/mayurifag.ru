@@ -29,3 +29,12 @@
     dest: /etc/nginx/conf.d/rainloop.conf
     src: "templates/rainloop.conf.j2"
   notify: reload nginx
+
+# TODO: not 771 no reason why :S
+- name: "/mail"
+  file:
+    path: /mail
+    state: directory
+    owner: mail
+    group: mail
+    mode: 771
