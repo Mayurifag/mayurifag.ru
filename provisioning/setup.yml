@@ -21,3 +21,4 @@
     - nextcloud
     - rspamd # beware install after redis
     - rainloop
+    - wireguard

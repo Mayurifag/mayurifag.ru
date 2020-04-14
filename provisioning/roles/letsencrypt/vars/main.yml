@@ -3,7 +3,7 @@ acme_sh_default_dns_provider: "dns_cf"
 acme_sh_default_dns_provider_api_keys:
   "CF_Key": ""
   "CF_Email": ""
-acme_sh_default_install_cert_reloadcmd: "sudo systemctl reload nginx"
+acme_sh_default_install_cert_reloadcmd: "sudo systemctl reload nginx; sudo systemctl reload dovecot; sudo systemctl reload postfix"
 acme_sh_default_staging: True
 acme_sh_domains:
   - domains: ["mayurifag.ru", "*.mayurifag.ru"]
