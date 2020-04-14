@@ -5,5 +5,4 @@
 *.pyc
 *.retry
 secret
-self-hosted-mailserver
 provisioning/roles/jffz.netdata/
