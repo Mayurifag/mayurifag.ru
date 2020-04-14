@@ -7,14 +7,6 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = 'mayurifag.local'
   config.vm.network 'private_network', ip: '172.16.100.2'
 
-  # The box does not include provisioners, so include python-apt for ansible working
-  config.vm.provision "shell", inline: <<-SHELL
-    export DEBIAN_FRONTEND=noninteractive
-    apt-get install -y \
-      python \
-      python-apt
-  SHELL
-
   config.vm.provision :ansible do |ansible|
     ansible.galaxy_role_file = 'provisioning/requirements.yml'
     ansible.playbook = 'provisioning/setup.yml'

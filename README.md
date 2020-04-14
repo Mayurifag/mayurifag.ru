@@ -6,7 +6,7 @@ is no role for ufw right now)
 requires:
 - debian 9 (probably wont work anywhere else)
 - large /data folder for nextcloud (/data is default on my cheap vps)
-- shell provisioning for python (look an example at Vargrantfile)
+- shell provisioning for python (look an example at Vargrantfile) + ssh keys for root user
 
 I use secret file as git diff because im just too lazy to write all the things
 you have to change to make this working for your purpose
