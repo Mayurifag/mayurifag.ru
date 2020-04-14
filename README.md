@@ -15,10 +15,14 @@ TODO:
 - acme.sh refactoring — think about issue cert task
 - dnsmasq.d — caching dns resolving / maybe adblocking
 - ufw
+- monitoring and alerting (not enough netdata)
 - maybe openvpn (i dont need it though)
+- handlers for services: see if services are active! -- error otherwise
 
 DNS: https://thomas-leister.de/en/mailserver-debian-stretch/
 Spam learning: https://words.bombast.net/rspamd-with-postfix-dovecot-debian-stretch/
 
 https://123qwe.com/tutorial/#example-dns-zone-files
 https://matt.sh/email2018#_jump-into-it
+
+original https://github.com/ajgon/self-hosted-mailserver/

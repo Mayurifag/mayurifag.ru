@@ -7,5 +7,5 @@ acme_sh_default_install_cert_reloadcmd: "sudo systemctl reload nginx; sudo syste
 acme_sh_default_staging: True
 acme_sh_domains:
   - domains: ["mayurifag.ru", "*.mayurifag.ru"]
-# TODO: production 120
-dns_sleep: 10
+# TODO: testing 10
+dns_sleep: 120
