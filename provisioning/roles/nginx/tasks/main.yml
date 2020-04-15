@@ -28,6 +28,8 @@
   template: src=roles/nginx/templates/security.j2 dest=/etc/nginx/extra/security
 - name: '/etc/nginx/extra/ssl.conf'
   template: src=roles/nginx/templates/ssl.j2 dest=/etc/nginx/extra/ssl
+- name: '/etc/nginx/extra/global_auth'
+  template: src=roles/nginx/templates/global_auth.j2 dest=/etc/nginx/extra/global_auth
 - name: '/etc/nginx/extra/redirect_to_https'
   template: src=roles/nginx/templates/redirect_to_https.j2 dest=/etc/nginx/extra/redirect_to_https
 # - name: 'enable HPKP'
@@ -42,7 +44,11 @@
 - name: 'blockips.conf install'
   shell: 'curl -f -o /etc/nginx/conf.d/blockips.conf https://raw.githubusercontent.com/mariusv/nginx-badbot-blocker/master/blockips.conf || cp /tmp/blockips.conf /etc/nginx/conf.d/blockips.conf'
   notify: restart nginx
-
+- name: Create global htpasswd file
+  htpasswd:
+    path: /etc/nginx/global_htpasswd
+    name: "{{ nginx_global_auth_username }}"
+    password: "{{ nginx_global_auth_password }}"
 
 # TODO: http v2 everywhere
 # TODO: stub maybe

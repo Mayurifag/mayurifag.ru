@@ -11,6 +11,7 @@ server {
 
   include extra/ssl;
   include extra/security;
+  include extra/global_auth;
 
   location / {
       proxy_set_header X-Forwarded-Host $host;
