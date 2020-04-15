@@ -1,9 +1,8 @@
 ---
-# TODO: maybe clean netdata folder for idempotency
-- name: Install package dependencies
-  package:
-    name: "{{ netdata_deps }}"
-    state: present
+- name: Touch anonymous stats opt out file for netdata
+  file:
+    path: /usr/src/netdata/.opt-out-from-anonymous-statistics
+    state: touch
 
 - name: "Generate Netdata configuration for nginx"
   template:
