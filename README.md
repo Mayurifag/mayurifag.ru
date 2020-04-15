@@ -47,4 +47,6 @@ Spam learning: https://words.bombast.net/rspamd-with-postfix-dovecot-debian-stre
 https://123qwe.com/tutorial/#example-dns-zone-files
 https://matt.sh/email2018#_jump-into-it
 
-original https://github.com/ajgon/self-hosted-mailserver/
+original ideas https://github.com/ajgon/self-hosted-mailserver/
+
+deploy: `ansible-playbook -i ansible-inventory provisioning/setup.yml`
