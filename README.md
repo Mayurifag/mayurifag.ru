@@ -7,6 +7,7 @@ requires:
 - debian 9 (probably wont work anywhere else)
 - large /data folder for nextcloud (/data is default on my cheap vps)
 - ssh keys + password on root user
+- hostname + reverse dns settings
 
 I use secret file as git diff because im just too lazy to write all the things
 you have to change to make this working for your purpose
@@ -34,7 +35,7 @@ TODO:
 [] change root password ??? why changed see and guess about that!
 [] Fix mysql (root@localhost fail after 1st run) and nextcloud (default permission issues)
 [] Global domain 1-2lvl setting — but still notice letsencrypt domain getting — switch to self-signed??
-[] acme.sh refactoring — think about issue cert task
+[] acme.sh refactoring — think about issue cert task || has to be redone from scratch
 [] dnsmasq.d — caching dns resolving / maybe adblocking
 [] ufw
 [] monitoring and alerting (not enough netdata)

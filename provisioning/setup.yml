@@ -14,9 +14,9 @@
     - base
     - sysctl-tweaks
     - security
-    - dante
     - maildb
     - letsencrypt
+    - dante
     - postfix
     - dovecot
     - opendkim
