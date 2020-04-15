@@ -1,10 +1,4 @@
 ---
-#########
-# Run command line installation.
-# the web server must be running by now in order to launch the installation
-- name: Trigger all pending handlers
-  meta: flush_handlers
-
 - name: "[NC] - Setting directory ownership & permissions for the data folder"
   file:
     path: "{{ nextcloud_data_dir }}"

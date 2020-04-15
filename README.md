@@ -30,6 +30,10 @@ Additional:
 - OpenDKIM — DKIM for mailserver and cloudflare
 
 TODO:
+[] netdata auth basic at least or smth
+[] change root password ??? why changed see and guess about that!
+[] Fix mysql (root@localhost fail after 1st run) and nextcloud (default permission issues)
+[] Global domain 1-2lvl setting — but still notice letsencrypt domain getting — switch to self-signed??
 [] acme.sh refactoring — think about issue cert task
 [] dnsmasq.d — caching dns resolving / maybe adblocking
 [] ufw
