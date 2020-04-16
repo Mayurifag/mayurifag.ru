@@ -29,7 +29,6 @@ Vagrant.configure("2") do |config|
 
   config.vm.box = "geerlingguy/debian9"
 
-  # Email
   # config.vm.network "forwarded_port", guest: 22, host: 10022
   # config.vm.network "forwarded_port", guest: 25, host: 10025
   # config.vm.network "forwarded_port", guest: 80, host: 10080
@@ -37,10 +36,11 @@ Vagrant.configure("2") do |config|
   # config.vm.network "forwarded_port", guest: 993, host: 10993
 
 
-  config.vm.network "forwarded_port", guest:  25, host: 1025 # SMTP
-  config.vm.network "forwarded_port", guest: 143, host: 1143 # IMAP
-  config.vm.network "forwarded_port", guest: 993, host: 1993 # IMAPS
+  # config.vm.network "forwarded_port", guest:  25, host: 1025 # SMTP
+  # config.vm.network "forwarded_port", guest: 143, host: 1143 # IMAP
+  # config.vm.network "forwarded_port", guest: 993, host: 1993 # IMAPS
 
-  config.vm.network "forwarded_port", guest: 7777, host: 7777
-  config.vm.network "forwarded_port", guest: 8888, host: 8888
+  # config.vm.network "forwarded_port", guest: 7777, host: 7777
+  # config.vm.network "forwarded_port", guest: 8888, host: 8888
+  # config.vm.network "forwarded_port", guest: 51820, host: 51820
 end
