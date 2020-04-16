@@ -1,0 +1,42 @@
+---
+- name: Install wireguard repo (Debian)
+  apt_repository:
+    filename: unstable-wireguard
+    repo: 'deb http://deb.debian.org/debian/ unstable main'
+    update_cache: yes
+  when: ansible_distribution == 'Debian'
+
+- name: Configure wireguard repo (Debian)
+  blockinfile:
+    path: /etc/apt/preferences.d/limit-unstable
+    create: yes
+    block: |-
+      Package: *
+      Pin: release a=unstable
+      Pin-Priority: 150
+
+- name: Install dependencies (Debian)
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - bc
+    - linux-headers-{{ ansible_kernel }}
+    - software-properties-common
+
+## Enabled at sysctl tweaks already
+# - name: Enable net.ipv4.ip_forward
+#   sysctl:
+#     name: net.ipv4.ip_forward
+#     value: 1
+#     reload: yes
+#     state: present
+
+- name: ensure wireguard packages are installed
+  apt:
+    pkg: "{{ packages }}"
+    state: latest
+    # update_cache: yes
+  vars:
+    packages:
+      - wireguard
