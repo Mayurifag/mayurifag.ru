@@ -2,20 +2,17 @@ logoutput: /var/log/danted.log
 internal: {{ ansible_default_ipv4.interface }} port = 7777
 external: {{ ansible_default_ipv4.interface }}
 clientmethod: none
-method: none
+socksmethod: username
 user.privileged: root
 user.notprivileged: nobody
 user.libwrap: nobody
 
 client pass {
-        from: 0.0.0.0/0 to: 0.0.0.0/0
-        log: error connect disconnect
+        from: 0/0 to: 0/0
+        log: error
 }
+
 socks pass {
-        from: 0.0.0.0/0 to: 0.0.0.0/0
-        log: error connect disconnect
-}
-socks block {
-        from: 0.0.0.0/0 to: 127.0.0.0/8
-        log: connect error
+        from: 0/0 to: 0/0
+        log: error
 }

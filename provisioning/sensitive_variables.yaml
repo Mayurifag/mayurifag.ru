@@ -1,11 +1,11 @@
 ---
 # HOSTNAME
-## Default hostname, set it at Vagrantfile as well
+## Default hostname, set it at Vagrantfile as well, dont forget to set production host before deploy
 default_hostname: mayurifag.local
 ## We will ask for production wildcard certificate and other things in tests so lets use production domain there
 production_hostname: mayurifag.ru
 
-# Unix user settings [not root!]
+# Unix user settings
 security_user_login: "username"
 security_user_password: "secret"
 ## use xclip -sel clip < ~/.ssh/id_rsa.pub
@@ -37,7 +37,8 @@ alias_two_email_password: "secret"
 ## Email registered for cloudflare, but also used for security, etc.
 cloudflare_email: "putin@kremlin.ru"
 cloudflare_token: "d3d33d3223d23jk32jk32j4k32j4"
-letsencrypt_staging: False
+# dont forget to set False before deploy
+letsencrypt_staging: True
 
 # Socks5 proxy
 proxy_user: proxyuser
