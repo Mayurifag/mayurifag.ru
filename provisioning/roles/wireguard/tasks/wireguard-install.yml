@@ -23,6 +23,7 @@
     - bc
     - linux-headers-{{ ansible_kernel }}
     - software-properties-common
+    - qrencode
 
 ## Enabled at sysctl tweaks already
 # - name: Enable net.ipv4.ip_forward

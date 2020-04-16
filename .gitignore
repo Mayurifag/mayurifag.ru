@@ -6,3 +6,4 @@
 *.retry
 secret
 provisioning/roles/jffz.netdata/
+provisioning/wireguard_profiles
