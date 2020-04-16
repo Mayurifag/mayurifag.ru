@@ -39,3 +39,4 @@
     owner: mail
     group: mail
     mode: 771
+    recurse: yes
