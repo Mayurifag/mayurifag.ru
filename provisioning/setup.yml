@@ -33,7 +33,14 @@
 
     # TODO:
     # - jitsi # idk something for video calling
-    # - rocket.chat
     # - git # idk gitlab gitea
+    # - wallabag
+
+    # Ideas:
+    # - web analytics # matomo or something else
+    # - rocket.chat
+    # - torrents-api # Jackett
+    # - finances # https://github.com/firefly-iii/firefly-iii
+    # - audioplayer # ampache
   vars_files:
     - sensitive_variables.yaml
