@@ -11,10 +11,6 @@
     pkg: nginx
     update_cache: true
   notify: start nginx
-# - name: '/etc/nginx/sites-enabled/default: remove'
-#   file: path=/etc/nginx/sites-enabled/default state=absent
-# - name: '/etc/nginx/sites-available/default: remove'
-#   file: path=/etc/nginx/sites-available/default state=absent
 - name: 'Remove default nginx config'
   file: path=/etc/nginx/conf.d/default.conf state=absent
 - name: 'Initialize main configuration'
@@ -44,11 +40,12 @@
 - name: 'blockips.conf install'
   shell: 'curl -f -o /etc/nginx/conf.d/blockips.conf https://raw.githubusercontent.com/mariusv/nginx-badbot-blocker/master/blockips.conf || cp /tmp/blockips.conf /etc/nginx/conf.d/blockips.conf'
   notify: restart nginx
+
+- name: Make sure we can use htpasswd module
+  apt: "pkg=python-passlib state=present"
+
 - name: Create global htpasswd file
   htpasswd:
     path: /etc/nginx/global_htpasswd
     name: "{{ nginx_global_auth_username }}"
     password: "{{ nginx_global_auth_password }}"
-
-# TODO: http v2 everywhere
-# TODO: stub maybe

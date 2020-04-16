@@ -8,37 +8,14 @@
   apt:
     name: "{{ item }}"
     state: latest
-  loop: ["unzip", "apt-transport-https", "libc-bin", "curl", "ntp", "whois", "mysql-server", "python-mysqldb", "ca-certificates", "acl", "sudo", "libuv1-dev"]
+  loop: ["unzip", "apt-transport-https", "libc-bin", "curl", "ntp", "whois", "ca-certificates", "acl", "sudo", "libuv1-dev", "linux-headers-{{ ansible_kernel }}"]
 
+# maybe add russian locale
 - name: Enable english locales
   lineinfile: dest=/etc/locale.gen regexp="^#?\s*en_US.UTF-8\s*UTF-8" line="en_US.UTF-8 UTF-8"
 - name: Regenerate locales
   shell: locale-gen
 
-# TODO: set timezone MSK
-# TODO: move into maildb task everything including packages
-
-- name: Ensure mysql is running and starts on boot
-  service:
-    name: mysql
-    state: started
-    enabled: yes
-  become: yes
-
-- name: Set MySQL root password
-  mysql_user: name=root password={{ mysql_root_password }}
-
-- name: "/root/.my.cnf"
-  template: src=templates/my.cnf.j2 dest=/root/.my.cnf
-
-- name: Ensure mysql root password is updated for all root accounts
-  mysql_user:
-    name: root
-    host: "{{ item }}"
-    login_unix_socket: /var/run/mysqld/mysqld.sock
-    password: "{{ mysql_root_password }}"
-    priv: '*.*:ALL,GRANT'
-    check_implicit_admin: true
-  loop: "{{ dirtyhack_hosts }}"
-  become: yes
-  notify: Restart MySQL
+- name: Set timezone to Europe/Moscow
+  timezone:
+    name: Europe/Moscow

@@ -7,7 +7,7 @@ upstream netdata_backend {
 server {
   listen 443 ssl http2;
 
-  server_name netdata.mayurifag.local;
+  server_name netdata.{{ default_hostname }};
 
   include extra/ssl;
   include extra/security;

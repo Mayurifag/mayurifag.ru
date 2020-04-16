@@ -3,34 +3,49 @@ sysctl_values:
   # For security reasons, Red Hat Enterprise Linux disables the 'SysRq' key by default
   # https://sites.google.com/site/syscookbook/rhel/rhel-sysrq-key
   - { key: kernel.sysrq, value: 0 }
-  - { key: kernel.core_uses_pid, value: 1 }
   # Prevent against the common 'syn flood attack'
   - { key: net.ipv4.tcp_syncookies, value: 1 }
+
   - { key: kernel.msgmnb, value: 65536 }
   - { key: kernel.msgmax, value: 65536 }
   - { key: kernel.shmmax, value: 68719476736 }
   - { key: kernel.shmall, value: 4294967296 }
+  - { key: kernel.core_uses_pid, value: 1 }
   - { key: net.ipv4.conf.all.accept_source_route, value: 0 }
   - { key: net.ipv4.conf.default.accept_source_route, value: 0 }
-  - { key: net.ipv4.conf.all.log_martians, value: 1 }
-  - { key: net.ipv4.conf.default.log_martians, value: 1 }
+
+  # Do not accept ICMP redirects (prevent MITM attacks)
   - { key: net.ipv4.conf.all.accept_redirects, value: 0 }
+  - { key: net.ipv6.conf.all.accept_redirects, value: 0 }
   - { key: net.ipv4.conf.default.accept_redirects, value: 0 }
   - { key: net.ipv4.conf.all.send_redirects, value: 0 }
   - { key: net.ipv4.conf.default.send_redirects, value: 0 }
+  - { key: net.ipv4.conf.default.secure_redirects, value: 0 }
+  - { key: net.ipv6.conf.all.secure_redirects, value: 0 }
+
+  # https://tldp.org/HOWTO/Adv-Routing-HOWTO/lartc.kernel.rpf.html
+  - { key: net.ipv4.conf.all.log_martians, value: 1 }
+  - { key: net.ipv4.conf.default.log_martians, value: 1 }
   - { key: net.ipv4.conf.all.rp_filter, value: 0 }
   - { key: net.ipv4.conf.default.rp_filter, value: 0 }
+
+  # Avoid a smurf attack
   - { key: net.ipv4.icmp_echo_ignore_broadcasts, value: 1 }
+
+  # Turn on protection for bad icmp error messages
   - { key: net.ipv4.icmp_ignore_bogus_error_responses, value: 1 }
   - { key: net.ipv4.conf.all.secure_redirects, value: 0 }
-  - { key: net.ipv4.conf.default.secure_redirects, value: 0 }
   - { key: kernel.randomize_va_space, value: 1 }
   - { key: net.core.wmem_max, value: 12582912 }
   - { key: net.core.rmem_max, value: 12582912 }
   - { key: fs.suid_dumpable, value: 0 }
   - { key: fs.protected_hardlinks, value: 1 }
   - { key: fs.protected_symlinks, value: 1 }
-  #
-  # TODO: https://github.com/librehs/ansible-ss-v2ray/blob/master/roles/optimize-sysctl/templates/sysctl.conf.j2
-  # https://github.com/sparanoid/ansible-shadowsocks-libev/blob/master/defaults/main.yml
   - { key: fs.file-max, value: 51200 }
+  # Needed by wireguard and shadowsocks, but its better to set here to 0 if you dont use wireguard/openvpn/similar
+  - { key: net.ipv4.ip_forward, value: 1 }
+  - { key: net.ipv6.conf.all.forwarding, value: 1}
+
+  # ss optimizations
+  - { key: net.ipv4.tcp_tw_reuse, value: 1 }
+  - { key: net.ipv4.tcp_tw_recycle, value: 0 }

@@ -1,8 +1,0 @@
-# Password for root user of MySQL database. MySQL is not enabled to external connections, yet it's still a good idea to put something complicated here!
-mysql_root_password: "secret"
-
-dirtyhack_hosts:
-  - "{{ ansible_hostname }}"
-  - 127.0.0.1
-  - ::1
-  - localhost

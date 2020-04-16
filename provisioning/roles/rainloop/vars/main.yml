@@ -1,2 +1,2 @@
 ---
-rainloop_hostname: "rainloop.mayurifag.local"
+rainloop_hostname: "rainloop.{{ default_hostname }}"

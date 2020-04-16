@@ -37,10 +37,10 @@
         --database=mysql
         --database-host=127.0.0.1
         --database-name=nextcloud
-        --database-user={{ maildb.username }}
-        --database-pass={{ maildb.password }}
+        --database-user={{ nextcloud_mysql_username }}
+        --database-pass={{ nextcloud_mysql_password }}
         --admin-user={{ nextcloud_admin_name }}
-        --admin-pass={{ nextcloud_admin_pwd }}
+        --admin-pass={{ nextcloud_admin_password }}
         --data-dir={{ nextcloud_data_dir }}
     args:
       chdir: "{{ nextcloud_webroot }}"

@@ -1,5 +1,4 @@
 driver = mysql
-connect = host=127.0.0.1 dbname={{ maildb.database }} user={{ maildb.username }} password={{ maildb.password }}
+connect = host=127.0.0.1 dbname=maildatabase user={{ mail_mysql_username }} password={{ mail_mysql_password }}
 default_pass_scheme = SHA512-CRYPT
 password_query = SELECT email as user, password FROM virtual_users WHERE email='%u';
-

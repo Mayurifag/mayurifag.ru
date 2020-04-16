@@ -1,3 +1,0 @@
----
-nginx_global_auth_username: "secretuser"
-nginx_global_auth_password: "secret"

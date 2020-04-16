@@ -26,7 +26,7 @@
 - name: "/etc/dovecot/conf.d/10-auth.conf: !include auth-sql.conf.ext"
   lineinfile: dest=/etc/dovecot/conf.d/10-auth.conf regexp="^#?\s*!include auth-sql.conf.ext" line="!include auth-sql.conf.ext"
 - name: "/etc/dovecot/conf.d/15-lda.conf: postmaster_address"
-  lineinfile: dest=/etc/dovecot/conf.d/15-lda.conf regexp="^#?\s*postmaster_address\s*=" line="postmaster_address = {{ maildb.postmaster_email }}"
+  lineinfile: dest=/etc/dovecot/conf.d/15-lda.conf regexp="^#?\s*postmaster_address\s*=" line="postmaster_address = {{ postmaster_email }}"
 - name: "/etc/dovecot/conf.d/auth-sql.conf.ext"
   template: src=roles/dovecot/templates/auth-sql.conf.ext.j2 dest=/etc/dovecot/conf.d/auth-sql.conf.ext
 - name: "/etc/dovecot/dovecot-sql.conf.ext"
@@ -34,9 +34,9 @@
 - name: "/etc/dovecot/conf.d/10-master.conf"
   template: src=roles/dovecot/templates/10-master.conf.j2 dest=/etc/dovecot/conf.d/10-master.conf
 - name: "/etc/dovecot/conf.d/10-ssl.conf"
-  lineinfile: dest=/etc/dovecot/conf.d/10-ssl.conf regexp="^#?\s*ssl_cert\s*=" line="ssl_cert = </etc/ssl/ansible/mayurifag.ru.pem"
+  lineinfile: dest=/etc/dovecot/conf.d/10-ssl.conf regexp="^#?\s*ssl_cert\s*=" line="ssl_cert = </etc/ssl/ansible/{{ production_hostname }}.pem"
 - name: "/etc/dovecot/conf.d/10-ssl.conf"
-  lineinfile: dest=/etc/dovecot/conf.d/10-ssl.conf regexp="^#?\s*ssl_key\s*=" line="ssl_key = </etc/ssl/ansible/mayurifag.ru.key"
+  lineinfile: dest=/etc/dovecot/conf.d/10-ssl.conf regexp="^#?\s*ssl_key\s*=" line="ssl_key = </etc/ssl/ansible/{{ production_hostname }}.key"
 - name: "/etc/dovecot/conf.d/10-ssl.conf"
   lineinfile: dest=/etc/dovecot/conf.d/10-ssl.conf regexp="^#?\s*ssl\s*=" line="ssl = required"
 - name: "/etc/dovecot/conf.d/10-ssl.conf"
@@ -64,7 +64,7 @@
 - name: Execute passwords inserter
   shell: bash /tmp/passwords-inserter
 - name: Import mailserver database
-  mysql_db: name={{ maildb.database }} state=import target=/tmp/mail-users.sql
+  mysql_db: name=maildatabase state=import target=/tmp/mail-users.sql
 - name: "/tmp/mail-users.sql: remove"
   file: path=/tmp/mail-users.sql state=absent
 - name: "/tmp/passwords-inserter: remove"

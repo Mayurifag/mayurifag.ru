@@ -1,5 +1,5 @@
-ssl_certificate /etc/ssl/ansible/mayurifag.ru.pem;
-ssl_certificate_key /etc/ssl/ansible/mayurifag.ru.key;
+ssl_certificate /etc/ssl/ansible/{{ production_hostname }}.pem;
+ssl_certificate_key /etc/ssl/ansible/{{ production_hostname }}.key;
 
 # intermediate configuration
 ssl_protocols TLSv1.2 TLSv1.3;

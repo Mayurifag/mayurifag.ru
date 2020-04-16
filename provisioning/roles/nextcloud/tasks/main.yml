@@ -1,7 +1,40 @@
-# TODO: fix trusted domains
 - name: Check Nextcloud installed
   stat: "path={{ nextcloud_webroot }}/index.php"
   register: nc_nextcloud_installed
+
+# - name: Set root user password
+#   # If .my.cnf already exists, this will cause an mysql-root-password update.
+#   mysql_user:
+#     name: root
+#     password: "{{ mysql_root_password}}"
+#     check_implicit_admin: true
+
+# - name: Create .my.cnf
+#   template:
+#    src: "client.my.cnf.j2"
+#    dest: "/root/.my.cnf"
+#    owner: root
+#    group: root
+#    mode: 0600
+
+- name: restart mysql
+  service:
+    name: mysql
+    state: restarted
+
+- name: "Create nc database"
+  mysql_db:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name:
+      - nextcloud
+    state: present
+
+- name: Create nc MySQL user
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: "{{ nextcloud_mysql_username }}"
+    password: "{{ nextcloud_mysql_password }}"
+    priv: "nextcloud.*:ALL"
 
 - name: Downloading Nextcloud
   include_tasks: ./nc_download.yml

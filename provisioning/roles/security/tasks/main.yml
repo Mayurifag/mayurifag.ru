@@ -7,13 +7,13 @@
 - name: Install logwatch
   apt: pkg=logwatch state=latest
 - name: Add default user
-  user: name="{{ security.user_login }}" shell=/bin/bash
+  user: name="{{ security_user_login }}" shell=/bin/bash
 - name: Set user password
-  shell: "echo \"{{ security.user_login }}:{{ security.user_password }}\" | chpasswd"
+  shell: "echo \"{{ security_user_login }}:{{ security_user_password }}\" | chpasswd"
 - name: Create user .ssh directory
-  file: path="~{{ security.user_login }}/.ssh" mode=0700 state=directory owner="{{ security.user_login }}"
+  file: path="~{{ security_user_login }}/.ssh" mode=0700 state=directory owner="{{ security_user_login }}"
 - name: Create user authorized_keys
-  template: src=roles/security/templates/authorized_keys.j2 dest="~{{ security.user_login }}/.ssh/authorized_keys" owner="{{ security.user_login }}" mode=0400
+  template: src=roles/security/templates/authorized_keys.j2 dest="~{{ security_user_login }}/.ssh/authorized_keys" owner="{{ security_user_login }}" mode=0400
 - name: "/etc/sudoers.d/user"
   template: src=roles/security/templates/sudoers.j2 dest=/etc/sudoers.d/user
 - name: "/etc/ssh/sshd_config: Protocol 2"
@@ -45,11 +45,11 @@
 - name: "/etc/apt/apt.conf.d/10periodic"
   template: src=roles/security/templates/unattended-upgrades.j2 dest=/etc/apt/apt.conf.d/10periodic
 - name: "/etc/cron.daily/00logwatch"
-  lineinfile: dest=/etc/cron.daily/00logwatch regexp="^/usr/sbin/logwatch" line="/usr/sbin/logwatch --output mail --mailto {{ security.email }} --detail high"
+  lineinfile: dest=/etc/cron.daily/00logwatch regexp="^/usr/sbin/logwatch" line="/usr/sbin/logwatch --output mail --mailto {{ cloudflare_email }} --detail high"
 - name: "Create local jail for fail2ban"
   shell: cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
 - name: "/etc/fail2ban/jail.local - security email"
-  lineinfile: dest=/etc/fail2ban/jail.local regexp="^#?\s*destemail\s*=" line="destemail = {{ security.email }}"
+  lineinfile: dest=/etc/fail2ban/jail.local regexp="^#?\s*destemail\s*=" line="destemail = {{ cloudflare_email }}"
 - name: "/etc/fail2ban/jail.local - enable emails"
   lineinfile: dest=/etc/fail2ban/jail.local regexp="^#?\s*action\s*=\s*\%\(action_" line="action = %(action_mwl)s"
 - name: "/etc/fail2ban/jail.local - enable ssh watcher"
@@ -64,37 +64,8 @@
   replace: dest=/etc/fail2ban/jail.local regexp="\[dovecot\]\n*enabled\s*=[^\n]*" replace="[dovecot]\n\nenabled = true"
 - name: "/etc/fail2ban/jail.local - enable recidive watcher"
   replace: dest=/etc/fail2ban/jail.local regexp="\[recidive\]\n*enabled\s*=[^\n]*" replace="[recidive]\n\nenabled = true"
-# TODO: Move to sysctl config
-- name: "/etc/sysctl.conf - Avoid a smurf attack"
-  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.icmp_echo_ignore_broadcasts\s*=" line="net.ipv4.icmp_echo_ignore_broadcasts = 1"
-- name: "/etc/sysctl.conf - Turn on protection for bad icmp error messages"
-  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.icmp_ignore_bogus_error_responses\s*=" line="net.ipv4.icmp_ignore_bogus_error_responses = 1"
-- name: "/etc/sysctl.conf - Turn on syncookies for SYN flood attack protection"
-  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.tcp_syncookies\s*=" line="net.ipv4.tcp_syncookies = 1"
-- name: "/etc/sysctl.conf - Turn on execshild"
-  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*kernel.exec-shield\s*=" line="kernel.exec-shield = 1"
-- name: "/etc/sysctl.conf - Turn on execshild"
-  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*kernel.randomize_va_space\s*=" line="kernel.randomize_va_space = 1"
-- name: "/etc/sysctl.conf - Do not accept ICMP redirects (IPv4)"
-  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.conf.all.accept_redirects\s*=" line="net.ipv4.conf.all.accept_redirects = 0"
-- name: "/etc/sysctl.conf - Do not accept ICMP redirects (IPv6)"
-  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv6.conf.all.accept_redirects\s*=" line="net.ipv6.conf.all.accept_redirects = 0"
-- name: "/etc/sysctl.conf - Do not accept ICMP redirects (IPv4)"
-  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.conf.all.secure_redirects\s*=" line="net.ipv4.conf.all.secure_redirects = 0"
-- name: "/etc/sysctl.conf - Do not accept ICMP redirects (IPv6)"
-  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv6.conf.all.secure_redirects\s*=" line="net.ipv6.conf.all.secure_redirects = 0"
-- name: "/etc/sysctl.conf - Don't act as a router (ip_forward IPV4)"
-  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.ip_forward\s*=" line="net.ipv4.ip_forward = 1"
-- name: "/etc/sysctl.conf - Don't act as a router (ip_forward IPV6)"
-  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv6.conf.all.forwarding\s*=" line="net.ipv6.conf.all.forwarding = 1"
-- name: "/etc/sysctl.conf - Don't act as a router (send_redirects / all)"
-  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.conf.all.send_redirects\s*=" line="net.ipv4.conf.all.send_redirects = 0"
-- name: "/etc/sysctl.conf - Don't act as a router (send_redirects / default)"
-  lineinfile: dest=/etc/sysctl.conf regexp="^#?\s*net.ipv4.conf.default.send_redirects\s*=" line="net.ipv4.conf.default.send_redirects = 0"
-- name: "Load new /etc/sysctl.conf"
-  shell: "sysctl -p || true"
 - name: "/etc/apt/apt.conf.d/50unattended-upgrades - Set notification email"
-  lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="^/*\s*Unattended-Upgrade::Mail " line="Unattended-Upgrade::Mail \"{{ security.email }}\";"
+  lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="^/*\s*Unattended-Upgrade::Mail " line="Unattended-Upgrade::Mail \"{{ cloudflare_email }}\";"
 - name: "/etc/apt/apt.conf.d/50unattended-upgrades - Autoremove unused dependencies"
   lineinfile: dest=/etc/apt/apt.conf.d/50unattended-upgrades regexp="^/*\s*Unattended-Upgrade::Remove-Unused-Dependencies " line="Unattended-Upgrade::Remove-Unused-Dependencies \"true\";"
 - name: "/etc/ssl/dhparams.pem (strong)"

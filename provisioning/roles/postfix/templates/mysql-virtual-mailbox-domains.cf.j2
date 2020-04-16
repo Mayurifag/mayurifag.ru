@@ -1,5 +1,5 @@
-user = {{ maildb.username }}
-password = {{ maildb.password }}
+user = {{ mail_mysql_username }}
+password = {{ mail_mysql_password }}
 hosts = 127.0.0.1
-dbname = {{ maildb.database }}
+dbname = maildatabase
 query = SELECT 1 FROM virtual_domains WHERE name='%s'

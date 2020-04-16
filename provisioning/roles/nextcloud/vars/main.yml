@@ -3,11 +3,8 @@ nextcloud_data_dir: "/data/nextcloud_data"
 
 nextcloud_full_url: "https://download.nextcloud.com/server/releases/nextcloud-15.0.12.zip"
 
-nextcloud_admin_name: "admin"
-nextcloud_admin_pwd: "secret"
-
 nextcloud_trusted_domain:
-  - "nextcloud.mayurifag.local"
+  - "nextcloud.{{ default_hostname }}"
   - "{{ ansible_default_ipv4.address }}"
 
 nextcloud_config_settings:
@@ -18,6 +15,6 @@ nextcloud_config_settings:
   - { name: 'updater.release.channel', value: 'production' } # production | stable | daily | beta
 
 nextcloud_redis_settings:
-  - { name: 'redis host', value: '/var/run/redis/redis.sock' }
-  - { name: 'redis port', value: 0 }
+  - { name: 'redis host', value: '127.0.0.1' }
+  - { name: 'redis port', value: 6379 }
   - { name: 'memcache.locking', value: '\OC\Memcache\Redis' }

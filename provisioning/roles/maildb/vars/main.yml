@@ -1,39 +1,27 @@
 ---
+# List of mail domains (you can put as many as you like)
 maildb:
-  # This email should be a local email (i.e. listed below in users section for any domain). It will receive all failure messages from MAILER-DAEMON.
-  postmaster_email: ""
-  # MySQL user username for mailserver database (use different than root!)
-  username: ""
-  # MySQL user password for mailserver database
-  password: ""
-  # MySQL database name for mailserver
-  database: ""
-  # Primary hostname, used by postfix to identify itself. Usually the primary domain from section below.
-  # Very important parameter, if you experience gmail errors "550-5.7.1 unsolicited mail originating from your IP address",
-  # this might me the issue.
-  myhostname: ""
-  # List of mail domains (you can put as many as you like)
   domains:
       # Domain name (i.e. example.com)
-    - name: ""
+    - name: "{{ production_hostname }}"
       # Is this primary domain (if you wish to receive PUSH notifications from it, you should set it to yes)
-      primary: yes
+      # primary: yes
       # List of users associated with that domain
       users:
       # User email - use full email address (i.e. steven@example.com)
-      - email: ""
-        password: ""
-      - email: ""
-        password: ""
-      - email: ""
-        password: ""
-      - email: ""
-        password: ""
-      - email: ""
-        password: ""
+      - email: "{{ primary_email }}"
+        password: "{{ primary_email_password }}"
+      - email: "{{ alias_one_email }}"
+        password: "{{ alias_one_email_password }}"
+      - email: "{{ personal_email }}"
+        password: "{{ personal_email_password }}"
+      - email: "{{ postmaster_email }}"
+        password: "{{ postmaster_email_password }}"
+      - email: "{{ alias_two_email }}"
+        password: "{{ alias_two_email_password }}"
       # List aliases associated with that domain (every mail coming to 'from' email will be delivered to 'to' email instead)
       aliases:
-      - from: ""
-        to: ""
-      - from: ""
-        to: ""
+      - from: "{{ alias_one_email }}"
+        to: "{{ primary_email }}"
+      - from: "{{ alias_two_email }}"
+        to: "{{ primary_email }}"

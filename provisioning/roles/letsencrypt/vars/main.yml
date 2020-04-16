@@ -1,11 +1,11 @@
-acme_sh_account_email: ""
+acme_sh_account_email: "{{ cloudflare_email }}"
 acme_sh_default_dns_provider: "dns_cf"
 acme_sh_default_dns_provider_api_keys:
-  "CF_Key": ""
-  "CF_Email": ""
+  "CF_Key": "{{ cloudflare_token }}"
+  "CF_Email": "{{ cloudflare_email }}"
 acme_sh_default_install_cert_reloadcmd: "sudo systemctl reload nginx; sudo systemctl reload dovecot; sudo systemctl reload postfix"
-acme_sh_default_staging: True
+acme_sh_default_staging: "{{ letsencrypt_staging }}"
 acme_sh_domains:
-  - domains: ["mayurifag.ru", "*.mayurifag.ru"]
-# TODO: testing 10
+  - domains: ["{{ production_hostname }}", "*.{{ production_hostname }}"]
+# its ok to lower this setting if you are sure, but better to set 120 at prod because its gonna be used on background
 dns_sleep: 120

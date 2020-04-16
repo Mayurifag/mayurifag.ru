@@ -16,11 +16,11 @@
 - name: "rebuild aliases"
   shell: "/usr/bin/newaliases"
 - name: "/etc/postfix/main.cf: myhostname=..."
-  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*myhostname\s*=" line="myhostname = mayurifag.ru"
-- name: "/etc/postfix/main.cf: smtpd_tls_cert_file=/etc/ssl/ansible/mayurifag.ru.pem"
-  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_tls_cert_file\s*=" line="smtpd_tls_cert_file=/etc/ssl/ansible/mayurifag.ru.pem"
-- name: "/etc/postfix/main.cf: smtpd_tls_key_file=/etc/ssl/ansible/mayurifag.ru.key"
-  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_tls_key_file\s*=" line="smtpd_tls_key_file=/etc/ssl/ansible/mayurifag.ru.key"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*myhostname\s*=" line="myhostname = {{ default_hostname }}"
+- name: "/etc/postfix/main.cf: smtpd_tls_cert_file=/etc/ssl/ansible/{{ production_hostname }}.pem"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_tls_cert_file\s*=" line="smtpd_tls_cert_file=/etc/ssl/ansible/{{ production_hostname }}.pem"
+- name: "/etc/postfix/main.cf: smtpd_tls_key_file=/etc/ssl/ansible/{{ production_hostname }}.key"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_tls_key_file\s*=" line="smtpd_tls_key_file=/etc/ssl/ansible/{{ production_hostname }}.key"
 - name: "/etc/postfix/main.cf: smtpd_use_tls=yes"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_use_tls\s*=" line="smtpd_use_tls=yes"
 - name: "/etc/postfix/main.cf: smtpd_tls_auth_only = yes"
@@ -97,34 +97,12 @@
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtp_tls_CAfile\s=" line="smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt"
 - name: "/etc/postfix/main.cf: smtpd_milters"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_milters\s=" line="smtpd_milters = inet:localhost:11332"
-- name: add couchbase.host to properties, works like add or replace
+- name: Add milter protocol = 6 to main.cf (rspamd protocol)
   lineinfile:
     state: present
     dest: /etc/postfix/main.cf
     regexp: '^milter_protocol'
     line: 'milter_protocol = 6'
-
-- name: "/etc/postfix/main.cf: smtp_sasl_auth_enable = yes"
-  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtp_sasl_auth_enable\s=" line="smtp_sasl_auth_enable = yes"
-  when: postfix.relay_host
-- name: "/etc/postfix/main.cf: smtpd_sasl_auth_enable = yes"
-  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_sasl_auth_enable\s*=" line="smtpd_sasl_auth_enable = yes"
-  when: postfix.relay_host
-- name: "/etc/postfix/main.cf: smtp_sasl_password_maps = hash:/etc/postfix/relay_password"
-  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtp_sasl_password_maps\s=" line="smtp_sasl_password_maps = hash:/etc/postfix/relay_password"
-  when: postfix.relay_host
-- name: "/etc/postfix/main.cf: relayhost = ..."
-  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*relayhost\s=" line="relayhost = {{ postfix.relay_host }}"
-  when: postfix.relay_host
-- name: "/etc/postfix/relay_password: create"
-  file: path=/etc/postfix/relay_password mode=0600 state=touch
-  when: postfix.relay_host
-- name: "/etc/postfix/relay_password: credentials"
-  lineinfile: dest=/etc/postfix/relay_password line="{{ postfix.relay_host }} {{ postfix.relay_username }}:{{ postfix.relay_password }}"
-  when: postfix.relay_host
-- name: "postmap /etc/postfix/relay_password"
-  shell: "/usr/sbin/postmap /etc/postfix/relay_password"
-  when: postfix.relay_host
 
 - name: "/etc/postfix/master.cf: enable smtps"
   lineinfile: dest=/etc/postfix/master.cf line="smtps     inet  n       -       -       -       -       smtpd\n  -o syslog_name=postfix/smtps\n  -o smtpd_tls_wrappermode=yes\n  -o smtpd_sasl_auth_enable=yes\n  -o smtpd_reject_unlisted_recipient=no\n  -o smtpd_client_restrictions=$mua_client_restrictions\n  -o smtpd_helo_restrictions=$mua_helo_restrictions\n  -o smtpd_sender_restrictions=$mua_sender_restrictions\n  -o smtpd_recipient_restrictions=\n  -o smtpd_relay_restrictions=permit_sasl_authenticated,reject\n  -o milter_macro_daemon_name=ORIGINATING"
