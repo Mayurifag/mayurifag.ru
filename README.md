@@ -33,6 +33,7 @@ Additional:
 - OpenDKIM — DKIM for mailserver and cloudflare
 
 TODO:
+[] OpenDKIM / rspamd remake
 [] dnsmasq.d — caching dns resolving / maybe adblocking — look at streisand repo
 [] ufw
 [] monitoring and alerting (not enough netdata)
