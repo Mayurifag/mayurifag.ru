@@ -4,7 +4,7 @@ DONT USE THIS REPOSITORY NO MATTER WHAT due to security reasons (i.e. there
 is no role for ufw right now). Playbook is fine only for my personal usage.
 
 requires:
-- clean debian 9 (probably wont work anywhere else)
+- clean debian 9 stretch (playbook wont work anywhere else)
 - large /data folder for nextcloud (/data is default on my cheap vps)
 - ssh auth keys + password on root user
 - hostname + cloudflare dns provider + reverse dns settings
