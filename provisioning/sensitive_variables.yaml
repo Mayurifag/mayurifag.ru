@@ -1,0 +1,55 @@
+---
+# HOSTNAME
+## Default hostname, set it at Vagrantfile as well
+default_hostname: mayurifag.local
+## We will ask for production wildcard certificate and other things in tests so lets use production domain there
+production_hostname: mayurifag.ru
+
+# Unix user settings [not root!]
+security_user_login: "username"
+security_user_password: "secret"
+## use xclip -sel clip < ~/.ssh/id_rsa.pub
+security_user_publickey: ""
+
+# MYSQL
+mysql_root_password: "secret"
+mail_mysql_username: "usermail"
+mail_mysql_password: "mailsecret"
+nextcloud_mysql_username: "ncuser"
+nextcloud_mysql_password: "sadasd"
+
+# EMAIL
+## Look at maildb/vars/main.yml for reference! Add there if you need more
+### This email should be a local mailserver' email. It will receive all failure messages from MAILER-DAEMON.
+postmaster_email: "postmaster@{{ production_hostname }}"
+postmaster_email_password: "secret"
+primary_email: "primary@{{ production_hostname }}"
+primary_email_password: "secret"
+personal_email: "personal@{{ production_hostname }}"
+personal_email_password: "secret"
+alias_one_email: "adssada@{{ production_hostname }}"
+alias_one_email_password: "secret"
+alias_two_email: "basdsad@{{ production_hostname }}"
+alias_two_email_password: "secret"
+
+# Cloudflare and letsencrypt
+## Take wildcard cert via dns letsencrypt challenge
+## Email registered for cloudflare, but also used for security, etc.
+cloudflare_email: "putin@kremlin.ru"
+cloudflare_token: "d3d33d3223d23jk32jk32j4k32j4"
+letsencrypt_staging: False
+
+# Socks5 proxy
+proxy_user: proxyuser
+proxy_user_password: secret
+
+# Nginx global htpasswd
+nginx_global_auth_username: "nginx"
+nginx_global_auth_password: "nginx"
+
+# Nextcloud
+nextcloud_admin_name: "ncadmin"
+nextcloud_admin_password: "secret"
+
+# Shadowsocks
+shadowsocks_password: "asd"

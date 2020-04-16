@@ -13,8 +13,8 @@
   roles:
     - base
     - sysctl-tweaks
-    - security
     - maildb
+    - security
     - letsencrypt
     - dante
     - postfix
@@ -27,6 +27,13 @@
     - php
     - redis
     - nextcloud
-    - rspamd # beware install after redis
+    - rspamd
     - rainloop
     - wireguard
+
+    # TODO:
+    # - jitsi # idk something for video calling
+    # - rocket.chat
+    # - git # idk gitlab gitea
+  vars_files:
+    - sensitive_variables.yaml
