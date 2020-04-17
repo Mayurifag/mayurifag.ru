@@ -1,4 +1,4 @@
-WIP: Ansible role for provisioning mayurifag.ru
+Ansible role for provisioning mayurifag.ru
 
 DONT USE THIS REPOSITORY NO MATTER WHAT due to security reasons (i.e. there
 is no role for ufw right now). Playbook is fine only for my personal usage.
@@ -30,34 +30,38 @@ Additional:
 - PHP — used for nextcloud and roundcube
 - Redis — used for nextcloud caching and rspamd
 - Nginx — web proxy server for every service above
-- OpenDKIM — DKIM for mailserver and cloudflare
+- OpenDKIM — DKIM for mailserver and cloudflare [it seems not working, lacks of postfix settings]
 
 TODO:
-[] OpenDKIM / rspamd remake
-[] dnsmasq.d — caching dns resolving / maybe adblocking — look at streisand repo
-[] ufw
-[] monitoring and alerting (not enough netdata)
-[] maybe openvpn (i dont need it though)
-[] handlers for services: see if services are active! -- error otherwise
-[] check info.php google Because this page contains sensitive information about
-your PHP environment, it is recommended that you remove it from the server by
-running an rm -f /var/www/info.php command once you have finished setting it up.
 
-DNS: https://thomas-leister.de/en/mailserver-debian-stretch/
-Spam learning: https://words.bombast.net/rspamd-with-postfix-dovecot-debian-stretch/
-
-https://123qwe.com/tutorial/#example-dns-zone-files
-https://matt.sh/email2018#_jump-into-it
-
-original ideas https://github.com/ajgon/self-hosted-mailserver/
+* OpenDKIM / rspamd remake
+* dnsmasq.d — caching dns resolving / maybe adblocking — look at streisand repo
+* ufw
+* monitoring and alerting (not enough netdata)
+* maybe openvpn (i dont need it though)
+* handlers for services: see if services are active! -- error otherwise
+* check info.php google
 
 deploy: `ansible-playbook -i ansible-inventory provisioning/setup.yml`
 
-to test in vagrant you have to add to hosts /etc/hosts:
+to test in vagrant your system needs some dns entries. Example of /etc/hosts:
 
+```
 172.16.100.2 mayurifag.local
 172.16.100.2 nextcloud.mayurifag.local
 172.16.100.2 netdata.mayurifag.local
 172.16.100.2 rainloop.mayurifag.local
+```
 
-.. or dnsmasq' config or what the fuck you use for dns resolving
+Ideas got from:
+
+
+DNS: https://thomas-leister.de/en/mailserver-debian-stretch/
+
+Spam learning: https://words.bombast.net/rspamd-with-postfix-dovecot-debian-stretch/
+
+https://123qwe.com/tutorial/#example-dns-zone-files
+
+https://matt.sh/email2018#_jump-into-it
+
+original ideas https://github.com/ajgon/self-hosted-mailserver/
