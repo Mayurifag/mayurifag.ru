@@ -1,4 +1,9 @@
 ---
+# TODO: barracuda
+# TODO: innodb_large_prefix=1
+# TODO: via cnf file https://stackoverflow.com/questions/35847015/mysql-change-innodb-large-prefix
+# TODO: https://docs.nextcloud.com/server/15/admin_manual/configuration_database/mysql_4byte_support.html
+
 - name: Install mysql packages
   apt:
     name: "{{ item }}"
