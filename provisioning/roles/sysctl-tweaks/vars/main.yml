@@ -47,5 +47,6 @@ sysctl_values:
   - { key: net.ipv6.conf.all.forwarding, value: 1}
 
   # ss optimizations
+  - { key: net.ipv4.tcp_fastopen, value: 3 }
   - { key: net.ipv4.tcp_tw_reuse, value: 1 }
   - { key: net.ipv4.tcp_tw_recycle, value: 0 }
