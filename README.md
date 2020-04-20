@@ -7,7 +7,7 @@ requires:
 - clean debian 9 stretch (playbook wont work anywhere else)
 - large /data folder for nextcloud (/data is default on my cheap vps)
 - ssh auth keys + password on root user
-- hostname + cloudflare dns provider + reverse dns settings
+- hostname (done by vps for me) + cloudflare dns provider + reverse dns settings
 - to test: vagrant + vagrant-cachier + ansible
 
 I use secret file as git diff because im just too lazy to write all the things
@@ -35,6 +35,8 @@ Additional:
 TODO:
 
 * Disable swap
+* Pimp my log
+* Mysql slow query log
 * OpenDKIM / rspamd remake
 * dnsmasq.d — caching dns resolving / maybe adblocking — look at streisand repo
 * ufw
