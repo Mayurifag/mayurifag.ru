@@ -34,13 +34,13 @@ Additional:
 
 TODO:
 
+* Disable swap
 * OpenDKIM / rspamd remake
 * dnsmasq.d — caching dns resolving / maybe adblocking — look at streisand repo
 * ufw
 * monitoring and alerting (not enough netdata)
-* maybe openvpn (i dont need it though)
 * handlers for services: see if services are active! -- error otherwise
-* check info.php google
+* Check https://homelabos.com https://www.reddit.com/r/selfhosted/comments/g34byw/share_your_setup/
 
 deploy: `ansible-playbook -i ansible-inventory provisioning/setup.yml`
 
