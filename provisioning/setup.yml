@@ -11,6 +11,7 @@
   gather_facts: yes
   roles:
     - base
+    - sjinks.haveged
     - sysctl-tweaks
     - maildb
     - security

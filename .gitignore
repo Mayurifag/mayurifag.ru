@@ -7,4 +7,5 @@
 secret
 provisioning/roles/jffz.netdata/
 provisioning/roles/robertdebock.bootstrap/
+provisioning/roles/sjinks.haveged/
 provisioning/wireguard_profiles

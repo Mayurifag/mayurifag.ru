@@ -1,3 +1,4 @@
 ---
 - src: jffz.netdata
 - src: robertdebock.bootstrap
+- src: sjinks.haveged
