@@ -6,4 +6,5 @@
 *.retry
 secret
 provisioning/roles/jffz.netdata/
+provisioning/roles/robertdebock.bootstrap/
 provisioning/wireguard_profiles

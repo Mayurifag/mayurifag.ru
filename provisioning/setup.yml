@@ -2,9 +2,8 @@
 - hosts: all
   become: yes
   gather_facts: no
-  pre_tasks:
-  - name: 'Install python to make ansible working on clean system'
-    raw: 'DEBIAN_FRONTEND=noninteractive apt-get install -y python python-apt'
+  roles:
+    - robertdebock.bootstrap
 
 - hosts: all
   become: yes
