@@ -1,5 +1,7 @@
 ---
 sysctl_values:
+# TODO: vm.swappiness = 20
+
   # For security reasons, Red Hat Enterprise Linux disables the 'SysRq' key by default
   # https://sites.google.com/site/syscookbook/rhel/rhel-sysrq-key
   - { key: kernel.sysrq, value: 0 }
