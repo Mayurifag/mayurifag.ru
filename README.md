@@ -68,10 +68,12 @@ https://123qwe.com/tutorial/#example-dns-zone-files
 
 https://matt.sh/email2018#_jump-into-it
 
+https://www.c0ffee.net/blog/mail-server-guide/
+
 original ideas https://github.com/ajgon/self-hosted-mailserver/
 
 steps after deploy:
 - rainloop /?admin
 - pimpmylog user
-- nextcloud settings  
+- nextcloud settings
 go to Settings → Personal: Security → Devices & Sessions and create a new App name and password there for Joplin.
