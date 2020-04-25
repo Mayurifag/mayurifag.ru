@@ -11,7 +11,6 @@
   gather_facts: yes
   roles:
     - base
-    - djx339.swapoff
     - sjinks.haveged
     - sysctl-tweaks
     - maildb
@@ -32,11 +31,15 @@
     - rainloop
     - wireguard
     - pimpmylog
+    # - djx339.swapoff
+    - cleanup
+
 
     # TODO:
     # - jitsi # idk something for video calling
     # - git # idk gitlab gitea
     # - wallabag
+    # https://github.com/opensolutions/ViMbAdmin
 
     # Ideas:
     # - bitwarden

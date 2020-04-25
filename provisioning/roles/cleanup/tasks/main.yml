@@ -1,0 +1,6 @@
+- name: cleanup packaging
+  apt:
+    autoclean: yes
+    autoremove: yes
+
+# TODO: msg with proxy etc
