@@ -1,15 +1,10 @@
 ---
 - name: reload nginx
-  service:
+  systemd:
     name: "nginx"
     state: reloaded
 
-- name: start php-fpm
-  service:
-    name: php{{ php_ver }}-fpm
-    state: started
-
 - name: restart php-fpm
-  service:
-    name: php{{ php_ver }}-fpm
+  systemd:
+    name: "php{{ php_ver }}-fpm"
     state: restarted
