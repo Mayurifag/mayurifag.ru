@@ -1,14 +1,43 @@
-- name: Update distro
-  apt: update_cache=yes upgrade=yes
-
 - name: Disable recommended packages
   shell: echo 'APT::Install-Recommends "0";' > /etc/apt/apt.conf.d/00norecommends
 
+- name: Update apt repo and cache on all Debian/Ubuntu boxes
+  apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+
+- name: Upgrade all packages on servers
+  apt: upgrade=dist force_apt_get=yes
+
+- name: Check if a reboot is needed on all servers
+  register: reboot_required_file
+  stat: path=/var/run/reboot-required get_md5=no
+
+- name: Reboot the box if kernel updated
+  reboot:
+    msg: "Reboot initiated by Ansible for kernel updates"
+    connect_timeout: 5
+    reboot_timeout: 300
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+    test_command: uptime
+  when: reboot_required_file.stat.exists
+
 - name: Install base packages
   apt:
-    name: "{{ item }}"
+    name:
+    - aptitude
+    - unzip
+    - apt-transport-https
+    - libc-bin
+    - curl
+    - ntp
+    - whois
+    - ca-certificates
+    - acl
+    - sudo
+    - libuv1-dev
+    - "linux-headers-{{ ansible_kernel }}"
+    force_apt_get: yes
     state: latest
-  loop: ["unzip", "apt-transport-https", "libc-bin", "curl", "ntp", "whois", "ca-certificates", "acl", "sudo", "libuv1-dev", "linux-headers-{{ ansible_kernel }}"]
 
 # maybe add russian locale
 - name: Enable english locales
@@ -19,3 +48,17 @@
 - name: Set timezone to Europe/Moscow
   timezone:
     name: Europe/Moscow
+
+- name: Check if a reboot is needed on all servers
+  register: reboot_required_file
+  stat: path=/var/run/reboot-required get_md5=no
+
+- name: Reboot the box if kernel headers updated
+  reboot:
+    msg: "Reboot initiated by Ansible for kernel updates"
+    connect_timeout: 5
+    reboot_timeout: 300
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+    test_command: uptime
+  when: reboot_required_file.stat.exists
