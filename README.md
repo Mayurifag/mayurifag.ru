@@ -35,12 +35,14 @@ Additional:
 
 TODO:
 
-* Mysql slow query log
+* Mysql slow query log / barracuda etc
+* 1gb swapfile
 * OpenDKIM / rspamd remake
 * dnsmasq.d — caching dns resolving / maybe adblocking — look at streisand repo
 * ufw
 * monitoring and alerting (not enough netdata)
 * handlers for services: see if services are active! -- error otherwise
+* meta.ymls
 * Check https://homelabos.com https://www.reddit.com/r/selfhosted/comments/g34byw/share_your_setup/
 
 deploy: `ansible-playbook -i ansible-inventory provisioning/setup.yml`
