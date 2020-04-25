@@ -76,6 +76,6 @@
   when: not security.strong_primes
 
 # TODO: linux-headers-generic or https://askubuntu.com/questions/1131060/how-to-exclude-kernel-updates-from-unattended-upgrades
-# TPDP" fail2ban rules
+# TODO: fail2ban rules
 
 # TODO: https://unix.stackexchange.com/a/368309
