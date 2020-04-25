@@ -67,3 +67,8 @@ https://123qwe.com/tutorial/#example-dns-zone-files
 https://matt.sh/email2018#_jump-into-it
 
 original ideas https://github.com/ajgon/self-hosted-mailserver/
+
+steps after deploy:
+- rainloop /?admin
+- pimpmylog user
+- nextcloud settings  
