@@ -33,6 +33,9 @@
     - whois
     - ca-certificates
     - acl
+    - fallocate
+    - ncdu
+    - htop
     - sudo
     - libuv1-dev
     - "linux-headers-{{ ansible_kernel }}"
