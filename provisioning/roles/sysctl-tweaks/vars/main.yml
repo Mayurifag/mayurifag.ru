@@ -1,10 +1,11 @@
 ---
 sysctl_values:
-# TODO: vm.swappiness = 20
-
   # For security reasons, Red Hat Enterprise Linux disables the 'SysRq' key by default
   # https://sites.google.com/site/syscookbook/rhel/rhel-sysrq-key
   - { key: kernel.sysrq, value: 0 }
+
+  - { key: vm.swappiness, value: 15 }
+
   # Prevent against the common 'syn flood attack'
   - { key: net.ipv4.tcp_syncookies, value: 1 }
 
