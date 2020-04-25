@@ -22,6 +22,7 @@ Services:
 - Rainloop — web ui for email (you may still use nextcloud though or your fav
 email client)
 - Wireguard — faster OpenVPN alternative to use with Linux OS preferrably
+- Pimp My Log — Web UI to see logs
 
 Additional:
 - Sysctl tweaks for security and perfomance
@@ -34,8 +35,6 @@ Additional:
 
 TODO:
 
-* Disable swap
-* Pimp my log
 * Mysql slow query log
 * OpenDKIM / rspamd remake
 * dnsmasq.d — caching dns resolving / maybe adblocking — look at streisand repo
@@ -53,6 +52,7 @@ to test in vagrant your system needs some dns entries. Example of /etc/hosts:
 172.16.100.2 nextcloud.mayurifag.local
 172.16.100.2 netdata.mayurifag.local
 172.16.100.2 rainloop.mayurifag.local
+172.16.100.2 logs.mayurifag.local
 ```
 
 Ideas got from:

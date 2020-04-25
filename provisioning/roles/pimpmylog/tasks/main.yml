@@ -1,0 +1,40 @@
+---
+# TODO: move to vars
+# TODO: mysql log
+- name: Clone Pimp my Log.
+  git:
+    dest: "/opt/pimpmylog"
+    repo: "https://github.com/potsky/PimpMyLog.git"
+    version: master
+    accept_hostkey: true
+
+- name: Grant all privileges on the Pimp my Log directory.
+  file:
+    path: "/opt/pimpmylog"
+    state: directory
+    mode: "u=rwX,g=rX,o=rX"
+    owner: nginx
+    group: nginx
+    recurse: yes
+
+- name: Create a directory if it does not exist
+  file:
+    path: /opt/pimpmylog/config.user.d/
+    state: directory
+    mode: '0755'
+
+- name: Make syslog readable for other users [for pimpmylog' nginx]
+  file:
+    path: /var/log/syslog
+    mode: o+r
+
+- name: "Make syslog config"
+  copy:
+    dest: "/opt/pimpmylog/config.user.d/syslog.json"
+    src: files/syslog.json
+
+- name: "[NGINX] -  generate pimpmylog configuration for nginx"
+  template:
+    dest: /etc/nginx/conf.d/logs.conf
+    src: "templates/logs.conf.j2"
+  notify: reload nginx
