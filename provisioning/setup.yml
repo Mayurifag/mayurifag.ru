@@ -11,6 +11,7 @@
   gather_facts: yes
   roles:
     - base
+    - djx339.swapoff
     - sjinks.haveged
     - sysctl-tweaks
     - maildb
