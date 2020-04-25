@@ -1,4 +1,13 @@
 ---
+- name: Reboot the box if kernel updated
+  reboot:
+    msg: "Reboot initiated by Ansible for kernel updates"
+    connect_timeout: 5
+    reboot_timeout: 300
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+    test_command: uptime
+
 - name: Install wireguard repo (Debian)
   apt_repository:
     filename: unstable-wireguard
@@ -15,17 +24,14 @@
       Pin: release a=unstable
       Pin-Priority: 150
 
-# TODO: need a reboot 
-
 - name: Install dependencies (Debian)
   apt:
-    name: "{{ item }}"
+    name:
+      - bc
+      - linux-headers-{{ ansible_kernel }}
+      - software-properties-common
+      - qrencode
     state: present
-  with_items:
-    - bc
-    - linux-headers-{{ ansible_kernel }}
-    - software-properties-common
-    - qrencode
 
 ## Enabled at sysctl tweaks already
 # - name: Enable net.ipv4.ip_forward
@@ -37,9 +43,6 @@
 
 - name: ensure wireguard packages are installed
   apt:
-    pkg: "{{ packages }}"
-    state: latest
-    # update_cache: yes
-  vars:
-    packages:
+    name:
       - wireguard
+    state: latest
