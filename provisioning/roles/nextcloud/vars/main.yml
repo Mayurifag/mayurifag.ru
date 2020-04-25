@@ -12,6 +12,7 @@ nextcloud_config_settings:
   - { name: 'memcache.local', value: '\OC\Memcache\APCu' }
   - { name: 'open_basedir', value: '/dev/urandom' }
   - { name: 'mysql.utf8mb4', value: 'true' }
+  - { name: 'enable_previews', value: 'false' }
   - { name: 'updater.release.channel', value: 'production' } # production | stable | daily | beta
 
 nextcloud_redis_settings:
