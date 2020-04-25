@@ -10,7 +10,9 @@ ssl_session_timeout 1d;
 ssl_session_cache shared:MozSSL:10m;  # about 40000 sessions
 ssl_session_tickets off;
 
+{% if letsencrypt_staging is defined and letsencrypt_staging == False %}
 ssl_stapling on;
 ssl_stapling_verify on;
+{% endif %}
 
 ssl_dhparam /etc/ssl/dhparams.pem;
