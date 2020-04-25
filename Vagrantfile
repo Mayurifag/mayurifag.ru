@@ -18,15 +18,6 @@ Vagrant.configure("2") do |config|
     v.memory = 512
   end
 
-  # vagrant-cachier
-  #
-  # Install the plugin by running: vagrant plugin install vagrant-cachier
-  # More information: https://github.com/fgrehm/vagrant-cachier
-  if Vagrant.has_plugin? 'vagrant-cachier'
-    config.cache.enable :apt
-    config.cache.scope = :box
-  end
-
   config.vm.box = "geerlingguy/debian9"
 
   # config.vm.network "forwarded_port", guest: 22, host: 10022
