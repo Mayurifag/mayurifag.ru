@@ -5,6 +5,7 @@ sysctl_values:
   - { key: kernel.sysrq, value: 0 }
 
   - { key: vm.swappiness, value: 15 }
+  - { key: vm.vfs_cache_pressure, value: 100 }
 
   # Prevent against the common 'syn flood attack'
   - { key: net.ipv4.tcp_syncookies, value: 1 }

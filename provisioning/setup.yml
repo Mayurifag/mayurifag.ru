@@ -32,7 +32,7 @@
     - wireguard
     - pimpmylog
     - djx339.swapoff
-    - { role: "nickjj.swapfile", vars: { swapfile_size: '2048', swapfile_swappiness: 10 } }
+    - swap
     - cleanup
 
 

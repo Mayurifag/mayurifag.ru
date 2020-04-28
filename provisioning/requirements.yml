@@ -2,5 +2,4 @@
 - src: jffz.netdata
 - src: robertdebock.bootstrap
 - src: sjinks.haveged
-- src: nickjj.swapfile
 - src: djx339.swapoff

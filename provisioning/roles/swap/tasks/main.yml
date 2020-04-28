@@ -1,0 +1,27 @@
+- name: Create swap file
+  command: |
+    dd if=/dev/zero of={{ swapfile_path }} bs=1M count={{ swapfile_size }}
+
+- name: Set swap file permissions
+  file:
+    path: "{{ swapfile_path }}"
+    state: "file"
+    owner: "root"
+    group: "root"
+    mode: "0600"
+
+- name: Initialize swap file
+  command: mkswap {{ swapfile_path }}
+
+- name: Enable swap file
+  command: swapon {{ swapfile_path }}
+
+- name: Manage swap file in /etc/fstab
+  mount:
+    src: "{{ swapfile_path }}"
+    name: "none"
+    fstype: "swap"
+    opts: "sw,nofail"
+    dump: "0"
+    passno: "0"
+    state: "present"
