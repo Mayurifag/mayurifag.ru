@@ -32,6 +32,7 @@ Additional:
 - Redis — used for nextcloud caching and rspamd
 - Nginx — web proxy server for every service above
 - OpenDKIM — DKIM for mailserver and cloudflare [it seems not working, lacks of postfix settings]
+- Swap — Disable actual swap and make a new 2GB one
 
 TODO:
 
