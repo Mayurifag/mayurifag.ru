@@ -36,7 +36,6 @@ Additional:
 TODO:
 
 * Mysql slow query log / barracuda etc
-* 1gb swapfile
 * OpenDKIM / rspamd remake
 * dnsmasq.d — caching dns resolving / maybe adblocking — look at streisand repo
 * ufw
