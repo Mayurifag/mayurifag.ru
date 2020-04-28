@@ -35,13 +35,14 @@ Additional:
 
 TODO:
 
-* Mysql slow query log / barracuda etc
 * OpenDKIM / rspamd remake
+* jail for fail2ban
 * dnsmasq.d — caching dns resolving / maybe adblocking — look at streisand repo
 * ufw
 * monitoring and alerting (not enough netdata)
 * handlers for services: see if services are active! -- error otherwise
 * meta.ymls
+* https://github.com/raftario/filite
 * Check https://homelabos.com https://www.reddit.com/r/selfhosted/comments/g34byw/share_your_setup/
 
 deploy: `ansible-playbook -i ansible-inventory provisioning/setup.yml`
