@@ -1,17 +1,9 @@
 ---
-# TODO: barracuda
-# TODO: innodb_large_prefix=1
-# TODO: via cnf file https://stackoverflow.com/questions/35847015/mysql-change-innodb-large-prefix
-# TODO: https://docs.nextcloud.com/server/15/admin_manual/configuration_database/mysql_4byte_support.html
-
 - name: Install mysql packages
   apt:
     name: "{{ item }}"
     state: latest
   loop: ["mysql-server", "python-mysqldb"]
-
-# guess about https://github.com/geerlingguy/ansible-role-mysql/blob/master/templates/my.cnf.j2
-# maybe root pass https://dev.to/oscherler/changing-the-mysql-root-user-from-authsocket-to-password-authentication-using-ansible-3l5m
 
 - name: Ensure mysql is running and starts on boot
   systemd:
@@ -19,6 +11,26 @@
     state: started
     enabled: yes
 
+- name: Verify mysql include directory exists.
+  file:
+    path: "/etc/mysql/conf.d"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Copy ansible.cnf files into include directory.
+  template:
+    src: "templates/ansible.cnf.j2"
+    dest: "/etc/mysql/conf.d/ansible.cnf"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Ensure mysql is running and starts on boot
+  systemd:
+    name: mysql
+    state: restarted
 
 - name: "/tmp/maildb.sql"
   template:
