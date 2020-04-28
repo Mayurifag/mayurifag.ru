@@ -33,7 +33,6 @@
     - whois
     - ca-certificates
     - acl
-    - fallocate
     - ncdu
     - htop
     - sudo
