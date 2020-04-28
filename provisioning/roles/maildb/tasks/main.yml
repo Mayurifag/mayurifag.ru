@@ -14,7 +14,7 @@
 # maybe root pass https://dev.to/oscherler/changing-the-mysql-root-user-from-authsocket-to-password-authentication-using-ansible-3l5m
 
 - name: Ensure mysql is running and starts on boot
-  service:
+  systemd:
     name: mysql
     state: started
     enabled: yes

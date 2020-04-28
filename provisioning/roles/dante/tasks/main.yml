@@ -24,7 +24,7 @@
     mode: 0755
 
 - name: Start danted
-  service:
+  systemd:
     name: danted
     state: started
     enabled: yes

@@ -1,5 +1,5 @@
 ---
 - name: reload http
-  service:
+  systemd:
     name: nginx
     state: reloaded

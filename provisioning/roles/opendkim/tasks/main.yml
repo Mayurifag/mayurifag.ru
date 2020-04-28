@@ -27,7 +27,6 @@
 - name: "/etc/opendkim: chmod 0600 recursive"
   file: path=/etc/opendkim mode="u+rw,g-rwx,o-rwx" owner=opendkim group=opendkim recurse=yes
 - name: Restart OpenDKIM
-  service: state=restarted name=opendkim
+  systemd: state=restarted name=opendkim
 - name: Restart Postfix
-  service: state=restarted name=postfix
-
+  systemd: state=restarted name=postfix

@@ -123,4 +123,4 @@
 - name: "/etc/postfix/mysql-virtual-alias-maps.cf"
   template: src=mysql-virtual-alias-maps.cf.j2 dest=/etc/postfix/mysql-virtual-alias-maps.cf
 - name: Restart postfix
-  service: state=restarted name=postfix
+  systemd: state=restarted name=postfix

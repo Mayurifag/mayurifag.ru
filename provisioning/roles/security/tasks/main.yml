@@ -41,7 +41,7 @@
   shell: "rm /etc/ssh/ssh_host_*key* && ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key < /dev/null && ssh-keygen -t rsa -b 2048 -f /etc/ssh/ssh_host_rsa_key < /dev/null && chmod 600 /etc/ssh/ssh_host_*key"
   when: security.strong_primes
 - name: Restart SSHD
-  service: state=restarted name=ssh
+  systemd: state=restarted name=ssh
 - name: "/etc/apt/apt.conf.d/10periodic"
   template: src=roles/security/templates/unattended-upgrades.j2 dest=/etc/apt/apt.conf.d/10periodic
 - name: "/etc/cron.daily/00logwatch"

@@ -1,6 +1,6 @@
 ---
 - name: ensure all wireguard services are stopped and enabled
-  service:
+  systemd:
     name: "{{ item }}"
     state: stopped
     enabled: yes
@@ -70,7 +70,7 @@
     reload: yes
 
 - name: ensure all wireguard services are started
-  service:
+  systemd:
     name: "{{ item }}"
     state: started
   with_items:

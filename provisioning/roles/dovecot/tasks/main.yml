@@ -70,4 +70,4 @@
 - name: "/tmp/passwords-inserter: remove"
   file: path=/tmp/passwords-inserter state=absent
 - name: Restart dovecot
-  service: state=restarted name=dovecot
+  systemd: state=restarted name=dovecot

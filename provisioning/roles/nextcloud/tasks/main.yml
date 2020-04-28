@@ -2,23 +2,8 @@
   stat: "path={{ nextcloud_webroot }}/index.php"
   register: nc_nextcloud_installed
 
-# - name: Set root user password
-#   # If .my.cnf already exists, this will cause an mysql-root-password update.
-#   mysql_user:
-#     name: root
-#     password: "{{ mysql_root_password}}"
-#     check_implicit_admin: true
-
-# - name: Create .my.cnf
-#   template:
-#    src: "client.my.cnf.j2"
-#    dest: "/root/.my.cnf"
-#    owner: root
-#    group: root
-#    mode: 0600
-
 - name: restart mysql
-  service:
+  systemd:
     name: mysql
     state: restarted
 
