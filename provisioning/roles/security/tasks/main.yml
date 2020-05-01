@@ -75,7 +75,19 @@
   shell: openssl dhparam -out /etc/ssl/dhparams.pem 512
   when: not security.strong_primes
 
-# TODO: linux-headers-generic or https://askubuntu.com/questions/1131060/how-to-exclude-kernel-updates-from-unattended-upgrades
 # TODO: fail2ban rules
+# TODO: fail2ban sshd mode: aggressive
 
-# TODO: https://unix.stackexchange.com/a/368309
+# https://unix.stackexchange.com/a/368309
+- name: clean sshd config out of legacy settings and warnings
+  shell: |
+    sed -i '/KeyRegenerationInterval/d' /etc/ssh/sshd_config
+    sed -i '/ServerKeyBits/d' /etc/ssh/sshd_config
+    sed -i '/RSAAuthentication/d' /etc/ssh/sshd_config
+    sed -i '/RhostsRSAAuthentication/d' /etc/ssh/sshd_config
+    sed -i '/UsePrivilegeSeparation/d' /etc/ssh/sshd_config
+
+- name: restart sshd after changing configuration
+  systemd:
+    name: sshd
+    state: restarted
