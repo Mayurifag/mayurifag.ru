@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS `virtual_domains` (
   `id` int(11) NOT NULL auto_increment,
-  `name` varchar(50) NOT NULL,
+  `name` varchar(250) NOT NULL,
+  UNIQUE KEY (`name`),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

@@ -37,6 +37,7 @@
     - htop
     - sudo
     - libuv1-dev
+    - dnsutils
     - "linux-headers-{{ ansible_kernel }}"
     force_apt_get: yes
     state: latest

@@ -19,8 +19,8 @@ service imap-login {
     port = 0
   }
   inet_listener imaps {
-    #port = 993
-    #ssl = yes
+    port = 993
+    ssl = yes
   }
 
   # Number of connections to handle before starting a new process. Typically
@@ -48,8 +48,8 @@ service pop3-login {
 service lmtp {
   unix_listener /var/spool/postfix/private/dovecot-lmtp {
     mode = 0666
-    group = postfix
-    user = postfix
+    group = mail
+    user = mail
   }
 
   # Create inet listener only if you can't use the above UNIX socket
@@ -83,14 +83,14 @@ service auth {
   # of all usernames and get results of everyone's userdb lookups.
   unix_listener /var/spool/postfix/private/auth {
     mode = 0666
-    user = postfix
-    group = postfix
+    user = mail
+    group = mail
   }
 
   unix_listener auth-userdb {
     mode = 0600
     user = mail
-    #group =
+    group = mail
   }
   # Postfix smtp-auth
   #unix_listener /var/spool/postfix/private/auth {
@@ -104,15 +104,15 @@ service auth-worker {
   # Auth worker process is run as root by default, so that it can access
   # /etc/shadow. If this isn't necessary, the user should be changed to
   # $default_internal_user.
-  user = mail
+  # user = root
 }
 
 service dict {
   # If dict proxy is used, mail processes should have access to its socket.
   # For example: mode=0660, group=vmail and global mail_access_groups=vmail
   unix_listener dict {
-    #mode = 0600
-    #user =
-    #group =
+    mode = 0600
+    user = mail
+    group = mail
   }
 }

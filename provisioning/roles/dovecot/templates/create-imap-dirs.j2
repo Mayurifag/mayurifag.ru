@@ -6,7 +6,7 @@ IMAPUSER=$(echo "{{ user.email }}" | awk -F@ '{print $1}')
 if [ ! -d /mail/$IMAPDOMAIN/$IMAPUSER ]; then
   mkdir -p /mail/$IMAPDOMAIN/$IMAPUSER
   chown -R mail:mail /mail/$IMAPDOMAIN
-  chmod -R 700 /mail/$IMAPDOMAIN
+  chmod -R 750 /mail/$IMAPDOMAIN
 fi
 {% endfor %}
 {% endfor %}
