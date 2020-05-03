@@ -3,14 +3,25 @@
     autoclean: yes
     autoremove: yes
 
+- name: I hate fucking mailservers
+  shell: 'chmod -R 750 /mail'
+
 # TODO: msg with proxy etc / weblink on nginx
+
+- name: Register DKIM
+  shell: "cat /var/lib/rspamd/dkim/mail.pub"
+  register: _dkim_entry
 
 
 # https://linuxize.com/post/install-and-integrate-rspamd/
-- name: Check DKIM content
-  command: cat /var/lib/rspamd/dkim/mail.pub
-  register: dkimPublic
+- name: Show dkim and proxy
+  pause:
+    seconds: 1
+    prompt: |
+      =========================
 
-- name: Print DKIM
-  debug:
-    msg: "put to dns: {{ dkimPublic }}"
+      https://t.me/socks?server={{ production_hostname }}&port=7777&user={{ proxy_user }}&pass={{ proxy_password }}
+
+      {{ _dkim_entry.stdout }}
+
+      =========================
