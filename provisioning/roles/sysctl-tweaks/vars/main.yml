@@ -54,3 +54,5 @@ sysctl_values:
   - { key: net.ipv4.tcp_fastopen, value: 3 }
   - { key: net.ipv4.tcp_tw_reuse, value: 1 }
   - { key: net.ipv4.tcp_tw_recycle, value: 0 }
+
+# TODO: overcommit_memory 1 maybe

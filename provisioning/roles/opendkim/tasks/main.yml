@@ -1,7 +1,11 @@
 - name: Install OpenDKIM
-  apt: pkg=opendkim state=latest
-- name: Install OpenDKIM Tools
-  apt: pkg=opendkim-tools state=latest
+  apt:
+    name:
+    - opendkim
+    - opendkim-tools
+    - bsd-mailx
+    state: latest
+
 - name: /etc/opendkim
   file: path=/etc/opendkim state=directory owner=opendkim group=opendkim mode="o-rwx"
 - name: /tmp/opendkim-generate

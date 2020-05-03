@@ -8,4 +8,4 @@ acme_sh_default_staging: "{{ letsencrypt_staging }}"
 acme_sh_domains:
   - domains: ["{{ production_hostname }}", "*.{{ production_hostname }}"]
 # its ok to lower this setting if you are sure, but better to set 120 at prod because its gonna be used on background
-dns_sleep: 120
+dns_sleep: 10
