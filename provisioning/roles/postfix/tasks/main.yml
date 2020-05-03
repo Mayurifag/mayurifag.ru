@@ -5,8 +5,6 @@
   apt: pkg=postfix-mysql state=latest
 - name: Install postgrey
   apt: pkg=postgrey state=latest
-- name: Install python-mysqldb
-  apt: pkg=python-mysqldb state=latest
 - name: Install sasl modules
   apt: pkg=libsasl2-modules state=latest
 - name: "blackhole email"
@@ -49,8 +47,11 @@
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_recipient_restrictions\s*=" line="smtpd_recipient_restrictions = permit_sasl_authenticated, permit_mynetworks, reject_unauth_pipelining, reject_unauth_destination, reject_invalid_hostname, reject_non_fqdn_hostname, reject_non_fqdn_recipient, reject_unknown_recipient_domain"
 - name: "/etc/postfix/main.cf: mydestination = localhost"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*mydestination\s*=" line="mydestination = localhost"
+
+# Local delivery will be handled by Dovecot’s local delivery agent. It will take mail from a MTA (Postfix) and deliver it to a local user’s mailbox.
 - name: "/etc/postfix/main.cf: virtual_transport = lmtp:unix:private/dovecot-lmtp"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*virtual_transport\s*=" line="virtual_transport = lmtp:unix:private/dovecot-lmtp"
+
 - name: "/etc/postfix/main.cf: virtual_mailbox_domains = mysql:/etc/postfix/mysql-virtual-mailbox-domains.cf"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*virtual_mailbox_domains\s*" line="virtual_mailbox_domains = mysql:/etc/postfix/mysql-virtual-mailbox-domains.cf"
 - name: "/etc/postfix/main.cf: virtual_mailbox_maps = mysql:/etc/postfix/mysql-virtual-mailbox-maps.cf"
@@ -95,14 +96,6 @@
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtp_always_send_ehlo\s=" line="smtp_always_send_ehlo = yes"
 - name: "/etc/postfix/main.cf: smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt"
   lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtp_tls_CAfile\s=" line="smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt"
-- name: "/etc/postfix/main.cf: smtpd_milters"
-  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_milters\s=" line="smtpd_milters = inet:localhost:11332"
-- name: Add milter protocol = 6 to main.cf (rspamd protocol)
-  lineinfile:
-    state: present
-    dest: /etc/postfix/main.cf
-    regexp: '^milter_protocol'
-    line: 'milter_protocol = 6'
 
 - name: "/etc/postfix/master.cf: enable smtps"
   lineinfile: dest=/etc/postfix/master.cf line="smtps     inet  n       -       -       -       -       smtpd\n  -o syslog_name=postfix/smtps\n  -o smtpd_tls_wrappermode=yes\n  -o smtpd_sasl_auth_enable=yes\n  -o smtpd_reject_unlisted_recipient=no\n  -o smtpd_client_restrictions=$mua_client_restrictions\n  -o smtpd_helo_restrictions=$mua_helo_restrictions\n  -o smtpd_sender_restrictions=$mua_sender_restrictions\n  -o smtpd_recipient_restrictions=\n  -o smtpd_relay_restrictions=permit_sasl_authenticated,reject\n  -o milter_macro_daemon_name=ORIGINATING"

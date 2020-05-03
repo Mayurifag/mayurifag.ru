@@ -16,7 +16,7 @@ you have to change to make this working for your purpose
 Services:
 - Dante — simple socks5 proxy (for telegram idk)
 - Shadowsocks + v2ray plugin — «anti-firewall» encrypted proxy
-- Mailserver — via dovecot/postfix/rspamd/mysql
+- Mailserver [+ Rspamd Web UI] — via dovecot/postfix/rspamd/mysql
 - Netdata — simple all-in-one plug-and-play dashboard monitoring solution
 - Nextcloud — personal cloud
 - Rainloop — web ui for email (you may still use nextcloud though or your fav
@@ -35,16 +35,18 @@ Additional:
 - Swap — Disable actual swap and make a new 2GB one
 
 TODO:
-
-* OpenDKIM / rspamd remake
+* OpenDKIM remake into rspamd one
 * jail for fail2ban
 * dnsmasq.d — caching dns resolving / maybe adblocking — look at streisand repo
 * ufw
 * monitoring and alerting (not enough netdata)
 * handlers for services: see if services are active! -- error otherwise
 * meta.ymls
-* https://github.com/raftario/filite
-* Check https://homelabos.com https://www.reddit.com/r/selfhosted/comments/g34byw/share_your_setup/
+* sshd use dns no
+* https://serveradmin.ru/centos-nastroyka-servera/ miss some syslog entries
+* Add logrotates
+* Pimpmylog: add mail logs / suggest about others
+
 
 deploy: `ansible-playbook -i ansible-inventory provisioning/setup.yml`
 
@@ -56,6 +58,7 @@ to test in vagrant your system needs some dns entries. Example of /etc/hosts:
 172.16.100.2 netdata.mayurifag.local
 172.16.100.2 rainloop.mayurifag.local
 172.16.100.2 logs.mayurifag.local
+172.16.100.2 rspamd.mayurifag.local
 ```
 
 Ideas got from:

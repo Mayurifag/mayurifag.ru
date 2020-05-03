@@ -12,6 +12,36 @@
     - deb     http://rspamd.com/apt-stable/ {{ ansible_distribution_release }} main
     - deb-src http://rspamd.com/apt-stable/ {{ ansible_distribution_release }} main
 
+- name: "/etc/postfix/main.cf: smtpd_milters"
+  lineinfile: dest=/etc/postfix/main.cf regexp="^#?\s*smtpd_milters\s=" line="smtpd_milters = inet:localhost:11332"
+- name: Add milter protocol = 6 to main.cf (rspamd protocol)
+  lineinfile:
+    state: present
+    dest: /etc/postfix/main.cf
+    regexp: '^milter_protocol'
+    line: 'milter_protocol = 6'
+
+- name: Add non_smtpd_milters = $smtpd_milters
+  lineinfile:
+    state: present
+    dest: /etc/postfix/main.cf
+    regexp: '^non_smtpd_milters'
+    line: 'non_smtpd_milters = $smtpd_milters'
+
+- name: Add milter_default_action
+  lineinfile:
+    state: present
+    dest: /etc/postfix/main.cf
+    regexp: '^milter_default_action'
+    line: 'milter_default_action = accept'
+
+- name: Add milter_mail_macros
+  lineinfile:
+    state: present
+    dest: /etc/postfix/main.cf
+    regexp: '^milter_mail_macros'
+    line: 'milter_mail_macros =  i {mail_addr} {client_addr} {client_name} {auth_authen}'
+
 - name: Install package
   apt:
     name: rspamd
@@ -19,16 +49,34 @@
     install_recommends: false
     update_cache: true
 
-# TODO: add more anti spam
-- name: Add configurations
+- name: copy rspamd config
   copy:
-    src: "{{ item }}"
-    dest: "/etc/rspamd/local.d/{{ item }}"
-  with_items:
-    - milter_headers.conf
-    - classifier-bayes.conf
+    src: rspamd/local.d/
+    dest: /etc/rspamd/local.d/
 
-- name: Restart service
-  systemd:
-    name: rspamd
+- name: "[NGINX] -  generate rainloop configuration for nginx"
+  template:
+    dest: /etc/rspamd/local.d/worker-controller.inc
+    src: "templates/worker-controller.inc.j2"
+
+- name: "[NGINX] -  generate rspamd configuration for nginx"
+  template:
+    dest: /etc/nginx/conf.d/rspamd.conf
+    src: "templates/rspamd.conf.j2"
+  notify: reload nginx
+
+# verify everything is running
+- name: verify services are running in dependency order
+  service:
+    name: "{{ item }}"
+    enabled: yes
     state: restarted
+  loop:
+    - redis
+    - rspamd
+    - nginx
+
+
+# Test everything is working [https://workaround.org/ispmail/stretch/filtering-out-spam-with-rspamd]
+# wget http://spamassassin.apache.org/gtube/gtube.txt
+# sendmail me@mayuirfag.ru < gtube.txt

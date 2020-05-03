@@ -54,3 +54,7 @@ nextcloud_admin_password: "secret"
 
 # Shadowsocks
 shadowsocks_password: "asd"
+
+# Rspamd web ui login password, where pass is the password here
+# rspamadm pw --encrypt -p pass
+rspamd_password: "$2$k84h1438hdfq8jbfdot545znff5hc43h$4xu8ddn1i4cbnfc7zjaqzoojcht1oe9pa981w4ig485z6b7cxuyb"
