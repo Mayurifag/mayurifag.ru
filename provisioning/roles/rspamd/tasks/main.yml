@@ -49,12 +49,28 @@
     install_recommends: false
     update_cache: true
 
+- name: Clean dkim directory if exists
+  file: path=/var/lib/rspamd/dkim/ state=absent
+
+- name: Create directory for dkim files
+  file: path=/var/lib/rspamd/dkim/ state=directory
+
+- name: Generate DKIM keys
+  shell: 'rspamadm dkim_keygen -b 2048 -s mail -k /var/lib/rspamd/dkim/mail.key | sudo tee -a  /var/lib/rspamd/dkim/mail.pub'
+
+# TODO: make idempotent/not shell
+- name: Chown dkim folder
+  shell: 'chown -R _rspamd: /var/lib/rspamd/dkim'
+
+- name: Make dkim files readonly
+  shell: 'chmod 440 /var/lib/rspamd/dkim/*'
+
 - name: copy rspamd config
   copy:
     src: rspamd/local.d/
     dest: /etc/rspamd/local.d/
 
-- name: "[NGINX] -  generate rainloop configuration for nginx"
+- name: "Generate proxy configuration for rspamd"
   template:
     dest: /etc/rspamd/local.d/worker-controller.inc
     src: "templates/worker-controller.inc.j2"

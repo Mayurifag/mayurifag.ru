@@ -10,13 +10,10 @@ requires:
 - hostname (done by vps for me) + cloudflare dns provider + reverse dns settings
 - to test: vagrant + vagrant-cachier + ansible
 
-I use secret file as git diff because im just too lazy to write all the things
-you have to change to make this working for your purpose
-
 Services:
 - Dante — simple socks5 proxy (for telegram idk)
 - Shadowsocks + v2ray plugin — «anti-firewall» encrypted proxy
-- Mailserver [+ Rspamd Web UI] — via dovecot/postfix/rspamd/mysql
+- Mailserver [+ Rspamd Web UI] — via dovecot/postfix/rspamd+dkim/mysql
 - Netdata — simple all-in-one plug-and-play dashboard monitoring solution
 - Nextcloud — personal cloud
 - Rainloop — web ui for email (you may still use nextcloud though or your fav
@@ -31,11 +28,9 @@ Additional:
 - PHP — used for nextcloud and roundcube
 - Redis — used for nextcloud caching and rspamd
 - Nginx — web proxy server for every service above
-- OpenDKIM — DKIM for mailserver and cloudflare [it seems not working, lacks of postfix settings]
 - Swap — Disable actual swap and make a new 2GB one
 
 TODO:
-* OpenDKIM remake into rspamd one
 * jail for fail2ban
 * dnsmasq.d — caching dns resolving / maybe adblocking — look at streisand repo
 * ufw
@@ -46,6 +41,7 @@ TODO:
 * https://serveradmin.ru/centos-nastroyka-servera/ miss some syslog entries
 * Add logrotates
 * Pimpmylog: add mail logs / suggest about others
+* Rspamd training + dovecot move to junk: https://words.bombast.net/rspamd-with-postfix-dovecot-debian-stretch/
 
 
 deploy: `ansible-playbook -i ansible-inventory provisioning/setup.yml`

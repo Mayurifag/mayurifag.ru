@@ -3,4 +3,14 @@
     autoclean: yes
     autoremove: yes
 
-# TODO: msg with proxy etc
+# TODO: msg with proxy etc / weblink on nginx
+
+
+# https://linuxize.com/post/install-and-integrate-rspamd/
+- name: Check DKIM content
+  command: cat /var/lib/rspamd/dkim/mail.pub
+  register: dkimPublic
+
+- name: Print DKIM
+  debug:
+    msg: "put to dns: {{ dkimPublic }}"

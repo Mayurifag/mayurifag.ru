@@ -19,7 +19,6 @@
     - dante
     - postfix
     - dovecot
-    - opendkim
     - nginx
     - jffz.netdata
     - netdata
