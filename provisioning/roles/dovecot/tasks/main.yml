@@ -1,14 +1,14 @@
-# TODO: refactor
-- name: Install dovecot
-  apt: pkg=dovecot-core state=latest
-- name: Install dovecot-imapd
-  apt: pkg=dovecot-imapd state=latest
-- name: Install dovecot-lmtpd
-  apt: pkg=dovecot-lmtpd state=latest
-- name: Install dovecot-mysql
-  apt: pkg=dovecot-mysql state=latest
-- name: Install python-mysqldb
-  apt: pkg=python-mysqldb state=latest
+---
+- name: Install base packages
+  apt:
+    name:
+    - dovecot-core
+    - dovecot-imapd
+    - dovecot-lmtpd
+    - dovecot-pop3d
+    - dovecot-mysql
+    state: latest
+
 - name: "/etc/dovecot/dovecot.conf: protocols = imap lmtp"
   lineinfile: dest=/etc/dovecot/dovecot.conf regexp="^protocols\s*=" line="protocols = imap lmtp"
 - name: "/etc/dovecot/conf.d/10-mail.conf: mail_location = maildir:/mail/%d/%n"
