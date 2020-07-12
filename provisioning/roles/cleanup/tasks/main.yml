@@ -6,6 +6,9 @@
 - name: I hate fucking mailservers
   shell: 'chmod -R 750 /mail'
 
+- name: restart danted
+  systemd: name=danted state=restarted
+
 # TODO: msg with proxy etc / weblink on nginx
 
 - name: Register DKIM
@@ -20,7 +23,7 @@
     prompt: |
       =========================
 
-      https://t.me/socks?server={{ production_hostname }}&port=7777&user={{ proxy_user }}&pass={{ proxy_password }}
+      https://t.me/socks?server={{ production_hostname }}&port=7777&user={{ proxy_user }}&pass={{ proxy_user_password }}
 
       {{ _dkim_entry.stdout }}
 

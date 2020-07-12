@@ -42,6 +42,7 @@ TODO:
 * Add logrotates
 * Pimpmylog: add mail logs / suggest about others
 * Rspamd training + dovecot move to junk: https://words.bombast.net/rspamd-with-postfix-dovecot-debian-stretch/
+* Nextcloud upgrade to 18 and check if no files after installation
 
 
 deploy: `ansible-playbook -i ansible-inventory provisioning/setup.yml`

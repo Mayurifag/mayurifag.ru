@@ -47,3 +47,5 @@
     dest: /etc/nginx/conf.d/nextcloud.conf
     src: "templates/nextcloud.conf.j2"
   notify: reload nginx
+
+# TODO: rm -rf /opt/nextcloud/core/skeleton/*
