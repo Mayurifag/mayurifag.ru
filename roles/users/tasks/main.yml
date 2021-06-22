@@ -1,0 +1,42 @@
+---
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+- name: Add admin user with wheel group
+  user:
+    name: "{{ admin_username }}"
+    groups: wheel
+    append: yes
+    state: present
+    createhome: yes
+    shell: /bin/bash
+
+- name: Set admin password
+  command: "echo \"{{ admin_username }}:{{ admin_userpassword }}\" | chpasswd"
+
+- name: Set root password
+  command: "echo \"root:{{ root_userpassword }}\" | chpasswd"
+
+- name: Create user .ssh directory
+  file:
+    path: "~{{ admin_username }}/.ssh"
+    mode: 0700
+    state: directory
+    owner: "{{ admin_username }}"
+
+- name: Create user authorized_keys
+  template:
+    src: "templates/authorized_keys.j2"
+    dest: "~{{ admin_username }}/.ssh/authorized_keys"
+    owner: "{{ admin_username }}"
+    mode: 0400

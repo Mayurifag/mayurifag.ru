@@ -1,0 +1,16 @@
+---
+- name: "Set hostname to {{ server_hostname }}"
+  hostname:
+    name: "{{ server_hostname }}"
+
+- name: "Set timezone to {{ server_timezone }}"
+  timezone:
+    name: "{{ server_timezone }}"
+
+# - name: Ensure the locale en_US.UTF-8 exists
+#   locale_gen:
+#     name: en_US.UTF-8
+#     state: present
+
+# - name: Set en_US.UTF-8 as default locale
+#   command: localectl set-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8

@@ -1,0 +1,75 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: no
+  roles:
+    - robertdebock.bootstrap
+
+- hosts: all
+
+  roles:
+    ###
+    ### Run general preparation
+    ###
+    - role: upgrade-packages
+      tags:
+        - mayurifag-general
+
+    - role: server-general-preparations
+      tags:
+        - mayurifag-general
+
+    - role: users
+      tags:
+        - mayurifag-general
+
+    ###
+    ### Requirements
+    ###
+    - role: geerlingguy.security
+    - role: geerlingguy.docker
+    - role: geerlingguy.pip
+
+    ###
+    ### Applications
+    ###
+    - role: traefik
+      tags:
+        - traefik
+      when: (traefik_enabled | default(False))
+
+    - role: heimdall
+      tags:
+        - heimdall
+      when: (heimdall_enabled | default(False))
+
+    - role: nextcloud
+      tags:
+        - nextcloud
+      when: (nextcloud_enabled | default(False))
+
+    - role: glances
+      tags:
+        - glances
+      when: (glances_enabled | default(False))
+
+    - role: portainer
+      tags:
+        - portainer
+      when: (portainer_enabled | default(False))
+
+    - role: watchtower
+      tags:
+        - watchtower
+      when: (watchtower_enabled | default(False))
+
+    - role: netdata
+      tags:
+        - netdata
+      when: (netdata_enabled | default(False))
+
+# Что ещё: wireguard, shadowsocks, organizr, wallabag, traefik, haveged, swap, dante
+# research: wiki, git, duplicati, cpuminer, bitwarden
+
+# https://www.reddit.com/r/MoneroMining/comments/hk2mrd/how_to_limit_cpu_usage_while_mining_monero/
+# hostmanager
