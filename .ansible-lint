@@ -1,0 +1,9 @@
+# [108] role names have "-"
+# [208] file permissions not mentioned
+skip_list:
+  - '106'
+  - '208'
+# use_default_rules: true
+# verbosity: 1
+
+# example: https://opendev.org/openstack/openstack-zuul-jobs/src/branch/master/.ansible-lint
