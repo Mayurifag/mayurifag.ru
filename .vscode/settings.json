@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    ".yamllint": "yaml",
+    ".ansible-lint": "yaml",
+    // "**/components/*/*.js": "javascriptreact",
+    // "**/config/routes.js": "javascriptreact"
+  }
+}
