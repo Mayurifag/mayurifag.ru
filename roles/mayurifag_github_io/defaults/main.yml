@@ -1,0 +1,9 @@
+---
+# enable or disable the application
+mayurifag_github_io_enabled: true
+mayurifag_github_io_available_externally: "true"
+
+mayurifag_github_io_port: 42375
+
+# specs
+mayurifag_github_io_memory: 1g

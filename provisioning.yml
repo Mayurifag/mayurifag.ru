@@ -35,6 +35,11 @@
         - traefik
       when: (traefik_enabled | default(False))
 
+    - role: mayurifag_github_io
+      tags:
+        - mayurifag_github_io
+      when: (mayurifag_github_io_enabled | default(False))
+
     - role: heimdall
       tags:
         - heimdall
