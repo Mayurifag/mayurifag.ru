@@ -18,7 +18,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.define "mayurifag-test" do
     config.vm.box = "geerlingguy/debian10"
-    config.ssh.insert_key = false
+    config.ssh.insert_key = true
 
     # vagrant-cachier
     config.cache.scope = :box
@@ -41,7 +41,7 @@ Vagrant.configure(2) do |config|
       ansible.inventory_path = "tests/inventories/integration_testing/inventory"
       ansible.playbook = "provisioning.yml"
       ansible.become = true
-      # ansible.tags = "traefik"
+      # ansible.tags = "portainer"
       ansible.raw_arguments = [
         "--extra-vars @tests/test.yml"
       ]

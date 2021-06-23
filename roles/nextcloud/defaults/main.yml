@@ -6,7 +6,7 @@ nextcloud_available_externally: "true"
 nextcloud_data_directory: "{{ docker_home }}/nextcloud"
 
 # network
-nextcloud_port: "8080"
+nextcloud_port: "8081"
 nextcloud_hostname: "nextcloud"
 
 # username / passwords

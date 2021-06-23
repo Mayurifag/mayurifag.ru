@@ -6,19 +6,16 @@
     - robertdebock.bootstrap
 
 - hosts: all
-
   roles:
     ###
     ### Run general preparation
     ###
-    - role: upgrade-packages
-      tags:
-        - mayurifag-general
-
     - role: server-general-preparations
       tags:
         - mayurifag-general
-
+    - role: upgrade-packages
+      tags:
+        - mayurifag-general
     - role: users
       tags:
         - mayurifag-general
@@ -73,3 +70,5 @@
 
 # https://www.reddit.com/r/MoneroMining/comments/hk2mrd/how_to_limit_cpu_usage_while_mining_monero/
 # hostmanager
+
+# https://github.com/jesseduffield/lazydocker
