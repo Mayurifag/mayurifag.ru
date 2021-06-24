@@ -4,9 +4,6 @@
     autoclean: yes
     autoremove: yes
 
-- name: restart danted
-  systemd: name=danted state=restarted
-
 - name: Show cheatsheet
   pause:
     seconds: 1

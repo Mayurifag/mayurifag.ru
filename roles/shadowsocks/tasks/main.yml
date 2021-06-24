@@ -1,0 +1,38 @@
+- name: Install shadowsocks-libev
+  apt:
+    name: shadowsocks-libev
+    state: latest
+
+- name: Download v2ray plugin
+  get_url:
+    url: https://github.com/shadowsocks/v2ray-plugin/releases/download/v1.3.1/v2ray-plugin-linux-amd64-v1.3.1.tar.gz
+    dest: /tmp/v2rayplugin.tar.gz
+
+- name: Unpack v2ray plugin
+  unarchive:
+    remote_src: yes
+    src: /tmp/v2rayplugin.tar.gz
+    dest: /tmp
+
+- name: Copy plugin to dest
+  copy:
+    remote_src: yes
+    src: /tmp/v2ray-plugin_linux_amd64
+    dest: /etc/shadowsocks-libev/v2ray-plugin
+    mode: 0777
+
+# TODO: cleanup
+
+- name: Set cap_net_bind_service+eip on /etc/shadowsocks-libev/v2ray-plugin
+  capabilities:
+    path: /etc/shadowsocks-libev/v2ray-plugin
+    capability: cap_net_bind_service+eip
+    state: present
+
+- name: Deploy shadowsocks config file
+  template:
+    src: config.json.j2
+    dest: /etc/shadowsocks-libev/config.json
+    mode: 0744
+  notify:
+    - Restart shadowsocks-libev

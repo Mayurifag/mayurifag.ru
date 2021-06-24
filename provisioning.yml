@@ -37,6 +37,11 @@
         - dante
       when: (dante_enabled | default(False))
 
+    - role: shadowsocks
+      tags:
+        - shadowsocks
+      when: (shadowsocks_enabled | default(False))
+
     ###
     ### Docker applications
     ###

@@ -1,0 +1,4 @@
+---
+shadowsocks_enabled: true
+
+shadowsocks_password: "change_it"
