@@ -85,6 +85,11 @@
         - netdata
       when: (netdata_enabled | default(False))
 
+    - role: wallabag
+      tags:
+        - wallabag
+      when: (wallabag_enabled | default(False))
+
     - role: cheatsheet
 
 # Что ещё: wireguard, shadowsocks, organizr, wallabag, swap
