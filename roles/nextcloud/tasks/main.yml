@@ -21,7 +21,7 @@
 - name: Nextcloud Mysql Docker Container
   docker_container:
     name: nextcloud-mysql
-    image: mysql:5.7
+    image: mysql:8.0
     pull: true
     volumes:
       - "{{ nextcloud_data_directory }}/mysql:/var/lib/mysql:rw"
