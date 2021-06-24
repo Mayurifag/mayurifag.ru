@@ -32,6 +32,7 @@ Vagrant.configure(2) do |config|
       portainer.mayurifag.local
       nextcloud.mayurifag.local
       netdata.mayurifag.local
+      organizr.mayurifag.local
       wallabag.mayurifag.local
       mayurifag.local
     ]

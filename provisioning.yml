@@ -90,9 +90,14 @@
         - wallabag
       when: (wallabag_enabled | default(False))
 
+    - role: organizr
+      tags:
+        - organizr
+      when: (organizr_enabled | default(False))
+
     - role: cheatsheet
 
-# Что ещё: wireguard, shadowsocks, organizr, wallabag, swap
+# Что ещё: organizr, swap
 # research: wiki, git, duplicati, cpuminer, bitwarden
 
 # https://www.reddit.com/r/MoneroMining/comments/hk2mrd/how_to_limit_cpu_usage_while_mining_monero/
