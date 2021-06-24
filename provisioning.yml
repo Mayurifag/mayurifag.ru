@@ -13,9 +13,11 @@
     - role: server-general-preparations
       tags:
         - mayurifag-general
+
     - role: upgrade-packages
       tags:
         - mayurifag-general
+
     - role: users
       tags:
         - mayurifag-general
@@ -27,8 +29,16 @@
     - role: geerlingguy.docker
     - role: geerlingguy.pip
 
+    ##
+    ## Applications
+    ##
+    - role: dante
+      tags:
+        - dante
+      when: (dante_enabled | default(False))
+
     ###
-    ### Applications
+    ### Docker applications
     ###
     - role: traefik
       tags:

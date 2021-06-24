@@ -1,0 +1,30 @@
+---
+- name: create user {{ proxy_user }}
+  user:
+    name: "{{ proxy_user }}"
+    create_home: false
+    state: present
+    shell: /sbin/nologin
+    password: "{{ proxy_user_password | password_hash('sha512') }}"
+    update_password: always
+
+- name: Install dante
+  import_tasks: dante.yml
+
+- name: Copy danted.conf
+  template:
+    src: danted.conf.j2
+    dest: /etc/danted.conf
+  notify: restart danted
+
+- name: Upload danted script
+  copy:
+    src: danted
+    dest: /etc/init.d/danted
+    mode: 0755
+
+- name: Start danted
+  systemd:
+    name: danted
+    state: started
+    enabled: yes

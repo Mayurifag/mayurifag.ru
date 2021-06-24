@@ -1,0 +1,57 @@
+---
+- name: Check that dante is installed
+  stat:
+    path: /usr/sbin/sockd
+  register: sockd
+
+- name: Install packages for building dante
+  when: not sockd.stat.exists
+  apt:
+    name: "{{ item }}"
+    update_cache: True
+  loop: ["build-essential", "libwrap0", "libwrap0-dev", "gcc", "make"]
+
+- name: Download dante package
+  when: not sockd.stat.exists
+  get_url:
+    url: https://www.inet.no/dante/files/dante-1.4.3.tar.gz
+    dest: /tmp/dante.tar.gz
+
+- name: Unpack dante
+  when: not sockd.stat.exists
+  unarchive:
+    remote_src: yes
+    src: /tmp/dante.tar.gz
+    dest: /opt
+
+- name: Delete dante archive
+  when: not sockd.stat.exists
+  file:
+    path: /tmp/dante.tar.gz
+    state: absent
+
+- name: Configure dante
+  when: not sockd.stat.exists
+  command: ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --disable-client
+  args:
+    chdir: /opt/dante-1.4.3
+    creates: /opt/dante-1.4.3/Makefile
+
+- name: Make dante
+  when: not sockd.stat.exists
+  command: make
+  args:
+    chdir: /opt/dante-1.4.3
+
+- name: Install dante
+  when: not sockd.stat.exists
+  command: make install
+  args:
+    chdir: /opt/dante-1.4.3
+    creates: /usr/sbin/sockd
+
+- name: Clean up dante
+  when: not sockd.stat.exists
+  file:
+    path: /opt/dante-1.4.3
+    state: absent
