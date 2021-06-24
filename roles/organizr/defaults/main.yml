@@ -1,5 +1,5 @@
 ---
-organizr_enabled: true
+organizr_enabled: false
 organizr_available_externally: "true"
 
 # directories
