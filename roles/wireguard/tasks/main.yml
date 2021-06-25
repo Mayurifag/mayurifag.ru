@@ -1,0 +1,8 @@
+---
+- fail:
+    msg: "Only Debian supported for now"
+  when: ansible_distribution != 'Debian'
+
+- include: wireguard-install.yml
+- include: wireguard-setup.yml
+- include: wireguard-fetch-profiles.yml

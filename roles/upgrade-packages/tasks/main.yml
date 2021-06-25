@@ -13,6 +13,14 @@
   register: result
   until: result is succeeded
 
+- name: Install some packages
+  apt:
+    name: "{{ mayurifag_general_extra_packages }}"
+    state: present
+    force_apt_get: yes
+  register: result
+  until: result is succeeded
+
 - name: Upgrade all packages
   apt:
     upgrade: dist
@@ -35,14 +43,6 @@
     post_reboot_delay: 30
     test_command: uptime
   when: reboot_required_file.stat.exists
-
-- name: Install some packages
-  apt:
-    name: "{{ mayurifag_general_extra_packages }}"
-    state: present
-    force_apt_get: yes
-  register: result
-  until: result is succeeded
 
 - name: Automatically remove any unused dependencies
   apt:

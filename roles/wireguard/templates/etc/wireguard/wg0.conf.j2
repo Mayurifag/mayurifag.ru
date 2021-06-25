@@ -1,0 +1,14 @@
+[Interface]
+Address = {{ wireguard_vpn_network }}.1/24
+SaveConfig = true
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE; ip6tables -A FORWARD -i wg0 -j ACCEPT; ip6tables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE; ip6tables -D FORWARD -i wg0 -j ACCEPT; ip6tables -t nat -D POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
+ListenPort = {{ wireguard_vpn_port }}
+PrivateKey = {{ private_key_files.results[0].stdout }}
+
+{% for i in range(wireguard_vpn_clients) %}
+[Peer]
+PublicKey = {{ public_key_files.results[i + 1].stdout }}
+AllowedIPs = {{ wireguard_vpn_network }}.{{ i + 2 }}/32
+
+{% endfor %}

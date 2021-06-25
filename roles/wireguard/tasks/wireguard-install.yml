@@ -1,0 +1,37 @@
+---
+# - name: reboot if needed
+#   block:
+#   - shell: sleep 5 && systemctl reboot
+#     async: 300
+#     poll: 0
+#     ignore_errors: true
+
+#   - name: wait for system to come back online
+#     wait_for_connection:
+#       delay: 60
+#       timeout: 300
+
+- name: Install wireguard repo (Debian)
+  apt_repository:
+    filename: unstable-wireguard
+    repo: 'deb http://deb.debian.org/debian/ unstable main'
+    update_cache: yes
+  when: ansible_distribution == 'Debian'
+
+- name: Configure wireguard repo (Debian)
+  blockinfile:
+    path: /etc/apt/preferences.d/limit-unstable
+    create: yes
+    block: |-
+      Package: *
+      Pin: release a=unstable
+      Pin-Priority: 150
+
+- name: Install dependencies and wireguard (Debian)
+  apt:
+    name:
+      - bc
+      - software-properties-common
+      - qrencode
+      - wireguard
+    state: present

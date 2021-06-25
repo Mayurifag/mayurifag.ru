@@ -1,4 +1,3 @@
-tests/test.yml
 site
 .vagrant
 *.retry
@@ -17,3 +16,5 @@ Session.vim
 
 roles/geerlingguy.*
 roles/robertdebock.*
+wireguard_profiles/
+tests/test.yml
