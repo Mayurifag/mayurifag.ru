@@ -11,7 +11,7 @@
     labels:
       traefik.enable: "{{ mayurifag_github_io_available_externally }}"
       traefik.http.routers.mayurifag_github_io.rule: "Host(`{{ server_hostname }}`)"
-      # traefik.http.routers.mayurifag_github_io.tls.certresolver: "letsencrypt"
-      # traefik.http.routers.mayurifag_github_io.tls.domains[0].main: "{{ server_hostname }}"
-      # traefik.http.routers.mayurifag_github_io.tls.domains[0].sans: "*.{{ server_hostname }}"
-      # traefik.http.services.mayurifag_github_io.loadbalancer.server.port: "61208"
+      traefik.http.routers.mayurifag_github_io.tls.certresolver: "letsencrypt"
+      traefik.http.routers.mayurifag_github_io.tls.domains[0].main: "{{ server_hostname }}"
+      traefik.http.routers.mayurifag_github_io.tls.domains[0].sans: "*.{{ server_hostname }}"
+      traefik.http.services.mayurifag_github_io.loadbalancer.server.port: "8005"
