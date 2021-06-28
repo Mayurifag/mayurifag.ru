@@ -7,16 +7,21 @@
 ##
 ## User settings
 ##
-admin_username: mayurifag
+admin_username: change_this
 admin_userpassword: change_this
 admin_email: change_this@gmail.com
 
 root_userpassword: change_this
+shadowsocks_password: change_this
+proxy_user_password: change_this
 
 admin_authorized_keys: ""
+
 server_timezone: Europe/Moscow
 server_hostname: mayurifag.local
 
+# htpasswd -nb change_this change_this
+base_auth_credentials: "change_this:$apr1$change_this/$8zNjfd1sncsooAVCuaVxq1"
 
 ###
 ### General
@@ -32,6 +37,3 @@ pip_executable: pip3
 pip_install_packages:
   - docker
   - requests
-
-security_ssh_port: 1488
-security_autoupdate_reboot: true

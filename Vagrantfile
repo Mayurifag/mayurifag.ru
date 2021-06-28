@@ -18,7 +18,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.define "mayurifag-test" do
     config.vm.box = "geerlingguy/debian10"
-    config.ssh.insert_key = true
+    config.ssh.insert_key = false
 
     # vagrant-cachier
     config.cache.scope = :box
@@ -39,6 +39,7 @@ Vagrant.configure(2) do |config|
 
     config.vm.provision "ansible_local", run: "always", type: :ansible_local do |ansible|
       ansible.compatibility_mode = "2.0"
+      ansible.install_mode = "pip"
       ansible.galaxy_role_file = "requirements.yml"
       ansible.inventory_path = "tests/inventories/integration_testing/inventory"
       ansible.playbook = "provisioning.yml"

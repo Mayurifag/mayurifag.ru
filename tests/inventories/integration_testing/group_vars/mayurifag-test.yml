@@ -27,6 +27,3 @@ pip_executable: pip3
 pip_install_packages:
   - docker
   - requests
-
-security_ssh_port: 1488
-security_autoupdate_reboot: true
