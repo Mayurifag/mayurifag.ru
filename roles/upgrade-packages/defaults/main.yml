@@ -11,4 +11,5 @@ mayurifag_general_extra_packages:
   - unzip
   - wget
   - whois
-  - linux-headers-{{ ansible_kernel }}
+  - linux-image-amd64
+  - linux-headers-amd64
