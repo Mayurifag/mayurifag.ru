@@ -32,7 +32,6 @@ Vagrant.configure(2) do |config|
       heimdall.mayurifag.local
       netdata.mayurifag.local
       nextcloud.mayurifag.local
-      organizr.mayurifag.local
       portainer.mayurifag.local
       traefik.mayurifag.local
       wallabag.mayurifag.local

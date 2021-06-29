@@ -98,11 +98,6 @@
         - wallabag
       when: (wallabag_enabled | default(False))
 
-    - role: organizr
-      tags:
-        - organizr
-      when: (organizr_enabled | default(False))
-
     - role: cheatsheet
 
 # Что ещё: swap, https
