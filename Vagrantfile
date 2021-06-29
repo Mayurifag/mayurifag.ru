@@ -29,7 +29,7 @@ Vagrant.configure(2) do |config|
     config.hostmanager.aliases = %w[
       mayurifag.local
       glances.mayurifag.local
-      heimdall.mayurifag.local
+      homer.mayurifag.local
       netdata.mayurifag.local
       nextcloud.mayurifag.local
       portainer.mayurifag.local

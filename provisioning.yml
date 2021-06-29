@@ -63,10 +63,10 @@
         - mayurifag_github_io
       when: (mayurifag_github_io_enabled | default(False))
 
-    - role: heimdall
+    - role: homer
       tags:
-        - heimdall
-      when: (heimdall_enabled | default(False))
+        - homer
+      when: (homer_enabled | default(False))
 
     - role: nextcloud
       tags:

@@ -1,0 +1,17 @@
+---
+homer_enabled: true
+
+# directories
+homer_docker_image: b4bz/homer:latest
+homer_data_directory: "{{ docker_home }}/homer"
+
+# network
+homer_port_http: "10080"
+homer_hostname: homer
+
+# # uid / gid
+# homer_user_id: "1310"
+# homer_group_id: "1310"
+
+# specs
+homer_memory: 1g

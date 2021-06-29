@@ -1,0 +1,32 @@
+---
+- name: Create Homer Directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ homer_data_directory }}/assets"
+
+- name: Template Homer config.yml
+  template:
+    src: config.yml.j2
+    dest: "{{ homer_data_directory }}/assets/config.yml"
+
+- name: Create Homer container
+  docker_container:
+    name: homer
+    image: "{{ homer_docker_image }}"
+    pull: true
+    volumes:
+      - "{{ homer_data_directory }}/assets:/www/assets:rw"
+    ports:
+      - "{{ homer_port_http }}:8080"
+    restart_policy: unless-stopped
+    memory: "{{ homer_memory }}"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.homer.rule: "Host(`{{ homer_hostname }}.{{ server_hostname }}`)"
+      # traefik.http.routers.homer.tls.certresolver: "letsencrypt"
+      # traefik.http.routers.homer.tls.domains[0].main: "{{ server_hostname }}"
+      # traefik.http.routers.homer.tls.domains[0].sans: "*.{{ server_hostname }}"
+      traefik.http.services.homer.loadbalancer.server.port: "8080"
+      traefik.http.routers.homer.middlewares: "auth@file"
