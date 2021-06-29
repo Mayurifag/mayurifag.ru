@@ -4,7 +4,7 @@ wallabag_available_externally: "true"
 
 wallabag_data_directory: "{{ docker_home }}/wallabag"
 wallabag_port: "7780"
-wallabag_hostname: "wallabag"
+wallabag_subdomain: "wallabag"
 
 # specs
 wallabag_memory: 1g

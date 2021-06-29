@@ -49,3 +49,32 @@ pip_executable: pip3
 pip_install_packages:
   - docker
   - requests
+
+##################################
+
+mayurifag_github_io_enabled: true
+dante_enabled: true
+shadowsocks_enabled: true
+watchtower_enabled: true
+wireguard_enabled: true
+
+glances_enabled: true
+glances_subdomain: "glances"
+
+homer_enabled: true
+homer_subdomain: "homer"
+
+netdata_enabled: true
+netdata_subdomain: "netdata"
+
+nextcloud_enabled: true
+nextcloud_subdomain: "nextcloud"
+
+portainer_enabled: true
+portainer_subdomain: "portainer"
+
+traefik_enabled: true
+traefik_subdomain: "traefik"
+
+wallabag_enabled: true
+wallabag_subdomain: "wallabag"

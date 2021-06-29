@@ -3,7 +3,7 @@ netdata_enabled: true
 netdata_available_externally: "true"
 
 # network
-netdata_hostname: "netdata"
+netdata_subdomain: "netdata"
 netdata_port: "19999"
 netdata_subdomain: netdata
 

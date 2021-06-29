@@ -50,12 +50,12 @@
       MYSQL_DATABASE: "nextcloud"
       MYSQL_USER: "{{ nextcloud_sql_user }}"
       MYSQL_PASSWORD: "{{ nextcloud_sql_password }}"
-      NEXTCLOUD_TRUSTED_DOMAINS: "{{ nextcloud_hostname }}.{{ server_hostname }}"
+      NEXTCLOUD_TRUSTED_DOMAINS: "{{ nextcloud_subdomain }}.{{ server_hostname }}"
     restart_policy: unless-stopped
     memory: "{{ nextcloud_memory }}"
     labels:
       traefik.enable: "{{ nextcloud_available_externally }}"
-      traefik.http.routers.nextcloud.rule: "Host(`{{ nextcloud_hostname }}.{{ server_hostname }}`)"
+      traefik.http.routers.nextcloud.rule: "Host(`{{ nextcloud_subdomain }}.{{ server_hostname }}`)"
       # traefik.http.routers.nextcloud.tls.certresolver: "letsencrypt"
       # traefik.http.routers.nextcloud.tls.domains[0].main: "{{ server_hostname }}"
       # traefik.http.routers.nextcloud.tls.domains[0].sans: "*.{{ server_hostname }}"

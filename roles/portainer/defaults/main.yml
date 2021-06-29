@@ -7,7 +7,7 @@ portainer_data_directory: "{{ docker_home }}/portainer/config"
 
 # network
 portainer_port: "9000"
-portainer_hostname: "portainer"
+portainer_subdomain: "portainer"
 
 # specs
 portainer_memory: 1g

@@ -4,7 +4,7 @@ glances_enabled: true
 glances_available_externally: "true"
 
 # network
-glances_hostname: "glances"
+glances_subdomain: "glances"
 glances_port_one: "61208"
 glances_port_two: "61209"
 

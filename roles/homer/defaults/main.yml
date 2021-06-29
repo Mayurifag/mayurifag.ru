@@ -7,7 +7,7 @@ homer_data_directory: "{{ docker_home }}/homer"
 
 # network
 homer_port_http: "10080"
-homer_hostname: homer
+homer_subdomain: homer
 
 # # uid / gid
 # homer_user_id: "1310"
