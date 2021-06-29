@@ -17,6 +17,7 @@ Session.vim
 roles/geerlingguy.*
 roles/robertdebock.*
 roles/darkwizard242.*
+roles/djx339.*
 wireguard_profiles/
 tests/test.yml
 inventories/my-ansible-nas

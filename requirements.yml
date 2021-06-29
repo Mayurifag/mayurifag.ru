@@ -13,3 +13,8 @@
 
 - name: darkwizard242.lazydocker
   version: 1.0.7
+
+- name: djx339.swapoff
+
+- name: geerlingguy.swap
+  version: 1.0.2
