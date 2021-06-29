@@ -24,7 +24,7 @@
     labels:
       traefik.enable: "{{ wallabag_available_externally }}"
       traefik.http.routers.wallabag.rule: "Host(`{{ wallabag_hostname }}.{{ server_hostname }}`)"
-      traefik.http.routers.wallabag.tls.certresolver: "letsencrypt"
-      traefik.http.routers.wallabag.tls.domains[0].main: "{{ server_hostname }}"
-      traefik.http.routers.wallabag.tls.domains[0].sans: "*.{{ server_hostname }}"
+      # traefik.http.routers.wallabag.tls.certresolver: "letsencrypt"
+      # traefik.http.routers.wallabag.tls.domains[0].main: "{{ server_hostname }}"
+      # traefik.http.routers.wallabag.tls.domains[0].sans: "*.{{ server_hostname }}"
       traefik.http.services.wallabag.loadbalancer.server.port: "80"

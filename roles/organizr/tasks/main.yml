@@ -28,4 +28,4 @@
       # traefik.http.routers.organizr.tls.certresolver: "letsencrypt"
       # traefik.http.routers.organizr.tls.domains[0].main: "{{ server_hostname }}"
       # traefik.http.routers.organizr.tls.domains[0].sans: "*.{{ server_hostname }}"
-      # traefik.http.services.organizr.loadbalancer.server.port: "80"
+      traefik.http.services.organizr.loadbalancer.server.port: "80"
