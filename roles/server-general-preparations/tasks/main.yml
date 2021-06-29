@@ -24,3 +24,17 @@
     reload: yes
     state: present
   with_items: "{{ sysctl_values }}"
+
+# https://unix.stackexchange.com/a/368309
+- name: clean sshd config out of legacy settings and warnings
+  shell: |
+    sed -i '/KeyRegenerationInterval/d' /etc/ssh/sshd_config
+    sed -i '/ServerKeyBits/d' /etc/ssh/sshd_config
+    sed -i '/RSAAuthentication/d' /etc/ssh/sshd_config
+    sed -i '/RhostsRSAAuthentication/d' /etc/ssh/sshd_config
+    sed -i '/UsePrivilegeSeparation/d' /etc/ssh/sshd_config
+
+- name: restart sshd after changing configuration
+  systemd:
+    name: sshd
+    state: restarted
