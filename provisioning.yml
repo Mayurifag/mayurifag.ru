@@ -28,6 +28,7 @@
     - role: geerlingguy.security
     - role: geerlingguy.docker
     - role: geerlingguy.pip
+    - role: darkwizard242.lazydocker
 
     ##
     ## Applications
