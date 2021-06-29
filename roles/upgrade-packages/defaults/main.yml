@@ -1,7 +1,4 @@
 ---
-# Update all apt packages when playbook is run
-keep_packages_updated: false
-
 # Extra packages to install
 mayurifag_general_extra_packages:
   - apt-transport-https

@@ -12,8 +12,6 @@
     name: nextcloud-redis
     image: redis:6.2.4-alpine3.13
     pull: true
-    # ports:
-    #   - '6379:6379'
     command: "redis-server --requirepass {{ nextcloud_redis_password }}"
     restart_policy: unless-stopped
     memory: "{{ nextcloud_redis_memory }}"

@@ -4,7 +4,6 @@ sysctl_values:
   # # https://sites.google.com/site/syscookbook/rhel/rhel-sysrq-key
   # - { key: kernel.sysrq, value: 0 }
 
-  # - { key: vm.swappiness, value: 15 }
   # - { key: vm.vfs_cache_pressure, value: 100 }
 
   # # Prevent against the common 'syn flood attack'

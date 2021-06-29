@@ -20,6 +20,11 @@ pastebin/files share/url shortener
 bitwarden (?)
 git (gitea or gitlab)
 
+research: wiki, duplicati, cpuminer
+
+https://www.reddit.com/r/MoneroMining/comments/hk2mrd/how_to_limit_cpu_usage_while_mining_monero/
+
+
 Readme:
 list of apps with links and ports
 wallabag:wallabag - change pass
