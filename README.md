@@ -28,5 +28,4 @@ sshd_config
 
 check:
 
-* base auths
-* traefik dashboard https://www.leonpahole.com/2020/05/traefik-basic-setup.html
+http://traefik.mayurifag.local/dashboard/#/
