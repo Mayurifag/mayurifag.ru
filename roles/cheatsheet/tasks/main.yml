@@ -12,4 +12,11 @@
 
       https://t.me/socks?server={{ server_hostname }}&port=7777&user={{ proxy_user }}&pass={{ proxy_user_password }}
 
+      #####
+
+      Dont forget to
+
+      1) ssh configuration
+      2) wallabag:wallabag change password
+
       =========================
