@@ -13,6 +13,11 @@
     dest: "{{ traefik_data_directory }}/traefik.toml"
   register: template_config
 
+- name: Template Traefik baseauth credentials
+  template:
+    src: traefik_dynamic.toml.j2
+    dest: "{{ traefik_data_directory }}/traefik_dynamic.toml"
+
 - name: Traefik Docker Container
   docker_container:
     name: traefik
@@ -21,6 +26,7 @@
     network_mode: host
     volumes:
       - "{{ traefik_data_directory }}/traefik.toml:/etc/traefik/traefik.toml:ro"
+      - "{{ traefik_data_directory }}/traefik_dynamic.toml:/etc/traefik/traefik_dynamic.toml:ro"
       - "{{ traefik_data_directory }}/letsencrypt:/letsencrypt:rw"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     env: "{{ traefik_environment_variables }}"

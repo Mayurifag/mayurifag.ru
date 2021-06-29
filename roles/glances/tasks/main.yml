@@ -22,3 +22,4 @@
       # traefik.http.routers.glances.tls.domains[0].main: "{{ server_hostname }}"
       # traefik.http.routers.glances.tls.domains[0].sans: "*.{{ server_hostname }}"
       traefik.http.services.glances.loadbalancer.server.port: "61208"
+      traefik.http.routers.glances.middlewares: "auth@file"

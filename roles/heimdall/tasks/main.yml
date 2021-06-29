@@ -47,3 +47,4 @@
       # traefik.http.routers.heimdall.tls.domains[0].main: "{{ server_hostname }}"
       # traefik.http.routers.heimdall.tls.domains[0].sans: "*.{{ server_hostname }}"
       traefik.http.services.heimdall.loadbalancer.server.port: "80"
+      traefik.http.routers.heimdall.middlewares: "auth@file"

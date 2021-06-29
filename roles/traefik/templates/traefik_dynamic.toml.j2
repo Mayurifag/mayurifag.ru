@@ -1,0 +1,5 @@
+[http.middlewares.auth.basicAuth]
+  removeHeader = true
+  users = [
+    "{{ base_auth_credentials }}"
+  ]

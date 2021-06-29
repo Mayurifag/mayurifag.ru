@@ -20,8 +20,18 @@ admin_authorized_keys: ""
 server_timezone: Europe/Moscow
 server_hostname: mayurifag.local
 
-# htpasswd -nb change_this change_this
-base_auth_credentials: "change_this:$apr1$change_this/$8zNjfd1sncsooAVCuaVxq1"
+# htpasswd -nbB admin admin
+# admin:$2y$05$9GXnLumjrUFrG96d4ljNkewDXSYIAUeRjLTafcdazV6g3jRPmulJO
+base_auth_credentials: "admin:$2y$05$9GXnLumjrUFrG96d4ljNkewDXSYIAUeRjLTafcdazV6g3jRPmulJO"
+
+traefik_dns_provider: cloudflare
+traefik_environment_variables:
+  CF_DNS_API_TOKEN: "change_this"
+# requests a wildcard certificate for your domain, so there should be no reason to have to use the staging
+# letsencrypt acme server. If you do want to flip between staging/production, you might need to stop Traefik and clear
+# the "{{ docker_home }}/traefik" after changing this setting.
+traefik_acme_server: "https://acme-staging-v02.api.letsencrypt.org/directory" # staging
+# traefik_acme_server: "https://acme-v02.api.letsencrypt.org/directory" # production
 
 ###
 ### General
