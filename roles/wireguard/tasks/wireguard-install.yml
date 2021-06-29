@@ -1,16 +1,4 @@
 ---
-# - name: reboot if needed
-#   block:
-#   - shell: sleep 5 && systemctl reboot
-#     async: 300
-#     poll: 0
-#     ignore_errors: true
-
-#   - name: wait for system to come back online
-#     wait_for_connection:
-#       delay: 60
-#       timeout: 300
-
 - name: Install wireguard repo (Debian)
   apt_repository:
     filename: unstable-wireguard

@@ -27,14 +27,15 @@ Vagrant.configure(2) do |config|
     config.vm.network "private_network", ip: "172.30.1.5"
     config.vm.hostname = "mayurifag.local"
     config.hostmanager.aliases = %w[
-      heimdall.mayurifag.local
-      glances.mayurifag.local
-      portainer.mayurifag.local
-      nextcloud.mayurifag.local
-      netdata.mayurifag.local
-      organizr.mayurifag.local
-      wallabag.mayurifag.local
       mayurifag.local
+      glances.mayurifag.local
+      heimdall.mayurifag.local
+      netdata.mayurifag.local
+      nextcloud.mayurifag.local
+      organizr.mayurifag.local
+      portainer.mayurifag.local
+      traefik.mayurifag.local
+      wallabag.mayurifag.local
     ]
 
     config.vm.provision "ansible_local", run: "always", type: :ansible_local do |ansible|

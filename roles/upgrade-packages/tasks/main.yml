@@ -23,7 +23,7 @@
     state: present
     force_apt_get: yes
 
-- name: Check if a reboot is needed on all servers
+- name: Check if a reboot is needed
   register: reboot_required_file
   stat: path=/var/run/reboot-required get_md5=no
 
