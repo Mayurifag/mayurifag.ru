@@ -14,6 +14,11 @@ sslabs A+
 add motd.txt
 backuping
 ci/cd runner
+rocket.chat
+web analytics # matomo or something else
+pastebin/files share/url shortener
+bitwarden (?)
+git (gitea or gitlab)
 
 Readme:
 list of apps with links and ports
