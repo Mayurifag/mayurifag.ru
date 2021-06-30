@@ -13,6 +13,7 @@ admin_email: change_this@gmail.com
 
 root_userpassword: change_this
 shadowsocks_password: change_this
+proxy_user: change_this
 proxy_user_password: change_this
 
 admin_authorized_keys: ""
@@ -52,7 +53,7 @@ pip_install_packages:
 
 ##################################
 
-disable_tls: false
+disable_tls: true
 bootstrap_enabled: true
 swap_enabled: true
 mayurifag_github_io_enabled: true

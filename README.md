@@ -66,14 +66,13 @@ Check if sslabs A+ working
 
 ### High priority
 
-- [ ] Add motd.txt to server
+- [ ] Ssh configuration: change port and make the sshd configuration cheatsheet with Readme
 - [x] Comment out ports sections on containers and try to work with them
 - [ ] Add Dozzle <https://github.com/amir20/dozzle>
 - [ ] Add Statping <https://github.com/statping/statping>
 - [ ] Add Authelia <https://github.com/authelia/authelia> / Remove baseauth
 - [ ] Add Cloudflare companion tiredofit/traefik-cloudflare-companion:latest docker
 - [ ] Move this section to issues and kanban
-- [ ] Ssh configuration: change port and make the sshd configuration cheatsheet with Readme
 
 ### Medium priority
 
@@ -82,9 +81,14 @@ Check if sslabs A+ working
 - [ ] Add pastebin
 - [ ] Make traefik to write logs to file + logrotate them
 - [ ] Suggest if I need more fail2ban jail rules
+- [ ] Add motd.txt to server
+  - [ ] About lazydocker
+  - [ ] Aliases
+  - [ ] ssh config
 
 ### Low priority
 
+- [ ] Add zsh
 - [ ] Add instructions for requirements and deployment (ansible-nas mostly ones)
 - [ ] Add web analytics (matomo?)
 - [ ] Add rocket.chat
