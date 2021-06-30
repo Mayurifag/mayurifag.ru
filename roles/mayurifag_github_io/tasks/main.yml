@@ -4,8 +4,6 @@
     name: mayurifag_github_io
     image: mayurifag/mayurifag.github.io:latest
     pull: true
-    ports:
-      - "{{ mayurifag_github_io_port }}:8005"
     restart_policy: unless-stopped
     memory: "{{ mayurifag_github_io_memory }}"
     labels:

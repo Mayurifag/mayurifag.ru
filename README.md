@@ -9,15 +9,15 @@ is no role for ufw right now). Playbook is fine only for my personal usage.
 
 ### VPS
 
-* Debian 10
-* Large folder for docker data (Done by VPS via /data folder)
-* ssh authorization key for root user (Done by VPS)
-* hostname <mayurifag.ru> (Done by VPS)
+- Debian 10
+- Large folder for docker data (Done by VPS via /data folder)
+- ssh authorization key for root user (Done by VPS)
+- hostname <mayurifag.ru> (Done by VPS)
 
 ### Local development
 
-* Vagrant + VirtualBox
-* Ansible
+- Vagrant + VirtualBox
+- Ansible
 
 ## Instructions
 
@@ -46,19 +46,19 @@ Check if sslabs A+ working
 
 ## Applications List
 
-| Name                | Docker             | Default endpoint                              | Port        |
+| Name                | Docker             | Default endpoint                              | App. Port   |
 | ------------------- | ------------------ | --------------------------------------------- | ----------- |
 | Dante proxy         | :x:                | <socks5://mayurifag.local:7777> (+auth)       | 7777        |
 | Glances             | :heavy_check_mark: | <http://glances.mayurifag.local>              | 61208/61209 |
-| Homer               | :heavy_check_mark: | <http://homer.mayurifag.local>                | 10080:8080  |
+| Homer               | :heavy_check_mark: | <http://homer.mayurifag.local>                | 8080        |
 | Lazydocker          | :x:                |                                               |             |
 | Mayurifag.github.io | :heavy_check_mark: | <http://mayurifag.local>                      | 8005        |
 | Netdata             | :heavy_check_mark: | <http://netdata.mayurifag.local>              | 19999       |
-| Nextcloud           | :heavy_check_mark: | <http://nextcloud.mayurifag.local>            | 8081:80     |
+| Nextcloud           | :heavy_check_mark: | <http://nextcloud.mayurifag.local>            | 80          |
 | Portainer           | :heavy_check_mark: | <http://portainer.mayurifag.local>            | 9000        |
 | Shadowsocks + V2ray | :x:                | <mayurifag.local:8888> (+v2ray config)        | 8888        |
-| Traefik Dashboard   | :heavy_check_mark: | <http://traefik.mayurifag.local/dashboard/#/> |             |
-| Wallabag            | :heavy_check_mark: | <http://wallabag.mayurifag.local>             | 7780:80     |
+| Traefik Dashboard   | :heavy_check_mark: | <http://traefik.mayurifag.local/dashboard/#/> | 8080 (?)    |
+| Wallabag            | :heavy_check_mark: | <http://wallabag.mayurifag.local>             | 80          |
 | Watchtower          | :heavy_check_mark: |                                               |             |
 | Wireguard           | :x:                | <mayurifag.local:58172>                       | 58172       |
 
@@ -67,7 +67,7 @@ Check if sslabs A+ working
 ### High priority
 
 - [ ] Add motd.txt to server
-- [ ] Comment out ports sections on containers and try to work with them
+- [x] Comment out ports sections on containers and try to work with them
 - [ ] Add Dozzle <https://github.com/amir20/dozzle>
 - [ ] Add Statping <https://github.com/statping/statping>
 - [ ] Add Authelia <https://github.com/authelia/authelia> / Remove baseauth

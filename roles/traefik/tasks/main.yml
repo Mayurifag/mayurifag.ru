@@ -26,6 +26,7 @@
     name: traefik
     image: "{{ traefik_docker_image }}"
     pull: true
+    # TODO: probably here only 443 and 80 (+maybe 8080)
     network_mode: host
     volumes:
       - "{{ traefik_data_directory }}/traefik.toml:/etc/traefik/traefik.toml:ro"

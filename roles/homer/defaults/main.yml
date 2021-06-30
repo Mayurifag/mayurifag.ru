@@ -5,8 +5,6 @@ homer_enabled: true
 homer_docker_image: b4bz/homer:latest
 homer_data_directory: "{{ docker_home }}/homer"
 
-# network
-homer_port_http: "10080"
 homer_subdomain: homer
 
 # specs

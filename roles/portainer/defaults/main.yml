@@ -2,11 +2,7 @@
 portainer_enabled: true
 portainer_available_externally: "true"
 
-# directories
 portainer_data_directory: "{{ docker_home }}/portainer/config"
-
-# network
-portainer_port: "9000"
 portainer_subdomain: "portainer"
 
 # specs

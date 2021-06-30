@@ -11,8 +11,6 @@
     image: netdata/netdata
     state: started
     pull: true
-    ports:
-      - "{{ netdata_port }}:19999"
     volumes:
       - "/proc:/host/proc:ro"
       - "/sys:/host/sys:ro"

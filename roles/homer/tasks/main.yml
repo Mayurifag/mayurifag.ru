@@ -18,8 +18,6 @@
     pull: true
     volumes:
       - "{{ homer_data_directory }}/assets:/www/assets:rw"
-    ports:
-      - "{{ homer_port_http }}:8080"
     restart_policy: unless-stopped
     memory: "{{ homer_memory }}"
     labels:
