@@ -29,8 +29,48 @@ vagrant destroy -f ; vagrant up --provision
 
 ### Production deployment
 
+#### TL;DR
+
 ```sh
 ansible-playbook -i inventories/my-ansible-nas/inventory provisioning.yml -b -K
+```
+
+#### Optional in-before steps:
+
+- Remove old remote host identification
+
+```sh
+ssh-keygen -R mayurifag.ru # this
+ssh-keygen -R %ip%         # or this
+```
+
+- Generate new ssh key and add it to your inventory vars file
+
+```sh
+mkdir -p ~/.ssh/generated_keys
+ssh-keygen -t rsa -b 4096 -C "Mayurifag" -f ~/.ssh/generated_keys/mayurifag.ru
+xclip -sel clip < ~/.ssh/generated_keys/mayurifag.ru.pub
+vi inventories/my-ansible-nas/group_vars/nas.yml # add key here in section
+```
+
+- Make new ssh config section. You need to change it after deploy.
+
+```sh
+vi ~/.ssh/config
+
+# ~/.ssh/config
+Host *
+    Protocol 2
+    ServerAliveInterval 120
+    ServerAliveCountMax 2
+
+[...]
+
+Host mayurifag-prod
+    HostName mayurifag.ru
+    User root # Change user and port
+    Port 22   # after deployment
+    IdentityFile ~/.ssh/generated_keys/mayurifag.ru
 ```
 
 ## After production deploy
@@ -43,6 +83,7 @@ wallabag:wallabag user:password on the obvious service.
 ## Working on
 
 Check if sslabs A+ working
+When works - switch to production acme l-e. Enable proxies
 
 ## Applications List
 

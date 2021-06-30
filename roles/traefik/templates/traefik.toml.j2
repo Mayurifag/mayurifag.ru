@@ -1,10 +1,10 @@
-{% if disable_tls is not defined %}
+{% if enable_tls == true %}
 defaultEntryPoints = ["http", "https"]
 {% endif %}
 [entryPoints]
   [entryPoints.web]
     address = ":80"
-    {% if disable_tls is not defined %}
+{% if enable_tls == true %}
     [entryPoints.web.http.redirections.entryPoint]
       to = "websecure"
       scheme = "https"
@@ -50,7 +50,7 @@ defaultEntryPoints = ["http", "https"]
   dashboard = true
   insecure = false
 
-{% if disable_tls is not defined %}
+{% if enable_tls == true %}
 [certificatesResolvers]
   [certificatesResolvers.letsencrypt]
     [certificatesResolvers.letsencrypt.acme]

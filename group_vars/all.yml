@@ -53,7 +53,7 @@ pip_install_packages:
 
 ##################################
 
-disable_tls: true
+enable_tls: true
 bootstrap_enabled: true
 swap_enabled: true
 mayurifag_github_io_enabled: true

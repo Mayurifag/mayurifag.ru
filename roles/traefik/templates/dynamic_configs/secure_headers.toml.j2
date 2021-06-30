@@ -1,4 +1,4 @@
-{% if disable_tls is not defined %}
+{% if enable_tls == true %}
 [http.middlewares.my-headers.headers]
 accessControlAllowMethods = [ "GET", "OPTIONS", "PUT", "POST", "DELETE", "HEAD" ]
 {#
@@ -21,7 +21,6 @@ browserXssFilter = true
 referrerPolicy = "same-origin"
 {# maybe nextcloud wont like this #}
 featurePolicy = "camera 'none'; geolocation 'none'; microphone 'none'; payment 'none'; usb 'none'; vr 'none';"
-
   [http.middlewares.my-headers.headers.customResponseHeaders]
   X-Robots-Tag = "none,noarchive,nosnippet,notranslate,noimageindex,"
   server = ""
