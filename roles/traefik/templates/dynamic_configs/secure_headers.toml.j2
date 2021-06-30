@@ -1,0 +1,32 @@
+{% if disable_tls is not defined %}
+[http.middlewares.my-headers.headers]
+accessControlAllowMethods = [ "GET", "OPTIONS", "PUT", "POST", "DELETE", "HEAD" ]
+{#
+accessControlAllowOriginList:
+contentSecurityPolicy: script-src 'self'
+referrerPolicy: origin-when-cross-origin
+#}
+accessControlMaxAge = 100
+addvaryheader = true
+hostsProxyHeaders = [ "X-Forwarded-Host" ]
+sslRedirect = true
+stsSeconds = 63_072_000
+stsIncludeSubdomains = true
+stsPreload = true
+forceSTSHeader = true
+frameDeny = true
+{# customFrameOptionsValue = "allow-from https:{{ server_hostname }}" #}
+contentTypeNosniff = true
+browserXssFilter = true
+referrerPolicy = "same-origin"
+{# maybe nextcloud wont like this #}
+featurePolicy = "camera 'none'; geolocation 'none'; microphone 'none'; payment 'none'; usb 'none'; vr 'none';"
+
+  [http.middlewares.my-headers.headers.customResponseHeaders]
+  X-Robots-Tag = "none,noarchive,nosnippet,notranslate,noimageindex,"
+  server = ""
+{% else %}
+[http.middlewares.my-headers.headers]
+  [http.middlewares.my-headers.headers.customResponseHeaders]
+  X-Custom-Response-Header = "fuck"
+{% endif %}

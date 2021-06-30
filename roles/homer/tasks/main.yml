@@ -29,4 +29,4 @@
       # traefik.http.routers.homer.tls.domains[0].main: "{{ server_hostname }}"
       # traefik.http.routers.homer.tls.domains[0].sans: "*.{{ server_hostname }}"
       traefik.http.services.homer.loadbalancer.server.port: "8080"
-      traefik.http.routers.homer.middlewares: "auth@file"
+      traefik.http.routers.homer.middlewares: "auth@file,my-headers@file"

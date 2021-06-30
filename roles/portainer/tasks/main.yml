@@ -26,3 +26,4 @@
       # traefik.http.routers.portainer.tls.domains[0].main: "{{ server_hostname }}"
       # traefik.http.routers.portainer.tls.domains[0].sans: "*.{{ server_hostname }}"
       traefik.http.services.portainer.loadbalancer.server.port: "9000"
+      traefik.http.routers.portainer.middlewares: "my-headers@file"
