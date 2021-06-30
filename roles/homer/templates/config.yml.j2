@@ -1,7 +1,7 @@
-title: "Mayurifag.ru"
+title: "{{ server_hostname }}"
 subtitle: "Dashboard"
 
-documentTitle: "Mayurifag.ru dashboard"
+documentTitle: "{{ server_hostname }} dashboard"
 icon: "fas fa-skull-crossbones"
 header: true
 footer: false
@@ -31,7 +31,7 @@ services:
       - name: "Traefik Dashboard"
         icon: "fas fa-traffic-light"
         subtitle: "BaseAuth"
-        url: "http://{{ traefik_subdomain }}.{{ server_hostname }}/dashboard/#/"
+        url: "http://{{ traefik_subdomain }}.{{ server_hostname }}/dashboard/"
 {% endif %}
 {% if glances_enabled == true %}
       - name: "Glances"
