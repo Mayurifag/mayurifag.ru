@@ -23,7 +23,7 @@ defaultEntryPoints = ["http", "https"]
   [providers.docker]
     exposedbydefault = false
   [providers.file]
-    filename = "/etc/traefik/traefik_dynamic.toml"
+    directory = "/etc/traefik/dynamic_configs"
     watch = true
 [log]
   level = "{{ traefik_log_level }}"

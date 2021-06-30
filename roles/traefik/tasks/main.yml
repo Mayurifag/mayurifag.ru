@@ -4,19 +4,22 @@
     path: "{{ item }}"
     state: directory
   with_items:
-    - "{{ traefik_data_directory }}"
+    - "{{ traefik_data_directory }}/dynamic_configs"
     - "{{ traefik_data_directory }}/letsencrypt"
 
-- name: Template Traefik config.toml
+- name: Create Traefik config.toml from template
   template:
     src: traefik.toml.j2
     dest: "{{ traefik_data_directory }}/traefik.toml"
   register: template_config
 
-- name: Template Traefik baseauth credentials
+- name: Create Traefik dynamic configuration files
   template:
-    src: traefik_dynamic.toml.j2
-    dest: "{{ traefik_data_directory }}/traefik_dynamic.toml"
+    src: '{{ item.src }}'
+    dest: "{{ traefik_data_directory }}/dynamic_configs/{{ item.path | regex_replace('\\.j2$', '') }}"
+    force: yes
+  with_filetree: '../templates/dynamic_configs'
+  when: item.state == 'file'
 
 - name: Traefik Docker Container
   docker_container:
@@ -26,7 +29,7 @@
     network_mode: host
     volumes:
       - "{{ traefik_data_directory }}/traefik.toml:/etc/traefik/traefik.toml:ro"
-      - "{{ traefik_data_directory }}/traefik_dynamic.toml:/etc/traefik/traefik_dynamic.toml:ro"
+      - "{{ traefik_data_directory }}/dynamic_configs:/etc/traefik/dynamic_configs:ro"
       - "{{ traefik_data_directory }}/letsencrypt:/letsencrypt:rw"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     env: "{{ traefik_environment_variables }}"

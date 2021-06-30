@@ -1,9 +1,3 @@
-[http.middlewares.auth.basicAuth]
-  removeHeader = true
-  users = [
-    "{{ base_auth_credentials }}"
-  ]
-
 [http.routers.traefik-dashboard]
   rule = "Host(`{{ traefik_subdomain }}.{{ server_hostname }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
   service = "api@internal"
