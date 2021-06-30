@@ -20,8 +20,5 @@
     labels:
       traefik.enable: "{{ portainer_available_externally }}"
       traefik.http.routers.portainer.rule: "Host(`{{ portainer_subdomain }}.{{ server_hostname }}`)"
-      # traefik.http.routers.portainer.tls.certresolver: "letsencrypt"
-      # traefik.http.routers.portainer.tls.domains[0].main: "{{ server_hostname }}"
-      # traefik.http.routers.portainer.tls.domains[0].sans: "*.{{ server_hostname }}"
       traefik.http.services.portainer.loadbalancer.server.port: "9000"
       traefik.http.routers.portainer.middlewares: "my-headers@file"

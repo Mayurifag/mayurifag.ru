@@ -26,8 +26,5 @@
     labels:
       traefik.enable: "{{ netdata_available_externally }}"
       traefik.http.routers.netdata.rule: "Host(`{{ netdata_subdomain }}.{{ server_hostname }}`)"
-      # traefik.http.routers.netdata.tls.certresolver: "letsencrypt"
-      # traefik.http.routers.netdata.tls.domains[0].main: "{{ server_hostname }}"
-      # traefik.http.routers.netdata.tls.domains[0].sans: "*.{{ server_hostname }}"
       traefik.http.services.netdata.loadbalancer.server.port: "19999"
       traefik.http.routers.netdata.middlewares: "auth@file,my-headers@file"
