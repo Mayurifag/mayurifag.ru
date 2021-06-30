@@ -1,38 +1,20 @@
 {% if enable_tls == true %}
 [http.middlewares.my-headers.headers]
-accessControlAllowMethods = [ "GET", "OPTIONS", "PUT", "POST", "DELETE", "HEAD" ]
-{#
-accessControlAllowOriginList:
-contentSecurityPolicy: script-src 'self'
-referrerPolicy: origin-when-cross-origin
-#}
-accessControlMaxAge = 100
-addvaryheader = true
-hostsProxyHeaders = [ "X-Forwarded-Host" ]
 sslRedirect = true
-stsSeconds = 63_072_000
+stsSeconds = 31536000
 stsIncludeSubdomains = true
 stsPreload = true
 forceSTSHeader = true
 frameDeny = true
-{# customFrameOptionsValue = "allow-from https:{{ server_hostname }}" #}
 contentTypeNosniff = true
 browserXssFilter = true
-referrerPolicy = "same-origin"
-{# maybe nextcloud wont like this #}
-featurePolicy = "camera 'none'; geolocation 'none'; microphone 'none'; payment 'none'; usb 'none'; vr 'none';"
-  [http.middlewares.my-headers.headers.customResponseHeaders]
-  X-Robots-Tag = "none,noarchive,nosnippet,notranslate,noimageindex,"
-  server = ""
 
 [tls.options.default]
 minVersion = "VersionTLS12"
 sniStrict = true
 cipherSuites = [
-  "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
-  "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
-  "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305",
-  "TLS_AES_128_GCM_SHA256",
+  "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+  "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305",
   "TLS_AES_256_GCM_SHA384",
   "TLS_CHACHA20_POLY1305_SHA256"
 ]
