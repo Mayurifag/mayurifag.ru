@@ -9,9 +9,5 @@ homer_data_directory: "{{ docker_home }}/homer"
 homer_port_http: "10080"
 homer_subdomain: homer
 
-# # uid / gid
-# homer_user_id: "1310"
-# homer_group_id: "1310"
-
 # specs
 homer_memory: 1g

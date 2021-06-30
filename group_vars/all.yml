@@ -52,6 +52,9 @@ pip_install_packages:
 
 ##################################
 
+disable_tls: false
+bootstrap_enabled: true
+swap_enabled: true
 mayurifag_github_io_enabled: true
 dante_enabled: true
 shadowsocks_enabled: true

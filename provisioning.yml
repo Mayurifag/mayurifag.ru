@@ -3,7 +3,10 @@
   become: yes
   gather_facts: no
   roles:
-    - robertdebock.bootstrap
+    - role: robertdebock.bootstrap
+      tags:
+        - bootstrap
+      when: (bootstrap_enabled | default(True))
 
 - hosts: all
   roles:
@@ -11,7 +14,15 @@
     ### Run general preparation
     ###
     - role: djx339.swapoff
+      tags:
+        - swap
+      when: (swap_enabled | default(False))
+
     - role: geerlingguy.swap
+      tags:
+        - swap
+      when: (swap_enabled | default(False))
+
     - role: server-general-preparations
       tags:
         - mayurifag-general

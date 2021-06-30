@@ -4,9 +4,9 @@ subtitle: "Dashboard"
 documentTitle: "Mayurifag.ru dashboard"
 icon: "fas fa-skull-crossbones"
 header: true
+footer: false
 
 columns: "3"
-
 theme: default
 
 colors:
@@ -27,17 +27,43 @@ services:
   - name: "Monitoring"
     icon: "fas fa-desktop"
     items:
+{% if traefik_enabled == true %}
       - name: "Traefik Dashboard"
         icon: "fas fa-traffic-light"
-        subtitle: "Traefik web ui"
-        url: "http://traefik.{{ server_hostname }}/dashboard/#/"
-{#
-      - name: "FireFly3"
-        icon: "fas fa-piggy-bank"
-        subtitle: "finance"
-        url: "https://finance.personal.io"
+        subtitle: "BaseAuth"
+        url: "http://{{ traefik_subdomain }}.{{ server_hostname }}/dashboard/#/"
+{% endif %}
+{% if glances_enabled == true %}
+      - name: "Glances"
+        icon: "fas fa-microchip"
+        subtitle: "BaseAuth"
+        url: "http://{{ glances_subdomain }}.{{ server_hostname }}"
+{% endif %}
+{% if netdata_enabled == true %}
+      - name: "Netdata"
+        icon: "fas fa-chart-bar"
+        subtitle: "BaseAuth"
+        url: "http://{{ netdata_subdomain }}.{{ server_hostname }}"
+{% endif %}
 
-      - name: "BookStack"
-        icon: "fas fa-book"
-        subtitle: "notes-articles-book"
-        url: "https://notes.personal.io" #}
+  - name: "Services"
+    icon: "fas fa-laptop-code"
+    items:
+{% if nextcloud_enabled == true %}
+      - name: "Nextcloud"
+        icon: "fas fa-cloud"
+        subtitle: "Auth need to configure"
+        url: "http://{{ nextcloud_subdomain }}.{{ server_hostname }}"
+{% endif %}
+{% if portainer_enabled == true %}
+      - name: "Portainer"
+        icon: "fas fa-toolbox"
+        subtitle: "Auth need to configure"
+        url: "http://{{ portainer_subdomain }}.{{ server_hostname }}"
+{% endif %}
+{% if wallabag_enabled == true %}
+      - name: "Wallabag"
+        icon: "fas fa-bookmark"
+        subtitle: "Auth need to configure from wallabag:wallabag to mine password"
+        url: "http://{{ wallabag_subdomain }}.{{ server_hostname }}"
+{% endif %}
