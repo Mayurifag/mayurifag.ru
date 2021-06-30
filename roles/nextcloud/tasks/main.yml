@@ -49,6 +49,8 @@
       MYSQL_USER: "{{ nextcloud_sql_user }}"
       MYSQL_PASSWORD: "{{ nextcloud_sql_password }}"
       NEXTCLOUD_TRUSTED_DOMAINS: "{{ nextcloud_subdomain }}.{{ server_hostname }}"
+      OVERWRITEPROTOCOL: "{{ 'https' if enable_tls else 'http' }}"
+      OVERWRITEHOST: "{{ nextcloud_subdomain }}.{{ server_hostname }}"
     restart_policy: unless-stopped
     memory: "{{ nextcloud_memory }}"
     labels:
