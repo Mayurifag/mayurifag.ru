@@ -82,8 +82,7 @@ wallabag:wallabag user:password on the obvious service.
 
 ## Working on
 
-Check if sslabs A+ working
-When works - switch to production acme l-e. Enable proxies
+~~
 
 ## Applications List
 
@@ -125,7 +124,6 @@ When works - switch to production acme l-e. Enable proxies
 - [ ] Add motd.txt to server
   - [ ] About lazydocker
   - [ ] Aliases
-  - [ ] ssh config
 
 ### Low priority
 
