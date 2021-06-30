@@ -35,7 +35,7 @@ vagrant destroy -f ; vagrant up --provision
 ansible-playbook -i inventories/my-ansible-nas/inventory provisioning.yml -b -K
 ```
 
-#### Optional in-before steps:
+#### Optional in-before steps
 
 - Remove old remote host identification
 
@@ -138,6 +138,15 @@ wallabag:wallabag user:password on the obvious service.
 - [ ] Add Git (gitea/gitlab)
 - [ ] Check security <https://github.com/docker/docker-bench-security> <https://github.com/quay/clair>
 - [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
+
+## Further notes on installation
+
+### Nextcloud
+
+- Remove all files
+- Settings: Language/Locale; Accessibility -> Dark Theme
+- Disable apps: Collaborative tags, Usage survey, First run wizard, Monitoring
+- Enable apps: News, Notes, Keeweb, Calendar, Contacts, Tasks
 
 ## Based on
 
