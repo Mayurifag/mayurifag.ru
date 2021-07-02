@@ -3,7 +3,15 @@
 ## Description
 
 DONT USE THIS REPOSITORY NO MATTER WHAT due to security reasons (i.e. there
-is no role for ufw right now). Playbook is fine only for my personal usage.
+is no role for ufw right now and it's docker based). Playbook is fine only for
+my personal usage.
+
+### Older implementation
+
+There is branch `old-implementation-with-mailserver` without docker. I decided
+to re-write roles from scratch with all XP I got so far and include docker
+containers for better maintainability. But still there are some ideas I want to
+migrate into newer implementation.
 
 ## Requires
 
@@ -80,10 +88,6 @@ additional configuration. For example, you probably want to change
 wallabag:wallabag user:password on the obvious service.
 2. You probably want to change ssh port and make additional sshd config
 
-## Working on
-
-~~
-
 ## Applications List
 
 | Name                | Docker             | Default endpoint                              | App. Port   |
@@ -104,6 +108,12 @@ wallabag:wallabag user:password on the obvious service.
 
 ## TODO
 
+### WIP
+
+The work is not in progress now, because I'm okay with current implementation,
+but still I think there are some things existing for further development if I'll
+need to deploy my services once again.
+
 ### High priority
 
 - [ ] Ssh configuration: change port and make the sshd configuration cheatsheet with Readme
@@ -116,7 +126,8 @@ wallabag:wallabag user:password on the obvious service.
 
 ### Medium priority
 
-- [ ] Add Backup solution (duplicati?)
+- [ ] Add automatic backup solution (duplicati?). Do I need anything more than
+/data/docker_data?
 - [ ] Add ufw with rules + make docker respect the rules
 - [ ] Add pastebin
 - [ ] Make traefik to write logs to file + logrotate them
@@ -128,7 +139,8 @@ wallabag:wallabag user:password on the obvious service.
 ### Low priority
 
 - [ ] Add zsh
-- [ ] Add instructions for requirements and deployment (ansible-nas mostly ones)
+- [x] Add instructions for requirements and deployment
+- [ ] See ansible-nas repository for more things to add into README.md
 - [ ] Add web analytics (matomo?)
 - [ ] Add rocket.chat
 - [ ] Add url shortener
@@ -148,9 +160,17 @@ wallabag:wallabag user:password on the obvious service.
 - Disable apps: Collaborative tags, Usage survey, First run wizard, Monitoring
 - Enable apps: News, Notes, Keeweb, Calendar, Contacts, Tasks
 
+### Wallabag
+
+Change default user's password from `wallabag:wallabag` into anything else.
+
+### Portainer
+
+Make user and add default docker entrypoint.
+
 ## Based on
 
-<https://github.com/davestephens/ansible-nas>
-<https://davidstephens.uk/ansible-nas/testing>
-<https://www.smarthomebeginner.com/traefik-2-docker-tutorial>
-<https://www.smarthomebeginner.com/cloudflare-settings-for-traefik-docker>
+- <https://github.com/davestephens/ansible-nas>
+- <https://davidstephens.uk/ansible-nas/testing>
+- <https://www.smarthomebeginner.com/traefik-2-docker-tutorial>
+- <https://www.smarthomebeginner.com/cloudflare-settings-for-traefik-docker>
