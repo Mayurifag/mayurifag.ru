@@ -139,6 +139,7 @@ need to deploy my services once again.
 ### Low priority
 
 - [ ] Add zsh
+- [ ] Make CI working
 - [x] Add instructions for requirements and deployment
 - [ ] See ansible-nas repository for more things to add into README.md
 - [ ] Add web analytics (matomo?)
