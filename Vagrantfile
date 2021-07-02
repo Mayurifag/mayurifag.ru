@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provider :virtualbox do |v|
-    v.memory = 512
+    v.memory = 2048
   end
 
   config.vm.box = "geerlingguy/debian9"
@@ -26,12 +26,11 @@ Vagrant.configure("2") do |config|
   # config.vm.network "forwarded_port", guest: 443, host: 10443
   # config.vm.network "forwarded_port", guest: 993, host: 10993
 
-
   # config.vm.network "forwarded_port", guest:  25, host: 1025 # SMTP
   # config.vm.network "forwarded_port", guest: 143, host: 1143 # IMAP
   # config.vm.network "forwarded_port", guest: 993, host: 1993 # IMAPS
 
   # config.vm.network "forwarded_port", guest: 7777, host: 7777
   # config.vm.network "forwarded_port", guest: 8888, host: 8888
-  config.vm.network "forwarded_port", guest: 51820, host: 51820
+  config.vm.network "forwarded_port", guest: 51820, host: 51821
 end

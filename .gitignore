@@ -11,3 +11,5 @@ provisioning/roles/djx339.swapoff/
 provisioning/roles/nickjj.swapfile/
 provisioning/roles/sjinks.haveged/
 provisioning/wireguard_profiles
+
+.vagrant/bundler/

@@ -78,3 +78,7 @@ steps after deploy:
 - pimpmylog user
 - nextcloud settings
 go to Settings → Personal: Security → Devices & Sessions and create a new App name and password there for Joplin.
+
+
+
+https://habr.com/ru/post/509938/
