@@ -21,3 +21,5 @@ roles/djx339.*
 wireguard_profiles/
 tests/test.yml
 inventories/my-ansible-nas
+
+secret
