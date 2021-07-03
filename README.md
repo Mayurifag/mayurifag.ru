@@ -1,4 +1,4 @@
-# Ansible role for provisioning mayurifag.ru
+# Ansible playbook for provisioning mayurifag.ru
 
 ## Description
 
