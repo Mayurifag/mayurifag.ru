@@ -8,15 +8,31 @@
   pause:
     seconds: 1
     prompt: |
-      =========================
+      ===============================
+      Further notes on installation
+      ===============================
+
+      ### Telegram proxy link
 
       https://t.me/socks?server={{ server_hostname }}&port=7777&user={{ proxy_user }}&pass={{ proxy_user_password }}
 
-      #####
+      ### SSH
 
-      Dont forget to
+      Dont forget to change SSH configuration (user, etc.)
 
-      1) ssh configuration
-      2) Make configuration which is stated in Homer service change password
+      ### Nextcloud
+
+      - Remove all files
+      - Settings: Language/Locale; Accessibility -> Dark Theme
+      - Disable apps: Collaborative tags, Usage survey, First run wizard, Monitoring
+      - Enable apps: News, Notes, Keeweb, Calendar, Contacts, Tasks
+
+      ### Wallabag
+
+      Change default user's password from `wallabag:wallabag` into anything else.
+
+      ### Portainer
+
+      Make user and add default docker entrypoint.
 
       =========================

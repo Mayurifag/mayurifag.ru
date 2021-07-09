@@ -22,14 +22,21 @@ migrate into newer implementation.
 - ssh authorization key for root user (Done by VPS)
 - hostname <mayurifag.ru> (Done by VPS)
 
-### Local development
+### Your PC
 
-- Vagrant + VirtualBox
 - Ansible
+- Vagrant + VirtualBox (for testing)
 
 ## Instructions
 
-### Local deployment
+```sh
+git clone https://github.com/Mayurifag/mayurifag.ru.git
+cd mayurifag.ru
+cp -rfp inventories/sample inventories/my-provision
+ansible-galaxy install -r requirements.yml
+```
+
+### Local test deployment
 
 ```sh
 vagrant destroy -f ; vagrant up --provision
@@ -40,7 +47,7 @@ vagrant destroy -f ; vagrant up --provision
 #### TL;DR
 
 ```sh
-ansible-playbook -i inventories/my-ansible-nas/inventory provisioning.yml -b -K
+ansible-playbook -i inventories/my-provision/inventory provisioning.yml
 ```
 
 #### Optional in-before steps
@@ -55,10 +62,10 @@ ssh-keygen -R %ip%         # or this
 - Generate new ssh key and add it to your inventory vars file
 
 ```sh
-mkdir -p ~/.ssh/generated_keys
-ssh-keygen -t rsa -b 4096 -C "Mayurifag" -f ~/.ssh/generated_keys/mayurifag.ru
-xclip -sel clip < ~/.ssh/generated_keys/mayurifag.ru.pub
-vi inventories/my-ansible-nas/group_vars/nas.yml # add key here in section
+ssh-keygen -t rsa -b 4096 -C "Mayurifag@mayurifag.ru" -f ~/Desktop/mayurifag.ru
+xclip -sel clip < ~/Desktop/mayurifag.ru.pub
+vi inventories/my-provision/group_vars/sample.yml # add key here in section
+keepassxc # Make new ssh agent entry
 ```
 
 - Make new ssh config section. You need to change it after deploy.
@@ -78,15 +85,7 @@ Host mayurifag-prod
     HostName mayurifag.ru
     User root # Change user and port
     Port 22   # after deployment
-    IdentityFile ~/.ssh/generated_keys/mayurifag.ru
 ```
-
-## After production deploy
-
-1. You should go to Homer' URL and review services working. Several ones need
-additional configuration. For example, you probably want to change
-wallabag:wallabag user:password on the obvious service.
-2. You probably want to change ssh port and make additional sshd config
 
 ## Applications List
 
@@ -141,7 +140,7 @@ need to deploy my services once again.
 - [ ] Add zsh
 - [ ] Make CI working
 - [x] Add instructions for requirements and deployment
-- [ ] See ansible-nas repository for more things to add into README.md
+- [ ] Try to make deploy from zero to hero. Add instructions if needed.
 - [ ] Add web analytics (matomo?)
 - [ ] Add rocket.chat
 - [ ] Add url shortener
@@ -152,26 +151,10 @@ need to deploy my services once again.
 - [ ] Check security <https://github.com/docker/docker-bench-security> <https://github.com/quay/clair>
 - [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
 
-## Further notes on installation
-
-### Nextcloud
-
-- Remove all files
-- Settings: Language/Locale; Accessibility -> Dark Theme
-- Disable apps: Collaborative tags, Usage survey, First run wizard, Monitoring
-- Enable apps: News, Notes, Keeweb, Calendar, Contacts, Tasks
-
-### Wallabag
-
-Change default user's password from `wallabag:wallabag` into anything else.
-
-### Portainer
-
-Make user and add default docker entrypoint.
-
-## Based on
+## Based on / inspired / helpful
 
 - <https://github.com/davestephens/ansible-nas>
 - <https://davidstephens.uk/ansible-nas/testing>
 - <https://www.smarthomebeginner.com/traefik-2-docker-tutorial>
 - <https://www.smarthomebeginner.com/cloudflare-settings-for-traefik-docker>
+- <https://www.reddit.com/r/selfhosted/>

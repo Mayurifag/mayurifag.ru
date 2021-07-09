@@ -110,5 +110,3 @@
       when: (wallabag_enabled | default(False))
 
     - role: cheatsheet
-
-# https://www.simplecto.com/improve-traefik-https-encryption-qualys-ssl-labs-testssl-sh/

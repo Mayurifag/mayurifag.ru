@@ -1,5 +1,5 @@
 [all]
 mayurifag-test ansible_connection=local ansible_host=localhost
 
-[nas]
+[test]
 mayurifag-test
