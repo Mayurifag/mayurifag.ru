@@ -19,6 +19,7 @@
       ### SSH
 
       Dont forget to change SSH configuration (user, etc.)
+      $ ssh mayurifag-prod
 
       ### Nextcloud
 

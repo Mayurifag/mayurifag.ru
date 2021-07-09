@@ -141,6 +141,7 @@ need to deploy my services once again.
 - [ ] Make CI working
 - [x] Add instructions for requirements and deployment
 - [ ] Try to make deploy from zero to hero. Add instructions if needed.
+- [ ] Add lightweight opensource filesharing nextcloud alternative (FileRun?)
 - [ ] Add web analytics (matomo?)
 - [ ] Add rocket.chat
 - [ ] Add url shortener
