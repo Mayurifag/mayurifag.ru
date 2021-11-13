@@ -38,3 +38,8 @@
   systemd:
     name: sshd
     state: restarted
+
+- name: cleanup packaging
+  apt:
+    autoclean: yes
+    autoremove: yes

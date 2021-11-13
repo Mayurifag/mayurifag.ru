@@ -125,11 +125,11 @@ need to deploy my services once again.
 - [ ] Add Authelia <https://github.com/authelia/authelia> / Remove baseauth
 - [ ] Add Cloudflare companion tiredofit/traefik-cloudflare-companion:latest docker
 - [ ] Move this section to issues and kanban
-- [ ] Migrate from mysql to postgres for nextcloud. Look other perfomance boosters. cron at docker for nextcloud. bump versions
-  - [ ] <https://github.com/ReinerNippes/nextcloud_on_docker>
-  - [ ] <https://help.nextcloud.com/t/howto-ubuntu-docker-nextcloud-talk-collabora/76430>
-  - [ ] <https://docs.nextcloud.com/server/18/admin_manual/configuration_server/caching_configuration.html>
-  - [ ] <https://docs.nextcloud.com/server/18/admin_manual/installation/server_tuning.html>
+- [x] Migrate from mysql to postgres for nextcloud. Look other perfomance boosters. cron at docker for nextcloud. bump versions
+  - [x] <https://github.com/ReinerNippes/nextcloud_on_docker>
+  - [x] <https://help.nextcloud.com/t/howto-ubuntu-docker-nextcloud-talk-collabora/76430>
+  - [x] <https://docs.nextcloud.com/server/18/admin_manual/configuration_server/caching_configuration.html>
+  - [x] <https://docs.nextcloud.com/server/18/admin_manual/installation/server_tuning.html>
 
 ### Medium priority
 

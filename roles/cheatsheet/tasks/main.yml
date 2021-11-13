@@ -1,9 +1,4 @@
 ---
-- name: cleanup packaging
-  apt:
-    autoclean: yes
-    autoremove: yes
-
 - name: Show cheatsheet
   pause:
     seconds: 1

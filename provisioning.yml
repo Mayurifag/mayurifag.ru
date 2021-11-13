@@ -119,4 +119,10 @@
         - dozzle
       when: (dozzle_enabled | default(False))
 
+    # Nextcloud is unable to configure right after install and I dont want to wait untill il will be ok. So moved this section here.
+    - role: nextcloud_config
+      tags:
+        - nextcloud
+      when: (nextcloud_enabled | default(False))
+
     - role: cheatsheet
