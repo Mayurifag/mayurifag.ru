@@ -101,6 +101,7 @@ Host mayurifag-prod
 | Nextcloud           | :heavy_check_mark: | <http://nextcloud.mayurifag.local>            | 80          |
 | Portainer           | :heavy_check_mark: | <http://portainer.mayurifag.local>            | 9000        |
 | Seafile             | :heavy_check_mark: | <http://seafile.mayurifag.local>              | 80          |
+| Dozzle              | :heavy_check_mark: | <http://dozzle.mayurifag.local>               | 8080        |
 | Shadowsocks + V2ray | :x:                | <mayurifag.local:8888> (+v2ray config)        | 8888        |
 | Traefik Dashboard   | :heavy_check_mark: | <http://traefik.mayurifag.local/dashboard/#/> | 8080 (?)    |
 | Wallabag            | :heavy_check_mark: | <http://wallabag.mayurifag.local>             | 80          |
@@ -119,7 +120,7 @@ need to deploy my services once again.
 
 - [ ] Ssh configuration: change port and make the sshd configuration cheatsheet with Readme
 - [x] Comment out ports sections on containers and try to work with them
-- [ ] Add Dozzle <https://github.com/amir20/dozzle>
+- [x] Add Dozzle <https://github.com/amir20/dozzle>
 - [ ] Add Statping <https://github.com/statping/statping>
 - [ ] Add Authelia <https://github.com/authelia/authelia> / Remove baseauth
 - [ ] Add Cloudflare companion tiredofit/traefik-cloudflare-companion:latest docker

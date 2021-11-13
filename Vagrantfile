@@ -35,6 +35,7 @@ Vagrant.configure(2) do |config|
       seafile.mayurifag.local
       traefik.mayurifag.local
       wallabag.mayurifag.local
+      dozzle.mayurifag.local
     ]
 
     config.vm.provision "ansible_local", run: "always", type: :ansible_local do |ansible|

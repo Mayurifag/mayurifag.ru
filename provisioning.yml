@@ -114,4 +114,9 @@
         - wallabag
       when: (wallabag_enabled | default(False))
 
+    - role: dozzle
+      tags:
+        - dozzle
+      when: (dozzle_enabled | default(False))
+
     - role: cheatsheet

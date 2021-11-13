@@ -33,6 +33,12 @@ services:
         subtitle: "BaseAuth"
         url: "http://{{ traefik_subdomain }}.{{ server_hostname }}/dashboard/"
 {% endif %}
+{% if dozzle_enabled == true %}
+      - name: "Dozzle"
+        icon: "fas fa-tablet-rugged"
+        subtitle: "App auth"
+        url: "http://{{ dozzle_subdomain }}.{{ server_hostname }}"
+{% endif %}
 {% if glances_enabled == true %}
       - name: "Glances"
         icon: "fas fa-microchip"
