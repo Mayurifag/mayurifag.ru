@@ -15,10 +15,10 @@
 
 - name: Create Traefik dynamic configuration files
   template:
-    src: '{{ item.src }}'
+    src: "{{ item.src }}"
     dest: "{{ traefik_data_directory }}/dynamic_configs/{{ item.path | regex_replace('\\.j2$', '') }}"
     force: yes
-  with_filetree: '../templates/dynamic_configs'
+  with_filetree: "../templates/dynamic_configs"
   when: item.state == 'file'
 
 - name: Traefik Docker Container
@@ -26,7 +26,6 @@
     name: traefik
     image: "{{ traefik_docker_image }}"
     pull: true
-    # TODO: probably here only 443 and 80 (+maybe 8080)
     network_mode: host
     volumes:
       - "{{ traefik_data_directory }}/traefik.toml:/etc/traefik/traefik.toml:ro"

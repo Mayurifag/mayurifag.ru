@@ -5,56 +5,58 @@
     state: directory
   with_items:
     - "{{ nextcloud_data_directory }}/nextcloud"
-    - "{{ nextcloud_data_directory }}/mysql"
+    - "{{ nextcloud_data_directory }}/postgres"
+    - "{{ nextcloud_data_directory }}/redis"
 
 - name: Nextcloud Redis Docker Container
   docker_container:
     name: nextcloud-redis
-    image: redis:6.2.4-alpine3.13
+    image: redis:6-alpine
     pull: true
-    command: "redis-server --requirepass {{ nextcloud_redis_password }}"
     restart_policy: unless-stopped
-    memory: "{{ nextcloud_redis_memory }}"
+    volumes:
+      - "{{ nextcloud_data_directory }}/redis:/var/lib/redis"
 
-- name: Nextcloud Mysql Docker Container
+- name: Nextcloud Postgres Docker Container
   docker_container:
-    name: nextcloud-mysql
-    image: mysql:8.0
+    name: nextcloud-postgres
+    image: postgres:13
     pull: true
     volumes:
-      - "{{ nextcloud_data_directory }}/mysql:/var/lib/mysql:rw"
+      - "{{ nextcloud_data_directory }}/postgres:/var/lib/postgresql/data"
     env:
-      MYSQL_DATABASE: "nextcloud"
-      MYSQL_USER: "{{ nextcloud_sql_user }}"
-      MYSQL_PASSWORD: "{{ nextcloud_sql_password }}"
-      MYSQL_ROOT_PASSWORD: "{{ nextcloud_sql_root_password }}"
+      POSTGRES_DB: "nextcloud"
+      POSTGRES_USER: "{{ nextcloud_sql_user }}"
+      POSTGRES_PASSWORD: "{{ nextcloud_sql_password }}"
     restart_policy: unless-stopped
-    memory: "{{ nextcloud_mysql_memory }}"
 
 - name: Nextcloud Docker Container
   docker_container:
     name: nextcloud
     image: nextcloud:22
     pull: true
-    links:
-      - nextcloud-mysql:mysql
-      - nextcloud-redis:redis
     volumes:
       - "{{ nextcloud_data_directory }}/nextcloud:/var/www/html:rw"
+    links:
+      - nextcloud-postgres:postgres
+      - nextcloud-redis:redis
     env:
+      TZ: "{{ server_timezone }}"
       REDIS_HOST: "redis"
-      REDIS_HOST_PASSWORD: "{{ nextcloud_redis_password }}"
-      MYSQL_HOST: "mysql"
-      MYSQL_DATABASE: "nextcloud"
-      MYSQL_USER: "{{ nextcloud_sql_user }}"
-      MYSQL_PASSWORD: "{{ nextcloud_sql_password }}"
+      POSTGRES_HOST: "postgres"
+      POSTGRES_DB: "nextcloud"
+      POSTGRES_USER: "{{ nextcloud_sql_user }}"
+      POSTGRES_PASSWORD: "{{ nextcloud_sql_password }}"
       NEXTCLOUD_TRUSTED_DOMAINS: "{{ nextcloud_subdomain }}.{{ server_hostname }}"
+      NEXTCLOUD_ADMIN_USER: "{{ admin_username }}"
+      NEXTCLOUD_ADMIN_PASSWORD: "{{ admin_userpassword }}"
       OVERWRITEPROTOCOL: "{{ 'https' if enable_tls else 'http' }}"
       OVERWRITEHOST: "{{ nextcloud_subdomain }}.{{ server_hostname }}"
     restart_policy: unless-stopped
-    memory: "{{ nextcloud_memory }}"
     labels:
       traefik.enable: "{{ nextcloud_available_externally }}"
       traefik.http.routers.nextcloud.rule: "Host(`{{ nextcloud_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.nextcloud.loadbalancer.server.port: "80"
-      traefik.http.routers.nextcloud.middlewares: "my-headers@file"
+      traefik.http.routers.nextcloud.middlewares: "my-headers@file,nextcloud_redirect"
+      traefik.http.middlewares.nextcloud_redirect.redirectregex.regex: /.well-known/(card|cal)dav
+      traefik.http.middlewares.nextcloud_redirect.redirectregex.replacement: /remote.php/dav/
