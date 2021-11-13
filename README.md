@@ -51,13 +51,19 @@ vagrant destroy -f ; vagrant up --provision
 ansible-playbook -i inventories/my-provision/inventory provisioning.yml
 ```
 
+Maybe first you'll need to ssh and exec:
+
+```sh
+apt-get --allow-releaseinfo-change update
+```
+
 #### Optional in-before steps
 
 - Remove old remote host identification
 
 ```sh
 ssh-keygen -R mayurifag.ru # this
-ssh-keygen -R %ip%         # or this
+ssh-keygen -R %ip%         # and this
 ```
 
 - Generate new ssh key and add it to your inventory vars file
