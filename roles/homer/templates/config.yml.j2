@@ -55,6 +55,12 @@ services:
         subtitle: "Auth need to configure"
         url: "http://{{ nextcloud_subdomain }}.{{ server_hostname }}"
 {% endif %}
+{% if seafile_enabled == true %}
+      - name: "Seafile"
+        icon: "fas fa-cloud"
+        subtitle: "Auth need to configure"
+        url: "http://{{ seafile_subdomain }}.{{ server_hostname }}"
+{% endif %}
 {% if portainer_enabled == true %}
       - name: "Portainer"
         icon: "fas fa-toolbox"

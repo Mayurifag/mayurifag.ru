@@ -77,6 +77,9 @@ nextcloud_subdomain: "nextcloud"
 portainer_enabled: true
 portainer_subdomain: "portainer"
 
+seafile_enabled: true
+seafile_subdomain: "seafile"
+
 traefik_enabled: true
 traefik_subdomain: "traefik"
 

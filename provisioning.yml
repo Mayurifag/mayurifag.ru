@@ -84,6 +84,11 @@
         - nextcloud
       when: (nextcloud_enabled | default(False))
 
+    - role: seafile
+      tags:
+        - seafile
+      when: (seafile_enabled | default(False))
+
     - role: glances
       tags:
         - glances

@@ -1,0 +1,59 @@
+---
+- name: Create Seafile directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ seafile_data_directory }}/seafile"
+    - "{{ seafile_data_directory }}/mysql"
+
+- name: Seafile Memcached Docker Container
+  docker_container:
+    name: seafile-memcached
+    image: memcached:1.5.6
+    pull: true
+    entrypoint: memcached -m 256
+    restart_policy: unless-stopped
+    memory: "{{ seafile_memcached_memory }}"
+
+- name: Seafile Mysql Docker Container
+  docker_container:
+    name: seafile-mysql
+    image: mariadb:10.5
+    pull: true
+    volumes:
+      - "{{ seafile_data_directory }}/mysql:/var/lib/mysql:rw"
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ seafile_mysql_root_password }}"
+      MYSQL_LOG_CONSOLE: "true"
+    restart_policy: unless-stopped
+    memory: "{{ seafile_mysql_memory }}"
+
+- name: Seafile Docker Container
+  docker_container:
+    name: seafile
+    image: seafileltd/seafile-mc:8.0.7-1
+    pull: true
+    links:
+      - seafile-mysql:seafile-mysql
+      - seafile-memcached:seafile-memcached
+    # depends_on:
+    #   - seafile-memcached
+    #   - seafile-mysql
+    volumes:
+      - "{{ seafile_data_directory }}/seafile:/shared:rw"
+    env:
+      DB_HOST: seafile-mysql
+      DB_ROOT_PASSWD: "{{ seafile_mysql_root_password }}" # Requested, the value shuold be root's password of MySQL service.
+      TIME_ZONE: "{{ server_timezone }}" # Optional, default is UTC. Should be uncomment and set to your local time zone.
+      SEAFILE_ADMIN_EMAIL: "{{ seafile_admin_email }}" # Specifies Seafile admin user, default is 'me@example.com'.
+      SEAFILE_ADMIN_PASSWORD: "{{ seafile_admin_password }}" # Specifies Seafile admin password, default is 'asecret'.
+      SEAFILE_SERVER_LETSENCRYPT: "{{ seafile_internal_letsencrypt }}" # Whether to use https or not.
+      SEAFILE_SERVER_HOSTNAME: "{{ seafile_subdomain }}.{{ server_hostname }}" # Specifies your host name if https is enabled.
+    restart_policy: unless-stopped
+    memory: "{{ seafile_memory }}"
+    labels:
+      traefik.enable: "{{ seafile_available_externally }}"
+      traefik.http.routers.seafile.rule: "Host(`{{ seafile_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.seafile.loadbalancer.server.port: "80"
+      traefik.http.routers.seafile.middlewares: "my-headers@file"
