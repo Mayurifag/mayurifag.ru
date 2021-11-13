@@ -1,0 +1,25 @@
+---
+- name: Create Caddy Docker Proxy Container
+  docker_container:
+    name: caddy
+    image: lucaslorentz/caddy-docker-proxy:ci-alpine
+    pull: true
+    restart_policy: unless-stopped
+    network_mode: host
+    env:
+      CADDY_INGRESS_NETWORKS: caddy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # - caddy_data:/data
+    labels:
+      caddy.email: farazeus@gmail.com
+
+- name: Create whoami Docker Container
+  docker_container:
+    name: whoami
+    image: jwilder/whoami
+    pull: true
+    restart_policy: unless-stopped
+    labels:
+      caddy: http://whoami.mayurifag.local
+      caddy.reverse_proxy: "{{ '{{' }}upstreams 8000{{ '}}' }}"
