@@ -25,7 +25,7 @@ migrate into newer implementation.
 ### Your PC
 
 - Ansible
-- Vagrant + VirtualBox (for testing)
+- Vagrant 2.2.19 (latest) + VirtualBox (for testing)
 
 ## Instructions
 
@@ -39,6 +39,7 @@ ansible-galaxy install -r requirements.yml
 ### Local test deployment
 
 ```sh
+# maybe if something wrong -- rm -rf .vagrant on repo folder
 vagrant destroy -f ; vagrant up --provision
 ```
 

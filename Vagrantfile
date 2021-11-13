@@ -12,7 +12,7 @@ Vagrant.configure(2) do |config|
   # https://github.com/devopsgroup-io/vagrant-hostmanager/issues/102
   config.hostmanager.enabled = true
   config.hostmanager.manage_host = true
-  # config.hostmanager.manage_guest = true
+  config.hostmanager.manage_guest = true
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline = true
 
@@ -24,10 +24,9 @@ Vagrant.configure(2) do |config|
     config.cache.scope = :box
 
     # vagrant-hostmanager
-    config.vm.network "private_network", ip: "172.30.1.5"
+    config.vm.network "private_network", ip: "192.168.56.12"
     config.vm.hostname = "mayurifag.local"
     config.hostmanager.aliases = %w[
-      mayurifag.local
       glances.mayurifag.local
       homer.mayurifag.local
       netdata.mayurifag.local
@@ -44,10 +43,11 @@ Vagrant.configure(2) do |config|
       ansible.inventory_path = "tests/inventories/integration_testing/inventory"
       ansible.playbook = "provisioning.yml"
       ansible.become = true
+      # Run only needed tags
       # ansible.tags = "portainer"
-      ansible.raw_arguments = [
-        "--extra-vars @tests/test.yml"
-      ]
+      # ansible.raw_arguments = [
+      #   "--extra-vars @tests/test.yml"
+      # ]
     end
   end
 end

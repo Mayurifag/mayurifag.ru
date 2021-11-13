@@ -20,8 +20,8 @@ admin_authorized_keys: ""
 
 server_timezone: Europe/Moscow
 server_hostname: mayurifag.local
-swap_file_size_mb: '2048'
-swap_swappiness: '25'
+swap_file_size_mb: "2048"
+swap_swappiness: "25"
 
 # htpasswd -nbB admin admin
 # admin:$2y$05$9GXnLumjrUFrG96d4ljNkewDXSYIAUeRjLTafcdazV6g3jRPmulJO
