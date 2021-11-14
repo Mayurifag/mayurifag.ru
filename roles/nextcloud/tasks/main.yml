@@ -36,7 +36,10 @@
     image: nextcloud:22
     pull: true
     volumes:
-      - "{{ nextcloud_data_directory }}/nextcloud:/var/www/html:rw"
+      - ./nextcloud:/var/www/html
+      - ./nextcloud-apps:/var/www/html/custom_apps
+      - ./nextcloud-config:/var/www/html/config
+      - "{{ nextcloud_data_directory }}/nextcloud:/var/www/html/data"
     links:
       - nextcloud-postgres:postgres
       - nextcloud-redis:redis
@@ -47,7 +50,7 @@
       POSTGRES_DB: "nextcloud"
       POSTGRES_USER: "{{ nextcloud_sql_user }}"
       POSTGRES_PASSWORD: "{{ nextcloud_sql_password }}"
-      NEXTCLOUD_TRUSTED_DOMAINS: "{{ nextcloud_subdomain }}.{{ server_hostname }}"
+      NEXTCLOUD_TRUSTED_DOMAINS: "localhost,{{ nextcloud_subdomain }}.{{ server_hostname }}"
       NEXTCLOUD_ADMIN_USER: "{{ admin_username }}"
       NEXTCLOUD_ADMIN_PASSWORD: "{{ admin_userpassword }}"
       OVERWRITEPROTOCOL: "{{ 'https' if enable_tls else 'http' }}"
