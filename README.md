@@ -62,8 +62,7 @@ apt-get --allow-releaseinfo-change update
 - Remove old remote host identification
 
 ```sh
-ssh-keygen -R mayurifag.ru # this
-ssh-keygen -R %ip%         # and this
+ssh-keygen -R mayurifag.ru ; ssh-keygen -R $(host mayurifag.ru | awk '/has address/ {print $4}')
 ```
 
 - Generate new ssh key and add it to your inventory vars file
@@ -165,6 +164,11 @@ need to deploy my services once again.
 - [ ] Add Git (gitea/gitlab)
 - [ ] Check security <https://github.com/docker/docker-bench-security> <https://github.com/quay/clair>
 - [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
+
+```txt
+ss-server[21509]: Installing the rng-utils/rng-tools, jitterentropy or haveged packages may help.
+ss-server[21509]: On virtualized Linux environments, also consider using virtio-rng.
+```
 
 ## Based on / inspired / helpful
 
