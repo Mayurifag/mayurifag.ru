@@ -164,6 +164,12 @@ need to deploy my services once again.
 - [ ] Add Git (gitea/gitlab)
 - [ ] Check security <https://github.com/docker/docker-bench-security> <https://github.com/quay/clair>
 - [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
+- [ ] Migrate from dante to something docker based
+  - [ ] <https://hub.docker.com/r/serjs/go-socks5-proxy/>
+  - [ ] <https://github.com/schors/tgdante2>
+- [ ] Migrate from shadowsocks-rust + v2ray to shadowsocks2-go + x-ray / maybe docker
+  - [ ] <https://github.com/dmirubtsov/ss-xray-docker>
+  - [ ] <https://habr.com/ru/post/358126/>
 
 ```txt
 ss-server[21509]: Installing the rng-utils/rng-tools, jitterentropy or haveged packages may help.
