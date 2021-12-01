@@ -17,7 +17,7 @@ migrate into newer implementation.
 
 ### VPS
 
-- Debian 10
+- Debian 10 / KVM virtualization / Linux 4.9+ kernel version
 - Large folder for docker data (Done by VPS via /data folder)
 - ssh authorization key for root user (Done by VPS)
 - hostname <mayurifag.ru> (Done by VPS)
@@ -95,23 +95,23 @@ Host mayurifag-prod
 
 ## Applications List
 
-| Name                | Docker             | Default endpoint                              | App. Port          |
-| ------------------- | ------------------ | --------------------------------------------- | ------------------ |
-| Dante proxy         | :heavy_minus_sign: | <socks5://mayurifag.local:7777> (+auth)       | 7777               |
-| Dozzle              | :heavy_check_mark: | <http://dozzle.mayurifag.local>               | 8080               |
-| Glances             | :heavy_check_mark: | <http://glances.mayurifag.local>              | 61208/61209        |
-| Homer               | :heavy_check_mark: | <http://homer.mayurifag.local>                | 8080               |
-| Lazydocker          | :heavy_minus_sign: | :heavy_minus_sign:                            | :heavy_minus_sign: |
-| Mayurifag.github.io | :heavy_check_mark: | <http://mayurifag.local>                      | 8005               |
-| Netdata             | :heavy_check_mark: | <http://netdata.mayurifag.local>              | 19999              |
-| Nextcloud           | :heavy_check_mark: | <http://nextcloud.mayurifag.local>            | 80                 |
-| Portainer           | :heavy_check_mark: | <http://portainer.mayurifag.local>            | 9000               |
-| Seafile             | :heavy_check_mark: | <http://seafile.mayurifag.local>              | 80                 |
-| Shadowsocks + V2ray | :heavy_minus_sign: | <mayurifag.local:8888> (+v2ray config)        | 8888               |
-| Traefik Dashboard   | :heavy_check_mark: | <http://traefik.mayurifag.local/dashboard/#/> | 8080 (?)           |
-| Wallabag            | :heavy_check_mark: | <http://wallabag.mayurifag.local>             | 80                 |
-| Watchtower          | :heavy_check_mark: | :heavy_minus_sign:                            | :heavy_minus_sign: |
-| Wireguard           | :heavy_minus_sign: | <mayurifag.local:58172>                       | 58172              |
+| Name                | Docker             | Default endpoint                                | App. Port          |
+| ------------------- | ------------------ | ----------------------------------------------- | ------------------ |
+| Dante proxy         | :heavy_minus_sign: | <socks5://mayurifag.local:7777> (+auth)         | 7777               |
+| Dozzle              | :heavy_check_mark: | <http://dozzle.mayurifag.local>                 | 8080               |
+| Glances             | :heavy_check_mark: | <http://glances.mayurifag.local>                | 61208/61209        |
+| Homer               | :heavy_check_mark: | <http://homer.mayurifag.local>                  | 8080               |
+| Lazydocker          | :heavy_minus_sign: | :heavy_minus_sign:                              | :heavy_minus_sign: |
+| mayurifag.github.io | :heavy_check_mark: | <http://mayurifag.local>                        | 8005               |
+| Netdata             | :heavy_check_mark: | <http://netdata.mayurifag.local>                | 19999              |
+| Nextcloud           | :heavy_check_mark: | <http://nextcloud.mayurifag.local>              | 80                 |
+| Portainer           | :heavy_check_mark: | <http://portainer.mayurifag.local>              | 9000               |
+| Seafile             | :heavy_check_mark: | <http://seafile.mayurifag.local>                | 80                 |
+| Shadowsocks-rust    | :heavy_minus_sign: | <socks5://mayurifag.local:8888> (+v2ray config) | 8888               |
+| Traefik Dashboard   | :heavy_check_mark: | <http://traefik.mayurifag.local/dashboard/#/>   | 8080 (?)           |
+| Wallabag            | :heavy_check_mark: | <http://wallabag.mayurifag.local>               | 80                 |
+| Watchtower          | :heavy_check_mark: | :heavy_minus_sign:                              | :heavy_minus_sign: |
+| Wireguard           | :heavy_minus_sign: | <mayurifag.local:58172>                         | 58172              |
 
 ## TODO
 

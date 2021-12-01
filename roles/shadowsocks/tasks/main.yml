@@ -1,38 +1,76 @@
-- name: Install shadowsocks-libev
-  apt:
-    name: shadowsocks-libev
-    state: latest
+- name: Create temporary folders to download ss-rust + v2ray to be cleaned after installation
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ shadowsocks_temp_download_folder }}"
+    - "{{ shadowsocks_temp_download_folder }}/ss-rust"
+    - "{{ shadowsocks_temp_download_folder }}/v2ray-plugin"
+    - "/etc/shadowsocks-rust"
+
+- name: Download ss-rust
+  get_url:
+    url: "{{ shadowsocks_download_link }}"
+    dest: "{{ shadowsocks_temp_download_folder }}/ss-rust.tar.gz"
+
+- name: Unpack ss-rust.tar.gz
+  unarchive:
+    remote_src: yes
+    src: "{{ shadowsocks_temp_download_folder }}/ss-rust.tar.gz"
+    dest: "{{ shadowsocks_temp_download_folder }}/ss-rust"
+
+- name: Copy ss-rust binary to /usr/local/bin
+  copy:
+    remote_src: yes
+    src: "{{ shadowsocks_temp_download_folder }}/ss-rust/ssserver"
+    dest: /usr/local/bin/ssserver
+    mode: 0777
+
+- name: Set cap_net_bind_service+eip on /usr/local/bin/ssserver
+  capabilities:
+    path: /usr/local/bin/ssserver
+    capability: cap_net_bind_service+eip
+    state: present
 
 - name: Download v2ray plugin
   get_url:
-    url: https://github.com/shadowsocks/v2ray-plugin/releases/download/v1.3.1/v2ray-plugin-linux-amd64-v1.3.1.tar.gz
-    dest: /tmp/v2rayplugin.tar.gz
+    url: "{{ shadowsocks_v2ray_download_link }}"
+    dest: "{{ shadowsocks_temp_download_folder }}/v2ray-plugin.tar.gz"
 
 - name: Unpack v2ray plugin
   unarchive:
     remote_src: yes
-    src: /tmp/v2rayplugin.tar.gz
-    dest: /tmp
+    src: "{{ shadowsocks_temp_download_folder }}/v2ray-plugin.tar.gz"
+    dest: "{{ shadowsocks_temp_download_folder }}/v2ray-plugin"
 
-- name: Copy plugin to dest
+- name: Copy v2ray plugin to /usr/local/bin
   copy:
     remote_src: yes
-    src: /tmp/v2ray-plugin_linux_amd64
-    dest: /etc/shadowsocks-libev/v2ray-plugin
+    src: "{{ shadowsocks_temp_download_folder }}/v2ray-plugin/v2ray-plugin_linux_amd64"
+    dest: /usr/local/bin/v2ray-plugin
     mode: 0777
 
-# TODO: cleanup
-
-- name: Set cap_net_bind_service+eip on /etc/shadowsocks-libev/v2ray-plugin
+- name: Set cap_net_bind_service+eip on /usr/local/bin/v2ray-plugin
   capabilities:
-    path: /etc/shadowsocks-libev/v2ray-plugin
+    path: /usr/local/bin/v2ray-plugin
     capability: cap_net_bind_service+eip
     state: present
 
 - name: Deploy shadowsocks config file
   template:
     src: config.json.j2
-    dest: /etc/shadowsocks-libev/config.json
+    dest: /etc/shadowsocks-rust/config.json
     mode: 0744
+
+- name: Deploy shadowsocks-rust.service systemd unit file
+  copy:
+    src: shadowsocks-rust.service
+    dest: /usr/lib/systemd/system/shadowsocks-rust.service
+    mode: 0755
   notify:
-    - Restart shadowsocks-libev
+    - Restart shadowsocks-rust
+
+- name: "Cleanup: remove {{ shadowsocks_temp_download_folder }} folder with all contents"
+  file:
+    path: "{{ shadowsocks_temp_download_folder }}"
+    state: absent

@@ -1,11 +1,12 @@
 {
-    "server":"0.0.0.0",
-    "server_port": 8888,
-    "password":"{{ shadowsocks_password }}",
-    "timeout":60,
-    "method":"xchacha20-ietf-poly1305",
-    "plugin":"/etc/shadowsocks-libev/v2ray-plugin",
-    "plugin_opts":"server;host=cloudfront.com",
-    "nameserver":"1.1.1.1",
-    "fast_open":true
+  "server": "0.0.0.0",
+  "server_port": "{{ shadowsocks_port }}",
+  "password": "{{ shadowsocks_password }}",
+  "timeout": 300,
+  "method": "{{ shadowsocks_method }}",
+  "mode": "tcp_and_udp",
+  "plugin": "/usr/local/bin/v2ray-plugin",
+  "plugin_opts": "server;host=cloudfront.com",
+  "nameserver": "1.1.1.1",
+  "fast_open": false
 }

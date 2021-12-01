@@ -1,7 +1,7 @@
 ---
-- name: Restart shadowsocks-libev
+- name: Restart shadowsocks-rust
   systemd:
-    name: shadowsocks-libev
+    name: shadowsocks-rust.service
     state: restarted
     enabled: yes
     daemon_reload: yes
