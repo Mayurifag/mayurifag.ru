@@ -1,6 +1,5 @@
 {
     "recommendations": [
-        "zbr.vscode-ansible",
         "bungcip.better-toml",
         "editorconfig.editorconfig"
     ]
