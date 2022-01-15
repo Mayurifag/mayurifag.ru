@@ -144,6 +144,7 @@ need to deploy my services once again.
 - [ ] Add pastebin
 - [ ] Make traefik to write logs to file + logrotate them
 - [ ] Suggest if I need more fail2ban jail rules
+  - [ ] <https://shadowsocks.org/en/wiki/Setup-fail2ban.html>
 - [ ] Add motd.txt to server
   - [ ] About lazydocker
   - [ ] Aliases
