@@ -95,6 +95,7 @@ Host mayurifag-prod
 
 ## Applications List
 
+| ------------------- | ------------------ | ----------------------------------------------- | ------------------ |
 | Name                | Docker             | Default endpoint                                | App. Port          |
 | ------------------- | ------------------ | ----------------------------------------------- | ------------------ |
 | Dante proxy         | :heavy_minus_sign: | <socks5://mayurifag.local:7777> (+auth)         | 7777               |
@@ -112,6 +113,7 @@ Host mayurifag-prod
 | Wallabag            | :heavy_check_mark: | <http://wallabag.mayurifag.local>               | 80                 |
 | Watchtower          | :heavy_check_mark: | :heavy_minus_sign:                              | :heavy_minus_sign: |
 | Wireguard           | :heavy_minus_sign: | <mayurifag.local:58172>                         | 58172              |
+| ------------------- | ------------------ | ----------------------------------------------- | ------------------ |
 
 ## TODO
 
@@ -129,6 +131,7 @@ need to deploy my services once again.
 - [ ] Add Statping <https://github.com/statping/statping>
 - [ ] Add Authelia <https://github.com/authelia/authelia> / Remove baseauth
 - [ ] Add Cloudflare companion tiredofit/traefik-cloudflare-companion:latest docker
+- [ ] Add Vikunja <https://vikunja.io/docs/full-docker-example/>
 - [ ] Move this section to issues and kanban
 - [x] Migrate from mysql to postgres for nextcloud. Look other perfomance boosters. cron at docker for nextcloud. bump versions
   - [x] <https://github.com/ReinerNippes/nextcloud_on_docker>
