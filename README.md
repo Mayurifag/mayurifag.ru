@@ -2,7 +2,7 @@
 
 ## Description
 
-DONT USE THIS REPOSITORY NO MATTER WHAT due to security reasons (i.e. there
+**DONT USE THIS REPOSITORY NO MATTER WHAT** due to security reasons (i.e. there
 is no role for ufw right now and it's docker based). Playbook is fine only for
 my personal usage.
 
@@ -151,6 +151,7 @@ need to deploy my services once again.
 - [ ] Add motd.txt to server
   - [ ] About lazydocker
   - [ ] Aliases
+- [ ] https://github.com/EmbarkStudios/wg-ui
 
 ### Low priority
 
