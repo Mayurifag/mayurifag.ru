@@ -67,6 +67,9 @@ homer_subdomain: "homer"
 netdata_enabled: true
 netdata_subdomain: "netdata"
 
+doku_enabled: true
+doku_subdomain: "doku"
+
 nextcloud_enabled: true
 nextcloud_subdomain: "nextcloud"
 

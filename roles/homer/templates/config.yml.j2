@@ -51,6 +51,12 @@ services:
         subtitle: "BaseAuth"
         url: "http://{{ netdata_subdomain }}.{{ server_hostname }}"
 {% endif %}
+{% if doku_enabled == true %}
+      - name: "Doku"
+        icon: "fas fa-chart-bar"
+        subtitle: "BaseAuth"
+        url: "http://{{ doku_subdomain }}.{{ server_hostname }}"
+{% endif %}
 
   - name: "Services"
     icon: "fas fa-laptop-code"

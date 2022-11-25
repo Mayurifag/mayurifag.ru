@@ -102,6 +102,7 @@ Host mayurifag-prod
 | Name                | Docker             | Default endpoint                                | App. Port          |
 | ------------------- | ------------------ | ----------------------------------------------- | ------------------ |
 | Dante proxy         | :heavy_minus_sign: | <socks5://mayurifag.local:7777> (+auth)         | 7777               |
+| Doku                | :heavy_check_mark: | <http://doku.mayurifag.local>                   | 9090               |
 | Dozzle              | :heavy_check_mark: | <http://dozzle.mayurifag.local>                 | 8080               |
 | Filerun             | :heavy_check_mark: | <http://filerun.mayurifag.local>                | 80 [+3306 db]      |
 | Glances             | :heavy_check_mark: | <http://glances.mayurifag.local>                | 61208/61209        |
@@ -157,7 +158,7 @@ need to deploy my services once again.
   - [ ] Aliases
 - [ ] https://github.com/EmbarkStudios/wg-ui
 - [ ] Navidrome
-- [ ] Doku https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/docker/doku.md
+- [x] Doku https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/docker/doku.md
 - [ ] https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/other/firefox.md :))
 - [x] FileRun
 - [ ] Simple proxy server

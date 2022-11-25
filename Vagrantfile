@@ -27,6 +27,8 @@ Vagrant.configure(2) do |config|
     config.vm.network "private_network", ip: "192.168.56.12"
     config.vm.hostname = "mayurifag.local"
     config.hostmanager.aliases = %w[
+      doku.mayurifag.local
+      dozzle.mayurifag.local
       glances.mayurifag.local
       filerun.mayurifag.local
       homer.mayurifag.local
@@ -35,7 +37,6 @@ Vagrant.configure(2) do |config|
       portainer.mayurifag.local
       traefik.mayurifag.local
       wallabag.mayurifag.local
-      dozzle.mayurifag.local
     ]
 
     config.vm.provision "ansible_local", run: "always", type: :ansible_local do |ansible|

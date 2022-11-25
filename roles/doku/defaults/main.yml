@@ -1,0 +1,6 @@
+---
+doku_enabled: true
+doku_available_externally: "true"
+
+# network
+doku_subdomain: "doku"
