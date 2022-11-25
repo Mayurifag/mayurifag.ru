@@ -28,6 +28,7 @@ Vagrant.configure(2) do |config|
     config.vm.hostname = "mayurifag.local"
     config.hostmanager.aliases = %w[
       glances.mayurifag.local
+      filerun.mayurifag.local
       homer.mayurifag.local
       netdata.mayurifag.local
       nextcloud.mayurifag.local

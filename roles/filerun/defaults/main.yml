@@ -1,0 +1,12 @@
+---
+filerun_enabled: true
+filerun_available_externally: "true"
+
+# directories
+filerun_data_directory: "/home/{{ admin_username }}/filerun"
+
+filerun_subdomain: "filerun"
+
+# username / passwords
+filerun_sql_user: "filerun-user"
+filerun_sql_password: "filerun-pass"

@@ -100,6 +100,7 @@ Host mayurifag-prod
 | ------------------- | ------------------ | ----------------------------------------------- | ------------------ |
 | Dante proxy         | :heavy_minus_sign: | <socks5://mayurifag.local:7777> (+auth)         | 7777               |
 | Dozzle              | :heavy_check_mark: | <http://dozzle.mayurifag.local>                 | 8080               |
+| Filerun             | :heavy_check_mark: | <http://filerun.mayurifag.local>                | 80 [+3306 db]      |
 | Glances             | :heavy_check_mark: | <http://glances.mayurifag.local>                | 61208/61209        |
 | Homer               | :heavy_check_mark: | <http://homer.mayurifag.local>                  | 8080               |
 | Lazydocker          | :heavy_minus_sign: | :heavy_minus_sign:                              | :heavy_minus_sign: |
@@ -151,6 +152,7 @@ need to deploy my services once again.
   - [ ] About lazydocker
   - [ ] Aliases
 - [ ] https://github.com/EmbarkStudios/wg-ui
+- [x] FileRun
 
 ### Low priority
 
