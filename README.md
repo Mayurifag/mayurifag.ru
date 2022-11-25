@@ -107,7 +107,6 @@ Host mayurifag-prod
 | Netdata             | :heavy_check_mark: | <http://netdata.mayurifag.local>                | 19999              |
 | Nextcloud           | :heavy_check_mark: | <http://nextcloud.mayurifag.local>              | 80                 |
 | Portainer           | :heavy_check_mark: | <http://portainer.mayurifag.local>              | 9000               |
-| Seafile             | :heavy_check_mark: | <http://seafile.mayurifag.local>                | 80                 |
 | Shadowsocks-rust    | :heavy_minus_sign: | <socks5://mayurifag.local:8888> (+v2ray config) | 8888               |
 | Traefik Dashboard   | :heavy_check_mark: | <http://traefik.mayurifag.local/dashboard/#/>   | 8080 (?)           |
 | Wallabag            | :heavy_check_mark: | <http://wallabag.mayurifag.local>               | 80                 |
