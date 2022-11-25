@@ -5,8 +5,10 @@ mayurifag_general_extra_packages:
   - aptitude
   - curl
   - htop
+  - linux-headers-amd64
+  - linux-image-amd64
+  - mc
+  - ncdu
   - unzip
   - wget
   - whois
-  - linux-image-amd64
-  - linux-headers-amd64

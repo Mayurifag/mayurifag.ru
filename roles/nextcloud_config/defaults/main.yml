@@ -20,7 +20,7 @@ nextcloud_system_config:
   - "enabledPreviewProviders 11 --value='OC\\Preview\\MSOffice2007'"
   - "enabledPreviewProviders 12 --value='OC\\Preview\\MSOfficeDoc'"
   - "enabledPreviewProviders 13 --value='OC\\Preview\\OpenDocument'"
-  - "enabledPreviewProviders 14 --value='OC\\Preview\\PDF'"
+  # - "enabledPreviewProviders 14 --value='OC\\Preview\\PDF'"
   - "enabledPreviewProviders 15 --value='OC\\Preview\\Photoshop'"
   - "enabledPreviewProviders 16 --value='OC\\Preview\\Postscript'"
   - "enabledPreviewProviders 17 --value='OC\\Preview\\StarOffice'"
@@ -37,7 +37,7 @@ nextcloud_system_config:
   - "activity_expire_days --value='14'  --type=integer"
   - "integrity.check.disabled --value=false --type=boolean"
   - "updater.release.channel --value=stable"
-  - "loglevel --value=1 --type=integer"
+  - "loglevel --value=2 --type=integer"
   - "maintenance --value=false --type=boolean"
   # - "theme --value=''"
 

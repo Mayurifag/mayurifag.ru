@@ -15,16 +15,20 @@ migrate into newer implementation.
 
 ## Requires
 
+### DNS
+
+Obviously, `A` record for your TLD + wildcard/subdomain configuration.
+
 ### VPS
 
-- Debian 10 / KVM virtualization / Linux 4.9+ kernel version
-- Large folder for docker data (Done by VPS via /data folder)
-- ssh authorization key for root user (Done by VPS)
-- hostname <mayurifag.ru> (Done by VPS)
+- Debian 10-11 / KVM virtualization / Linux 4.9+ kernel version
+- Large folder for docker data (Done by VPS via large disk)
+- ssh authorization key for root user (Done by VPS or `ssh-copy-id root@mayurifag.ru`)
 
 ### Your PC
 
-- Ansible
+- Ansible `python3 -m pip install --user ansible`
+- (only MacOS) - passlib `python3 -m pip install --user passlib` (to use crypto module from ansible)
 - Vagrant 2.2.19 (latest) + VirtualBox (for testing)
 
 ## Instructions
@@ -95,7 +99,6 @@ Host mayurifag-prod
 
 ## Applications List
 
-| ------------------- | ------------------ | ----------------------------------------------- | ------------------ |
 | Name                | Docker             | Default endpoint                                | App. Port          |
 | ------------------- | ------------------ | ----------------------------------------------- | ------------------ |
 | Dante proxy         | :heavy_minus_sign: | <socks5://mayurifag.local:7777> (+auth)         | 7777               |
@@ -113,7 +116,6 @@ Host mayurifag-prod
 | Wallabag            | :heavy_check_mark: | <http://wallabag.mayurifag.local>               | 80                 |
 | Watchtower          | :heavy_check_mark: | :heavy_minus_sign:                              | :heavy_minus_sign: |
 | Wireguard           | :heavy_minus_sign: | <mayurifag.local:58172>                         | 58172              |
-| ------------------- | ------------------ | ----------------------------------------------- | ------------------ |
 
 ## TODO
 
@@ -125,10 +127,12 @@ need to deploy my services once again.
 
 ### High priority
 
+- [ ] ~~Add cleaning up apt-get to get extra 1GB~~
+- [ ] ~~Think how to rotate logs easily for docker (takes all the space in a year or more)~~
 - [ ] Ssh configuration: change port and make the sshd configuration cheatsheet with Readme
 - [x] Comment out ports sections on containers and try to work with them
 - [x] Add Dozzle <https://github.com/amir20/dozzle>
-- [ ] Add Statping <https://github.com/statping/statping>
+- [ ] Uptime Kuma
 - [ ] Add Authelia <https://github.com/authelia/authelia> / Remove baseauth
 - [ ] Add Cloudflare companion tiredofit/traefik-cloudflare-companion:latest docker
 - [ ] Add Vikunja <https://vikunja.io/docs/full-docker-example/>
@@ -152,7 +156,12 @@ need to deploy my services once again.
   - [ ] About lazydocker
   - [ ] Aliases
 - [ ] https://github.com/EmbarkStudios/wg-ui
+- [ ] Navidrome
+- [ ] Doku https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/docker/doku.md
+- [ ] https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/other/firefox.md :))
 - [x] FileRun
+- [ ] Simple proxy server
+- [ ] Makefiles + info to launch only specified tags
 
 ### Low priority
 
@@ -160,7 +169,7 @@ need to deploy my services once again.
 - [ ] Make CI working
 - [x] Add instructions for requirements and deployment
 - [ ] Try to make deploy from zero to hero. Add instructions if needed.
-- [ ] Add lightweight opensource filesharing nextcloud alternative (FileRun?)
+- [x] Add lightweight filesharing nextcloud alternative (FileRun?)
 - [ ] Add web analytics (matomo?)
 - [ ] Add rocket.chat
 - [ ] Add url shortener
@@ -176,11 +185,6 @@ need to deploy my services once again.
 - [ ] Migrate from shadowsocks-rust + v2ray to shadowsocks2-go + x-ray / maybe docker
   - [ ] <https://github.com/dmirubtsov/ss-xray-docker>
   - [ ] <https://habr.com/ru/post/358126/>
-
-```txt
-ss-server[21509]: Installing the rng-utils/rng-tools, jitterentropy or haveged packages may help.
-ss-server[21509]: On virtualized Linux environments, also consider using virtio-rng.
-```
 
 ## Based on / inspired / helpful
 

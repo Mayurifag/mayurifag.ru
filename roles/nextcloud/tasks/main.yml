@@ -11,7 +11,7 @@
 - name: Nextcloud Redis Docker Container
   docker_container:
     name: nextcloud-redis
-    image: redis:6-alpine
+    image: redis:7-alpine
     pull: true
     restart_policy: unless-stopped
     volumes:
@@ -20,7 +20,7 @@
 - name: Nextcloud Postgres Docker Container
   docker_container:
     name: nextcloud-postgres
-    image: postgres:13
+    image: postgres:14-alpine
     pull: true
     volumes:
       - "{{ nextcloud_data_directory }}/postgres:/var/lib/postgresql/data"
@@ -33,7 +33,7 @@
 - name: Nextcloud Docker Container
   docker_container:
     name: nextcloud
-    image: nextcloud:22
+    image: nextcloud:25
     pull: true
     volumes:
       - ./nextcloud:/var/www/html

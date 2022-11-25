@@ -1,6 +1,7 @@
 [all]
 ## Remote deployment example
 # provision-server ansible_host=192.168.1.30 ansible_user=root ansible_ssh_pass=something
+# provision-server ansible_host=192.168.1.30 ansible_user=username ansible_become=yes ansible_become_user=root
 
 ## Local deployment example
 # provision-server ansible_connection=local ansible_host=localhost

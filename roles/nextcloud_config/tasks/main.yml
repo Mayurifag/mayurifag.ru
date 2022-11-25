@@ -18,6 +18,7 @@
         - db:add-missing-indices
         - db:convert-filecache-bigint
 
+# maybe i should add restarting container or no?
 - name: create optimize batch job
   copy:
     dest: /usr/local/bin/nextcloud_optimize.sh
