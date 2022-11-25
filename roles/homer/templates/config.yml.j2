@@ -85,3 +85,9 @@ services:
         subtitle: "Auth need to configure from wallabag:wallabag to mine password"
         url: "http://{{ wallabag_subdomain }}.{{ server_hostname }}"
 {% endif %}
+{% if wireguard_enabled == true %}
+      - name: "Wireguard UI"
+        icon: "fas fa-bookmark"
+        subtitle: "BaseAuth"
+        url: "http://{{ wireguard_ui_subdomain }}.{{ server_hostname }}"
+{% endif %}

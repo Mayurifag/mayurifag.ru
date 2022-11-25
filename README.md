@@ -117,6 +117,7 @@ Host mayurifag-prod
 | Wallabag            | :heavy_check_mark: | <http://wallabag.mayurifag.local>               | 80                 |
 | Watchtower          | :heavy_check_mark: | :heavy_minus_sign:                              | :heavy_minus_sign: |
 | Wireguard           | :heavy_minus_sign: | <mayurifag.local:58172>                         | 58172              |
+| Wg-ui               | :heavy_check_mark: | <http://wg.mayurifag.local>                     | 8080               |
 
 ## TODO
 
@@ -156,7 +157,7 @@ need to deploy my services once again.
 - [ ] Add motd.txt to server
   - [ ] About lazydocker
   - [ ] Aliases
-- [ ] https://github.com/EmbarkStudios/wg-ui
+- [ ] ~~<https://github.com/EmbarkStudios/wg-ui>~~
 - [ ] Navidrome
 - [x] Doku https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/docker/doku.md
 - [ ] https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/other/firefox.md :))

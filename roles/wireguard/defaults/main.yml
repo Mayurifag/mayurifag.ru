@@ -1,8 +1,13 @@
 ---
 wireguard_enabled: true
+wg_available_externally: 'true'
+
+wireguard_ui_subdomain: "wg"
 
 wireguard_vpn_clients: 5
 wireguard_vpn_interface: 'wg0'
 wireguard_vpn_network: '10.100.100'
 wireguard_vpn_persistent_keepalive: 0
 wireguard_vpn_port: '58172'
+
+wg_memory: 1g

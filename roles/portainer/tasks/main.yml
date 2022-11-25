@@ -1,4 +1,9 @@
 ---
+- name: Delete Portainer directories
+  file:
+    path: "{{ portainer_data_directory }}"
+    state: absent
+
 - name: Create Portainer Directories
   file:
     path: "{{ item }}"
@@ -11,6 +16,7 @@
     name: portainer
     image: portainer/portainer-ce
     pull: true
+    recreate: yes
     volumes:
       - "{{ portainer_data_directory }}:/data:rw"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
