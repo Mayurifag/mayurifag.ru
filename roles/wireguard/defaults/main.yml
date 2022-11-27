@@ -1,8 +1,5 @@
 ---
 wireguard_enabled: true
-wg_available_externally: 'true'
-
-wireguard_ui_subdomain: "wg"
 
 wireguard_vpn_clients: 5
 wireguard_vpn_interface: 'wg0'

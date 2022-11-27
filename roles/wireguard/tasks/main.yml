@@ -3,7 +3,6 @@
     msg: "Only Debian supported for now"
   when: ansible_distribution != 'Debian'
 
-- import_tasks: wireguard-deploy-ui.yml
 - import_tasks: wireguard-install.yml
 - import_tasks: wireguard-setup.yml
 - import_tasks: wireguard-fetch-profiles.yml

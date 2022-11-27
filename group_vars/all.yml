@@ -60,7 +60,6 @@ dante_enabled: true
 watchtower_enabled: true
 
 wireguard_enabled: true
-wireguard_ui_subdomain: "wg"
 
 glances_enabled: true
 glances_subdomain: "glances"
