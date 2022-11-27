@@ -32,6 +32,7 @@ Vagrant.configure(2) do |config|
       glances.mayurifag.local
       filerun.mayurifag.local
       homer.mayurifag.local
+      mus.mayurifag.local
       netdata.mayurifag.local
       nextcloud.mayurifag.local
       portainer.mayurifag.local

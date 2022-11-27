@@ -79,6 +79,12 @@ nextcloud_subdomain: "nextcloud"
 filerun_enabled: true
 filerun_subdomain: "filerun"
 
+navidrome_enabled: true
+navidrome_subdomain: "mus"
+navidrome_spotify_id: "change_it"
+navidrome_spotify_secret: "change_it"
+navidrome_password_encryption_key: "change_it"
+
 portainer_enabled: true
 portainer_subdomain: "portainer"
 

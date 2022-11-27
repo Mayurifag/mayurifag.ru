@@ -1,0 +1,38 @@
+---
+- name: Delete Navidrome directories
+  file:
+    path: "{{ navidrome_data_directory }}/"
+    state: absent
+
+- name: Create Navidrome data directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0775
+  with_items:
+    - "{{ navidrome_data_directory }}/"
+
+- name: Navidrome Docker Container
+  docker_container:
+    name: navidrome
+    image: deluan/navidrome:latest
+    user: "{{ navidrome_user_and_group }}"
+    pull: true
+    recreate: yes
+    volumes:
+      - "{{ navidrome_data_directory }}/:/data"
+      - "{{ navidrome_music_directory }}:/music:ro"
+    env:
+      ND_SCANSCHEDULE: "5m"
+      ND_LASTFM_ENABLED: "false"
+      ND_ENABLEGRAVATAR: "true"
+      ND_SPOTIFY_ID: "{{ navidrome_spotify_id }}"
+      ND_SPOTIFY_SECRET: "{{ navidrome_spotify_secret }}"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "{{ navidrome_available_externally }}"
+      traefik.http.routers.navidrome.rule: "Host(`{{ navidrome_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.navidrome.loadbalancer.server.port: "4533"
+      traefik.http.routers.navidrome.middlewares: "my-headers@file"

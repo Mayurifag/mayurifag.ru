@@ -107,6 +107,7 @@ Host mayurifag-prod
 | Homer               | ✅     | <http://homer.mayurifag.local>                | 8080          |
 | Lazydocker          | -      | -                                             | -             |
 | mayurifag.github.io | ✅     | <http://mayurifag.local>                      | 8005          |
+| Navidrome           | ✅     | <http://mus.mayurifag.local>                  | 80            |
 | Netdata             | ✅     | <http://netdata.mayurifag.local>              | 19999         |
 | Nextcloud           | ✅     | <http://nextcloud.mayurifag.local>            | 80            |
 | Portainer           | ✅     | <http://portainer.mayurifag.local>            | 9000          |
@@ -155,12 +156,12 @@ need to deploy my services once again.
   - [ ] About lazydocker
   - [ ] Aliases
 - [ ] ~~<https://github.com/EmbarkStudios/wg-ui>~~
-- [ ] Navidrome
+- [x] Navidrome
 - [x] Doku https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/docker/doku.md
 - [ ] https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/other/firefox.md :))
 - [x] FileRun
-- [ ] Simple proxy server
-- [ ] Makefiles + info to launch only specified tags
+- [ ] Simple proxy server in docker
+- [x] Makefiles + info to launch only specified tags
 
 ### Low priority
 

@@ -1,0 +1,14 @@
+---
+navidrome_enabled: true
+navidrome_available_externally: "true"
+
+navidrome_subdomain: "mus"
+
+navidrome_data_directory: "/home/{{ admin_username }}/navidrome_data"
+navidrome_music_directory: "{{ filerun_data_directory }}/files/Music"
+
+navidrome_user_and_group: "33:33" # www-data:www-data
+
+navidrome_spotify_id: "change_it"
+navidrome_spotify_secret: "change_it"
+navidrome_password_encryption_key: "change_it"
