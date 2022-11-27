@@ -12,7 +12,6 @@ admin_userpassword: change_this
 admin_email: change_this@gmail.com
 
 root_userpassword: change_this
-shadowsocks_password: change_this
 proxy_user: change_this
 proxy_user_password: change_this
 
@@ -58,7 +57,6 @@ bootstrap_enabled: true
 swap_enabled: true
 mayurifag_github_io_enabled: true
 dante_enabled: true
-shadowsocks_enabled: true
 watchtower_enabled: true
 
 wireguard_enabled: true
@@ -93,3 +91,7 @@ traefik_subdomain: "traefik"
 
 wallabag_enabled: true
 wallabag_subdomain: "wallabag"
+
+shadowsocks_enabled: true
+shadowsocks_subdomain: "ss"
+shadowsocks_password: "change_this"

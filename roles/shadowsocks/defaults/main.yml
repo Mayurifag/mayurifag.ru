@@ -1,14 +1,11 @@
 ---
-shadowsocks_enabled: true
+shadowsocks_enabled: "true"
+shadowsocks_subdomain: "ss"
 
 shadowsocks_password: "change_it"
-shadowsocks_port: 8888
-shadowsocks_method: "chacha20-ietf-poly1305"
+shadowsocks_address: "0.0.0.0:1080"
+shadowsocks_encrypt_method: "chacha20-ietf-poly1305"
+shadowsocks_plugin: "xray-plugin"
+shadowsocks_plugin_opts: "server;path=/xray"
 
-shadowsocks_temp_download_folder: "/tmp/shadowsocks-deploy"
-
-shadowsocks_version: v1.12.4
-shadowsocks_download_link: "https://github.com/shadowsocks/shadowsocks-rust/releases/download/{{ shadowsocks_version }}/shadowsocks-{{ shadowsocks_version }}.x86_64-unknown-linux-gnu.tar.xz"
-
-shadowsocks_v2ray_version: v1.3.1
-shadowsocks_v2ray_download_link: "https://github.com/shadowsocks/v2ray-plugin/releases/download/{{ shadowsocks_v2ray_version }}/v2ray-plugin-linux-amd64-{{ shadowsocks_v2ray_version }}.tar.gz"
+shadowsocks_memory: 1g

@@ -3,32 +3,30 @@
 ## Description
 
 **DONT USE THIS REPOSITORY NO MATTER WHAT** due to security reasons (i.e. there
-is no role for ufw right now and it's docker based). Playbook is fine only for
-my personal usage.
+is no firewall rules, not much services monitoring, no fail2ban rules and most
+important: it uses docker).
 
-### Older implementation
-
-There is branch `old-implementation-with-mailserver` without docker. I decided
-to re-write roles from scratch with all XP I got so far and include docker
-containers for better maintainability. But still there are some ideas I want to
-migrate into newer implementation.
+Playbook is fine only for my personal usage.
 
 ## Requires
 
 ### DNS
 
-Obviously, `A` record for your TLD + wildcard/subdomain configuration.
+Obviously, `A` record for your TLD + wildcard/subdomain configuration in
+cloudflare.
 
 ### VPS
 
 - Debian 10-11 / KVM virtualization / Linux 4.9+ kernel version
 - Large folder for docker data (Done by VPS via large disk)
-- ssh authorization key for root user (Done by VPS or `ssh-copy-id root@mayurifag.ru`)
+- ssh authorization key for root user (Done by VPS or
+`ssh-copy-id root@mayurifag.ru`)
 
 ### Your PC
 
 - Ansible `python3 -m pip install --user ansible`
-- (only MacOS) - passlib `python3 -m pip install --user passlib` (to use crypto module from ansible)
+- (only MacOS) - passlib `python3 -m pip install --user passlib` (to use crypto
+module from ansible)
 - Vagrant 2.2.19 (latest) + VirtualBox (for testing)
 
 ## Instructions
@@ -99,25 +97,24 @@ Host mayurifag-prod
 
 ## Applications List
 
-| Name                | Docker             | Default endpoint                                | App. Port          |
-| ------------------- | ------------------ | ----------------------------------------------- | ------------------ |
-| Dante proxy         | :heavy_minus_sign: | <socks5://mayurifag.local:7777> (+auth)         | 7777               |
-| Doku                | :heavy_check_mark: | <http://doku.mayurifag.local>                   | 9090               |
-| Dozzle              | :heavy_check_mark: | <http://dozzle.mayurifag.local>                 | 8080               |
-| Filerun             | :heavy_check_mark: | <http://filerun.mayurifag.local>                | 80 [+3306 db]      |
-| Glances             | :heavy_check_mark: | <http://glances.mayurifag.local>                | 61208/61209        |
-| Homer               | :heavy_check_mark: | <http://homer.mayurifag.local>                  | 8080               |
-| Lazydocker          | :heavy_minus_sign: | :heavy_minus_sign:                              | :heavy_minus_sign: |
-| mayurifag.github.io | :heavy_check_mark: | <http://mayurifag.local>                        | 8005               |
-| Netdata             | :heavy_check_mark: | <http://netdata.mayurifag.local>                | 19999              |
-| Nextcloud           | :heavy_check_mark: | <http://nextcloud.mayurifag.local>              | 80                 |
-| Portainer           | :heavy_check_mark: | <http://portainer.mayurifag.local>              | 9000               |
-| Shadowsocks-rust    | :heavy_minus_sign: | <socks5://mayurifag.local:8888> (+v2ray config) | 8888               |
-| Traefik Dashboard   | :heavy_check_mark: | <http://traefik.mayurifag.local/dashboard/#/>   | 8080 (?)           |
-| Wallabag            | :heavy_check_mark: | <http://wallabag.mayurifag.local>               | 80                 |
-| Watchtower          | :heavy_check_mark: | :heavy_minus_sign:                              | :heavy_minus_sign: |
-| Wireguard           | :heavy_minus_sign: | <mayurifag.local:58172>                         | 58172              |
-| Wg-ui               | :heavy_check_mark: | <http://wg.mayurifag.local>                     | 8080               |
+| Name                | Docker | Default endpoint                              | App. Port     |
+| ------------------- | ------ | --------------------------------------------- | ------------- |
+| Dante proxy         | -      | <socks5://mayurifag.local:7777> (+auth)       | 7777          |
+| Doku                | ✅     | <http://doku.mayurifag.local>                 | 9090          |
+| Dozzle              | ✅     | <http://dozzle.mayurifag.local>               | 8080          |
+| Filerun             | ✅     | <http://filerun.mayurifag.local>              | 80 [+3306 db] |
+| Glances             | ✅     | <http://glances.mayurifag.local>              | 61208/61209   |
+| Homer               | ✅     | <http://homer.mayurifag.local>                | 8080          |
+| Lazydocker          | -      | -                                             | -             |
+| mayurifag.github.io | ✅     | <http://mayurifag.local>                      | 8005          |
+| Netdata             | ✅     | <http://netdata.mayurifag.local>              | 19999         |
+| Nextcloud           | ✅     | <http://nextcloud.mayurifag.local>            | 80            |
+| Portainer           | ✅     | <http://portainer.mayurifag.local>            | 9000          |
+| Shadowsocks-rust    | ✅     | <https://ss.mayurifag.local/xray> (uses TLS)  | 1080          |
+| Traefik Dashboard   | ✅     | <http://traefik.mayurifag.local/dashboard/#/> | 8080 (?)      |
+| Wallabag            | ✅     | <http://wallabag.mayurifag.local>             | 80            |
+| Watchtower          | ✅     | -                                             | -             |
+| Wireguard           | -      | <mayurifag.local:58172>                       | 58172         |
 
 ## TODO
 
@@ -184,9 +181,16 @@ need to deploy my services once again.
 - [ ] Migrate from dante to something docker based
   - [ ] <https://hub.docker.com/r/serjs/go-socks5-proxy/>
   - [ ] <https://github.com/schors/tgdante2>
-- [ ] Migrate from shadowsocks-rust + v2ray to shadowsocks2-go + x-ray / maybe docker
-  - [ ] <https://github.com/dmirubtsov/ss-xray-docker>
-  - [ ] <https://habr.com/ru/post/358126/>
+- [x] Migrate from shadowsocks-rust + v2ray to shadowsocks2-go + x-ray / maybe docker
+  - [x] <https://github.com/dmirubtsov/ss-xray-docker>
+  - [x] <https://habr.com/ru/post/358126/>
+
+## Older implementation
+
+There is branch `old-implementation-with-mailserver` without docker. I decided
+to re-write roles from scratch with all XP I got so far and include docker
+containers for better maintainability. But still there are some ideas I want to
+migrate into newer implementation.
 
 ## Based on / inspired / helpful
 

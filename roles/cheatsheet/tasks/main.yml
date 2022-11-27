@@ -1,4 +1,5 @@
 ---
+# TODO: show only if enabled
 - name: Show cheatsheet
   pause:
     seconds: 1
@@ -41,9 +42,27 @@
 
       You have to sync files now via app. Setup iOS/Android/Mac/Win(?)
       Sync bookmarks via floccus
+      Make keepassxc use new kdbx
 
       ### Wireguard
 
       Check /root/wg for some configurations.
 
+      ### Shadowsocks
+
+      Download xray-plugin and make sure it is may be launched through
+
+      # ss: client.json
+      {
+        "server": "{{ shadowsocks_subdomain }}.{{ server_hostname }}",
+        "server_port": 443,
+        "local_port": 1080,
+        "password": "{{ shadowsocks_password }}",
+        "method": "{{ shadowsocks_encrypt_method }}",
+        "plugin": "{{ shadowsocks_plugin }}",
+        "fast_open": true,
+        "mode": "tcp_and_udp",
+        "no_delay": true,
+        "plugin_opts": "path=/xray;mux=8;host={{ shadowsocks_subdomain }}.{{ server_hostname }};tls"
+      }
       =========================
