@@ -1,0 +1,8 @@
+---
+proxy_enabled: true
+
+proxy_user: "proxyuser"
+proxy_user_password: "secret"
+proxy_port: "7777"
+
+proxy_memory: 1g

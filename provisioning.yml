@@ -45,10 +45,10 @@
     ##
     ## Applications
     ##
-    - role: dante
+    - role: proxy
       tags:
-        - dante
-      when: (dante_enabled | default(False))
+        - proxy
+      when: (proxy_enabled | default(False))
 
     - role: shadowsocks
       tags:

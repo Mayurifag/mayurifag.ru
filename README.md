@@ -99,11 +99,11 @@ Host mayurifag-prod
 
 | Name                | Docker | Default endpoint                              | App. Port     |
 | ------------------- | ------ | --------------------------------------------- | ------------- |
-| Dante proxy         | -      | <socks5://mayurifag.local:7777> (+auth)       | 7777          |
 | Doku                | ✅     | <http://doku.mayurifag.local>                 | 9090          |
 | Dozzle              | ✅     | <http://dozzle.mayurifag.local>               | 8080          |
 | Filerun             | ✅     | <http://filerun.mayurifag.local>              | 80 [+3306 db] |
 | Glances             | ✅     | <http://glances.mayurifag.local>              | 61208/61209   |
+| Go-socks5-proxy     | ✅     | <socks5://mayurifag.local:7777> (+auth)       | 1080          |
 | Homer               | ✅     | <http://homer.mayurifag.local>                | 8080          |
 | Lazydocker          | -      | -                                             | -             |
 | mayurifag.github.io | ✅     | <http://mayurifag.local>                      | 8005          |
@@ -179,12 +179,13 @@ need to deploy my services once again.
 - [ ] Add Git (gitea/gitlab)
 - [ ] Check security <https://github.com/docker/docker-bench-security> <https://github.com/quay/clair>
 - [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
-- [ ] Migrate from dante to something docker based
-  - [ ] <https://hub.docker.com/r/serjs/go-socks5-proxy/>
-  - [ ] <https://github.com/schors/tgdante2>
+- [x] Migrate from dante to something docker based
+  - [x] <https://hub.docker.com/r/serjs/go-socks5-proxy/>
+  - [x] <https://github.com/schors/tgdante2>
 - [x] Migrate from shadowsocks-rust + v2ray to shadowsocks2-go + x-ray / maybe docker
   - [x] <https://github.com/dmirubtsov/ss-xray-docker>
   - [x] <https://habr.com/ru/post/358126/>
+- [ ] https://hub.docker.com/r/linuxserver/librespeed
 
 ## Older implementation
 

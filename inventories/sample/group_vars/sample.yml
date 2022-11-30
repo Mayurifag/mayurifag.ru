@@ -7,8 +7,6 @@ admin_userpassword: change_this
 admin_email: change_this@gmail.com
 
 root_userpassword: change_this
-proxy_user: change_this
-proxy_user_password: change_this
 
 # change this
 admin_authorized_keys: ""
@@ -52,10 +50,14 @@ enable_tls: true
 bootstrap_enabled: true
 swap_enabled: true
 mayurifag_github_io_enabled: true
-dante_enabled: true
 watchtower_enabled: true
 
 wireguard_enabled: true
+
+proxy_enabled: true
+proxy_user: change_this
+proxy_user_password: change_this
+proxy_port: "1080"
 
 glances_enabled: true
 glances_subdomain: "glances"

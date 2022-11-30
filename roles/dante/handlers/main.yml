@@ -1,3 +1,0 @@
----
-- name: restart danted
-  systemd: name=danted state=restarted

@@ -1,5 +1,0 @@
----
-dante_enabled: true
-
-proxy_user: proxyuser
-proxy_user_password: secret

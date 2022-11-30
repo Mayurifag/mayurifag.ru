@@ -10,7 +10,7 @@
 
       ### Telegram proxy link
 
-      https://t.me/socks?server={{ server_hostname }}&port=7777&user={{ proxy_user }}&pass={{ proxy_user_password }}
+      https://t.me/socks?server={{ server_hostname }}&port={{ proxy_port }}&user={{ proxy_user }}&pass={{ proxy_user_password }}
 
       ### SSH
 

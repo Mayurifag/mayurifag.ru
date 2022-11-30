@@ -1,0 +1,13 @@
+---
+- name: go-socks5-proxy Docker Container
+  docker_container:
+    name: go-socks5-proxy
+    image: serjs/go-socks5-proxy:latest
+    pull: true
+    env:
+      PROXY_USER: "{{ proxy_user }}"
+      PROXY_PASSWORD: "{{ proxy_user_password }}"
+      PROXY_PORT: "{{ proxy_port }}"
+    network_mode: host
+    restart_policy: unless-stopped
+    memory: "{{ portainer_memory }}"
