@@ -44,10 +44,6 @@
       Sync bookmarks via floccus
       Make keepassxc use new kdbx
 
-      ### Wireguard
-
-      Check /root/wg for some configurations.
-
       ### Shadowsocks
 
       Download xray-plugin and make sure it is may be launched through

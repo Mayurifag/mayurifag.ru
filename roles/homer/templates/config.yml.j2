@@ -88,6 +88,6 @@ services:
 {% if wireguard_enabled == true %}
       - name: "Wireguard UI"
         icon: "fas fa-bookmark"
-        subtitle: "BaseAuth"
-        url: "http://{{ wireguard_ui_subdomain }}.{{ server_hostname }}"
+        subtitle: "App auth"
+        url: "http://{{ wireguard_subdomain }}.{{ server_hostname }}"
 {% endif %}

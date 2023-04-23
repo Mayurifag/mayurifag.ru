@@ -45,9 +45,6 @@ sysctl_values:
   - { key: fs.protected_hardlinks, value: 1 }
   - { key: fs.protected_symlinks, value: 1 }
   - { key: fs.file-max, value: 51200 }
-  # Needed by wireguard and shadowsocks, but its better to set here to 0 if you dont use wireguard/openvpn/similar
-  - { key: net.ipv4.ip_forward, value: 1 }
-  - { key: net.ipv6.conf.all.forwarding, value: 1 }
 
   # ss optimizations
   - { key: net.ipv4.tcp_fastopen, value: 3 }

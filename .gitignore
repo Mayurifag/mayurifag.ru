@@ -2,6 +2,7 @@ site
 .vagrant
 *.retry
 *.log
+.DS_Store
 # inventories
 .cache
 
@@ -18,7 +19,6 @@ roles/geerlingguy.*
 roles/robertdebock.*
 roles/darkwizard242.*
 roles/djx339.*
-wireguard_profiles/
 tests/test.yml
 inventories/my-provision
 

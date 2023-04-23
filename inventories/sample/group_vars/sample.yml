@@ -53,6 +53,7 @@ mayurifag_github_io_enabled: true
 watchtower_enabled: true
 
 wireguard_enabled: true
+wireguard_subdomain: "wg"
 
 proxy_enabled: true
 proxy_user: change_this

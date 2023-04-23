@@ -1,10 +1,11 @@
 ---
 wireguard_enabled: true
+wireguard_available_externally: "true"
 
-wireguard_vpn_clients: 5
-wireguard_vpn_interface: 'wg0'
-wireguard_vpn_network: '10.100.100'
-wireguard_vpn_persistent_keepalive: 0
-wireguard_vpn_port: '58172'
+wireguard_docker_image: weejewel/wg-easy:latest
+wireguard_data_directory: "{{ docker_home }}/wireguard"
+wireguard_subdomain: "wg"
 
-wg_memory: 1g
+wireguard_memory: 1g
+
+# https://www.reddit.com/r/WireGuard/comments/1290vyt/wgeasy_and_android/

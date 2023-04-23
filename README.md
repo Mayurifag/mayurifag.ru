@@ -115,7 +115,7 @@ Host mayurifag-prod
 | Traefik Dashboard   | ✅     | <http://traefik.mayurifag.local/dashboard/#/> | 8080 (?)      |
 | Wallabag            | ✅     | <http://wallabag.mayurifag.local>             | 80            |
 | Watchtower          | ✅     | -                                             | -             |
-| Wireguard           | -      | <mayurifag.local:58172>                       | 58172         |
+| Wireguard-Easy      | ✅     | <http://wg.mayurifag.local>                   | 58172         |
 
 ## TODO
 

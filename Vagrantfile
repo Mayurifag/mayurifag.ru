@@ -38,6 +38,7 @@ Vagrant.configure(2) do |config|
       portainer.mayurifag.local
       traefik.mayurifag.local
       wallabag.mayurifag.local
+      wg.mayurifag.local
     ]
 
     config.vm.provision "ansible_local", run: "always", type: :ansible_local do |ansible|
