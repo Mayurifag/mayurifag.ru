@@ -13,11 +13,11 @@ Playbook is fine only for my personal usage.
 ### DNS
 
 Obviously, `A` record for your TLD + wildcard/subdomain configuration in
-cloudflare.
+Cloudflare or your favourite DNS provider.
 
 ### VPS
 
-- Debian 10-11 / KVM virtualization / Linux 4.9+ kernel version
+- Debian 10-11 (maybe works fine on other `apt` distros)
 - Large folder for docker data (Done by VPS via large disk)
 - ssh authorization key for root user (Done by VPS or
 `ssh-copy-id root@mayurifag.ru`)
@@ -35,6 +35,7 @@ module from ansible)
 git clone https://github.com/Mayurifag/mayurifag.ru.git
 cd mayurifag.ru
 cp -rfp inventories/sample inventories/my-provision
+# ... change my-provision ...
 ansible-galaxy install -r requirements.yml
 ```
 
@@ -133,7 +134,9 @@ need to deploy my services once again.
 - [x] Comment out ports sections on containers and try to work with them
 - [x] Add Dozzle <https://github.com/amir20/dozzle>
 - [ ] Uptime Kuma
-- [ ] Add Authelia <https://github.com/authelia/authelia> / Remove baseauth
+- [ ] Add systemd services
+- [ ] Migrate to dashboard which is easy maintainable: flame (with labels) / homerr
+- [ ] Add Authentik / Remove baseauth
 - [ ] Add Cloudflare companion tiredofit/traefik-cloudflare-companion:latest docker
 - [ ] Add Vikunja <https://vikunja.io/docs/full-docker-example/>
 - [ ] Move this section to issues and kanban
