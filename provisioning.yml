@@ -55,6 +55,11 @@
         - shadowsocks
       when: (shadowsocks_enabled | default(False))
 
+    - role: xui
+      tags:
+        - xui
+      when: (xui_enabled | default(False))
+
     - role: wireguard
       tags:
         - wireguard

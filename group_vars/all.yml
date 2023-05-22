@@ -103,3 +103,6 @@ wallabag_subdomain: "wallabag"
 shadowsocks_enabled: true
 shadowsocks_subdomain: "ss"
 shadowsocks_password: "change_this"
+
+xui_enabled: true
+xui_subdomain: "x"

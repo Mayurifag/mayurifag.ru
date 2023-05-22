@@ -1,0 +1,19 @@
+---
+- name: xui [3x-ui] container
+  docker_container:
+    name: 3x-ui
+    image: ghcr.io/mhsanaei/3x-ui:latest
+    pull: true
+    env:
+      XRAY_VMESS_AEAD_FORCED: 'false'
+    restart_policy: unless-stopped
+    memory: "{{ xui_memory }}"
+    network_mode: host
+    volumes:
+      - "{{ xui_data_directory }}/db/:/etc/x-ui/"
+      - "{{ xui_data_directory }}/cert/:/root/cert/"
+    labels:
+      traefik.enable: "{{ xui_available_externally }}"
+      traefik.http.routers.xui.rule: "Host(`{{ xui_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.xui.loadbalancer.server.port: "2053"
+      traefik.http.routers.xui.middlewares: "my-headers@file"

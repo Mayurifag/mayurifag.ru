@@ -1,0 +1,8 @@
+---
+xui_enabled: true
+xui_available_externally: "true"
+
+xui_data_directory: "{{ docker_home }}/xui"
+xui_subdomain: "x"
+
+xui_memory: 1g
