@@ -140,6 +140,7 @@ need to deploy my services once again.
 - [ ] Add Cloudflare companion tiredofit/traefik-cloudflare-companion:latest docker
 - [ ] Add Vikunja <https://vikunja.io/docs/full-docker-example/>
 - [ ] Move this section to issues and kanban
+- [ ] Add zswap
 - [x] Migrate from mysql to postgres for nextcloud. Look other perfomance boosters. cron at docker for nextcloud. bump versions
   - [x] <https://github.com/ReinerNippes/nextcloud_on_docker>
   - [x] <https://help.nextcloud.com/t/howto-ubuntu-docker-nextcloud-talk-collabora/76430>
