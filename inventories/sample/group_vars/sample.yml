@@ -72,6 +72,9 @@ netdata_subdomain: "netdata"
 doku_enabled: true
 doku_subdomain: "doku"
 
+whattocommit_enabled: true
+whattocommit_subdomain: "commit"
+
 nextcloud_enabled: true
 nextcloud_subdomain: "nextcloud"
 

@@ -108,6 +108,11 @@
         - doku
       when: (doku_enabled | default(False))
 
+    - role: whattocommit
+      tags:
+        - whattocommit
+      when: (whattocommit_enabled | default(False))
+
     - role: wallabag
       tags:
         - wallabag

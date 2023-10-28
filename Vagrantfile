@@ -27,6 +27,7 @@ Vagrant.configure(2) do |config|
     config.vm.network "private_network", ip: "192.168.56.12"
     config.vm.hostname = "mayurifag.local"
     config.hostmanager.aliases = %w[
+      commit.mayurifag.local
       doku.mayurifag.local
       dozzle.mayurifag.local
       glances.mayurifag.local
