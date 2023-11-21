@@ -100,6 +100,7 @@ Host mayurifag-prod
 
 | Name                | Docker | Default endpoint                              | App. Port     |
 | ------------------- | ------ | --------------------------------------------- | ------------- |
+| Blocky              | ✅     | -                                             | -             |
 | Doku                | ✅     | <http://doku.mayurifag.local>                 | 9090          |
 | Dozzle              | ✅     | <http://dozzle.mayurifag.local>               | 8080          |
 | Filerun             | ✅     | <http://filerun.mayurifag.local>              | 80 [+3306 db] |
@@ -135,6 +136,7 @@ need to deploy my services once again.
 - [x] Comment out ports sections on containers and try to work with them
 - [x] Add Dozzle <https://github.com/amir20/dozzle>
 - [ ] Uptime Kuma
+- [x] Blocky DNS
 - [ ] Add systemd services
 - [ ] Migrate to dashboard which is easy maintainable: flame (with labels) / homerr
 - [ ] Add Authentik / Remove baseauth
@@ -164,10 +166,11 @@ need to deploy my services once again.
 - [ ] ~~<https://github.com/EmbarkStudios/wg-ui>~~
 - [x] Navidrome
 - [x] Doku https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/docker/doku.md
-- [ ] https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/other/firefox.md :))
+- [ ] ~~<https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/other/firefox.md>~~
 - [x] FileRun
-- [ ] Simple proxy server in docker
+- [x] Simple proxy server in docker
 - [x] Makefiles + info to launch only specified tags
+- [ ] Librespeed
 
 ### Low priority
 

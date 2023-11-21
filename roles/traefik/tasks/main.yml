@@ -27,6 +27,10 @@
     image: "{{ traefik_docker_image }}"
     pull: true
     network_mode: host
+    # ports:
+    #   - "80:80"
+    #   - "443:443"
+    #   - "8080:8080"
     volumes:
       - "{{ traefik_data_directory }}/traefik.toml:/etc/traefik/traefik.toml:ro"
       - "{{ traefik_data_directory }}/dynamic_configs:/etc/traefik/dynamic_configs:ro"

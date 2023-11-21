@@ -21,7 +21,7 @@
       - "{{ portainer_data_directory }}:/data:rw"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "/etc/timezone:/etc/timezone:ro"
-    restart_policy: unless-stopped
+    restart_policy: always
     memory: "{{ portainer_memory }}"
     labels:
       traefik.enable: "{{ portainer_available_externally }}"

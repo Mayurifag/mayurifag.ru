@@ -1,0 +1,34 @@
+upstreams:
+  groups:
+    default:
+      - 81.169.136.222
+      - 172.104.242.111
+      - 217.160.70.42
+  timeout: 2s
+
+blocking:
+  blackLists:
+    ads:
+      - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+  clientGroupsBlock:
+    default:
+      - ads
+
+ports:
+  dns: 53
+  http: 4000
+  tls: 853
+
+caching:
+  minTime: 5m
+  maxItemsCount: 0
+  prefetching: true
+  prefetchExpires: 720h
+  prefetchThreshold: 5
+  prefetchMaxItemsCount: 0
+  cacheTimeNegative: 30m
+
+queryLog:
+  logRetentionDays: 1
+
+bootstrapDns: tcp+udp:1.1.1.1

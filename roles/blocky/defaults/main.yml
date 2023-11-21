@@ -1,0 +1,8 @@
+---
+blocky_enabled: true
+blocky_available_externally: "true"
+
+blocky_subdomain: "dns"
+
+# directories
+blocky_data_directory: "/home/{{ admin_username }}/blocky"

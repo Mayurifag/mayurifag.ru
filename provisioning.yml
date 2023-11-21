@@ -78,6 +78,11 @@
         - homer
       when: (homer_enabled | default(False))
 
+    - role: blocky
+      tags:
+        - blocky
+      when: (blocky_enabled | default(False))
+
     - role: nextcloud
       tags:
         - nextcloud

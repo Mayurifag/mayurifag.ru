@@ -81,6 +81,8 @@ nextcloud_subdomain: "nextcloud"
 filerun_enabled: true
 filerun_subdomain: "filerun"
 
+blocky_enabled: true
+
 navidrome_enabled: true
 navidrome_subdomain: "mus"
 navidrome_spotify_id: "change_it"

@@ -1,0 +1,41 @@
+---
+- name: Delete Blocky directory
+  file:
+    path: "{{ blocky_data_directory }}"
+    state: absent
+
+- name: Create Blocky directory
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ blocky_data_directory }}/"
+
+- name: Template Blocky config.yaml
+  template:
+    src: config.yaml.j2
+    dest: "{{ blocky_data_directory }}/config.yaml"
+
+- name: Blocky Docker Container
+  docker_container:
+    name: blocky
+    image: spx01/blocky
+    pull: true
+    recreate: yes
+    volumes:
+      - "{{ blocky_data_directory }}/config.yaml:/app/config.yml"
+    env:
+      TZ: "{{ server_timezone }}"
+    restart_policy: unless-stopped
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "853:853"
+    labels:
+      traefik.enable: "{{ blocky_available_externally }}"
+      traefik.tcp.routers.blocky-dns.rule: "HostSNI(`{{ server_hostname }}`)"
+      traefik.tcp.routers.blocky-dns.tls.options: "dot@file"
+      traefik.http.routers.blocky.rule: "Host(`{{ blocky_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.blocky.loadbalancer.server.port: "4000"
+      traefik.frontend.rule: "HostRegexp:{catchall:.*}"
+      traefik.frontend.priority: "1"

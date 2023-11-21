@@ -61,4 +61,9 @@
         "no_delay": true,
         "plugin_opts": "path=/xray;mux=8;host={{ shadowsocks_subdomain }}.{{ server_hostname }};tls"
       }
+
+      ### DNS
+
+      TODO: set DNS to ip of this host
+
       =========================
