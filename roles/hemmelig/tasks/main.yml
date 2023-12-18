@@ -1,0 +1,31 @@
+---
+- name: Delete Hemmelig directory
+  file:
+    path: "{{ hemmelig_data_directory }}"
+    state: absent
+
+- name: Create Hemmelig Directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: 1000
+    group: 1000
+  with_items:
+    - "{{ hemmelig_data_directory }}/files"
+    - "{{ hemmelig_data_directory }}/database"
+
+- name: Create Hemmelig container
+  docker_container:
+    name: hemmelig
+    image: "{{ hemmelig_docker_image }}"
+    pull: true
+    volumes:
+      - "{{ hemmelig_data_directory }}/files:/var/tmp/hemmelig/upload/files"
+      - "{{ hemmelig_data_directory }}/database:/home/node/hemmelig/database/"
+    restart_policy: unless-stopped
+    memory: "{{ hemmelig_memory }}"
+    labels:
+      traefik.enable: "{{ hemmelig_available_externally }}"
+      traefik.http.routers.hemmelig.rule: "Host(`{{ hemmelig_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.hemmelig.loadbalancer.server.port: "3000"
+      traefik.http.routers.hemmelig.middlewares: "my-headers@file"

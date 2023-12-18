@@ -1,0 +1,10 @@
+---
+hemmelig_enabled: true
+
+hemmelig_docker_image: hemmeligapp/hemmelig:v5.15.3
+hemmelig_available_externally: "true"
+hemmelig_subdomain: secret
+
+hemmelig_memory: 1g
+
+hemmelig_data_directory: "{{ docker_home }}/hemmelig"

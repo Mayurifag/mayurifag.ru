@@ -104,3 +104,6 @@ wallabag_subdomain: "wallabag"
 shadowsocks_enabled: true
 shadowsocks_subdomain: "ss"
 shadowsocks_password: "change_this"
+
+hemmelig_enabled: true
+hemmelig_subdomain: "secret"

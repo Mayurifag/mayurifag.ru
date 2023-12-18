@@ -133,6 +133,11 @@
         - filerun
       when: (filerun_enabled | default(False))
 
+    - role: hemmelig
+      tags:
+        - hemmelig
+      when: (hemmelig_enabled | default(False))
+
     - role: navidrome
       tags:
         - navidrome
