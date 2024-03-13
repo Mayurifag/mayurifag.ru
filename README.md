@@ -130,6 +130,8 @@ need to deploy my services once again.
 
 ### High priority
 
+- [ ] Log rotation for docker containers
+- [ ] https://github.com/alexta69/metube
 - [ ] ~~Add cleaning up apt-get to get extra 1GB~~
 - [ ] ~~Think how to rotate logs easily for docker (takes all the space in a year or more)~~
 - [ ] Ssh configuration: change port and make the sshd configuration cheatsheet with Readme
