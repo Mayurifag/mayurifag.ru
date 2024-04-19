@@ -98,29 +98,28 @@ Host mayurifag-prod
 
 ## Applications List
 
-| Name                    | Default endpoint                              | App. Port     |
-| ----------------------- | --------------------------------------------- | ------------- |
-| Blocky                  | -                                             | -             |
-| Doku                    | <http://doku.mayurifag.local>                 | 9090          |
-| Dozzle                  | <http://dozzle.mayurifag.local>               | 8080          |
-| Filerun                 | <http://filerun.mayurifag.local>              | 80 [+3306 db] |
-| Filebrowser             | <http://fb.mayurifag.local>                   | 80            |
-| Glances                 | <http://glances.mayurifag.local>              | 61208/61209   |
-| Go-socks5-proxy         | <socks5://mayurifag.local:7777> (+auth)       | 1080          |
-| Homer                   | <http://homer.mayurifag.local>                | 8080          |
-| Hemmelig                | <http://secret.mayurifag.local>               | 3000          |
-| mayurifag.github.io     | <http://mayurifag.local>                      | 8005          |
-| Navidrome               | <http://mus.mayurifag.local>                  | 80            |
-| Netdata                 | <http://netdata.mayurifag.local>              | 19999         |
-| Nextcloud               | <http://nextcloud.mayurifag.local>            | 80            |
-| Owncloud Infinite Scale | <http://ocis.mayurifag.local>                 | 9200          |
-| Portainer               | <http://portainer.mayurifag.local>            | 9000          |
-| Shadowsocks-rust        | <https://ss.mayurifag.local/xray> (uses TLS)  | 1080          |
-| Traefik Dashboard       | <http://traefik.mayurifag.local/dashboard/#/> | 8080 (?)      |
-| Wallabag                | <http://wallabag.mayurifag.local>             | 80            |
-| Watchtower              | -                                             | -             |
-| Wireguard-Easy          | <http://wg.mayurifag.local>                   | 58172         |
-| Whattocommit            | <http://commit.mayurifag.local>               | 8080          |
+| Name                    | Default endpoint                             | App. Port     |
+| ----------------------- | -------------------------------------------- | ------------- |
+| Blocky                  | -                                            | -             |
+| Doku                    | <http://doku.mayurifag.local>                | 9090          |
+| Dozzle                  | <http://dozzle.mayurifag.local>              | 8080          |
+| Filerun                 | <http://filerun.mayurifag.local>             | 80 [+3306 db] |
+| Filebrowser             | <http://fb.mayurifag.local>                  | 80            |
+| Glances                 | <http://glances.mayurifag.local>             | 61208/61209   |
+| Go-socks5-proxy         | <socks5://mayurifag.local:7777> (+auth)      | 1080          |
+| Homer                   | <http://homer.mayurifag.local>               | 8080          |
+| Hemmelig                | <http://secret.mayurifag.local>              | 3000          |
+| mayurifag.github.io     | <http://mayurifag.local>                     | 8005          |
+| Navidrome               | <http://mus.mayurifag.local>                 | 80            |
+| Netdata                 | <http://netdata.mayurifag.local>             | 19999         |
+| Nextcloud               | <http://nextcloud.mayurifag.local>           | 80            |
+| Owncloud Infinite Scale | <http://ocis.mayurifag.local>                | 9200          |
+| Portainer               | <http://portainer.mayurifag.local>           | 9000          |
+| Shadowsocks-rust        | <https://ss.mayurifag.local/xray> (uses TLS) | 1080          |
+| Wallabag                | <http://wallabag.mayurifag.local>            | 80            |
+| Watchtower              | -                                            | -             |
+| Wireguard-Easy          | <http://wg.mayurifag.local>                  | 58172         |
+| Whattocommit            | <http://commit.mayurifag.local>              | 8080          |
 
 ## TODO
 

@@ -27,12 +27,6 @@ services:
   - name: "Monitoring"
     icon: "fas fa-desktop"
     items:
-{% if traefik_enabled == true %}
-      - name: "Traefik Dashboard"
-        icon: "fas fa-traffic-light"
-        subtitle: "BaseAuth"
-        url: "http://{{ traefik_subdomain }}.{{ server_hostname }}/dashboard/"
-{% endif %}
 {% if dozzle_enabled == true %}
       - name: "Dozzle"
         icon: "fas fa-tablet-rugged"
