@@ -4,7 +4,7 @@ name: Run linters
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
 
   # Allows you to run this workflow manually from the Actions tab

@@ -1,6 +1,5 @@
 {
-    "recommendations": [
-        "bungcip.better-toml",
-        "editorconfig.editorconfig"
-    ]
+  "recommendations": [
+    "editorconfig.editorconfig"
+  ]
 }
