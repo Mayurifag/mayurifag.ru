@@ -88,6 +88,11 @@
         - nextcloud
       when: (nextcloud_enabled | default(False))
 
+    - role: ocis
+      tags:
+        - ocis
+      when: (ocis_enabled | default(False))
+
     - role: glances
       tags:
         - glances

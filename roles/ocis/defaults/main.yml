@@ -1,0 +1,16 @@
+---
+ocis_enabled: true
+ocis_available_externally: "true"
+
+# directories
+ocis_data_directory: "{{ docker_home }}/ocis"
+
+ocis_container: "owncloud/ocis"
+ocis_version: "5.0.2"
+
+ocis_subdomain: "ocis"
+
+# username / passwords
+ocis_sql_user: "ocis-user"
+ocis_sql_password: "ocis-pass"
+ocis_redis_password: "ocis-redis"

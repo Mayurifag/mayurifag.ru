@@ -82,6 +82,9 @@ whattocommit_subdomain: "commit"
 nextcloud_enabled: true
 nextcloud_subdomain: "nextcloud"
 
+ocis_enabled: true
+ocis_subdomain: "ocis"
+
 filerun_enabled: true
 filerun_subdomain: "filerun"
 

@@ -98,27 +98,28 @@ Host mayurifag-prod
 
 ## Applications List
 
-| Name                | Default endpoint                              | App. Port     |
-| ------------------- | --------------------------------------------- | ------------- |
-| Blocky              | -                                             | -             |
-| Doku                | <http://doku.mayurifag.local>                 | 9090          |
-| Dozzle              | <http://dozzle.mayurifag.local>               | 8080          |
-| Filerun             | <http://filerun.mayurifag.local>              | 80 [+3306 db] |
-| Glances             | <http://glances.mayurifag.local>              | 61208/61209   |
-| Go-socks5-proxy     | <socks5://mayurifag.local:7777> (+auth)       | 1080          |
-| Homer               | <http://homer.mayurifag.local>                | 8080          |
-| Hemmelig            | <http://secret.mayurifag.local>               | 3000          |
-| mayurifag.github.io | <http://mayurifag.local>                      | 8005          |
-| Navidrome           | <http://mus.mayurifag.local>                  | 80            |
-| Netdata             | <http://netdata.mayurifag.local>              | 19999         |
-| Nextcloud           | <http://nextcloud.mayurifag.local>            | 80            |
-| Portainer           | <http://portainer.mayurifag.local>            | 9000          |
-| Shadowsocks-rust    | <https://ss.mayurifag.local/xray> (uses TLS)  | 1080          |
-| Traefik Dashboard   | <http://traefik.mayurifag.local/dashboard/#/> | 8080 (?)      |
-| Wallabag            | <http://wallabag.mayurifag.local>             | 80            |
-| Watchtower          | -                                             | -             |
-| Wireguard-Easy      | <http://wg.mayurifag.local>                   | 58172         |
-| Whattocommit        | <http://commit.mayurifag.local>               | 8080          |
+| Name                    | Default endpoint                              | App. Port     |
+| ----------------------- | --------------------------------------------- | ------------- |
+| Blocky                  | -                                             | -             |
+| Doku                    | <http://doku.mayurifag.local>                 | 9090          |
+| Dozzle                  | <http://dozzle.mayurifag.local>               | 8080          |
+| Filerun                 | <http://filerun.mayurifag.local>              | 80 [+3306 db] |
+| Glances                 | <http://glances.mayurifag.local>              | 61208/61209   |
+| Go-socks5-proxy         | <socks5://mayurifag.local:7777> (+auth)       | 1080          |
+| Homer                   | <http://homer.mayurifag.local>                | 8080          |
+| Hemmelig                | <http://secret.mayurifag.local>               | 3000          |
+| mayurifag.github.io     | <http://mayurifag.local>                      | 8005          |
+| Navidrome               | <http://mus.mayurifag.local>                  | 80            |
+| Netdata                 | <http://netdata.mayurifag.local>              | 19999         |
+| Nextcloud               | <http://nextcloud.mayurifag.local>            | 80            |
+| Owncloud Infinite Scale | <http://ocis.mayurifag.local>                 | 9200          |
+| Portainer               | <http://portainer.mayurifag.local>            | 9000          |
+| Shadowsocks-rust        | <https://ss.mayurifag.local/xray> (uses TLS)  | 1080          |
+| Traefik Dashboard       | <http://traefik.mayurifag.local/dashboard/#/> | 8080 (?)      |
+| Wallabag                | <http://wallabag.mayurifag.local>             | 80            |
+| Watchtower              | -                                             | -             |
+| Wireguard-Easy          | <http://wg.mayurifag.local>                   | 58172         |
+| Whattocommit            | <http://commit.mayurifag.local>               | 8080          |
 
 ## TODO
 
@@ -131,7 +132,7 @@ need to deploy my services once again.
 ### High priority
 
 - [ ] Log rotation for docker containers
-- [ ] https://github.com/alexta69/metube
+- [ ] ~~https://github.com/alexta69/metube~~
 - [ ] ~~Add cleaning up apt-get to get extra 1GB~~
 - [ ] ~~Think how to rotate logs easily for docker (takes all the space in a year or more)~~
 - [ ] Ssh configuration: change port and make the sshd configuration cheatsheet with Readme
@@ -140,13 +141,13 @@ need to deploy my services once again.
 - [ ] Uptime Kuma
 - [x] Blocky DNS
 - [ ] Add systemd services
-- [ ] Migrate to dashboard which is easy maintainable: flame (with labels) / homerr
+- [ ] Migrate to dashboard which is easy maintainable: flame (with labels)
 - [ ] Add Authentik / Remove baseauth
 - [ ] Add Cloudflare companion tiredofit/traefik-cloudflare-companion:latest docker
 - [ ] Add Vikunja <https://vikunja.io/docs/full-docker-example/>
 - [ ] Move this section to issues and kanban
 - [ ] Add zswap
-- [ ] <https://github.com/pglombardo/PasswordPusher>
+- [ ] ~~<https://github.com/pglombardo/PasswordPusher>~~
 - [x] Migrate from mysql to postgres for nextcloud. Look other perfomance boosters. cron at docker for nextcloud. bump versions
   - [x] <https://github.com/ReinerNippes/nextcloud_on_docker>
   - [x] <https://help.nextcloud.com/t/howto-ubuntu-docker-nextcloud-talk-collabora/76430>
@@ -155,11 +156,12 @@ need to deploy my services once again.
 
 ### Medium priority
 
+- [ ] https://github.com/epoupon/lms
 - [ ] Add automatic backup solution (duplicati?). Do I need anything more than
       /data/docker_data?
 - [ ] Add ufw with rules + make docker respect the rules
 - [ ] Add pastebin
-- [ ] Make traefik to write logs to file + logrotate them
+- [ ] ~~Make traefik to write logs to file + logrotate them~~
 - [ ] Suggest if I need more fail2ban jail rules
   - [ ] <https://shadowsocks.org/en/wiki/Setup-fail2ban.html>
 - [ ] Add motd.txt to server
