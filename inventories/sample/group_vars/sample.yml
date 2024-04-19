@@ -5,6 +5,8 @@
 admin_username: change_this
 admin_userpassword: change_this
 admin_email: change_this@gmail.com
+admin_uid: 1000
+admin_gid: 1001
 
 root_userpassword: change_this
 
@@ -35,6 +37,7 @@ traefik_acme_server: "https://acme-staging-v02.api.letsencrypt.org/directory" # 
 ansible_python_interpreter: /usr/bin/python3
 
 docker_home: /home/{{ admin_username }}/docker_data
+files_home: /home/{{ admin_username }}/Files
 
 ##
 ## Galaxy extensions
@@ -80,6 +83,9 @@ nextcloud_subdomain: "nextcloud"
 
 ocis_enabled: true
 ocis_subdomain: "ocis"
+
+filebrowser_enabled: true
+filebrowser_subdomain: "fb"
 
 filerun_enabled: true
 filerun_subdomain: "filerun"

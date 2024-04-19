@@ -104,6 +104,7 @@ Host mayurifag-prod
 | Doku                    | <http://doku.mayurifag.local>                 | 9090          |
 | Dozzle                  | <http://dozzle.mayurifag.local>               | 8080          |
 | Filerun                 | <http://filerun.mayurifag.local>              | 80 [+3306 db] |
+| Filebrowser             | <http://fb.mayurifag.local>                   | 80            |
 | Glances                 | <http://glances.mayurifag.local>              | 61208/61209   |
 | Go-socks5-proxy         | <socks5://mayurifag.local:7777> (+auth)       | 1080          |
 | Homer                   | <http://homer.mayurifag.local>                | 8080          |

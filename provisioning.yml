@@ -93,6 +93,11 @@
         - ocis
       when: (ocis_enabled | default(False))
 
+    - role: filebrowser
+      tags:
+        - filebrowser
+      when: (filebrowser_enabled | default(False))
+
     - role: glances
       tags:
         - glances

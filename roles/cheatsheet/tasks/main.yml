@@ -44,6 +44,11 @@
       Sync bookmarks via floccus
       Make keepassxc use new kdbx
 
+      ### Filebrowser
+
+      Update password. Default are admin:admin
+      Set dark theme.
+
       ### Shadowsocks
 
       Download xray-plugin and make sure it is may be launched through

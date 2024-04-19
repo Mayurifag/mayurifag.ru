@@ -5,4 +5,4 @@ blocky_available_externally: "true"
 blocky_subdomain: "dns"
 
 # directories
-blocky_data_directory: "/home/{{ admin_username }}/blocky"
+blocky_data_directory: "{{ docker_home }}/blocky"

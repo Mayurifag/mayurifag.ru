@@ -8,8 +8,8 @@
   file:
     path: "{{ item }}"
     state: directory
-    owner: 1000
-    group: 1000
+    owner: "{{ admin_uid }}"
+    group: "{{ admin_gid }}"
   with_items:
     - "{{ hemmelig_data_directory }}/files"
     - "{{ hemmelig_data_directory }}/database"

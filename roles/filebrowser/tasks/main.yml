@@ -1,0 +1,61 @@
+---
+- name: Delete Filebrowser directory
+  file:
+    path: "{{ filebrowser_data_directory }}"
+    state: absent
+
+- name: Create Filebrowser directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ filebroswer_uid }}"
+    group: "{{ filebroswer_gid }}"
+    mode: u+rw,g-wx,o-rwx
+  with_items:
+    - "{{ filebrowser_files_directory }}"
+    - "{{ filebrowser_data_directory }}/config"
+
+- name: Touch Filebrowser database file
+  file:
+    path: "{{ filebrowser_data_directory }}/config/filebrowser.db"
+    state: touch
+    mode: u+rw,g-wx,o-rwx
+    modification_time: preserve
+    access_time: preserve
+    owner: "{{ filebroswer_uid }}"
+    group: "{{ filebroswer_gid }}"
+
+- name: Copy Filebrowser settings file
+  template:
+    src: settings.json.j2
+    dest: "{{ filebrowser_data_directory }}/config/settings.json"
+    owner: "{{ filebroswer_uid }}"
+    group: "{{ filebroswer_gid }}"
+    mode: u+rw,g-wx,o-rwx
+
+- name: Filebrowser Docker Container
+  docker_container:
+    name: filebrowser
+    image: "{{ filebrowser_container }}:{{ filebrowser_version }}"
+    pull: true
+    recreate: yes
+    volumes:
+      - "{{ filebrowser_data_directory }}/config/filebrowser.db:/database/filebrowser.db"
+      - "{{ filebrowser_data_directory }}/config/settings.json:/config/settings.json"
+      - "{{ filebrowser_data_directory }}/files:/srv"
+    env:
+      TZ: "{{ server_timezone }}"
+      PUID: "{{ filebroswer_uid }}"
+      PGID: "{{ filebroswer_gid }}"
+    restart_policy: unless-stopped
+    # v2.28.0 hotfix
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    labels:
+      traefik.enable: "{{ filebrowser_available_externally }}"
+      traefik.http.routers.filebrowser.rule: "Host(`{{ filebrowser_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.filebrowser.loadbalancer.server.port: "80"
+      traefik.http.routers.filebrowser.middlewares: "my-headers@file"

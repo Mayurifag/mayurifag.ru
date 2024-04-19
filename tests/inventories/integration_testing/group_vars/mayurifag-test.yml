@@ -12,13 +12,13 @@ admin_authorized_keys: ""
 server_timezone: Europe/Moscow
 server_hostname: mayurifag.local
 
-
 ###
 ### General
 ###
 ansible_python_interpreter: /usr/bin/python3
 
 docker_home: /home/{{ admin_username }}/docker_data
+files_home: /home/{{ admin_username }}/Files
 
 ##
 ## Galaxy extensions
