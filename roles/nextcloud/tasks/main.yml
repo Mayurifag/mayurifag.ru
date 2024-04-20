@@ -1,18 +1,34 @@
 ---
+- name: Delete Nextcloud directories
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ nextcloud_data_directory }}/postgres"
+    - "{{ nextcloud_data_directory }}/redis"
+
 - name: Create Nextcloud directories
   file:
     path: "{{ item }}"
     state: directory
   with_items:
-    - "{{ nextcloud_data_directory }}/nextcloud"
     - "{{ nextcloud_data_directory }}/postgres"
     - "{{ nextcloud_data_directory }}/redis"
+
+- name: Create Nextcloud files directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0770
+  with_items:
+    - "{{ nextcloud_files_directory }}"
 
 - name: Nextcloud Redis Docker Container
   docker_container:
     name: nextcloud-redis
     image: redis:7-alpine
     pull: true
+    recreate: yes
     restart_policy: unless-stopped
     volumes:
       - "{{ nextcloud_data_directory }}/redis:/var/lib/redis"
@@ -20,7 +36,8 @@
 - name: Nextcloud Postgres Docker Container
   docker_container:
     name: nextcloud-postgres
-    image: postgres:14-alpine
+    image: postgres:15-alpine
+    recreate: yes
     pull: true
     volumes:
       - "{{ nextcloud_data_directory }}/postgres:/var/lib/postgresql/data"
@@ -33,13 +50,14 @@
 - name: Nextcloud Docker Container
   docker_container:
     name: nextcloud
-    image: nextcloud:25
+    image: "{{ nextcloud_container }}:{{ nextcloud_version }}"
     pull: true
+    recreate: yes
     volumes:
       - ./nextcloud:/var/www/html
       - ./nextcloud-apps:/var/www/html/custom_apps
       - ./nextcloud-config:/var/www/html/config
-      - "{{ nextcloud_data_directory }}/nextcloud:/var/www/html/data"
+      - "{{ nextcloud_files_directory }}/:/var/www/html/data"
     links:
       - nextcloud-postgres:postgres
       - nextcloud-redis:redis
@@ -63,3 +81,4 @@
       traefik.http.routers.nextcloud.middlewares: "my-headers@file,nextcloud_redirect"
       traefik.http.middlewares.nextcloud_redirect.redirectregex.regex: /.well-known/(card|cal)dav
       traefik.http.middlewares.nextcloud_redirect.redirectregex.replacement: /remote.php/dav/
+      traefik.http.services.nextcloud.loadbalancer.passhostheader: "true"
