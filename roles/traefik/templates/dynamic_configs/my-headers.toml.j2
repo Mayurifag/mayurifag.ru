@@ -1,6 +1,5 @@
 {% if enable_tls == true %}
 [http.middlewares.my-headers.headers]
-sslRedirect = true
 stsSeconds = 31536000
 stsIncludeSubdomains = true
 stsPreload = true
@@ -20,6 +19,6 @@ cipherSuites = [
 curvePreferences = [ "CurveP521", "CurveP384" ]
 {% else %}
 [http.middlewares.my-headers.headers]
-  [http.middlewares.my-headers.headers.customResponseHeaders]
-  X-Custom-Response-Header = "fuck"
+[http.middlewares.my-headers.headers.customResponseHeaders]
+X-Custom-Response-Header = "fuck"
 {% endif %}

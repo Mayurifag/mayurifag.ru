@@ -16,4 +16,4 @@
       traefik.enable: "{{ dozzle_available_externally }}"
       traefik.http.routers.dozzle.rule: "Host(`{{ dozzle_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.dozzle.loadbalancer.server.port: "8080"
-      traefik.http.routers.dozzle.middlewares: "my-headers@file"
+      traefik.http.routers.dozzle.middlewares: "my-headers"
