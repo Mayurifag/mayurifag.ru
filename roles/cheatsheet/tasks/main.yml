@@ -17,13 +17,6 @@
       Dont forget to change SSH configuration (user, etc.)
       $ ssh mayurifag-prod
 
-      ### Nextcloud
-
-      - Remove all files
-      - Settings: Language/Locale; Accessibility -> Dark Theme
-      - Disable apps: Collaborative tags, Usage survey, First run wizard, Monitoring
-      - Enable apps: News, Notes, Keeweb, Calendar, Contacts, Tasks
-
       ### Wallabag
 
       Change default user's password from `wallabag:wallabag` into anything else.
@@ -38,7 +31,7 @@
       Set dark theme
       Enable API
 
-      ### Files Nextcloud/Filerun
+      ### Files Filerun
 
       You have to sync files now via app. Setup iOS/Android/Mac/Win(?)
       Sync bookmarks via floccus

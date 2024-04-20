@@ -55,12 +55,6 @@ services:
   - name: "Services"
     icon: "fas fa-laptop-code"
     items:
-{% if nextcloud_enabled == true %}
-      - name: "Nextcloud"
-        icon: "fas fa-cloud"
-        subtitle: "Auth need to configure"
-        url: "http://{{ nextcloud_subdomain }}.{{ server_hostname }}"
-{% endif %}
 {% if filerun_enabled == true %}
       - name: "Filerun"
         icon: "fas fa-cloud"

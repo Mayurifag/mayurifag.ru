@@ -112,7 +112,6 @@ Host mayurifag-prod
 | mayurifag.github.io     | <http://mayurifag.local>                     | 8005          |
 | Navidrome               | <http://mus.mayurifag.local>                 | 80            |
 | Netdata                 | <http://netdata.mayurifag.local>             | 19999         |
-| Nextcloud               | <http://nextcloud.mayurifag.local>           | 80            |
 | Owncloud Infinite Scale | <http://ocis.mayurifag.local>                | 9200          |
 | Portainer               | <http://portainer.mayurifag.local>           | 9000          |
 | Shadowsocks-rust        | <https://ss.mayurifag.local/xray> (uses TLS) | 1080          |

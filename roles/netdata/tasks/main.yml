@@ -27,4 +27,4 @@
       traefik.enable: "{{ netdata_available_externally }}"
       traefik.http.routers.netdata.rule: "Host(`{{ netdata_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.netdata.loadbalancer.server.port: "19999"
-      traefik.http.routers.netdata.middlewares: "auth@file,my-headers@file"
+      traefik.http.routers.netdata.middlewares: "auth,my-headers"

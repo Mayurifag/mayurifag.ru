@@ -58,4 +58,4 @@
       traefik.enable: "{{ filebrowser_available_externally }}"
       traefik.http.routers.filebrowser.rule: "Host(`{{ filebrowser_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.filebrowser.loadbalancer.server.port: "80"
-      traefik.http.routers.filebrowser.middlewares: "my-headers@file"
+      traefik.http.routers.filebrowser.middlewares: "my-headers"
