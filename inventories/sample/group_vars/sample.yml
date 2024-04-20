@@ -84,9 +84,6 @@ ocis_subdomain: "ocis"
 filebrowser_enabled: true
 filebrowser_subdomain: "fb"
 
-filerun_enabled: true
-filerun_subdomain: "filerun"
-
 blocky_enabled: true
 
 navidrome_enabled: true

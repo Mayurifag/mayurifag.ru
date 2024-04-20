@@ -25,13 +25,7 @@
 
       Make user and add default docker entrypoint.
 
-      ### Filerun
-
-      Change username
-      Set dark theme
-      Enable API
-
-      ### Files Filerun
+      ### Files (Filebrowser/OCIS)
 
       You have to sync files now via app. Setup iOS/Android/Mac/Win(?)
       Sync bookmarks via floccus

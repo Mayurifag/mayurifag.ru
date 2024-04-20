@@ -55,12 +55,6 @@ services:
   - name: "Services"
     icon: "fas fa-laptop-code"
     items:
-{% if filerun_enabled == true %}
-      - name: "Filerun"
-        icon: "fas fa-cloud"
-        subtitle: "Auth need to configure"
-        url: "http://{{ filerun_subdomain }}.{{ server_hostname }}"
-{% endif %}
 {% if portainer_enabled == true %}
       - name: "Portainer"
         icon: "fas fa-toolbox"
