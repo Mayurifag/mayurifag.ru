@@ -133,11 +133,6 @@
         - dozzle
       when: (dozzle_enabled | default(False))
 
-    - role: filerun
-      tags:
-        - filerun
-      when: (filerun_enabled | default(False))
-
     - role: hemmelig
       tags:
         - hemmelig

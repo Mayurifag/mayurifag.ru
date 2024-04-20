@@ -1,12 +1,11 @@
 {% if enable_tls == true %}
 [http.middlewares.my-headers.headers]
-  {# sslRedirect = true #}
-  stsSeconds = 31536000
-  stsIncludeSubdomains = true
-  stsPreload = true
-  forceSTSHeader = true
-  contentTypeNosniff = true
-  browserXssFilter = true
+stsSeconds = 31536000
+stsIncludeSubdomains = true
+stsPreload = true
+forceSTSHeader = true
+contentTypeNosniff = true
+browserXssFilter = true
 
 [tls.options.default]
 minVersion = "VersionTLS12"

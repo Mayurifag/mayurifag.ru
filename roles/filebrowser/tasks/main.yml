@@ -10,10 +10,11 @@
     state: directory
     owner: "{{ filebroswer_uid }}"
     group: "{{ filebroswer_gid }}"
-    mode: u+rw,g-wx,o-rwx
+    mode: u+rwx,g+rwx,o-rwx
   with_items:
     - "{{ filebrowser_files_directory }}"
     - "{{ filebrowser_data_directory }}/config"
+    - "{{ filebrowser_data_directory }}/syncthing_config"
 
 - name: Touch Filebrowser database file
   file:
@@ -42,7 +43,7 @@
     volumes:
       - "{{ filebrowser_data_directory }}/config/filebrowser.db:/database/filebrowser.db"
       - "{{ filebrowser_data_directory }}/config/settings.json:/config/settings.json"
-      - "{{ filebrowser_data_directory }}/files:/srv"
+      - "{{ filebrowser_files_directory }}/:/srv"
     env:
       TZ: "{{ server_timezone }}"
       PUID: "{{ filebroswer_uid }}"
@@ -58,4 +59,28 @@
       traefik.enable: "{{ filebrowser_available_externally }}"
       traefik.http.routers.filebrowser.rule: "Host(`{{ filebrowser_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.filebrowser.loadbalancer.server.port: "80"
-      traefik.http.routers.filebrowser.middlewares: "my-headers"
+      # traefik.http.routers.filebrowser.middlewares: "my-headers"
+
+- name: Syncthing Docker Container
+  docker_container:
+    name: syncthing
+    image: "linuxserver/syncthing"
+    pull: true
+    recreate: yes
+    volumes:
+      - "{{ filebrowser_data_directory }}/syncthing_config:/config"
+      - "{{ filebrowser_files_directory }}:/mnt"
+    env:
+      TZ: "{{ server_timezone }}"
+      PUID: "{{ filebroswer_uid }}"
+      PGID: "{{ filebroswer_gid }}"
+    ports:
+      # - "8384:8384" # web ui - we pass it through traefik
+      - "22000:22000"
+      - "21027:21027/udp"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "{{ filebrowser_available_externally }}"
+      traefik.http.routers.syncthing.rule: "Host(`{{ syncthing_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.syncthing.loadbalancer.server.port: "8384"
+      # traefik.http.routers.syncthing.middlewares: "my-headers"

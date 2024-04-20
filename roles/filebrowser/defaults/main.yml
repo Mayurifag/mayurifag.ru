@@ -2,13 +2,14 @@
 filebrowser_enabled: true
 filebrowser_available_externally: "true"
 
-filebrowser_data_directory: "{{ files_home }}/filebrowser"
+filebrowser_data_directory: "{{ docker_home }}/filebrowser"
 filebrowser_files_directory: "{{ files_home }}/"
 
 filebrowser_container: "filebrowser/filebrowser"
 filebrowser_version: "v2.28.0-s6"
 
 filebrowser_subdomain: "fb"
+syncthing_subdomain: "st"
 
 filebroswer_uid: "{{ admin_uid }}"
 filebroswer_gid: "{{ admin_gid }}"
