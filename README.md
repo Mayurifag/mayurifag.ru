@@ -108,6 +108,7 @@ Host mayurifag-prod
 | Go-socks5-proxy         | <socks5://mayurifag.local:7777> (+auth)      | 1080        |
 | Homer                   | <http://homer.mayurifag.local>               | 8080        |
 | Hemmelig                | <http://secret.mayurifag.local>              | 3000        |
+| LMS                     | <http://lms.mayurifag.local>                 | 5082        |
 | mayurifag.github.io     | <http://mayurifag.local>                     | 8005        |
 | Navidrome               | <http://mus.mayurifag.local>                 | 80          |
 | Netdata                 | <http://netdata.mayurifag.local>             | 19999       |

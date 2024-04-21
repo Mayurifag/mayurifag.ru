@@ -16,6 +16,7 @@
     - "{{ filebrowser_data_directory }}/config"
     - "{{ filebrowser_data_directory }}/syncthing_config"
     - "{{ filebrowser_data_directory }}/sftpgo_config"
+    - "{{ filebrowser_data_directory }}/lms_config"
 
 - name: Touch Filebrowser database file
   file:
@@ -113,3 +114,24 @@
       traefik.http.routers.webdav.rule: Host(`{{ webdav_subdomain }}.{{ server_hostname }}`)
       traefik.http.services.webdav.loadbalancer.server.port: "10080"
       traefik.http.routers.webdav.service: "webdav"
+
+- name: LMS Docker Container https://github.com/epoupon/lms
+  docker_container:
+    name: lms
+    image: epoupon/lms:3.51.0
+    pull: true
+    recreate: yes
+    user: "{{ filebroswer_uid }}:{{ filebroswer_gid }}"
+    volumes:
+      - "{{ filebrowser_data_directory }}/lms_config:/var/lms"
+      - "{{ filebrowser_files_music_directory }}:/music:ro"
+    env:
+      TZ: "{{ server_timezone }}"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "{{ filebrowser_available_externally }}"
+      ### Web UI ###
+      traefik.http.routers.lms.rule: "Host(`{{ lms_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.lms.loadbalancer.server.port: "5082"
+      traefik.http.routers.lms.service: "lms"
+      traefik.http.routers.lms.middlewares: "my-headers@file"

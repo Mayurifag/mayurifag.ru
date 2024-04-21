@@ -9,6 +9,7 @@
       when: (bootstrap_enabled | default(True))
 
 - hosts: all
+  gather_facts: no
   roles:
     ###
     ### Run general preparation
