@@ -15,6 +15,7 @@
     - "{{ filebrowser_files_directory }}"
     - "{{ filebrowser_data_directory }}/config"
     - "{{ filebrowser_data_directory }}/syncthing_config"
+    - "{{ filebrowser_data_directory }}/sftpgo_config"
 
 - name: Touch Filebrowser database file
   file:
@@ -64,7 +65,7 @@
 - name: Syncthing Docker Container
   docker_container:
     name: syncthing
-    image: "linuxserver/syncthing"
+    image: linuxserver/syncthing:1.27.6
     pull: true
     recreate: yes
     volumes:
@@ -83,3 +84,32 @@
       traefik.http.routers.syncthing.rule: "Host(`{{ syncthing_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.syncthing.loadbalancer.server.port: "8384"
       traefik.http.routers.syncthing.middlewares: "my-headers@file"
+
+- name: SFTPGo Docker Container
+  docker_container:
+    name: sftpgo
+    image: drakkan/sftpgo:v2.5.6
+    pull: true
+    recreate: yes
+    user: "{{ filebroswer_uid }}:{{ filebroswer_gid }}"
+    volumes:
+      - "{{ filebrowser_data_directory }}/sftpgo_config:/var/lib/sftpgo"
+      - "{{ filebrowser_files_directory }}:/srv/sftpgo/data/{{ admin_username }}/"
+    env:
+      TZ: "{{ server_timezone }}"
+      SFTPGO_WEBDAVD__BINDINGS__0__PORT: "10080"
+    ports:
+      - "2022:2022"
+      # - "10080:10080"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "{{ filebrowser_available_externally }}"
+      ### Web UI ###
+      traefik.http.routers.sftpgo.rule: "Host(`{{ sftpgo_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.sftpgo.loadbalancer.server.port: "8080"
+      traefik.http.routers.sftpgo.service: "sftpgo"
+      traefik.http.routers.sftpgo.middlewares: "my-headers@file"
+      ### WebDAV ###
+      traefik.http.routers.webdav.rule: Host(`{{ webdav_subdomain }}.{{ server_hostname }}`)
+      traefik.http.services.webdav.loadbalancer.server.port: "10080"
+      traefik.http.routers.webdav.service: "webdav"

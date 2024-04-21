@@ -113,9 +113,12 @@ Host mayurifag-prod
 | Netdata                 | <http://netdata.mayurifag.local>             | 19999       |
 | Owncloud Infinite Scale | <http://ocis.mayurifag.local>                | 9200        |
 | Portainer               | <http://portainer.mayurifag.local>           | 9000        |
+| SFTPGo                  | <https://sftp.mayurifag.local>               | 8080        |
 | Shadowsocks-rust        | <https://ss.mayurifag.local/xray> (uses TLS) | 1080        |
+| Syncthing [WebUI]       | <https://st.mayurifag.local>                 | 8384        |
 | Wallabag                | <http://wallabag.mayurifag.local>            | 80          |
 | Watchtower              | -                                            | -           |
+| Webdav [SFTPGo]         | <http://webdav.mayurifag.ru>                 | 10080       |
 | Wireguard-Easy          | <http://wg.mayurifag.local>                  | 58172       |
 | Whattocommit            | <http://commit.mayurifag.local>              | 8080        |
 

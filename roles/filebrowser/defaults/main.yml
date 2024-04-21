@@ -10,6 +10,8 @@ filebrowser_version: "v2.28.0-s6"
 
 filebrowser_subdomain: "fb"
 syncthing_subdomain: "st"
+sftpgo_subdomain: "sftp"
+webdav_subdomain: "webdav"
 
 filebroswer_uid: "{{ admin_uid }}"
 filebroswer_gid: "{{ admin_gid }}"

@@ -25,6 +25,10 @@
 
       Make user and add default docker entrypoint.
 
+      ### SFTPGo
+
+      Set {{ admin_username }} user with password, add directory.
+
       ### Files (Filebrowser/OCIS)
 
       You have to sync files now via app. Setup iOS/Android/Mac/Win(?)
