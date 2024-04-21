@@ -12,4 +12,4 @@
       traefik.enable: "{{ doku_available_externally }}"
       traefik.http.routers.doku.rule: "Host(`{{ doku_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.doku.loadbalancer.server.port: "9090"
-      traefik.http.routers.doku.middlewares: "auth,my-headers"
+      traefik.http.routers.doku.middlewares: "auth@file,my-headers@file"

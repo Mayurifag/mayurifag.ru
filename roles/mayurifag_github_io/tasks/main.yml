@@ -10,4 +10,4 @@
       traefik.enable: "{{ mayurifag_github_io_available_externally }}"
       traefik.http.routers.mayurifag_github_io.rule: "Host(`{{ server_hostname }}`)"
       traefik.http.services.mayurifag_github_io.loadbalancer.server.port: "8005"
-      traefik.http.routers.mayurifag_github_io.middlewares: "my-headers"
+      traefik.http.routers.mayurifag_github_io.middlewares: "my-headers@file"

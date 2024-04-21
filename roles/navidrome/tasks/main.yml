@@ -35,4 +35,4 @@
       traefik.enable: "{{ navidrome_available_externally }}"
       traefik.http.routers.navidrome.rule: "Host(`{{ navidrome_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.navidrome.loadbalancer.server.port: "4533"
-      traefik.http.routers.navidrome.middlewares: "my-headers"
+      traefik.http.routers.navidrome.middlewares: "my-headers@file"

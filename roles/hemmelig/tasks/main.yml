@@ -28,4 +28,4 @@
       traefik.enable: "{{ hemmelig_available_externally }}"
       traefik.http.routers.hemmelig.rule: "Host(`{{ hemmelig_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.hemmelig.loadbalancer.server.port: "3000"
-      traefik.http.routers.hemmelig.middlewares: "my-headers"
+      traefik.http.routers.hemmelig.middlewares: "my-headers@file"

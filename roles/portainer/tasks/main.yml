@@ -27,4 +27,4 @@
       traefik.enable: "{{ portainer_available_externally }}"
       traefik.http.routers.portainer.rule: "Host(`{{ portainer_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.portainer.loadbalancer.server.port: "9000"
-      traefik.http.routers.portainer.middlewares: "my-headers"
+      traefik.http.routers.portainer.middlewares: "my-headers@file"

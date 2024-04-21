@@ -129,7 +129,7 @@ need to deploy my services once again.
 
 ### High priority
 
-- [ ] Some strange things with Traefik config. If problem with "my-headers" ->
+- [x] Some strange things with Traefik config. If problem with "my-headers@file" ->
   return "my-headers@file"
 - [ ] Log rotation for docker containers
 - [ ] ~~https://github.com/alexta69/metube~~

@@ -38,4 +38,4 @@
       traefik.enable: "{{ wireguard_available_externally }}"
       traefik.http.routers.wg-easy.rule: "Host(`{{ wireguard_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.wg-easy.loadbalancer.server.port: "51821"
-      traefik.http.routers.wg-easy.middlewares: "my-headers"
+      traefik.http.routers.wg-easy.middlewares: "my-headers@file"
