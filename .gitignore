@@ -19,7 +19,6 @@ roles/geerlingguy.*
 roles/robertdebock.*
 roles/darkwizard242.*
 roles/djx339.*
-tests/test.yml
 inventories/my-provision
 
 secret

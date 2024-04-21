@@ -27,7 +27,6 @@ Cloudflare or your favourite DNS provider.
 - Ansible `python3 -m pip install --user ansible`
 - (only MacOS) - passlib `python3 -m pip install --user passlib` (to use crypto
 module from ansible)
-- Vagrant 2.2.19 (latest) + VirtualBox (for testing)
 
 ## Instructions
 
@@ -37,13 +36,6 @@ cd mayurifag.ru
 cp -rfp inventories/sample inventories/my-provision
 # ... change my-provision ...
 ansible-galaxy install -r requirements.yml
-```
-
-### Local test deployment
-
-```sh
-# maybe if something wrong -- rm -rf .vagrant on repo folder
-vagrant destroy -f ; vagrant up --provision
 ```
 
 ### Production deployment

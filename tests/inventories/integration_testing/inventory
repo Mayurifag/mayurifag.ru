@@ -1,5 +1,0 @@
-[all]
-mayurifag-test ansible_connection=local ansible_host=localhost
-
-[test]
-mayurifag-test
