@@ -109,6 +109,7 @@ Host mayurifag-prod
 | SFTPGo                  | <https://sftp.mayurifag.local>               | 8080        |
 | Shadowsocks-rust        | <https://ss.mayurifag.local/xray> (uses TLS) | 1080        |
 | Syncthing [WebUI]       | <https://st.mayurifag.local>                 | 8384        |
+| Vaultwarden             | <http://pw.mayurifag.local>                  | 80          |
 | Wallabag                | <http://wallabag.mayurifag.local>            | 80          |
 | Watchtower              | -                                            | -           |
 | Webdav [SFTPGo]         | <http://webdav.mayurifag.ru>                 | 10080       |

@@ -92,6 +92,9 @@ navidrome_spotify_id: "change_it"
 navidrome_spotify_secret: "change_it"
 navidrome_password_encryption_key: "change_it"
 
+vaultwarden_enabled: true
+vaultwarden_subdomain: "pw"
+
 portainer_enabled: true
 portainer_subdomain: "portainer"
 

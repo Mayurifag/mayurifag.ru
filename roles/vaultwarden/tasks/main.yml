@@ -1,0 +1,21 @@
+---
+- name: Create Vaultwarden Directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ vaultwarden_data_directory }}/"
+
+- name: Vaultwarden Docker Container
+  docker_container:
+    name: vaultwarden
+    image: vaultwarden/server:1.30.5-alpine
+    pull: true
+    volumes:
+      - "{{ vaultwarden_data_directory }}/:/data/"
+    restart_policy: unless-stopped
+    labels:
+      traefik.enable: "{{ vaultwarden_available_externally }}"
+      traefik.http.routers.vaultwarden.rule: "Host(`{{ vaultwarden_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.vaultwarden.loadbalancer.server.port: "80"
+      traefik.http.routers.vaultwarden.middlewares: "my-headers@file"
