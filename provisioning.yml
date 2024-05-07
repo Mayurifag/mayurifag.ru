@@ -1,5 +1,6 @@
 ---
-- hosts: all
+- name: Bootstrap
+  hosts: all
   become: yes
   gather_facts: no
   roles:
@@ -8,7 +9,8 @@
         - bootstrap
       when: (bootstrap_enabled | default(True))
 
-- hosts: all
+- name: Provisioning
+  hosts: all
   gather_facts: no
   roles:
     ###
@@ -24,11 +26,11 @@
         - swap
       when: (swap_enabled | default(False))
 
-    - role: server-general-preparations
+    - role: server_general_preparations
       tags:
         - mayurifag-general
 
-    - role: upgrade-packages
+    - role: upgrade_packages
       tags:
         - mayurifag-general
 

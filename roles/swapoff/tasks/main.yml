@@ -1,9 +1,10 @@
+---
 - name: Disable SWAP
-  shell: |
+  ansible.builtin.shell: |
     swapoff -a
 
 - name: Disable SWAP in fstab
-  replace:
+  ansible.builtin.replace:
     path: /etc/fstab
     regexp: '^([^#].*?\sswap\s+.*)$'
     replace: '# \1'

@@ -1,7 +1,7 @@
 ---
 # TODO: show only if enabled
 - name: Show cheatsheet
-  pause:
+  ansible.builtin.pause:
     seconds: 1
     prompt: |
       ===============================

@@ -1,11 +1,11 @@
 ---
 - name: Delete Hemmelig directory
-  file:
+  ansible.builtin.file:
     path: "{{ hemmelig_data_directory }}"
     state: absent
 
 - name: Create Hemmelig Directories
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: "{{ admin_uid }}"
@@ -15,7 +15,7 @@
     - "{{ hemmelig_data_directory }}/database"
 
 - name: Create Hemmelig container
-  docker_container:
+  community.docker.docker_container:
     name: hemmelig
     image: "{{ hemmelig_docker_image }}"
     pull: true

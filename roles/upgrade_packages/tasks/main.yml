@@ -7,18 +7,18 @@
 #   shell: echo 'APT::Install-Suggests "0";' > /etc/apt/apt.conf.d/01nosuggests
 
 - name: Update apt-cache
-  apt:
+  ansible.builtin.apt:
     update_cache: yes
     cache_valid_time: 3600
 
 - name: Upgrade all packages
-  apt:
+  ansible.builtin.apt:
     upgrade: dist
     state: latest
     force_apt_get: yes
 
 - name: Install extra packages
-  apt:
+  ansible.builtin.apt:
     name: "{{ mayurifag_general_extra_packages }}"
     state: present
     force_apt_get: yes
@@ -38,7 +38,6 @@
 #   when: reboot_required_file.stat.exists
 
 - name: Automatically remove any unused dependencies
-  apt:
+  ansible.builtin.apt:
     autoremove: true
-
 # TODO: add clean apt

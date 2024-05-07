@@ -1,11 +1,11 @@
 ---
 - name: Delete Navidrome directories
-  file:
+  ansible.builtin.file:
     path: "{{ navidrome_data_directory }}/"
     state: absent
 
 - name: Create Navidrome data directory
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: www-data
@@ -15,7 +15,7 @@
     - "{{ navidrome_data_directory }}/"
 
 - name: Navidrome Docker Container
-  docker_container:
+  community.docker.docker_container:
     name: navidrome
     image: deluan/navidrome:latest
     user: "{{ navidrome_user_and_group }}"

@@ -1,11 +1,11 @@
 ---
 - name: Delete Filebrowser directory
-  file:
+  ansible.builtin.file:
     path: "{{ filebrowser_data_directory }}"
     state: absent
 
 - name: Create Filebrowser directories
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: "{{ filebroswer_uid }}"
@@ -19,7 +19,7 @@
     - "{{ filebrowser_data_directory }}/lms_config"
 
 - name: Touch Filebrowser database file
-  file:
+  ansible.builtin.file:
     path: "{{ filebrowser_data_directory }}/config/filebrowser.db"
     state: touch
     mode: u+rw,g-wx,o-rwx
@@ -29,7 +29,7 @@
     group: "{{ filebroswer_gid }}"
 
 - name: Copy Filebrowser settings file
-  template:
+  ansible.builtin.template:
     src: settings.json.j2
     dest: "{{ filebrowser_data_directory }}/config/settings.json"
     owner: "{{ filebroswer_uid }}"
@@ -37,7 +37,7 @@
     mode: u+rw,g-wx,o-rwx
 
 - name: Filebrowser Docker Container
-  docker_container:
+  community.docker.docker_container:
     name: filebrowser
     image: "{{ filebrowser_container }}:{{ filebrowser_version }}"
     pull: true
@@ -64,7 +64,7 @@
       traefik.http.routers.filebrowser.middlewares: "my-headers@file"
 
 - name: Syncthing Docker Container
-  docker_container:
+  community.docker.docker_container:
     name: syncthing
     image: linuxserver/syncthing:1.27.6
     pull: true
@@ -87,7 +87,7 @@
       traefik.http.routers.syncthing.middlewares: "my-headers@file"
 
 - name: SFTPGo Docker Container
-  docker_container:
+  community.docker.docker_container:
     name: sftpgo
     image: drakkan/sftpgo:v2.5.6
     pull: true
@@ -116,7 +116,7 @@
       traefik.http.routers.webdav.service: "webdav"
 
 - name: LMS Docker Container https://github.com/epoupon/lms
-  docker_container:
+  community.docker.docker_container:
     name: lms
     image: epoupon/lms:3.51.0
     pull: true
