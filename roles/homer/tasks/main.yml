@@ -1,18 +1,18 @@
 ---
 - name: Create Homer Directories
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
   with_items:
     - "{{ homer_data_directory }}/assets"
 
 - name: Template Homer config.yml
-  template:
+  ansible.builtin.template:
     src: config.yml.j2
     dest: "{{ homer_data_directory }}/assets/config.yml"
 
 - name: Create Homer container
-  docker_container:
+  community.docker.docker_container:
     name: homer
     image: "{{ homer_docker_image }}"
     pull: true

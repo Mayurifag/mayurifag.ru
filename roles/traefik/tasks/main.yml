@@ -1,6 +1,6 @@
 ---
 - name: Remove Traefik Config Directory
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: absent
   with_items:
@@ -8,7 +8,7 @@
     # - "{{ traefik_data_directory }}/letsencrypt"
 
 - name: Create Traefik Directories
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
   with_items:
@@ -16,21 +16,21 @@
     - "{{ traefik_data_directory }}/letsencrypt"
 
 - name: Create Traefik config.toml from template
-  template:
+  ansible.builtin.template:
     src: traefik.toml.j2
     dest: "{{ traefik_data_directory }}/traefik.toml"
   register: template_config
 
 - name: Create Traefik dynamic configuration files
-  template:
+  ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ traefik_data_directory }}/dynamic_configs/{{ item.path | regex_replace('\\.j2$', '') }}"
     force: yes
-  with_filetree: "../templates/dynamic_configs"
+  loop: "{{ query('filetree', '../templates/dynamic_configs') }}"
   when: item.state == 'file'
 
 - name: Traefik Docker Container
-  docker_container:
+  community.docker.docker_container:
     name: traefik
     image: "{{ traefik_docker_image }}"
     pull: true

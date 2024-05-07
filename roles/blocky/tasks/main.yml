@@ -1,23 +1,23 @@
 ---
 - name: Delete Blocky directory
-  file:
+  ansible.builtin.file:
     path: "{{ blocky_data_directory }}"
     state: absent
 
 - name: Create Blocky directory
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
   with_items:
     - "{{ blocky_data_directory }}/"
 
 - name: Template Blocky config.yaml
-  template:
+  ansible.builtin.template:
     src: config.yaml.j2
     dest: "{{ blocky_data_directory }}/config.yaml"
 
 - name: Blocky Docker Container
-  docker_container:
+  community.docker.docker_container:
     name: blocky
     image: spx01/blocky
     pull: true

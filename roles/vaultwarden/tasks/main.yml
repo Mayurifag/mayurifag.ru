@@ -1,13 +1,13 @@
 ---
 - name: Create Vaultwarden Directories
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
   with_items:
     - "{{ vaultwarden_data_directory }}/"
 
 - name: Vaultwarden Docker Container
-  docker_container:
+  community.docker.docker_container:
     name: vaultwarden
     image: vaultwarden/server:1.30.5-alpine
     pull: true

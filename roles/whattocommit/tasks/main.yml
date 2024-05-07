@@ -1,6 +1,6 @@
 ---
 - name: Whattocommit Docker Container
-  docker_container:
+  community.docker.docker_container:
     name: whattocommit
     image: mayurifag/whattocommit:main
     pull: true

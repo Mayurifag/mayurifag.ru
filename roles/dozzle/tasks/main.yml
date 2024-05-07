@@ -1,6 +1,6 @@
 ---
 - name: Create Dozzle Docker Container
-  docker_container:
+  community.docker.docker_container:
     name: dozzle
     image: amir20/dozzle:latest
     pull: true

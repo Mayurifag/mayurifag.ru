@@ -1,11 +1,11 @@
 ---
 - name: Delete OCIS directory
-  file:
+  ansible.builtin.file:
     path: "{{ ocis_data_directory }}"
     state: absent
 
 - name: Create OCIS directories
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: "{{ admin_uid }}"
@@ -15,7 +15,7 @@
     - "{{ ocis_data_directory }}/config"
 
 - name: OCIS Docker Container
-  docker_container:
+  community.docker.docker_container:
     name: ocis
     image: "{{ ocis_container }}:{{ ocis_version }}"
     pull: true

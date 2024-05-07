@@ -1,6 +1,6 @@
 ---
-- name: go-socks5-proxy Docker Container
-  docker_container:
+- name: Start go-socks5-proxy Docker Container
+  community.docker.docker_container:
     name: go-socks5-proxy
     image: serjs/go-socks5-proxy:latest
     pull: true

@@ -1,10 +1,10 @@
 ---
 - name: "Set hostname to {{ server_hostname }}"
-  hostname:
+  ansible.builtin.hostname:
     name: "{{ server_hostname }}"
 
 - name: "Set timezone to {{ server_timezone }}"
-  timezone:
+  community.general.timezone:
     name: "{{ server_timezone }}"
 
 # - name: Ensure the locale en_US.UTF-8 exists
@@ -16,7 +16,7 @@
 #   command: localectl set-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
 - name: Apply custom sysctl values
-  sysctl:
+  ansible.posix.sysctl:
     name: "{{ item.key }}"
     value: "{{ item.value }}"
     ignoreerrors: yes
@@ -26,20 +26,24 @@
   with_items: "{{ sysctl_values }}"
 
 # https://unix.stackexchange.com/a/368309
-- name: clean sshd config out of legacy settings and warnings
-  shell: |
-    sed -i '/KeyRegenerationInterval/d' /etc/ssh/sshd_config
-    sed -i '/ServerKeyBits/d' /etc/ssh/sshd_config
-    sed -i '/RSAAuthentication/d' /etc/ssh/sshd_config
-    sed -i '/RhostsRSAAuthentication/d' /etc/ssh/sshd_config
-    sed -i '/UsePrivilegeSeparation/d' /etc/ssh/sshd_config
+- name: Clean sshd config out of legacy settings and warnings
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    state: absent
+    regexp: "{{ item }}"
+  loop:
+    - KeyRegenerationInterval
+    - ServerKeyBits
+    - RSAAuthentication
+    - RhostsRSAAuthentication
+    - UsePrivilegeSeparation
 
-- name: restart sshd after changing configuration
-  systemd:
+- name: Restart sshd after changing configuration
+  ansible.builtin.systemd:
     name: sshd
     state: restarted
 
-- name: cleanup packaging
-  apt:
+- name: Cleanup packaging
+  ansible.builtin.apt:
     autoclean: yes
     autoremove: yes

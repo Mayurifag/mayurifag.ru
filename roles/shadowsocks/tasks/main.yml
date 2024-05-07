@@ -1,6 +1,6 @@
 ---
 - name: Shadowsocks + xray-plugin Docker Container
-  docker_container:
+  community.docker.docker_container:
     name: ss-xray
     image: mazy/ss-xray:v1.13.1-v1.5.3-0
     pull: true

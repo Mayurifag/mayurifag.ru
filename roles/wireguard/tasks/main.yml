@@ -1,18 +1,18 @@
 ---
 - name: Delete wireguard directories
-  file:
+  ansible.builtin.file:
     path: "{{ wireguard_data_directory }}/"
     state: absent
 
 - name: Create wireguard data directory
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
   with_items:
     - "{{ wireguard_data_directory }}/"
 
 - name: Wireguard-Easy Docker Container
-  docker_container:
+  community.docker.docker_container:
     name: wg-easy
     image: "{{ wireguard_docker_image }}"
     pull: true

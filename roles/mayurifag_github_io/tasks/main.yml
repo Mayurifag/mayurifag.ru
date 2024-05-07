@@ -1,6 +1,6 @@
 ---
 - name: Create mayurifag github io Docker Container
-  docker_container:
+  community.docker.docker_container:
     name: mayurifag_github_io
     image: mayurifag/mayurifag.github.io:latest
     pull: true

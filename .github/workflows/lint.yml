@@ -1,53 +1,37 @@
 ---
-name: Run linters
+name: Linters
 
-on:
+"on":
   push:
     branches:
       - main
   pull_request:
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
-###############
   ansible-lint:
     name: ansible-lint
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the codebase
-        uses: actions/checkout@v2
-
-      - name: Set up Python 3
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Install ansible-lint
-        # run: pip3 install ansible-lint==4.3.7
-        run: pip3 install ansible-lint
-
+      - uses: actions/checkout@v4
       - name: Run ansible-lint
-        # ansible-lint ./provisioning.yml -x 106,208
-        run: |
-          ansible-lint ./provisioning.yml
-###############
+        uses: ansible/ansible-lint@main # or version tag instead of 'main'
+
   yamllint:
-    name: yamllint
+    name: yaml-lint
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the codebase
-        uses: actions/checkout@v2
-
-      - name: Set up Python 3
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Install yamllint
-        run: pip3 install yamllint
-
+      - uses: actions/checkout@master
       - name: Run yamllint
-        run: |
-          yamllint .
+        uses: karancode/yamllint-github-action@master
+        with:
+          yamllint_strict: true
+          yamllint_comment: false
+
+  markdown-lint:
+    name: markdown-lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: articulate/actions-markdownlint@v1
