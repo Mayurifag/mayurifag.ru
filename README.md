@@ -133,8 +133,8 @@ need to deploy my services once again.
 * [ ] Log rotation for docker containers - or default settings after install
 * [ ] ~~<https://github.com/alexta69/metube>~~
 * [ ] ~~Add cleaning up apt-get to get extra 1GB~~
-* [ ] ~~Think how to rotate logs easily for docker (takes all the space in a
-  year or more)~~
+* [x] Think how to rotate logs easily for docker (takes all the space in a
+  year or more)
 * [ ] Ssh configuration: change port and make the sshd configuration cheatsheet
   with Readme
 * [x] Comment out ports sections on containers and try to work with them
@@ -165,7 +165,7 @@ need to deploy my services once again.
 * [ ] Add pastebin
 * [ ] ~~Make traefik to write logs to file + logrotate them~~
 * [ ] Suggest if I need more fail2ban jail rules
-  * [ ] <https://shadowsocks.org/en/wiki/Setup-fail2ban.html>
+  * [ ] ~~<https://shadowsocks.org/en/wiki/Setup-fail2ban.html>~~
 * [ ] Add motd.txt to server
   * [ ] About lazydocker
   * [ ] Aliases
@@ -179,13 +179,22 @@ need to deploy my services once again.
 
 ### Low priority
 
+* [ ] Ssh hardening:
+  * [ ] If I change port on installation -- what I have to change then?
+  * [ ] Check if current config is okay without changes done already by playbook
+  * [ ] PubkeyAuthentication yes
+  * [ ] AllowUsers root, admin_username
+  * [ ] AllowTcpForwarding no
+  * [ ] PermitEmptyPasswords no
+  * [ ] X11Forwarding no
+  * [ ] fail2ban already installed but needs harder configuration
 * [ ] Add zsh
 * [ ] Make CI working
 * [x] Add instructions for requirements and deployment
 * [ ] Try to make deploy from zero to hero. Add instructions if needed.
 * [x] Add lightweight filesharing nextcloud alternative (FileRun?)
 * [ ] Add web analytics (matomo?)
-* [ ] Add rocket.chat
+* [ ] ~~Add rocket.chat~~
 * [ ] ~~Add url shortener~~
 * [ ] Add wiki
 * [ ] Add Git (gitea/gitlab/else)
