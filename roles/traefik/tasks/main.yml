@@ -47,4 +47,4 @@
     env: "{{ traefik_environment_variables }}"
     restart_policy: unless-stopped
     memory: "{{ traefik_memory }}"
-    recreate: "{{ template_config is changed }}"
+    recreate: yes

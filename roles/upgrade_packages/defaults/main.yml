@@ -9,6 +9,7 @@ mayurifag_general_extra_packages:
   # - linux-image-amd64
   - mc
   - net-tools
+  - nethogs
   - ncdu
   - unzip
   - wget

@@ -2,7 +2,7 @@
 traefik_enabled: true
 
 traefik_data_directory: "{{ docker_home }}/traefik"
-traefik_docker_image: traefik:v3.0
+traefik_docker_image: traefik:v3.0.1
 traefik_log_level: "INFO"
 traefik_subdomain: "traefik"
 

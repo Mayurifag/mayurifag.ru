@@ -17,8 +17,8 @@ cipherSuites = [
   "TLS_CHACHA20_POLY1305_SHA256"
 ]
 curvePreferences = [ "CurveP521", "CurveP384" ]
-{% else %}
+{# {% else %}
 [http.middlewares.my-headers.headers]
 [http.middlewares.my-headers.headers.customResponseHeaders]
-X-Custom-Response-Header = "fuck"
+X-Custom-Response-Header = "fuck" #}
 {% endif %}
