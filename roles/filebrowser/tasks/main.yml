@@ -118,7 +118,7 @@
 - name: LMS Docker Container https://github.com/epoupon/lms
   community.docker.docker_container:
     name: lms
-    image: epoupon/lms:3.51.0
+    image: epoupon/lms:3.54.0
     pull: true
     recreate: yes
     user: "{{ filebroswer_uid }}:{{ filebroswer_gid }}"
@@ -130,7 +130,6 @@
     restart_policy: unless-stopped
     labels:
       traefik.enable: "{{ filebrowser_available_externally }}"
-      ### Web UI ###
       traefik.http.routers.lms.rule: "Host(`{{ lms_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.lms.loadbalancer.server.port: "5082"
       traefik.http.routers.lms.service: "lms"
