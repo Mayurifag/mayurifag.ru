@@ -10,6 +10,7 @@ defaultEntryPoints = ["http", "https"]
       scheme = "https"
     [entryPoints.websecure]
       address = ":443"
+      [entryPoints.websecure.http3]
       [entryPoints.websecure.http.tls]
         certResolver = "letsencrypt"
         options = "default"
@@ -35,7 +36,6 @@ defaultEntryPoints = ["http", "https"]
       email = "{{ admin_email }}"
       storage = "/letsencrypt/acme.json"
       caserver = "{{ traefik_acme_server }}"
-
       [certificatesResolvers.letsencrypt.acme.dnsChallenge]
         provider = "{{ traefik_dns_provider }}"
         resolvers = ["1.1.1.1:53", "8.8.8.8:53"]
