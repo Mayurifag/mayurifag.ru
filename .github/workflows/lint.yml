@@ -10,28 +10,44 @@ name: Linters
   workflow_dispatch:
 
 jobs:
+  editorconfig:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: editorconfig-checker/action-editorconfig-checker@main
+      - run: editorconfig-checker
+
   ansible-lint:
     name: ansible-lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Run ansible-lint
-        uses: ansible/ansible-lint@main # or version tag instead of 'main'
+        uses: ansible/ansible-lint@main
 
-  yamllint:
-    name: yaml-lint
+  yaml-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: Run yamllint
-        uses: karancode/yamllint-github-action@master
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          yamllint_strict: true
-          yamllint_comment: false
+          python-version: '3.x'
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: Run yamllint
+        run: yamllint .
+
 
   markdown-lint:
-    name: markdown-lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - uses: articulate/actions-markdownlint@v1
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: '**/*.md'
