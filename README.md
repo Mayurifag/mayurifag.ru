@@ -142,12 +142,12 @@ need to deploy my services once again.
 * [ ] ~~Uptime Kuma~~
 * [x] Blocky DNS
 * [ ] ~~Add systemd services - do I need them or I'm fine~~
-* [ ] Migrate to dashboard which is easy maintainable: flame (with labels)
+* [ ] Migrate to dashboard which is easy maintainable: flame (with labels) / https://gethomepage.dev/latest/
 * [ ] Add Authentik / Remove baseauth
-* [ ] Add Cloudflare companion tiredofit/traefik-cloudflare-companion:latest docker
+* [ ] ~~Add Cloudflare companion tiredofit/traefik-cloudflare-companion:latest docker~~
 * [ ] ~~Add Vikunja <https://vikunja.io/docs/full-docker-example/>~~
 * [ ] Move this section to issues and kanban
-* [ ] Add zswap
+* [ ] ~~Add zswap~~
 * [ ] ~~<https://github.com/pglombardo/PasswordPusher>~~
 * [x] Migrate from mysql to postgres for nextcloud. Look other perfomance
   boosters. cron at docker for nextcloud. bump versions
@@ -162,7 +162,7 @@ need to deploy my services once again.
 * [ ] Add automatic backup solution (duplicati?). Do I need anything more than
       /data/docker_data?
 * [ ] Add ufw with rules + make docker respect the rules
-* [ ] Add pastebin
+* [x] Add pastebin - done via hemmelig
 * [ ] ~~Make traefik to write logs to file + logrotate them~~
 * [ ] Suggest if I need more fail2ban jail rules
   * [ ] ~~<https://shadowsocks.org/en/wiki/Setup-fail2ban.html>~~
@@ -189,7 +189,7 @@ need to deploy my services once again.
   * [ ] X11Forwarding no
   * [ ] fail2ban already installed but needs harder configuration
 * [ ] Add zsh
-* [ ] Make CI working
+* [x] Make CI working (decided not to have full e2e test suite, so fine for now)
 * [x] Add instructions for requirements and deployment
 * [ ] Try to make deploy from zero to hero. Add instructions if needed.
 * [x] Add lightweight filesharing nextcloud alternative (FileRun?)
