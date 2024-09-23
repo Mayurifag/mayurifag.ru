@@ -4,38 +4,49 @@
     path: "{{ ocis_data_directory }}"
     state: absent
 
-- name: Create OCIS directories
+- name: Create OCIS files directory
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: "{{ admin_uid }}"
     group: "{{ admin_gid }}"
+    # mode: u=rwX,g=rwX,o=rwX
+    # recurse: yes
   with_items:
-    - "{{ ocis_data_directory }}/userfiles"
     - "{{ ocis_data_directory }}/config"
+    - "{{ ocis_data_directory }}/userfiles"
+    # - "{{ ocis_data_directory }}/metadata"
 
 - name: OCIS Docker Container
   community.docker.docker_container:
     name: ocis
     image: "{{ ocis_container }}:{{ ocis_version }}"
+    # user: "{{ admin_uid }}:{{ admin_gid }}"
     pull: true
     recreate: yes
     volumes:
       - "{{ ocis_data_directory }}/config:/etc/ocis"
       - "{{ ocis_data_directory }}/userfiles:/var/lib/ocis"
+      # - "{{ ocis_data_directory }}/metadata:/home/kf/tmp/posix-storage"
     entrypoint:
       - /bin/sh
     command: ["-c", "ocis init || true; ocis server"]
     env:
-      TZ: "{{ server_timezone }}"
-      OCIS_URL: "https://{{ ocis_subdomain }}.{{ server_hostname }}"
-      OCIS_LOG_LEVEL: "info"
-      OCIS_LOG_COLOR: "false"
-      PROXY_TLS: "false"
-      OCIS_INSECURE: "false"
-      PROXY_ENABLE_BASIC_AUTH: "false"
       IDM_ADMIN_PASSWORD: "{{ admin_userpassword }}"
       IDM_CREATE_DEMO_USERS: "false"
+      OCIS_INSECURE: "false"
+      OCIS_LOG_COLOR: "false"
+      OCIS_LOG_LEVEL: "error"
+      OCIS_URL: "https://{{ ocis_subdomain }}.{{ server_hostname }}"
+      PROXY_ENABLE_BASIC_AUTH: "false"
+      PROXY_TLS: "false"
+      TZ: "{{ server_timezone }}"
+      STORAGE_USERS_DRIVER: "posix"
+      STORAGE_USERS_POSIX_USE_SPACE_GROUPS: "true"
+      STORAGE_USERS_POSIX_WATCH_TYPE: "inotifywait"
+      STORAGE_USERS_ID_CACHE_STORE: "nats-js-kv"
+      STORAGE_USERS_ID_CACHE_STORE_NODES: "localhost:9233"
+      STORAGE_USERS_POSIX_ROOT: "/home/kf/tmp/posix-storage"
     restart_policy: unless-stopped
     labels:
       traefik.enable: "{{ ocis_available_externally }}"

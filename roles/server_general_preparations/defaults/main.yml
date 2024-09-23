@@ -50,6 +50,6 @@ sysctl_values:
   - { key: net.ipv4.tcp_fastopen, value: 3 }
   - { key: net.ipv4.tcp_tw_reuse, value: 1 }
   - { key: net.ipv4.tcp_tw_recycle, value: 0 }
-  # from 2ch.hk ss-rust further optimizations (tcp-bbr)
+  # from ss-rust further optimizations (tcp-bbr)
   - { key: net.core.default_qdisc, value: fq }
   - { key: net.ipv4.tcp_congestion_control, value: bbr }

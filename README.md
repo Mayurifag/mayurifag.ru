@@ -45,7 +45,9 @@ ansible-galaxy install -r requirements.yml
 #### TL;DR
 
 ```sh
-ansible-playbook -i inventories/my-provision/inventory provisioning.yml
+make deploy-prod
+# or
+make deploy-tag ocis # or other tag
 ```
 
 Maybe first you'll need to ssh and exec:
@@ -128,6 +130,8 @@ need to deploy my services once again.
 
 ### High priority
 
+* [ ] Sync time with ntp automatically, with notification if it's not synced. I
+  need it for some of my time-sensitive services.
 * [x] Some strange things with Traefik config. If problem with
   "my-headers@file" -> return "my-headers@file"
 * [ ] Log rotation for docker containers - or default settings after install
@@ -142,7 +146,9 @@ need to deploy my services once again.
 * [ ] ~~Uptime Kuma~~
 * [x] Blocky DNS
 * [ ] ~~Add systemd services - do I need them or I'm fine~~
-* [ ] Migrate to dashboard which is easy maintainable: flame (with labels) / https://gethomepage.dev/latest/
+* [ ] Migrate to dashboard which is easy maintainable: https://gethomepage.dev/latest/
+  * [ ] Should have docker labels services configuration and use authelia or
+    other auth cookies/etc. - documented
 * [ ] Add Authentik / Remove baseauth
 * [ ] ~~Add Cloudflare companion tiredofit/traefik-cloudflare-companion:latest docker~~
 * [ ] ~~Add Vikunja <https://vikunja.io/docs/full-docker-example/>~~
@@ -200,7 +206,8 @@ need to deploy my services once again.
 * [ ] Add Git (gitea/gitlab/else)
   * [ ] Add ci/cd runner for selfhosted git
 * [x] Add ~~bitwarden~~ Vaultwarden
-* [ ] Check security <https://github.com/docker/docker-bench-security> <https://github.com/quay/clair>
+* [ ] Check security <https://github.com/docker/docker-bench-security>
+  <https://github.com/quay/clair>
 * [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
 * [x] Migrate from dante to something docker based
   * [x] <https://hub.docker.com/r/serjs/go-socks5-proxy/>
@@ -209,6 +216,10 @@ need to deploy my services once again.
   * [x] <https://github.com/dmirubtsov/ss-xray-docker>
   * [x] <https://habr.com/ru/post/358126/>
 * [ ] <https://hub.docker.com/r/linuxserver/librespeed>
+* [ ] <https://github.com/alexjustesen/speedtest-tracker> - check if compatible
+  with other providers + with homepage.dev + with traefik + with authelia
+* [ ] Rename `my-headers` to `secure-headers` in traefik config and all
+  containers
 
 ## Older implementation
 
