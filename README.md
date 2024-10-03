@@ -5,10 +5,10 @@
 ## Description
 
 **DONT USE THIS REPOSITORY NO MATTER WHAT** due to security reasons (i.e. there
-is no firewall rules, not much services monitoring, no fail2ban rules and most
-important: it uses docker).
+is no firewall rules, not much services monitoring, no fail2ban rules and there
+is the most important part: it uses docker without much security measures).
 
-Playbook is fine only for my personal usage.
+Playbook is fine only for my personal usage!
 
 ## Requires
 
@@ -47,7 +47,7 @@ ansible-galaxy install -r requirements.yml
 ```sh
 make deploy-prod
 # or
-make deploy-tag ocis # or other tag
+make deploy-tag netdata # or other tag
 ```
 
 Maybe first you'll need to ssh and exec:
@@ -67,7 +67,7 @@ ssh-keygen -R mayurifag.ru ; ssh-keygen -R $(host mayurifag.ru | awk '/has addre
 * Generate new ssh key and add it to your inventory vars file
 
 ```sh
-ssh-keygen -t rsa -b 4096 -C "Mayurifag@mayurifag.ru" -f ~/Desktop/mayurifag.ru
+ssh-keygen -t rsa -b 4096 -C "Mayurifag@mayurifag.ru" -f ~/Desktop/mayurifag.ru # rsa here, but you can use ed25519
 xclip -sel clip < ~/Desktop/mayurifag.ru.pub
 vi inventories/my-provision/group_vars/sample.yml # add key here in section
 keepassxc # Make new ssh agent entry

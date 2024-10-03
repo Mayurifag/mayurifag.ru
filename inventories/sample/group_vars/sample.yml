@@ -13,7 +13,7 @@ root_userpassword: change_this
 # change this
 admin_authorized_keys: ""
 
-server_timezone: Europe/Moscow
+server_timezone: Etc/UTC
 server_hostname: mayurifag.local
 swap_file_size_mb: "2048"
 swap_swappiness: "25"
@@ -77,9 +77,6 @@ doku_subdomain: "doku"
 
 whattocommit_enabled: true
 whattocommit_subdomain: "commit"
-
-ocis_enabled: true
-ocis_subdomain: "ocis"
 
 filebrowser_enabled: true
 filebrowser_subdomain: "fb"

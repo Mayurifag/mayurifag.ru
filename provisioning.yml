@@ -86,11 +86,6 @@
         - blocky
       when: (blocky_enabled | default(False))
 
-    - role: ocis
-      tags:
-        - ocis
-      when: (ocis_enabled | default(False))
-
     - role: filebrowser
       tags:
         - filebrowser
