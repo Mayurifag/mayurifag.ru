@@ -42,10 +42,13 @@ files_home: /home/{{ admin_username }}/Files
 ##
 ## Galaxy extensions
 ##
-pip_executable: pip3
-pip_install_packages:
-  - docker
-  - requests
+docker_users:
+  - "{{ admin_username }}"
+
+docker_daemon_options:
+  log-driver: "local"
+  log-opts:
+    max-size: "100m"
 
 ##################################
 
@@ -54,14 +57,18 @@ bootstrap_enabled: true
 swap_enabled: true
 mayurifag_github_io_enabled: true
 watchtower_enabled: true
-
+lazydocker_enabled: true
+docker_enabled: true
+security_enabled: true
 wireguard_enabled: true
 wireguard_subdomain: "wg"
+wireguard_password_hash: "change_this"
 
 proxy_enabled: true
 proxy_user: change_this
 proxy_user_password: change_this
-proxy_port: "1080"
+proxy_socks_port: "1080"
+proxy_http_port: "1081"
 
 glances_enabled: true
 glances_subdomain: "glances"
@@ -110,3 +117,6 @@ shadowsocks_password: "change_this"
 
 hemmelig_enabled: true
 hemmelig_subdomain: "secret"
+
+nextcloud_enabled: true
+nextcloud_subdomain: "nextcloud"

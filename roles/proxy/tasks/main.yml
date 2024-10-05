@@ -1,13 +1,14 @@
 ---
-- name: Start go-socks5-proxy Docker Container
+- name: Start 3proxy Docker Container
   community.docker.docker_container:
-    name: go-socks5-proxy
-    image: serjs/go-socks5-proxy:latest
-    pull: true
+    name: 3proxy
+    image: "{{ proxy_image }}"
+    recreate: true
     env:
-      PROXY_USER: "{{ proxy_user }}"
+      PROXY_LOGIN: "{{ proxy_user }}"
       PROXY_PASSWORD: "{{ proxy_user_password }}"
-      PROXY_PORT: "{{ proxy_port }}"
-    network_mode: host
+    ports:
+      - "{{ proxy_socks_port }}:1080/tcp"
+      - "{{ proxy_http_port }}:3128/tcp"
     restart_policy: unless-stopped
-    memory: "{{ portainer_memory }}"
+    memory: "{{ proxy_memory }}"

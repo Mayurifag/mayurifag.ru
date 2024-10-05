@@ -49,7 +49,25 @@ sysctl_values:
   # ss optimizations
   - { key: net.ipv4.tcp_fastopen, value: 3 }
   - { key: net.ipv4.tcp_tw_reuse, value: 1 }
-  - { key: net.ipv4.tcp_tw_recycle, value: 0 }
   # from ss-rust further optimizations (tcp-bbr)
   - { key: net.core.default_qdisc, value: fq }
   - { key: net.ipv4.tcp_congestion_control, value: bbr }
+
+mayurifag_general_extra_packages:
+  - apt-transport-https
+  - aptitude
+  - apt-utils
+  - curl
+  - htop
+  - linux-headers-generic
+  - linux-image-generic
+  - mc
+  - ncdu
+  - net-tools
+  - nethogs
+  - ntp
+  - unzip
+  - wget
+  - whois
+  - zip
+  - jq

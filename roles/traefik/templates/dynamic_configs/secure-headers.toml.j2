@@ -1,0 +1,19 @@
+{% if enable_tls == true %}
+[http.middlewares.secure-headers.headers]
+stsSeconds = 31536000
+stsIncludeSubdomains = true
+stsPreload = true
+forceSTSHeader = true
+contentTypeNosniff = true
+browserXssFilter = true
+referrerPolicy = "no-referrer"
+
+[tls.options.default]
+minVersion = "VersionTLS13"
+sniStrict = true
+cipherSuites = [
+  "TLS_AES_256_GCM_SHA384",
+  "TLS_AES_128_GCM_SHA256"
+]
+curvePreferences = [ "CurveP521", "CurveP384" ]
+{% endif %}

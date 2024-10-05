@@ -1,18 +1,15 @@
 ---
 - name: geerlingguy.docker
-  version: 4.1.1
-
-- name: geerlingguy.pip
-  version: 2.1.0
+  version: 7.4.1
 
 - name: geerlingguy.security
-  version: 2.0.1
+  version: 2.4.0
 
 - name: robertdebock.bootstrap
-  version: 6.1.1
+  version: 6.2.1
 
 - name: darkwizard242.lazydocker
-  version: 1.0.7
+  version: 2.6.0
 
 - name: geerlingguy.swap
-  version: 1.0.2
+  version: 1.2.0

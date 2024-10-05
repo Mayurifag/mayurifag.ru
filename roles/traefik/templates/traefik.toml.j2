@@ -26,8 +26,9 @@ defaultEntryPoints = ["http", "https"]
 [global]
   sendAnonymousUsage = false
 [api]
-  dashboard = false
+  dashboard = true
   insecure = false
+  debug = true
 
 {% if enable_tls == true %}
 [certificatesResolvers]
@@ -39,4 +40,7 @@ defaultEntryPoints = ["http", "https"]
       [certificatesResolvers.letsencrypt.acme.dnsChallenge]
         provider = "{{ traefik_dns_provider }}"
         resolvers = ["1.1.1.1:53", "8.8.8.8:53"]
+
+[serversTransport]
+  insecureSkipVerify = true
 {% endif %}

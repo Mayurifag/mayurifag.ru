@@ -1,4 +1,5 @@
 ---
+# TODO: add WATCHTOWER_CLEANUP: "true" and specify images to update on all containers
 - name: Watchtower Docker Container
   community.docker.docker_container:
     name: watchtower

@@ -14,9 +14,9 @@
 - name: Portainer Docker Container
   community.docker.docker_container:
     name: portainer
-    image: portainer/portainer-ce:2.20.3
+    image: portainer/portainer-ce:latest
     pull: true
-    recreate: yes
+    recreate: true
     volumes:
       - "{{ portainer_data_directory }}:/data:rw"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
@@ -27,4 +27,4 @@
       traefik.enable: "{{ portainer_available_externally }}"
       traefik.http.routers.portainer.rule: "Host(`{{ portainer_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.portainer.loadbalancer.server.port: "9000"
-      traefik.http.routers.portainer.middlewares: "my-headers@file"
+      traefik.http.routers.portainer.middlewares: "secure-headers@file"

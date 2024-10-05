@@ -1,0 +1,25 @@
+[http.routers.nextcloud-aio-apache]
+  rule = "Host(`{{ nextcloud_subdomain }}.{{ server_hostname }}`)"
+  service = "nextcloud-aio-apache"
+  entryPoints = ["websecure"]
+  middlewares = ["nextcloud-secure-headers@file", "https-redirect@file"]
+  [http.routers.nextcloud-aio-apache.tls]
+    [http.routers.nextcloud-aio-apache.tls.domains]
+      main = "{{ nextcloud_subdomain }}.{{ server_hostname }}"
+
+[http.services.nextcloud-aio-apache.loadBalancer]
+  passHostHeader = true
+
+  [[http.services.nextcloud-aio-apache.loadBalancer.servers]]
+    url = "http://nextcloud-aio-apache:11000"
+
+
+[http.middlewares.https-redirect.redirectScheme]
+  scheme = "https"
+  permanent = true
+
+[http.middlewares.nextcloud-secure-headers.headers]
+  hostsProxyHeaders = ["X-Forwarded-Host"]
+  referrerPolicy = "same-origin"
+  [http.middlewares.nextcloud-secure-headers.headers.customResponseHeaders]
+    X-Robots-Tag = "noindex, nofollow"

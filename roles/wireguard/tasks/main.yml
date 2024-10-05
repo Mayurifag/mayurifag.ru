@@ -16,7 +16,7 @@
     name: wg-easy
     image: "{{ wireguard_docker_image }}"
     pull: true
-    recreate: yes
+    recreate: true
     sysctls:
       "net.ipv4.ip_forward": "1"
       "net.ipv4.conf.all.src_valid_mark": "1"
@@ -26,9 +26,15 @@
       - SYS_MODULE
     memory: "{{ wireguard_memory }}"
     env:
-      "PASSWORD": "{{ admin_userpassword }}"
+      "PASSWORD_HASH": "{{ wireguard_password_hash }}"
       "WG_HOST": "{{ wireguard_subdomain }}.{{ server_hostname }}"
       "WG_DEFAULT_DNS": "1.1.1.1, 8.8.8.8, 8.8.4.4"
+      "LANG": "en"
+      "PORT": "51821"
+      "WG_PORT": "51820"
+      "WG_PERSISTENT_KEEPALIVE": "60"
+      "UI_TRAFFIC_STATS": "true"
+      "UI_CHART_TYPE": "1"
     ports:
       - "51820:51820/udp"
       - "51821:51821/tcp"
@@ -38,4 +44,4 @@
       traefik.enable: "{{ wireguard_available_externally }}"
       traefik.http.routers.wg-easy.rule: "Host(`{{ wireguard_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.wg-easy.loadbalancer.server.port: "51821"
-      traefik.http.routers.wg-easy.middlewares: "my-headers@file"
+      traefik.http.routers.wg-easy.middlewares: "secure-headers@file"

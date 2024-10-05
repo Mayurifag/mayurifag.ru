@@ -1,7 +1,7 @@
 ---
 hemmelig_enabled: true
 
-hemmelig_docker_image: hemmeligapp/hemmelig:v5.15.3
+hemmelig_docker_image: hemmeligapp/hemmelig:v5.19.27
 hemmelig_available_externally: "true"
 hemmelig_subdomain: secret
 

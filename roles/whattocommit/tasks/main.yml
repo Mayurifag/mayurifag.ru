@@ -9,4 +9,4 @@
       traefik.enable: "{{ whattocommit_available_externally }}"
       traefik.http.routers.whattocommit.rule: "Host(`{{ whattocommit_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.whattocommit.loadbalancer.server.port: "8080"
-      traefik.http.routers.whattocommit.middlewares: "my-headers@file"
+      traefik.http.routers.whattocommit.middlewares: "secure-headers@file"

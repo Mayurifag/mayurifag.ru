@@ -3,7 +3,7 @@
   community.docker.docker_container:
     name: dozzle
     image: amir20/dozzle:latest
-    pull: true
+    recreate: true
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     restart_policy: unless-stopped
@@ -16,4 +16,4 @@
       traefik.enable: "{{ dozzle_available_externally }}"
       traefik.http.routers.dozzle.rule: "Host(`{{ dozzle_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.dozzle.loadbalancer.server.port: "8080"
-      traefik.http.routers.dozzle.middlewares: "my-headers@file"
+      traefik.http.routers.dozzle.middlewares: "secure-headers@file"

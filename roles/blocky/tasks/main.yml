@@ -21,7 +21,7 @@
     name: blocky
     image: spx01/blocky
     pull: true
-    recreate: yes
+    recreate: true
     volumes:
       - "{{ blocky_data_directory }}/config.yaml:/app/config.yml"
     env:

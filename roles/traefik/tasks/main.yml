@@ -33,12 +33,9 @@
   community.docker.docker_container:
     name: traefik
     image: "{{ traefik_docker_image }}"
-    pull: true
-    network_mode: host
-    # ports:
-    #   - "80:80"
-    #   - "443:443"
-    #   - "8080:8080"
+    ports:
+      - "80:80"
+      - "443:443"
     volumes:
       - "{{ traefik_data_directory }}/traefik.toml:/etc/traefik/traefik.toml:ro"
       - "{{ traefik_data_directory }}/dynamic_configs:/etc/traefik/dynamic_configs:ro"
@@ -47,4 +44,14 @@
     env: "{{ traefik_environment_variables }}"
     restart_policy: unless-stopped
     memory: "{{ traefik_memory }}"
-    recreate: yes
+    recreate: true
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.traefik.rule: "Host(`{{ traefik_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.traefik.loadbalancer.server.port: "8080"
+      traefik.http.routers.traefik.service: "api@internal"
+      traefik.http.routers.traefik.middlewares: "auth@file"
+      traefik.http.routers.traefik.entrypoints: "web,websecure"
+    networks:
+      - name: "bridge"
+      - name: "nextcloud-aio"

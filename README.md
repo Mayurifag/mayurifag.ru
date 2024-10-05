@@ -5,8 +5,9 @@
 ## Description
 
 **DONT USE THIS REPOSITORY NO MATTER WHAT** due to security reasons (i.e. there
-is no firewall rules, not much services monitoring, no fail2ban rules and there
-is the most important part: it uses docker without much security measures).
+is no firewall rules, not much services monitoring, no custom fail2ban rules and
+there is the most important part: it uses docker without much security
+measures).
 
 Playbook is fine only for my personal usage!
 
@@ -23,6 +24,8 @@ Cloudflare or your favourite DNS provider.
 * Large folder for docker data (Done by VPS via large disk)
 * ssh authorization key for root user (Done by VPS or
 `ssh-copy-id root@mayurifag.ru`)
+* Be sure that you have open ports for needed applications (some vps providers
+  have default blocked ports or blocked them all)
 
 ### Your PC
 
@@ -31,6 +34,8 @@ Cloudflare or your favourite DNS provider.
 module from ansible)
 
 ## Instructions
+
+### Initial setup
 
 ```sh
 git clone https://github.com/Mayurifag/mayurifag.ru.git
@@ -44,16 +49,18 @@ ansible-galaxy install -r requirements.yml
 
 #### TL;DR
 
-```sh
-make deploy-prod
-# or
-make deploy-tag netdata # or other tag
-```
-
 Maybe first you'll need to ssh and exec:
 
 ```sh
 apt-get --allow-releaseinfo-change update
+# or
+do-release-upgrade
+```
+
+```sh
+make deploy-prod
+# or
+make deploy-tag netdata # or other tag
 ```
 
 #### Optional in-before steps
@@ -108,7 +115,6 @@ Host mayurifag-prod
 | mayurifag.github.io     | <http://mayurifag.local>                     | 8005        |
 | Navidrome               | <http://mus.mayurifag.local>                 | 80          |
 | Netdata                 | <http://netdata.mayurifag.local>             | 19999       |
-| Owncloud Infinite Scale | <http://ocis.mayurifag.local>                | 9200        |
 | Portainer               | <http://portainer.mayurifag.local>           | 9000        |
 | SFTPGo                  | <https://sftp.mayurifag.local>               | 8080        |
 | Shadowsocks-rust        | <https://ss.mayurifag.local/xray> (uses TLS) | 1080        |
@@ -130,13 +136,14 @@ need to deploy my services once again.
 
 ### High priority
 
-* [ ] Sync time with ntp automatically, with notification if it's not synced. I
-  need it for some of my time-sensitive services.
+* [ ] Proxy to be http and socks5 in single container
+* [x] Sync time with ntp automatically. I need it for some of my time-sensitive
+  services.
 * [x] Some strange things with Traefik config. If problem with
-  "my-headers@file" -> return "my-headers@file"
-* [ ] Log rotation for docker containers - or default settings after install
+  "secure-headers@file" -> return "secure-headers@file"
+* [x] Log rotation for docker containers - or default settings after install
 * [ ] ~~<https://github.com/alexta69/metube>~~
-* [ ] ~~Add cleaning up apt-get to get extra 1GB~~
+* [x] Add cleaning up apt-get to get extra 1GB
 * [x] Think how to rotate logs easily for docker (takes all the space in a
   year or more)
 * [ ] Ssh configuration: change port and make the sshd configuration cheatsheet
@@ -165,9 +172,8 @@ need to deploy my services once again.
 ### Medium priority
 
 * [x] <https://github.com/epoupon/lms>
-* [ ] Add automatic backup solution (duplicati?). Do I need anything more than
-      /data/docker_data?
-* [ ] Add ufw with rules + make docker respect the rules
+* [ ] ~~Add automatic backup solution (duplicati?). Do I need anything more than/data/docker_data?~~
+* [ ] Add ufw with rules + make docker respect the rules. geerligguy.firewall
 * [x] Add pastebin - done via hemmelig
 * [ ] ~~Make traefik to write logs to file + logrotate them~~
 * [ ] Suggest if I need more fail2ban jail rules
@@ -182,6 +188,7 @@ need to deploy my services once again.
 * [x] FileRun
 * [x] Simple proxy server in docker
 * [x] Makefiles + info to launch only specified tags
+* [x] Make traefik dashboard available from internet
 
 ### Low priority
 
@@ -197,9 +204,9 @@ need to deploy my services once again.
 * [ ] Add zsh
 * [x] Make CI working (decided not to have full e2e test suite, so fine for now)
 * [x] Add instructions for requirements and deployment
-* [ ] Try to make deploy from zero to hero. Add instructions if needed.
+* [x] Try to make deploy from zero to hero. Add instructions if needed.
 * [x] Add lightweight filesharing nextcloud alternative (FileRun?)
-* [ ] Add web analytics (matomo?)
+* [ ] ~~Add web analytics (matomo?)~~
 * [ ] ~~Add rocket.chat~~
 * [ ] ~~Add url shortener~~
 * [ ] Add wiki
@@ -218,7 +225,7 @@ need to deploy my services once again.
 * [ ] <https://hub.docker.com/r/linuxserver/librespeed>
 * [ ] <https://github.com/alexjustesen/speedtest-tracker> - check if compatible
   with other providers + with homepage.dev + with traefik + with authelia
-* [ ] Rename `my-headers` to `secure-headers` in traefik config and all
+* [x] Rename `my-headers` to `secure-headers` in traefik config and all
   containers
 
 ## Older implementation

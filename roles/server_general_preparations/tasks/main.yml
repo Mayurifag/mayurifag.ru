@@ -7,15 +7,6 @@
   community.general.timezone:
     name: "{{ server_timezone }}"
 
-# TODO: why commented? fix
-# - name: Ensure the locale en_US.UTF-8 exists
-#   locale_gen:
-#     name: en_US.UTF-8
-#     state: present
-
-# - name: Set en_US.UTF-8 as default locale
-#   command: localectl set-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
-
 - name: Apply custom sysctl values
   ansible.posix.sysctl:
     name: "{{ item.key }}"
@@ -24,27 +15,79 @@
     sysctl_set: yes
     reload: yes
     state: present
-  with_items: "{{ sysctl_values }}"
+  loop: "{{ sysctl_values }}"
 
-# https://unix.stackexchange.com/a/368309
-- name: Clean sshd config out of legacy settings and warnings
-  ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    state: absent
-    regexp: "{{ item }}"
-  loop:
-    - KeyRegenerationInterval
-    - ServerKeyBits
-    - RSAAuthentication
-    - RhostsRSAAuthentication
-    - UsePrivilegeSeparation
+- name: Disable recommended packages
+  ansible.builtin.copy:
+    content: 'APT::Install-Recommends "0";'
+    dest: /etc/apt/apt.conf.d/00norecommends
+    mode: '0644'
 
-- name: Restart sshd after changing configuration
-  ansible.builtin.systemd:
-    name: sshd
-    state: restarted
+- name: Disable suggested packages
+  ansible.builtin.copy:
+    content: 'APT::Install-Suggests "0";'
+    dest: /etc/apt/apt.conf.d/01nosuggests
+    mode: '0644'
 
-- name: Cleanup packaging
+- name: Update apt-cache
   ansible.builtin.apt:
-    autoclean: yes
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Upgrade all packages
+  ansible.builtin.apt:
+    upgrade: dist
+    state: latest
+    force_apt_get: yes
+
+- name: Install extra packages
+  ansible.builtin.apt:
+    name: "{{ mayurifag_general_extra_packages }}"
+    state: present
+    force_apt_get: yes
+
+- name: Remove old kernel versions
+  ansible.builtin.shell: apt-get purge $(dpkg -l 'linux-*' | sed '/^ii/!d;/'"$(uname -r | sed "s/\(.*\)-\([^0-9]\+\)/\1/")"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d' | head -n -2) -y
+  args:
+    executable: /bin/bash
+  register: kernel_cleanup
+  changed_when: kernel_cleanup.stdout != ""
+
+- name: Remove orphaned packages and clean apt cache
+  ansible.builtin.apt:
     autoremove: yes
+    autoclean: yes
+
+- name: Ensure the locale en_US.UTF-8 exists
+  ansible.builtin.locale_gen:
+    name: en_US.UTF-8
+    state: present
+
+- name: Ensure the locale ru_RU.UTF-8 exists
+  ansible.builtin.locale_gen:
+    name: ru_RU.UTF-8
+    state: present
+
+- name: Set en_US.UTF-8 as default locale
+  command: localectl set-locale LANG=en_US.UTF-8
+
+- name: Ensure NTP service is running and enabled
+  ansible.builtin.systemd:
+    name: ntp
+    state: started
+    enabled: yes
+
+- name: Check if reboot is required
+  ansible.builtin.stat:
+    path: /var/run/reboot-required
+  register: reboot_required_file
+
+- name: Reboot the box if kernel updated
+  reboot:
+    msg: "Reboot initiated by Ansible for kernel updates"
+    connect_timeout: 5
+    reboot_timeout: 300
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+    test_command: uptime
+  when: reboot_required_file.stat.exists
