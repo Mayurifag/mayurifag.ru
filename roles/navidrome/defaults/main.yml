@@ -7,7 +7,7 @@ navidrome_subdomain: "mus"
 navidrome_data_directory: "{{ docker_home }}/navidrome_data"
 navidrome_music_directory: "{{ files_home }}/Music"
 
-navidrome_user_and_group: "33:33" # www-data:www-data
+navidrome_user_and_group: "33:33" # www-data:www-data (default from nextcloud)
 
 navidrome_spotify_id: "change_it"
 navidrome_spotify_secret: "change_it"

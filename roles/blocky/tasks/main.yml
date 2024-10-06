@@ -28,8 +28,7 @@
       TZ: "{{ server_timezone }}"
     restart_policy: unless-stopped
     ports:
-      - "53:53/tcp"
-      - "53:53/udp"
+      - "53:53"
       - "853:853"
     labels:
       traefik.enable: "{{ blocky_available_externally }}"

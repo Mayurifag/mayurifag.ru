@@ -40,3 +40,19 @@
     dest: "~{{ admin_username }}/.ssh/authorized_keys"
     owner: "{{ admin_username }}"
     mode: 0400
+
+- name: Apply bash settings for admin user
+  ansible.builtin.template:
+    src: "templates/.bashrc"
+    dest: "/home/{{ admin_username }}/.bash_aliases"
+    owner: "{{ admin_username }}"
+    group: "{{ admin_username }}"
+    mode: 0644
+
+- name: Apply bash settings for root user
+  ansible.builtin.template:
+    src: "templates/.bashrc"
+    dest: "/root/.bash_aliases"
+    owner: root
+    group: root
+    mode: 0644

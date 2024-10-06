@@ -28,11 +28,11 @@
 
     - role: server_general_preparations
       tags:
-        - mayurifag-general
+        - general
 
     - role: users
       tags:
-        - mayurifag-general
+        - users
 
     ###
     ### Requirements
@@ -78,11 +78,6 @@
         - wireguard
       when: (wireguard_enabled | default(False))
 
-    - role: homer
-      tags:
-        - homer
-      when: (homer_enabled | default(False))
-
     # TODO: for ubuntu have to disable systemd-resolved service, occupies 53 port
     # TODO: for ubuntu - change resolv.conf
     - role: blocky
@@ -90,50 +85,20 @@
         - blocky
       when: (blocky_enabled | default(False))
 
-    - role: filebrowser
-      tags:
-        - filebrowser
-      when: (filebrowser_enabled | default(False))
-
-    - role: glances
-      tags:
-        - glances
-      when: (glances_enabled | default(False))
-
     - role: portainer
       tags:
         - portainer
       when: (portainer_enabled | default(False))
-
-    - role: watchtower
-      tags:
-        - watchtower
-      when: (watchtower_enabled | default(False))
 
     - role: netdata
       tags:
         - netdata
       when: (netdata_enabled | default(False))
 
-    - role: doku
-      tags:
-        - doku
-      when: (doku_enabled | default(False))
-
     - role: whattocommit
       tags:
         - whattocommit
       when: (whattocommit_enabled | default(False))
-
-    - role: wallabag
-      tags:
-        - wallabag
-      when: (wallabag_enabled | default(False))
-
-    - role: dozzle
-      tags:
-        - dozzle
-      when: (dozzle_enabled | default(False))
 
     - role: hemmelig
       tags:
@@ -159,5 +124,3 @@
       tags:
         - security
       when: (security_enabled | default(False))
-
-    - role: cheatsheet

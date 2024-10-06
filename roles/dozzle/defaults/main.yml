@@ -1,9 +1,0 @@
----
-dozzle_enabled: true
-dozzle_available_externally: "true"
-
-# network
-dozzle_subdomain: "dozzle"
-
-# specs
-dozzle_memory: 1g

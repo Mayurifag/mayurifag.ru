@@ -20,7 +20,7 @@ Cloudflare or your favourite DNS provider.
 
 ### VPS
 
-* Debian 10-11 (maybe works fine on other `apt` distros)
+* Debian 10-11 (Ubuntu works, though requires some inteventions)
 * Large folder for docker data (Done by VPS via large disk)
 * ssh authorization key for root user (Done by VPS or
 `ssh-copy-id root@mayurifag.ru`)
@@ -103,40 +103,31 @@ Host mayurifag-prod
 
 | Name                    | Default endpoint                             | App. Port   |
 | ----------------------- | -------------------------------------------- | ----------- |
+| 3proxy                  | <socks5://mayurifag.local:1080 or 3128       | 1080/3128   |
 | Blocky                  | -                                            | -           |
-| Doku                    | <http://doku.mayurifag.local>                | 9090        |
-| Dozzle                  | <http://dozzle.mayurifag.local>              | 8080        |
-| Filebrowser             | <http://fb.mayurifag.local>                  | 80          |
-| Glances                 | <http://glances.mayurifag.local>             | 61208/61209 |
-| Go-socks5-proxy         | <socks5://mayurifag.local:7777> (+auth)      | 1080        |
-| Homer                   | <http://homer.mayurifag.local>               | 8080        |
 | Hemmelig                | <http://secret.mayurifag.local>              | 3000        |
-| LMS                     | <http://lms.mayurifag.local>                 | 5082        |
 | mayurifag.github.io     | <http://mayurifag.local>                     | 8005        |
 | Navidrome               | <http://mus.mayurifag.local>                 | 80          |
 | Netdata                 | <http://netdata.mayurifag.local>             | 19999       |
+| Nextcloud All-in-One    | <http://nextcloud.mayurifag.local>           | 11000       |
 | Portainer               | <http://portainer.mayurifag.local>           | 9000        |
-| SFTPGo                  | <https://sftp.mayurifag.local>               | 8080        |
 | Shadowsocks-rust        | <https://ss.mayurifag.local/xray> (uses TLS) | 1080        |
-| Syncthing [WebUI]       | <https://st.mayurifag.local>                 | 8384        |
+| Traefik Dashboard       | <http://traefik.mayurifag.local>             | 8080        |
 | Vaultwarden             | <http://pw.mayurifag.local>                  | 80          |
-| Wallabag                | <http://wallabag.mayurifag.local>            | 80          |
-| Watchtower              | -                                            | -           |
-| Webdav [SFTPGo]         | <http://webdav.mayurifag.ru>                 | 10080       |
-| Wireguard-Easy          | <http://wg.mayurifag.local>                  | 58172       |
 | Whattocommit            | <http://commit.mayurifag.local>              | 8080        |
+| Wireguard-Easy          | <http://wg.mayurifag.local>                  | 58172       |
 
 ## TODO
 
-### WIP
+### Work is not in progress
 
-The work is not in progress now, because I'm okay with current implementation,
+The work is not in progress now, because I am okay with current implementation,
 but still I think there are some things existing for further development if I'll
 need to deploy my services once again.
 
 ### High priority
 
-* [ ] Proxy to be http and socks5 in single container
+* [x] Proxy to be http and socks5 in single container
 * [x] Sync time with ntp automatically. I need it for some of my time-sensitive
   services.
 * [x] Some strange things with Traefik config. If problem with

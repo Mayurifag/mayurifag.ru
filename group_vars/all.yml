@@ -19,8 +19,8 @@ admin_authorized_keys: ""
 
 server_timezone: Etc/UTC
 server_hostname: mayurifag.local
-swap_file_size_mb: "2048"
-swap_swappiness: "25"
+swap_file_size_mb: "1024"
+swap_swappiness: "15"
 
 # htpasswd -nbB admin admin
 # admin:$2y$05$9GXnLumjrUFrG96d4ljNkewDXSYIAUeRjLTafcdazV6g3jRPmulJO
@@ -60,10 +60,10 @@ enable_tls: true
 bootstrap_enabled: true
 swap_enabled: true
 mayurifag_github_io_enabled: true
-watchtower_enabled: true
 lazydocker_enabled: true
 docker_enabled: true
 security_enabled: true
+
 wireguard_enabled: true
 wireguard_subdomain: "wg"
 wireguard_password_hash: "change_this"
@@ -74,23 +74,11 @@ proxy_user_password: change_this
 proxy_socks_port: "1080"
 proxy_http_port: "1081"
 
-glances_enabled: true
-glances_subdomain: "glances"
-
-homer_enabled: true
-homer_subdomain: "homer"
-
 netdata_enabled: true
 netdata_subdomain: "netdata"
 
-doku_enabled: true
-doku_subdomain: "doku"
-
 whattocommit_enabled: true
 whattocommit_subdomain: "commit"
-
-filebrowser_enabled: true
-filebrowser_subdomain: "fb"
 
 blocky_enabled: true
 
@@ -106,14 +94,8 @@ vaultwarden_subdomain: "pw"
 portainer_enabled: true
 portainer_subdomain: "portainer"
 
-dozzle_enabled: true
-dozzle_subdomain: "dozzle"
-
 traefik_enabled: true
 traefik_subdomain: "traefik"
-
-wallabag_enabled: true
-wallabag_subdomain: "wallabag"
 
 shadowsocks_enabled: true
 shadowsocks_subdomain: "ss"

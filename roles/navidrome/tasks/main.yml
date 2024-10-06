@@ -25,7 +25,7 @@
       - "{{ navidrome_data_directory }}/:/data"
       - "{{ navidrome_music_directory }}:/music:ro"
     env:
-      ND_SCANSCHEDULE: "5m"
+      ND_SCANSCHEDULE: "15m"
       ND_LASTFM_ENABLED: "false"
       ND_ENABLEGRAVATAR: "true"
       ND_SPOTIFY_ID: "{{ navidrome_spotify_id }}"

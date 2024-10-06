@@ -1,19 +1,19 @@
 ---
-# - name: Create Nextcloud files directory
-#   ansible.builtin.file:
-#     path: "{{ nextcloud_files_directory }}"
-#     state: directory
-#     mode: '0755'
+- name: Create Nextcloud files directory
+  ansible.builtin.file:
+    path: "{{ nextcloud_files_directory }}"
+    state: directory
+    mode: '0755'
 
-# - name: Remove old Nextcloud data directory
-#   ansible.builtin.file:
-#     path: "{{ nextcloud_data_directory }}"
-#     state: absent
+- name: Remove old Nextcloud data directory
+  ansible.builtin.file:
+    path: "{{ nextcloud_data_directory }}"
+    state: absent
 
-# - name: Create Nextcloud data directory
-#   ansible.builtin.file:
-#     path: "{{ nextcloud_data_directory }}"
-#     state: directory
+- name: Create Nextcloud data directory
+  ansible.builtin.file:
+    path: "{{ nextcloud_data_directory }}"
+    state: directory
 
 - name: Create Traefik dynamic configuration files
   ansible.builtin.template:
@@ -23,23 +23,23 @@
   loop: "{{ query('filetree', '../templates') }}"
   when: item.state == 'file'
 
-# - name: Nextcloud Docker Container
-#   community.docker.docker_container:
-#     name: nextcloud-aio-mastercontainer
-#     image: "{{ nextcloud_docker_image }}"
-#     recreate: true
-#     init: true
-#     volumes:
-#       - "nextcloud_aio_mastercontainer:/mnt/docker-aio-config"
-#       - /var/run/docker.sock:/var/run/docker.sock:ro
-#     env:
-#       AIO_DISABLE_BACKUP_SECTION: "true" # Setting this to true allows to hide the backup section in the AIO interface. See https://github.com/nextcloud/all-in-one#how-to-disable-the-backup-section
-#       APACHE_PORT: "11000" # Is needed when running behind a web server or reverse proxy (like Apache, Nginx, Caddy, Cloudflare Tunnel and else). See https://github.com/nextcloud/all-in-one/blob/main/reverse-proxy.md
-#       APACHE_IP_BINDING: "0.0.0.0" # Should be set when running behind a web server or reverse proxy (like Apache, Nginx, Caddy, Cloudflare Tunnel and else) that is running on the same host. See https://github.com/nextcloud/all-in-one/blob/main/reverse-proxy.md
-#       NEXTCLOUD_DATADIR: "{{ nextcloud_files_directory }}" # Allows to set the host directory for Nextcloud's datadir. ⚠️⚠️⚠️ Warning: do not set or adjust this value after the initial Nextcloud installation is done! See https://github.com/nextcloud/all-in-one#how-to-change-the-default-location-of-nextclouds-datadir
-#       NEXTCLOUD_MOUNT: "{{ nextcloud_data_directory }}" # Allows the Nextcloud container to access the chosen directory on the host. See https://github.com/nextcloud/all-in-one#how-to-allow-the-nextcloud-container-to-access-directories-on-the-host
-#       NEXTCLOUD_MEMORY_LIMIT: 1024M # Can be adjusted if you need more. See https://github.com/nextcloud/all-in-one#how-to-adjust-the-php-memory-limit-for-nextcloud
-#       SKIP_DOMAIN_VALIDATION: "true"
-#     restart_policy: unless-stopped
-#     ports:
-#       - "28888:8080"
+- name: Nextcloud Docker Container
+  community.docker.docker_container:
+    name: nextcloud-aio-mastercontainer
+    image: "{{ nextcloud_docker_image }}"
+    recreate: true
+    init: true
+    volumes:
+      - "nextcloud_aio_mastercontainer:/mnt/docker-aio-config"
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    env:
+      AIO_DISABLE_BACKUP_SECTION: "true" # Setting this to true allows to hide the backup section in the AIO interface. See https://github.com/nextcloud/all-in-one#how-to-disable-the-backup-section
+      APACHE_PORT: "11000" # Is needed when running behind a web server or reverse proxy (like Apache, Nginx, Caddy, Cloudflare Tunnel and else). See https://github.com/nextcloud/all-in-one/blob/main/reverse-proxy.md
+      APACHE_IP_BINDING: "0.0.0.0" # Should be set when running behind a web server or reverse proxy (like Apache, Nginx, Caddy, Cloudflare Tunnel and else) that is running on the same host. See https://github.com/nextcloud/all-in-one/blob/main/reverse-proxy.md
+      NEXTCLOUD_DATADIR: "{{ nextcloud_files_directory }}" # Allows to set the host directory for Nextcloud's datadir. ⚠️⚠️⚠️ Warning: do not set or adjust this value after the initial Nextcloud installation is done! See https://github.com/nextcloud/all-in-one#how-to-change-the-default-location-of-nextclouds-datadir
+      NEXTCLOUD_MOUNT: "{{ nextcloud_data_directory }}" # Allows the Nextcloud container to access the chosen directory on the host. See https://github.com/nextcloud/all-in-one#how-to-allow-the-nextcloud-container-to-access-directories-on-the-host
+      NEXTCLOUD_MEMORY_LIMIT: 1024M # Can be adjusted if you need more. See https://github.com/nextcloud/all-in-one#how-to-adjust-the-php-memory-limit-for-nextcloud
+      SKIP_DOMAIN_VALIDATION: "true"
+    restart_policy: unless-stopped
+    ports:
+      - "28888:8080"
