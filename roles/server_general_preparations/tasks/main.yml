@@ -1,7 +1,8 @@
 ---
-- name: "Set hostname to {{ server_hostname }}"
-  ansible.builtin.hostname:
-    name: "{{ server_hostname }}"
+# Perhaps I do not actually need this
+# - name: "Set hostname to {{ server_hostname }}"
+#   ansible.builtin.hostname:
+#     name: "{{ server_hostname }}"
 
 - name: "Set timezone to {{ server_timezone }}"
   community.general.timezone:
@@ -46,12 +47,12 @@
     state: present
     force_apt_get: yes
 
-- name: Remove old kernel versions
-  ansible.builtin.shell: apt-get purge $(dpkg -l 'linux-*' | sed '/^ii/!d;/'"$(uname -r | sed "s/\(.*\)-\([^0-9]\+\)/\1/")"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d' | head -n -2) -y
-  args:
-    executable: /bin/bash
-  register: kernel_cleanup
-  changed_when: kernel_cleanup.stdout != ""
+# - name: Remove old kernel versions
+#   ansible.builtin.shell: apt-get purge $(dpkg -l 'linux-*' | sed '/^ii/!d;/'"$(uname -r | sed "s/\(.*\)-\([^0-9]\+\)/\1/")"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d' | head -n -2) -y
+#   args:
+#     executable: /bin/bash
+#   register: kernel_cleanup
+#   changed_when: kernel_cleanup.stdout != ""
 
 - name: Remove orphaned packages and clean apt cache
   ansible.builtin.apt:

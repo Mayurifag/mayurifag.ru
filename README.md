@@ -181,6 +181,7 @@ need to deploy my services once again.
 * [x] Simple proxy server in docker
 * [x] Makefiles + info to launch only specified tags
 * [x] Make traefik dashboard available from internet
+* [ ] <https://github.com/usememos/memos>
 
 ### Low priority
 
