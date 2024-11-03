@@ -22,13 +22,13 @@
   ansible.builtin.copy:
     content: 'APT::Install-Recommends "0";'
     dest: /etc/apt/apt.conf.d/00norecommends
-    mode: '0644'
+    mode: "0644"
 
 - name: Disable suggested packages
   ansible.builtin.copy:
     content: 'APT::Install-Suggests "0";'
     dest: /etc/apt/apt.conf.d/01nosuggests
-    mode: '0644'
+    mode: "0644"
 
 - name: Update apt-cache
   ansible.builtin.apt:
@@ -60,17 +60,17 @@
     autoclean: yes
 
 - name: Ensure the locale en_US.UTF-8 exists
-  ansible.builtin.locale_gen:
+  community.general.locale_gen:
     name: en_US.UTF-8
     state: present
 
 - name: Ensure the locale ru_RU.UTF-8 exists
-  ansible.builtin.locale_gen:
+  community.general.locale_gen:
     name: ru_RU.UTF-8
     state: present
 
 - name: Set en_US.UTF-8 as default locale
-  command: localectl set-locale LANG=en_US.UTF-8
+  ansible.builtin.command: localectl set-locale LANG=en_US.UTF-8
 
 - name: Ensure NTP service is running and enabled
   ansible.builtin.systemd:
@@ -84,7 +84,7 @@
   register: reboot_required_file
 
 - name: Reboot the box if kernel updated
-  reboot:
+  ansible.builtin.reboot:
     msg: "Reboot initiated by Ansible for kernel updates"
     connect_timeout: 5
     reboot_timeout: 300

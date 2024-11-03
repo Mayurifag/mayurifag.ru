@@ -10,7 +10,7 @@
     state: directory
     owner: www-data
     group: www-data
-    mode: 0775
+    mode: "0775"
   with_items:
     - "{{ navidrome_data_directory }}/"
 

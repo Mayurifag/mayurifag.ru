@@ -67,6 +67,7 @@ make deploy-tag netdata # or other tag
 
 * Remove old remote host identification
 
+<!-- markdownlint-disable line-length -->
 ```sh
 ssh-keygen -R mayurifag.ru ; ssh-keygen -R $(host mayurifag.ru | awk '/has address/ {print $4}')
 ```
@@ -79,6 +80,8 @@ xclip -sel clip < ~/Desktop/mayurifag.ru.pub
 vi inventories/my-provision/group_vars/sample.yml # add key here in section
 keepassxc # Make new ssh agent entry
 ```
+
+<!-- markdownlint-enable line-length -->
 
 * Make new ssh config section. You need to change it after deploy.
 
@@ -101,10 +104,12 @@ Host mayurifag-prod
 
 ## Applications List
 
+<!-- markdownlint-disable line-length -->
+
 | Name                    | Default endpoint                             | App. Port   |
 | ----------------------- | -------------------------------------------- | ----------- |
 | 3proxy                  | <socks5://mayurifag.local:1080> or 3128      | 1080/3128   |
-| Blocky                  | [DNS] -> <ip>:53                             | 53          |
+| Blocky                  | [DNS] -> ip:53                               | 53          |
 | Dockovpn                | <http://dockovpn.mayurifag.local>            | 1194/8080   |
 | Hemmelig                | <http://secret.mayurifag.local>              | 3000        |
 | mayurifag.github.io     | <http://mayurifag.local>                     | 8005        |
@@ -117,6 +122,8 @@ Host mayurifag-prod
 | Vaultwarden             | <http://pw.mayurifag.local>                  | 80          |
 | Whattocommit            | <http://commit.mayurifag.local>              | 8080        |
 | Wireguard-Easy          | <http://wg.mayurifag.local>                  | 58172       |
+
+<!-- markdownlint-enable line-length -->
 
 ## TODO
 
@@ -145,7 +152,7 @@ need to deploy my services once again.
 * [ ] ~~Uptime Kuma~~
 * [x] Blocky DNS
 * [ ] ~~Add systemd services - do I need them or I'm fine~~
-* [ ] Migrate to dashboard which is easy maintainable: https://gethomepage.dev/latest/
+* [ ] Migrate to dashboard which is easy maintainable: <https://gethomepage.dev>
   * [ ] Should have docker labels services configuration and use authelia or
     other auth cookies/etc. - documented
 * [ ] Add Authentik / Remove baseauth

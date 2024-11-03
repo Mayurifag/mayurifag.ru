@@ -30,7 +30,7 @@
 - name: Create user .ssh directory
   ansible.builtin.file:
     path: "~{{ admin_username }}/.ssh"
-    mode: 0700
+    mode: "0700"
     state: directory
     owner: "{{ admin_username }}"
 
@@ -39,7 +39,7 @@
     src: "templates/authorized_keys.j2"
     dest: "~{{ admin_username }}/.ssh/authorized_keys"
     owner: "{{ admin_username }}"
-    mode: 0400
+    mode: "0400"
 
 - name: Apply bash settings for admin user
   ansible.builtin.template:
@@ -47,7 +47,7 @@
     dest: "/home/{{ admin_username }}/.bash_aliases"
     owner: "{{ admin_username }}"
     group: "{{ admin_username }}"
-    mode: 0644
+    mode: "0644"
 
 - name: Apply bash settings for root user
   ansible.builtin.template:
@@ -55,4 +55,4 @@
     dest: "/root/.bash_aliases"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
