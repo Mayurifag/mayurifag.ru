@@ -11,7 +11,7 @@
 
 - name: Provisioning
   hosts: all
-  gather_facts: no
+  gather_facts: yes
   roles:
     ###
     ### Run general preparation
@@ -119,6 +119,12 @@
       tags:
         - nextcloud
       when: (nextcloud_enabled | default(False))
+
+    # requires gather_facts: yes
+    - role: dockovpn
+      tags:
+        - dockovpn
+      when: (dockovpn_enabled | default(False))
 
     - role: geerlingguy.security
       tags:

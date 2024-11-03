@@ -20,7 +20,7 @@ Cloudflare or your favourite DNS provider.
 
 ### VPS
 
-* Debian 10-11 (Ubuntu works, though requires some inteventions)
+* Debian 10-12 (Ubuntu works, though requires some/many interventions)
 * Large folder for docker data (Done by VPS via large disk)
 * ssh authorization key for root user (Done by VPS or
 `ssh-copy-id root@mayurifag.ru`)
@@ -103,8 +103,9 @@ Host mayurifag-prod
 
 | Name                    | Default endpoint                             | App. Port   |
 | ----------------------- | -------------------------------------------- | ----------- |
-| 3proxy                  | <socks5://mayurifag.local:1080 or 3128       | 1080/3128   |
-| Blocky                  | -                                            | -           |
+| 3proxy                  | <socks5://mayurifag.local:1080> or 3128      | 1080/3128   |
+| Blocky                  | [DNS] -> <ip>:53                             | 53          |
+| Dockovpn                | <http://dockovpn.mayurifag.local>            | 1194/8080   |
 | Hemmelig                | <http://secret.mayurifag.local>              | 3000        |
 | mayurifag.github.io     | <http://mayurifag.local>                     | 8005        |
 | Navidrome               | <http://mus.mayurifag.local>                 | 80          |

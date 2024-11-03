@@ -106,3 +106,6 @@ hemmelig_subdomain: "secret"
 
 nextcloud_enabled: true
 nextcloud_subdomain: "nextcloud"
+
+dockovpn_enabled: true
+dockovpn_subdomain: "vpn"
