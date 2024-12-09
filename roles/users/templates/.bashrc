@@ -20,6 +20,7 @@ alias reboot='sudo reboot'
 alias shutdown='sudo shutdown now'
 alias apt-get='sudo apt-get'
 alias aptclean='sudo apt autoremove && sudo apt clean && sudo apt autoclean'
+alias yabs='curl -sL https://yabs.sh | bash'
 
 ############
 # COMMANDS #

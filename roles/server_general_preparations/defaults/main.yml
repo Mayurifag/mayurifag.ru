@@ -9,10 +9,10 @@ sysctl_values:
   # Prevent against the common 'syn flood attack'
   - { key: net.ipv4.tcp_syncookies, value: 1 }
 
-  - { key: kernel.msgmnb, value: 65536 }
-  - { key: kernel.msgmax, value: 65536 }
-  - { key: kernel.shmmax, value: 68719476736 }
-  - { key: kernel.shmall, value: 4294967296 }
+  # - { key: kernel.msgmnb, value: 65536 }
+  # - { key: kernel.msgmax, value: 65536 }
+  # - { key: kernel.shmmax, value: 68719476736 }
+  # - { key: kernel.shmall, value: 4294967296 }
   - { key: kernel.core_uses_pid, value: 1 }
   - { key: net.ipv4.conf.all.accept_source_route, value: 0 }
   - { key: net.ipv4.conf.default.accept_source_route, value: 0 }
@@ -44,7 +44,7 @@ sysctl_values:
   - { key: fs.suid_dumpable, value: 0 }
   - { key: fs.protected_hardlinks, value: 1 }
   - { key: fs.protected_symlinks, value: 1 }
-  - { key: fs.file-max, value: 51200 }
+  - { key: fs.file-max, value: 2097152 }
 
   # ss optimizations
   - { key: net.ipv4.tcp_fastopen, value: 3 }
@@ -57,7 +57,9 @@ mayurifag_general_extra_packages:
   - apt-transport-https
   - aptitude
   - apt-utils
+  - ca-certificates
   - curl
+  - git
   - htop
   - linux-headers-generic
   - linux-image-generic
@@ -66,6 +68,7 @@ mayurifag_general_extra_packages:
   - net-tools
   - nethogs
   - ntp
+  - software-properties-common
   - unzip
   - wget
   - whois

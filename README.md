@@ -98,8 +98,8 @@ Host *
 
 Host mayurifag-prod
     HostName mayurifag.ru
-    User root # Change user and port
-    Port 22   # after deployment
+    User root # Change user
+    Port 22
 ```
 
 ## Applications List
@@ -145,8 +145,8 @@ need to deploy my services once again.
 * [x] Add cleaning up apt-get to get extra 1GB
 * [x] Think how to rotate logs easily for docker (takes all the space in a
   year or more)
-* [ ] Ssh configuration: change port and make the sshd configuration cheatsheet
-  with Readme
+* [ ] ~~Ssh configuration: change port and make the sshd configuration cheatsheet
+  with Readme~~
 * [x] Comment out ports sections on containers and try to work with them
 * [x] Add Dozzle <https://github.com/amir20/dozzle>
 * [ ] ~~Uptime Kuma~~
@@ -192,15 +192,15 @@ need to deploy my services once again.
 
 ### Low priority
 
-* [ ] Ssh hardening:
-  * [ ] If I change port on installation -- what I have to change then?
-  * [ ] Check if current config is okay without changes done already by playbook
-  * [ ] PubkeyAuthentication yes
-  * [ ] AllowUsers root, admin_username
-  * [ ] AllowTcpForwarding no
-  * [ ] PermitEmptyPasswords no
-  * [ ] X11Forwarding no
-  * [ ] fail2ban already installed but needs harder configuration
+* [-] Ssh hardening:
+  * [ ] ~~If I change port on installation -- what I have to change then?~~
+  * [x] Check if current config is okay without changes done already by playbook
+  * [x] PubkeyAuthentication yes
+  * [x] AllowUsers root, admin_username
+  * [x] AllowTcpForwarding no
+  * [x] PermitEmptyPasswords no
+  * [x] X11Forwarding no
+  * [ ] fail2ban already installed but needs harder configuration ?
 * [ ] Add zsh
 * [x] Make CI working (decided not to have full e2e test suite, so fine for now)
 * [x] Add instructions for requirements and deployment
@@ -209,8 +209,8 @@ need to deploy my services once again.
 * [ ] ~~Add web analytics (matomo?)~~
 * [ ] ~~Add rocket.chat~~
 * [ ] ~~Add url shortener~~
-* [ ] Add wiki
-* [ ] Add Git (gitea/gitlab/else)
+* [ ] Add wiki - do I need it? Research first
+* [ ] Add Git (gitea/gitlab/else) - why would I need it?
   * [ ] Add ci/cd runner for selfhosted git
 * [x] Add ~~bitwarden~~ Vaultwarden
 * [ ] Check security <https://github.com/docker/docker-bench-security>

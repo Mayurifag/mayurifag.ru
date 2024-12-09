@@ -47,6 +47,7 @@
     state: present
     force_apt_get: yes
 
+# TODO: this doesnt work sometimes. Its needed just to have some free space, so left commented
 # - name: Remove old kernel versions
 #   ansible.builtin.shell: apt-get purge $(dpkg -l 'linux-*' | sed '/^ii/!d;/'"$(uname -r | sed "s/\(.*\)-\([^0-9]\+\)/\1/")"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d' | head -n -2) -y
 #   args:
