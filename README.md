@@ -20,12 +20,13 @@ Cloudflare or your favourite DNS provider.
 
 ### VPS
 
-* Debian 10-12 (Ubuntu works, though requires some/many interventions)
-* Large folder for docker data (Done by VPS via large disk)
+* Debian 10-12 (Ubuntu works, though requires many interventions)
 * ssh authorization key for root user (Done by VPS or
 `ssh-copy-id root@mayurifag.ru`)
 * Be sure that you have open ports for needed applications (some vps providers
   have default blocked ports or blocked them all)
+* (optionally) Large folder for docker data if you need it (might be done via
+  connecting some disk to your vps or ask your vps provider about some GB)
 
 ### Your PC
 
@@ -135,6 +136,7 @@ need to deploy my services once again.
 
 ### High priority
 
+* [ ] Max log for systemctl journal (https://unix.stackexchange.com/questions/130786/can-i-remove-files-in-var-log-journal-and-var-cache-abrt-di-usr)
 * [x] Proxy to be http and socks5 in single container
 * [x] Sync time with ntp automatically. I need it for some of my time-sensitive
   services.

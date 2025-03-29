@@ -29,6 +29,7 @@ AllowAgentForwarding no
 # prevent TCP ports from being forwarded over SSH tunnels
 # **please be aware that disabling TCP forwarding does not prevent port forwarding**
 # any user with an interactive login shell can spin up his/her own instance of sshd
+# This will break ssh traffic tunneling. Perhaps would be switched on for some specific cases.
 AllowTcpForwarding no
 
 # prevent StreamLocal (Unix-domain socket) forwarding
