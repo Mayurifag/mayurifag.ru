@@ -109,3 +109,7 @@ nextcloud_subdomain: "nextcloud"
 
 dockovpn_enabled: true
 dockovpn_subdomain: "vpn"
+
+gitea_enabled: true
+gitea_subdomain: "git"
+gitea_admin_password: "change_this"

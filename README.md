@@ -112,6 +112,7 @@ Host mayurifag-prod
 | 3proxy                  | <socks5://mayurifag.local:1080> or 3128      | 1080/3128   |
 | Blocky                  | [DNS] -> ip:53                               | 53          |
 | Dockovpn                | <http://dockovpn.mayurifag.local>            | 1194/8080   |
+| Gitea                   | <http://git.mayurifag.local>                 | 3000/222    |
 | Hemmelig                | <http://secret.mayurifag.local>              | 3000        |
 | mayurifag.github.io     | <http://mayurifag.local>                     | 8005        |
 | Navidrome               | <http://mus.mayurifag.local>                 | 80          |

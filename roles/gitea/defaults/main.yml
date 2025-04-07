@@ -1,0 +1,24 @@
+---
+gitea_enabled: true
+gitea_available_externally: "true"
+
+gitea_subdomain: "git"
+
+# Data directory
+gitea_data_directory: "{{ docker_home }}/gitea"
+
+# Docker image version
+gitea_image: "gitea/gitea:1.23"
+
+# Container memory limit
+gitea_memory_limit: "1g"
+
+# Gitea configuration
+gitea_ssh_port: "222"
+gitea_disable_registration: "true"
+gitea_install_lock: "false"
+
+# Admin user configuration
+gitea_admin_username: "gitea_admin"
+gitea_admin_password: "change_this"
+gitea_admin_email: "{{ admin_email }}"

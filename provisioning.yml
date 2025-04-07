@@ -120,6 +120,11 @@
         - nextcloud
       when: (nextcloud_enabled | default(False))
 
+    - role: gitea
+      tags:
+        - gitea
+      when: (gitea_enabled | default(False))
+
     # requires gather_facts: yes
     - role: dockovpn
       tags:

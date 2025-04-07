@@ -1,0 +1,53 @@
+---
+- name: Stop and remove Gitea container if it exists
+  community.docker.docker_container:
+    name: gitea
+    state: absent
+    force_kill: yes
+
+- name: Remove Gitea Directories if They Exist
+  ansible.builtin.file:
+    path: "{{ gitea_data_directory }}"
+    state: absent
+
+- name: Create Gitea Directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ gitea_data_directory }}/"
+
+- name: Gitea Docker Container
+  community.docker.docker_container:
+    name: gitea
+    image: "{{ gitea_image }}"
+    pull: true
+    volumes:
+      - "{{ gitea_data_directory }}/:/data/"
+    ports:
+      - "{{ gitea_ssh_port }}:{{ gitea_ssh_port }}"
+    restart_policy: unless-stopped
+    memory: "{{ gitea_memory_limit }}"
+    env:
+      USER_UID: "1000"
+      USER_GID: "1000"
+      DB_TYPE: "sqlite3"
+      ROOT_URL: "https://{{ gitea_subdomain }}.{{ server_hostname }}"
+      SSH_DOMAIN: "{{ gitea_subdomain }}.{{ server_hostname }}"
+      SSH_PORT: "{{ gitea_ssh_port }}"
+      DISABLE_REGISTRATION: "{{ gitea_disable_registration }}"
+      INSTALL_LOCK: "{{ gitea_install_lock }}"
+      GITEA__security__DISABLE_GRAVATAR: "false"
+      GITEA__security__ENABLE_EMAIL_NOTIFICATIONS: "true"
+      GITEA__server__DOMAIN: "{{ gitea_subdomain }}.{{ server_hostname }}"
+      GITEA__server__SSH_PORT: "{{ gitea_ssh_port }}"
+      GITEA__server__ROOT_URL: "https://{{ gitea_subdomain }}.{{ server_hostname }}/"
+      GITEA__service__DISABLE_REGISTRATION: "{{ gitea_disable_registration }}"
+      GITEA__admin__USER: "{{ gitea_admin_username }}"
+      GITEA__admin__PASSWORD: "{{ gitea_admin_password }}"
+      GITEA__admin__EMAIL: "{{ gitea_admin_email }}"
+    labels:
+      traefik.enable: "{{ gitea_available_externally }}"
+      traefik.http.routers.gitea.rule: "Host(`{{ gitea_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.gitea.loadbalancer.server.port: "3000"
+      traefik.http.routers.gitea.middlewares: "secure-headers@file"
