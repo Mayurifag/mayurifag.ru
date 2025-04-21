@@ -63,6 +63,7 @@ mayurifag_github_io_enabled: true
 lazydocker_enabled: true
 docker_enabled: true
 security_enabled: true
+watchtower_enabled: true
 
 wireguard_enabled: true
 wireguard_subdomain: "wg"

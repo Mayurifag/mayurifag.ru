@@ -1,0 +1,13 @@
+---
+- name: Watchtower Docker Container
+  community.docker.docker_container:
+    name: watchtower
+    image: "{{ watchtower_image }}"
+    pull: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart_policy: unless-stopped
+    env:
+      WATCHTOWER_SCHEDULE: "{{ watchtower_schedule }}"
+      WATCHTOWER_CLEANUP: "{{ watchtower_cleanup | string }}"
+      WATCHTOWER_LABEL_ENABLE: "{{ watchtower_label_enable | string }}"

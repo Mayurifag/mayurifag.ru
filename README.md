@@ -5,11 +5,9 @@
 ## Description
 
 **DONT USE THIS REPOSITORY NO MATTER WHAT** due to security reasons (i.e. there
-is no firewall rules, not much services monitoring, no custom fail2ban rules and
-there is the most important part: it uses docker without much security
-measures).
+is no firewall rules, no custom fail2ban rules and it uses docker).
 
-Playbook is fine only for my personal usage!
+Playbook is fine only for my personal opinionated usage!
 
 ## Requires
 
@@ -107,23 +105,24 @@ Host mayurifag-prod
 
 <!-- markdownlint-disable line-length -->
 
-| Name                    | Default endpoint                             | App. Port   |
-| ----------------------- | -------------------------------------------- | ----------- |
-| 3proxy                  | <socks5://mayurifag.local:1080> or 3128      | 1080/3128   |
-| Blocky                  | [DNS] -> ip:53                               | 53          |
-| Dockovpn                | <http://dockovpn.mayurifag.local>            | 1194/8080   |
-| Gitea                   | <http://git.mayurifag.local>                 | 3000/222    |
-| Hemmelig                | <http://secret.mayurifag.local>              | 3000        |
-| mayurifag.github.io     | <http://mayurifag.local>                     | 8005        |
-| Navidrome               | <http://mus.mayurifag.local>                 | 80          |
-| Netdata                 | <http://netdata.mayurifag.local>             | 19999       |
-| Nextcloud All-in-One    | <http://nextcloud.mayurifag.local>           | 11000       |
-| Portainer               | <http://portainer.mayurifag.local>           | 9000        |
-| Shadowsocks-rust        | <https://ss.mayurifag.local/xray> (uses TLS) | 1080        |
-| Traefik Dashboard       | <http://traefik.mayurifag.local>             | 8080        |
-| Vaultwarden             | <http://pw.mayurifag.local>                  | 80          |
-| Whattocommit            | <http://commit.mayurifag.local>              | 8080        |
-| Wireguard-Easy          | <http://wg.mayurifag.local>                  | 58172       |
+| Name                    | Default endpoint                             | App. Port   | Watchtower updates |
+| ----------------------- | -------------------------------------------- | ----------- | ------------------ |
+| 3proxy                  | <socks5://mayurifag.local:1080> or 3128      | 1080/3128   |                    |
+| Blocky                  | [DNS] -> ip:53                               | 53          |                    |
+| Dockovpn                | <http://dockovpn.mayurifag.local>            | 1194/8080   |                    |
+| Gitea                   | <http://git.mayurifag.local>                 | 3000/222    |                    |
+| Hemmelig                | <http://secret.mayurifag.local>              | 3000        |                    |
+| mayurifag.github.io     | <http://mayurifag.local>                     | 8005        | ✅                 |
+| Navidrome               | <http://mus.mayurifag.local>                 | 80          |                    |
+| Netdata                 | <http://netdata.mayurifag.local>             | 19999       |                    |
+| Nextcloud All-in-One    | <http://nextcloud.mayurifag.local>           | 11000       |                    |
+| Portainer               | <http://portainer.mayurifag.local>           | 9000        |                    |
+| Shadowsocks-rust        | <https://ss.mayurifag.local/xray> (uses TLS) | 1080        |                    |
+| Traefik Dashboard       | <http://traefik.mayurifag.local>             | 8080        |                    |
+| Vaultwarden             | <http://pw.mayurifag.local>                  | 80          |                    |
+| Watchtower              | N/A (background container updates service)   | N/A         |                    |
+| Whattocommit            | <http://commit.mayurifag.local>              | 8080        |                    |
+| Wireguard-Easy          | <http://wg.mayurifag.local>                  | 58172       |                    |
 
 <!-- markdownlint-enable line-length -->
 
