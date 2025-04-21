@@ -121,7 +121,6 @@ Host mayurifag-prod
 | Traefik Dashboard       | <http://traefik.mayurifag.local>             | 8080        |                    |
 | Vaultwarden             | <http://pw.mayurifag.local>                  | 80          |                    |
 | Watchtower              | N/A (background container updates service)   | N/A         |                    |
-| Whattocommit            | <http://commit.mayurifag.local>              | 8080        |                    |
 | Wireguard-Easy          | <http://wg.mayurifag.local>                  | 58172       |                    |
 
 <!-- markdownlint-enable line-length -->

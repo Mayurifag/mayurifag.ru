@@ -12,3 +12,5 @@
       - "{{ proxy_http_port }}:3128/tcp"
     restart_policy: unless-stopped
     memory: "{{ proxy_memory }}"
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"

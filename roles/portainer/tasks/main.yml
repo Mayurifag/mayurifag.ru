@@ -1,9 +1,4 @@
 ---
-- name: Delete Portainer directories
-  ansible.builtin.file:
-    path: "{{ portainer_data_directory }}"
-    state: absent
-
 - name: Create Portainer Directories
   ansible.builtin.file:
     path: "{{ item }}"
@@ -14,7 +9,7 @@
 - name: Portainer Docker Container
   community.docker.docker_container:
     name: portainer
-    image: portainer/portainer-ce:latest
+    image: portainer/portainer-ce:lts
     pull: true
     recreate: true
     volumes:
@@ -28,3 +23,4 @@
       traefik.http.routers.portainer.rule: "Host(`{{ portainer_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.portainer.loadbalancer.server.port: "9000"
       traefik.http.routers.portainer.middlewares: "secure-headers@file"
+      com.centurylinklabs.watchtower.enable: "true"
