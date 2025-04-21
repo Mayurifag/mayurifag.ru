@@ -100,11 +100,6 @@
         - netdata
       when: (netdata_enabled | default(False))
 
-    - role: whattocommit
-      tags:
-        - whattocommit
-      when: (whattocommit_enabled | default(False))
-
     - role: hemmelig
       tags:
         - hemmelig

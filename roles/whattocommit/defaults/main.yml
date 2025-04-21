@@ -1,6 +1,0 @@
----
-whattocommit_enabled: true
-whattocommit_available_externally: "true"
-
-# network
-whattocommit_subdomain: "commit"

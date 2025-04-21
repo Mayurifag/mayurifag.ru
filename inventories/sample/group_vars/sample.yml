@@ -74,9 +74,6 @@ proxy_http_port: "1081"
 netdata_enabled: true
 netdata_subdomain: "netdata"
 
-whattocommit_enabled: true
-whattocommit_subdomain: "commit"
-
 blocky_enabled: true
 
 navidrome_enabled: true
