@@ -17,7 +17,7 @@
 - name: Navidrome Docker Container
   community.docker.docker_container:
     name: navidrome
-    image: deluan/navidrome:latest
+    image: "{{ navidrome_image }}"
     user: "{{ navidrome_user_and_group }}"
     pull: true
     recreate: true

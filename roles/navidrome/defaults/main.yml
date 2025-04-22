@@ -2,6 +2,7 @@
 navidrome_enabled: true
 navidrome_available_externally: "true"
 
+navidrome_image: deluan/navidrome:0.55.2
 navidrome_subdomain: "mus"
 
 navidrome_data_directory: "{{ docker_home }}/navidrome_data"
