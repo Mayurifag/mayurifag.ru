@@ -135,7 +135,7 @@ need to deploy my services once again.
 
 ### High priority
 
-* [ ] Max log for systemctl journal (https://unix.stackexchange.com/questions/130786/can-i-remove-files-in-var-log-journal-and-var-cache-abrt-di-usr)
+* [ ] [Max log for systemctl journal](https://unix.stackexchange.com/questions/130786/can-i-remove-files-in-var-log-journal-and-var-cache-abrt-di-usr)
 * [x] Proxy to be http and socks5 in single container
 * [x] Sync time with ntp automatically. I need it for some of my time-sensitive
   services.
