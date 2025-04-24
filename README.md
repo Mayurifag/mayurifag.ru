@@ -11,14 +11,11 @@ Playbook is fine only for my personal opinionated usage!
 
 ## Requires
 
-### DNS
-
-Obviously, `A` record for your TLD + wildcard/subdomain configuration in
-Cloudflare or your favourite DNS provider.
-
 ### VPS
 
-* Debian 10-12 (Ubuntu works, though requires many interventions)
+* `A` record for your TLD + wildcard/subdomain configuration in Cloudflare or
+  your favourite DNS provider.
+* Debian 10-12 (Ubuntu works, though requires A LOT of interventions)
 * ssh authorization key for root user (Done by VPS or
 `ssh-copy-id root@mayurifag.ru`)
 * Be sure that you have open ports for needed applications (some vps providers
@@ -178,6 +175,7 @@ need to deploy my services once again.
 * [ ] ~~Make traefik to write logs to file + logrotate them~~
 * [ ] Suggest if I need more fail2ban jail rules
   * [ ] ~~<https://shadowsocks.org/en/wiki/Setup-fail2ban.html>~~
+  * [ ] fail2ban plugin for traefik?!
 * [ ] Add motd.txt to server
   * [ ] About lazydocker
   * [ ] Aliases
@@ -193,7 +191,7 @@ need to deploy my services once again.
 
 ### Low priority
 
-* [-] Ssh hardening:
+* [x] Ssh hardening:
   * [ ] ~~If I change port on installation -- what I have to change then?~~
   * [x] Check if current config is okay without changes done already by playbook
   * [x] PubkeyAuthentication yes
@@ -201,7 +199,6 @@ need to deploy my services once again.
   * [x] AllowTcpForwarding no
   * [x] PermitEmptyPasswords no
   * [x] X11Forwarding no
-  * [ ] fail2ban already installed but needs harder configuration ?
 * [ ] Add zsh
 * [x] Make CI working (decided not to have full e2e test suite, so fine for now)
 * [x] Add instructions for requirements and deployment
