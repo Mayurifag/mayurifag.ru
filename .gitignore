@@ -22,3 +22,5 @@ roles/djx339.*
 inventories/my-provision
 
 secret
+
+/makefiles/private.mk

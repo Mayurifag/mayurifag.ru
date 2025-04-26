@@ -8,6 +8,10 @@
       - /var/run/docker.sock:/var/run/docker.sock:ro
     restart_policy: unless-stopped
     env:
-      WATCHTOWER_SCHEDULE: "{{ watchtower_schedule }}"
-      WATCHTOWER_CLEANUP: "{{ watchtower_cleanup | string }}"
-      WATCHTOWER_LABEL_ENABLE: "{{ watchtower_label_enable | string }}"
+      WATCHTOWER_HTTP_API_TOKEN: "{{ watchtower_http_api_token }}"
+    command: "{{ watchtower_command }}"
+    labels:
+      traefik.enable: "{{ watchtower_available_externally }}"
+      traefik.http.routers.watchtower.rule: "Host(`{{ watchtower_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.watchtower.loadbalancer.server.port: "8080"
+      com.centurylinklabs.watchtower.enable: "false"
