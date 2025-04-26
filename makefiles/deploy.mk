@@ -1,7 +1,6 @@
-deploy-prod:
-	ansible-playbook -i inventories/my-provision/inventory provisioning.yml
-
+.PHONY: deploy-tag
 deploy-tag:
 	ansible-playbook -i inventories/my-provision/inventory provisioning.yml --tags "$(ARGS)"
 
-.PHONY: deploy-prod deploy-tag
+.PHONY: deploy
+deploy: deploy-tag
