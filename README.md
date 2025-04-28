@@ -104,7 +104,7 @@ Host mayurifag-prod
 
 | Name                    | Default endpoint                             | App. Port   | Watchtower updates |
 | ----------------------- | -------------------------------------------- | ----------- | ------------------ |
-| 3proxy                  | <socks5://mayurifag.local:1080> or 3128      | 1080/3128   |                    |
+| 3proxy                  | <socks5://mayurifag.local:1080> or 3128      | 1080/3128   | ✅                 |
 | Blocky                  | [DNS] -> ip:53                               | 53          |                    |
 | Dockovpn                | <http://dockovpn.mayurifag.local>            | 1194/8080   |                    |
 | Gitea                   | <http://git.mayurifag.local>                 | 3000/222    |                    |
@@ -113,7 +113,7 @@ Host mayurifag-prod
 | Navidrome               | <http://mus.mayurifag.local>                 | 80          |                    |
 | Netdata                 | <http://netdata.mayurifag.local>             | 19999       |                    |
 | Nextcloud All-in-One    | <http://nextcloud.mayurifag.local>           | 11000       |                    |
-| Portainer               | <http://portainer.mayurifag.local>           | 9000        |                    |
+| Portainer               | <http://portainer.mayurifag.local>           | 9000        | ✅                 |
 | Shadowsocks-rust        | <https://ss.mayurifag.local/xray> (uses TLS) | 1080        |                    |
 | Traefik Dashboard       | <http://traefik.mayurifag.local>             | 8080        |                    |
 | Vaultwarden             | <http://pw.mayurifag.local>                  | 80          |                    |
@@ -208,8 +208,8 @@ need to deploy my services once again.
 * [ ] ~~Add rocket.chat~~
 * [ ] ~~Add url shortener~~
 * [ ] Add wiki - do I need it? Research first
-* [ ] Add Git (gitea/gitlab/else) - why would I need it?
-  * [ ] Add ci/cd runner for selfhosted git
+* [x] Add Git (gitea/gitlab/else)
+* [ ] Add ci/cd runner for selfhosted git
 * [x] Add ~~bitwarden~~ Vaultwarden
 * [ ] Check security <https://github.com/docker/docker-bench-security>
   <https://github.com/quay/clair>
