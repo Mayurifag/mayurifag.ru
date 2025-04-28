@@ -117,7 +117,7 @@ Host mayurifag-prod
 | Shadowsocks-rust        | <https://ss.mayurifag.local/xray> (uses TLS) | 1080        |                    |
 | Traefik Dashboard       | <http://traefik.mayurifag.local>             | 8080        |                    |
 | Vaultwarden             | <http://pw.mayurifag.local>                  | 80          |                    |
-| Watchtower              | N/A (background container updates service)   | N/A         |                    |
+| Watchtower              | <http://watchtower.mayurifag.local>          | 8080        |                    |
 | Wireguard-Easy          | <http://wg.mayurifag.local>                  | 58172       |                    |
 
 <!-- markdownlint-enable line-length -->
