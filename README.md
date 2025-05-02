@@ -225,6 +225,7 @@ need to deploy my services once again.
   with other providers + with homepage.dev + with traefik + with authelia
 * [x] Rename `my-headers` to `secure-headers` in traefik config and all
   containers
+* [ ] research simple selfhosted pinger
 
 ## Older implementation
 
