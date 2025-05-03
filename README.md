@@ -110,7 +110,7 @@ Host mayurifag-prod
 | Gitea                   | <http://git.mayurifag.local>                 | 3000/222    |                    |
 | Hemmelig                | <http://secret.mayurifag.local>              | 3000        |                    |
 | mayurifag.github.io     | <http://mayurifag.local>                     | 8005        | ✅                 |
-| Navidrome               | <http://mus.mayurifag.local>                 | 80          |                    |
+| mus                     | <http://mus.mayurifag.local>                 | 8000        | ✅                 |
 | Netdata                 | <http://netdata.mayurifag.local>             | 19999       |                    |
 | Nextcloud All-in-One    | <http://nextcloud.mayurifag.local>           | 11000       |                    |
 | Portainer               | <http://portainer.mayurifag.local>           | 9000        | ✅                 |
@@ -180,7 +180,7 @@ need to deploy my services once again.
   * [ ] About lazydocker
   * [ ] Aliases
 * [ ] ~~<https://github.com/EmbarkStudios/wg-ui>~~
-* [x] Navidrome
+
 * [x] Doku <https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/docker/doku.md>
 * [ ] ~~<https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/other/firefox.md>~~
 * [x] FileRun

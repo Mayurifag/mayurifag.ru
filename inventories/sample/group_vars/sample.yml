@@ -75,11 +75,10 @@ netdata_subdomain: "netdata"
 
 blocky_enabled: true
 
-navidrome_enabled: true
-navidrome_subdomain: "mus"
-navidrome_spotify_id: "change_it"
-navidrome_spotify_secret: "change_it"
-navidrome_password_encryption_key: "change_it"
+mus_enabled: true
+mus_subdomain: "mus"
+mus_music_directory: "/home/{{ admin_username }}/music_folder/"
+mus_auth_route: change_this
 
 vaultwarden_enabled: true
 vaultwarden_subdomain: "pw"

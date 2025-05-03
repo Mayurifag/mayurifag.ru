@@ -1,0 +1,19 @@
+---
+- name: Setup mus Docker Container
+  community.docker.docker_container:
+    name: mus
+    image: "{{ mus_docker_image }}"
+    pull: true
+    recreate: true
+    volumes:
+      - "{{ mus_music_directory }}:/music:ro"
+    env:
+      SECRET_AUTH_ROUTE: "{{ mus_auth_route }}"
+    restart_policy: unless-stopped
+    memory: "{{ mus_memory }}"
+    labels:
+      traefik.enable: "{{ mus_available_externally }}"
+      traefik.http.routers.mus.rule: "Host(`{{ mus_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.mus.loadbalancer.server.port: "8000"
+      traefik.http.routers.mus.middlewares: "secure-headers@file"
+      com.centurylinklabs.watchtower.enable: "true"

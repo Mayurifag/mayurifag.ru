@@ -95,6 +95,11 @@
         - portainer
       when: (portainer_enabled | default(False))
 
+    - role: mus
+      tags:
+        - mus
+      when: (mus_enabled | default(False))
+
     - role: netdata
       tags:
         - netdata
@@ -105,10 +110,6 @@
         - hemmelig
       when: (hemmelig_enabled | default(False))
 
-    - role: navidrome
-      tags:
-        - navidrome
-      when: (navidrome_enabled | default(False))
 
     - role: vaultwarden
       tags:
