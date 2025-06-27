@@ -102,23 +102,23 @@ Host mayurifag-prod
 
 <!-- markdownlint-disable line-length -->
 
-| Name                    | Default endpoint                             | App. Port   | Watchtower updates |
-| ----------------------- | -------------------------------------------- | ----------- | ------------------ |
-| 3proxy                  | <socks5://mayurifag.local:1080> or 3128      | 1080/3128   | ✅                 |
-| Blocky                  | [DNS] -> ip:53                               | 53          |                    |
-| Dockovpn                | <http://dockovpn.mayurifag.local>            | 1194/8080   |                    |
-| Gitea                   | <http://git.mayurifag.local>                 | 3000/222    |                    |
-| Hemmelig                | <http://secret.mayurifag.local>              | 3000        |                    |
-| mayurifag.github.io     | <http://mayurifag.local>                     | 8005        | ✅                 |
-| mus                     | <http://mus.mayurifag.local>                 | 8000        | ✅                 |
-| Netdata                 | <http://netdata.mayurifag.local>             | 19999       |                    |
-| Nextcloud All-in-One    | <http://nextcloud.mayurifag.local>           | 11000       |                    |
-| Portainer               | <http://portainer.mayurifag.local>           | 9000        | ✅                 |
-| Shadowsocks-rust        | <https://ss.mayurifag.local/xray> (uses TLS) | 1080        |                    |
-| Traefik Dashboard       | <http://traefik.mayurifag.local>             | 8080        |                    |
-| Vaultwarden             | <http://pw.mayurifag.local>                  | 80          |                    |
-| Watchtower              | <http://watchtower.mayurifag.local>          | 8080        |                    |
-| Wireguard-Easy          | <http://wg.mayurifag.local>                  | 58172       |                    |
+| Name                 | Default endpoint                             | App. Port | Watchtower |
+| -------------------- | -------------------------------------------- | --------- | ---------- |
+| 3proxy               | <socks5://mayurifag.local:1080> or 3128      | 1080/3128 | ✅          |
+| Blocky               | [DNS] -> ip:53                               | 53        |            |
+| Dockovpn             | <http://dockovpn.mayurifag.local>            | 1194/8080 |            |
+| Gitea                | <http://git.mayurifag.local>                 | 3000/222  |            |
+| Hemmelig             | <http://secret.mayurifag.local>              | 3000      |            |
+| mayurifag.github.io  | <http://mayurifag.local>                     | 8005      | ✅          |
+| mus                  | <http://mus.mayurifag.local>                 | 8000      | ✅          |
+| Netdata              | <http://netdata.mayurifag.local>             | 19999     |            |
+| Nextcloud All-in-One | <http://nextcloud.mayurifag.local>           | 11000     |            |
+| Portainer            | <http://portainer.mayurifag.local>           | 9000      | ✅          |
+| Shadowsocks-rust     | <https://ss.mayurifag.local/xray> (uses TLS) | 1080      |            |
+| Traefik Dashboard    | <http://traefik.mayurifag.local>             | 8080      |            |
+| Vaultwarden          | <http://pw.mayurifag.local>                  | 80        |            |
+| Watchtower           | <http://watchtower.mayurifag.local>          | 8080      |            |
+| Wireguard-Easy       | <http://wg.mayurifag.local>                  | 58172     |            |
 
 <!-- markdownlint-enable line-length -->
 
@@ -147,16 +147,17 @@ need to deploy my services once again.
   with Readme~~
 * [x] Comment out ports sections on containers and try to work with them
 * [x] Add Dozzle <https://github.com/amir20/dozzle>
-* [ ] ~~Uptime Kuma~~
+* [ ] ~~Uptime Kuma~~ maybe something free exists for me / research simple selfhosted pinger
 * [x] Blocky DNS
 * [ ] ~~Add systemd services - do I need them or I'm fine~~
 * [ ] Migrate to dashboard which is easy maintainable: <https://gethomepage.dev>
-  * [ ] Should have docker labels services configuration and use authelia or
-    other auth cookies/etc. - documented
+  * [ ] Should have docker labels services configuration
+  * [ ] Has to support authentik/authelia/etc.
+  * [ ] Also check for widgets availability
 * [ ] Add Authentik / Remove baseauth
 * [ ] ~~Add Cloudflare companion tiredofit/traefik-cloudflare-companion:latest docker~~
 * [ ] ~~Add Vikunja <https://vikunja.io/docs/full-docker-example/>~~
-* [ ] Move this section to issues and kanban
+* [ ] ~~Move this section to issues and kanban~~ its fine to be here and to be edited fast on-premise
 * [ ] ~~Add zswap~~
 * [ ] ~~<https://github.com/pglombardo/PasswordPusher>~~
 * [x] Migrate from mysql to postgres for nextcloud. Look other perfomance
@@ -170,12 +171,12 @@ need to deploy my services once again.
 
 * [x] <https://github.com/epoupon/lms>
 * [ ] ~~Add automatic backup solution (duplicati?). Do I need anything more than/data/docker_data?~~
-* [ ] Add ufw with rules + make docker respect the rules. geerligguy.firewall
 * [x] Add pastebin - done via hemmelig
 * [ ] ~~Make traefik to write logs to file + logrotate them~~
-* [ ] Suggest if I need more fail2ban jail rules
+* [ ] ufw / fail2ban section
   * [ ] ~~<https://shadowsocks.org/en/wiki/Setup-fail2ban.html>~~
   * [ ] fail2ban plugin for traefik?!
+  * [ ] Add ufw with rules + make docker respect the rules. geerligguy.firewall
 * [ ] Add motd.txt to server
   * [ ] About lazydocker
   * [ ] Aliases
@@ -187,7 +188,7 @@ need to deploy my services once again.
 * [x] Simple proxy server in docker
 * [x] Makefiles + info to launch only specified tags
 * [x] Make traefik dashboard available from internet
-* [ ] <https://github.com/usememos/memos>
+* [ ] <https://github.com/usememos/memos> or Otterwiki
 
 ### Low priority
 
@@ -199,7 +200,7 @@ need to deploy my services once again.
   * [x] AllowTcpForwarding no
   * [x] PermitEmptyPasswords no
   * [x] X11Forwarding no
-* [ ] Add zsh
+* [ ] ~~Add zsh~~ no need as bashrc works fine
 * [x] Make CI working (decided not to have full e2e test suite, so fine for now)
 * [x] Add instructions for requirements and deployment
 * [x] Try to make deploy from zero to hero. Add instructions if needed.
@@ -207,9 +208,9 @@ need to deploy my services once again.
 * [ ] ~~Add web analytics (matomo?)~~
 * [ ] ~~Add rocket.chat~~
 * [ ] ~~Add url shortener~~
-* [ ] Add wiki - do I need it? Research first
+* [ ] ~~Add wiki - do I need it? Research first~~
 * [x] Add Git (gitea/gitlab/else)
-* [ ] Add ci/cd runner for selfhosted git
+* [ ] ~~Add ci/cd runner for selfhosted git~~
 * [x] Add ~~bitwarden~~ Vaultwarden
 * [ ] Check security <https://github.com/docker/docker-bench-security>
   <https://github.com/quay/clair>
@@ -217,15 +218,16 @@ need to deploy my services once again.
 * [x] Migrate from dante to something docker based
   * [x] <https://hub.docker.com/r/serjs/go-socks5-proxy/>
   * [x] <https://github.com/schors/tgdante2>
-* [x] Migrate from shadowsocks-rust + v2ray to shadowsocks2-go + x-ray / maybe docker
+* [x] Migrate from shadowsocks-rust + v2ray to shadowsocks2-go + x-ray / maybe
+      docker
   * [x] <https://github.com/dmirubtsov/ss-xray-docker>
   * [x] <https://habr.com/ru/post/358126/>
-* [ ] <https://hub.docker.com/r/linuxserver/librespeed>
-* [ ] <https://github.com/alexjustesen/speedtest-tracker> - check if compatible
-  with other providers + with homepage.dev + with traefik + with authelia
+* [ ] Some kind of speedtest - check if compatible with other providers + with
+      homepage.dev + with traefik + with authelia
+  * [ ] <https://hub.docker.com/r/linuxserver/librespeed>
+  * [ ] <https://github.com/alexjustesen/speedtest-tracker>
 * [x] Rename `my-headers` to `secure-headers` in traefik config and all
   containers
-* [ ] research simple selfhosted pinger
 
 ## Older implementation
 
