@@ -177,6 +177,7 @@ need to deploy my services once again.
   * [ ] ~~<https://shadowsocks.org/en/wiki/Setup-fail2ban.html>~~
   * [ ] fail2ban plugin for traefik?!
   * [ ] Add ufw with rules + make docker respect the rules. geerligguy.firewall
+  * [ ] https://madaidans-insecurities.github.io/guides/linux-hardening.html
 * [ ] Add motd.txt to server
   * [ ] About lazydocker
   * [ ] Aliases
@@ -228,6 +229,8 @@ need to deploy my services once again.
   * [ ] <https://github.com/alexjustesen/speedtest-tracker>
 * [x] Rename `my-headers` to `secure-headers` in traefik config and all
   containers
+* [ ] Think about VLESS and so on. Maybe 3x-ui or something working with traefik exists. Look for configs and try.
+* [ ] <https://github.com/binwiederhier/ntfy>
 
 ## Older implementation
 
