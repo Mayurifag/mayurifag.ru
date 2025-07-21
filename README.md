@@ -133,8 +133,10 @@ need to deploy my services once again.
 ### High priority
 
 * [ ] [Max log for systemctl journal](https://unix.stackexchange.com/questions/130786/can-i-remove-files-in-var-log-journal-and-var-cache-abrt-di-usr)
-* [ ] Clean docker resources time to time with cron `docker system prune -a --volumes` (or else)
-* [ ] sshd config contradicts with maintainer's ones so might be better to use some .d/ version (research)
+* [ ] Clean docker resources time to time with cron
+  `docker system prune -a --volumes` (or else)
+* [ ] sshd config contradicts with maintainer's ones so might be better to use
+  some .d/ version (research)
 * [ ] watchtowerrr - use config.json for auth to dockerhub to prevent limits
 * [x] Proxy to be http and socks5 in single container
 * [x] Sync time with ntp automatically. I need it for some of my time-sensitive
@@ -150,7 +152,8 @@ need to deploy my services once again.
   with Readme~~
 * [x] Comment out ports sections on containers and try to work with them
 * [x] Add Dozzle <https://github.com/amir20/dozzle>
-* [ ] ~~Uptime Kuma~~ maybe something free exists for me / research simple selfhosted pinger
+* [ ] ~~Uptime Kuma~~ maybe something free exists for me / research simple
+  selfhosted pinger
 * [x] Blocky DNS
 * [ ] ~~Add systemd services - do I need them or I'm fine~~
 * [ ] Migrate to dashboard which is easy maintainable: <https://gethomepage.dev>
@@ -160,7 +163,8 @@ need to deploy my services once again.
 * [ ] Add Authentik / Remove baseauth
 * [ ] ~~Add Cloudflare companion tiredofit/traefik-cloudflare-companion:latest docker~~
 * [ ] ~~Add Vikunja <https://vikunja.io/docs/full-docker-example/>~~
-* [ ] ~~Move this section to issues and kanban~~ its fine to be here and to be edited fast on-premise
+* [ ] ~~Move this section to issues and kanban~~ its fine to be here and to be
+  edited fast on-premise
 * [ ] ~~Add zswap~~
 * [ ] ~~<https://github.com/pglombardo/PasswordPusher>~~
 * [x] Migrate from mysql to postgres for nextcloud. Look other perfomance
@@ -180,7 +184,7 @@ need to deploy my services once again.
   * [ ] ~~<https://shadowsocks.org/en/wiki/Setup-fail2ban.html>~~
   * [ ] fail2ban plugin for traefik?!
   * [ ] Add ufw with rules + make docker respect the rules. geerligguy.firewall
-  * [ ] https://madaidans-insecurities.github.io/guides/linux-hardening.html
+  * [ ] <https://madaidans-insecurities.github.io/guides/linux-hardening.html>
 * [ ] Add motd.txt to server
   * [ ] About lazydocker
   * [ ] Aliases
@@ -232,7 +236,8 @@ need to deploy my services once again.
   * [ ] <https://github.com/alexjustesen/speedtest-tracker>
 * [x] Rename `my-headers` to `secure-headers` in traefik config and all
   containers
-* [ ] Think about VLESS and so on. Maybe 3x-ui or something working with traefik exists. Look for configs and try.
+* [ ] Think about VLESS and so on. Maybe 3x-ui or something working with
+  traefik exists. Look for configs and try.
 * [ ] <https://github.com/binwiederhier/ntfy>
 * [ ] image of mayurifag.github.io has to be in ghcr
 
