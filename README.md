@@ -56,7 +56,7 @@ do-release-upgrade
 ```sh
 make deploy-prod
 # or
-make deploy-tag netdata # or other tag
+make deploy-tag "traefik,mus"
 ```
 
 #### Optional in-before steps
@@ -133,6 +133,9 @@ need to deploy my services once again.
 ### High priority
 
 * [ ] [Max log for systemctl journal](https://unix.stackexchange.com/questions/130786/can-i-remove-files-in-var-log-journal-and-var-cache-abrt-di-usr)
+* [ ] Clean docker resources time to time with cron `docker system prune -a --volumes` (or else)
+* [ ] sshd config contradicts with maintainer's ones so might be better to use some .d/ version (research)
+* [ ] watchtowerrr - use config.json for auth to dockerhub to prevent limits
 * [x] Proxy to be http and socks5 in single container
 * [x] Sync time with ntp automatically. I need it for some of my time-sensitive
   services.
@@ -231,6 +234,7 @@ need to deploy my services once again.
   containers
 * [ ] Think about VLESS and so on. Maybe 3x-ui or something working with traefik exists. Look for configs and try.
 * [ ] <https://github.com/binwiederhier/ntfy>
+* [ ] image of mayurifag.github.io has to be in ghcr
 
 ## Older implementation
 
