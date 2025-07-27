@@ -6,7 +6,7 @@
     pull: true
     recreate: true
     volumes:
-      - "{{ mus_music_directory }}:/app_data/music:ro"
+      - "{{ mus_music_directory }}:/app_data/music:rw"
     env:
       SECRET_KEY: "{{ mus_auth_route }}"
     restart_policy: unless-stopped
