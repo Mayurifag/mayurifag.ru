@@ -130,15 +130,22 @@ The work is not in progress now, because I am okay with current implementation,
 but still I think there are some things existing for further development if I'll
 need to deploy my services once again.
 
+I also considered to use podman instead of docker, but it requires too much
+changes in codebase and I am not sure if it is worth it.
+
 ### High priority
 
-* [ ] [Max log for systemctl journal](https://unix.stackexchange.com/questions/130786/can-i-remove-files-in-var-log-journal-and-var-cache-abrt-di-usr) and clean apt cache
-* [ ] Clean docker resources time to time with cron
-  `docker system prune -a --volumes` (or else)
+* [ ] Cron task to clean caches and use free place
+  * [ ] Use dumb file for 20% of place to be flexible in case of something wrong with aliases to remove it and restore
+  * [ ] [Max log for systemctl journal](https://unix.stackexchange.com/questions/130786/can-i-remove-files-in-var-log-journal-and-var-cache-abrt-di-usr)
+  * [ ] clean apt cache
+  * [ ] clean docker caches - think of better commands `docker system prune -a --volumes` (or else)
 * [ ] sshd config contradicts with maintainer's ones so might be better to use
-  some .d/ version (research)
+  some .d/ version (research). Actually might be better to rewrite this or something
 * [ ] watchtowerrr - use config.json for auth to dockerhub to prevent limits
-* [ ] maybe finance app
+* [ ] maybe finance app - deprecated, so research alternatives.
+  * [ ] Has to support crypto, ibkr, russian brokers
+* [ ] Use tinyauth everywhere
 * [x] Proxy to be http and socks5 in single container
 * [x] Sync time with ntp automatically. I need it for some of my time-sensitive
   services.
@@ -159,9 +166,9 @@ need to deploy my services once again.
 * [ ] ~~Add systemd services - do I need them or I'm fine~~
 * [ ] Migrate to dashboard which is easy maintainable: <https://gethomepage.dev>
   * [ ] Should have docker labels services configuration
-  * [ ] Has to support authentik/authelia/etc.
+  * [ ] ~~Has to support authentik/authelia/etc.~~
   * [ ] Also check for widgets availability
-* [ ] Add Authentik / Remove baseauth
+* [ ] ~~Add Authentik / Remove baseauth~~
 * [ ] ~~Add Cloudflare companion tiredofit/traefik-cloudflare-companion:latest docker~~
 * [ ] ~~Add Vikunja <https://vikunja.io/docs/full-docker-example/>~~
 * [ ] ~~Move this section to issues and kanban~~ its fine to be here and to be
