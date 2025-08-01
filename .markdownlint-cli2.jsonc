@@ -1,0 +1,14 @@
+{
+  "config": {
+    // Disable line length. I like it but tooling in vscode cant show properly
+    // multiline syntax like ~~...\n...~~
+    "MD013": {
+      "line_length": 1200000
+    }
+  },
+  "fix": true,
+  "globs": [
+    "**/*.{md,markdown}"
+  ],
+  "noBanner": true
+}

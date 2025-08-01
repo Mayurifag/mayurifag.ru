@@ -131,7 +131,9 @@ but still I think there are some things existing for further development if I'll
 need to deploy my services once again.
 
 I also considered to use podman instead of docker, but it requires too much
-changes in codebase and I am not sure if it is worth it.
+changes in codebase and I am not sure if it is worth it. It will also require to
+write systemd services it seems instead of convenient
+`restart_policy: unless-stopped`.
 
 ### High priority
 
@@ -146,6 +148,8 @@ changes in codebase and I am not sure if it is worth it.
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
 * [ ] Use tinyauth everywhere
+  * [ ] Research how it works (header/cookie/??) / research for issues
+  * [ ] Check if it works with PWA safari
 * [x] Proxy to be http and socks5 in single container
 * [x] Sync time with ntp automatically. I need it for some of my time-sensitive
   services.
@@ -156,12 +160,11 @@ changes in codebase and I am not sure if it is worth it.
 * [x] Add cleaning up apt-get to get extra 1GB
 * [x] Think how to rotate logs easily for docker (takes all the space in a
   year or more)
-* [ ] ~~Ssh configuration: change port and make the sshd configuration cheatsheet
-  with Readme~~
+* [o] ~~Ssh configuration: change port and make the sshd configuration cheatsheet with Readme~~
 * [x] Comment out ports sections on containers and try to work with them
 * [x] Add Dozzle <https://github.com/amir20/dozzle>
-* [ ] ~~Uptime Kuma~~ maybe something free exists for me / research simple
-  selfhosted pinger
+* [ ] Status page research - has to be available for free and nice dashboard
+  * [o] ~~Selfhosted <https://github.com/ledyba/uptime-kuma>~~
 * [x] Blocky DNS
 * [ ] ~~Add systemd services - do I need them or I'm fine~~
 * [ ] Migrate to dashboard which is easy maintainable: <https://gethomepage.dev>
