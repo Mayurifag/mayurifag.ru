@@ -38,6 +38,8 @@ git clone https://github.com/Mayurifag/mayurifag.ru.git
 cd mayurifag.ru
 cp -rfp inventories/sample inventories/my-provision
 # ... change my-provision ...
+# or ln from some place like that:
+# ln -s ~/Nextcloud/Software/dotfiles/my-provision inventories/my-provision
 ansible-galaxy install -r requirements.yml
 ```
 
