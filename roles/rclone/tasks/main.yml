@@ -1,0 +1,61 @@
+---
+- name: Create rclone config directory
+  ansible.builtin.file:
+    path: "{{ rclone_config_directory }}"
+    state: directory
+
+- name: Create rclone config file
+  ansible.builtin.template:
+    src: rclone.conf.j2
+    dest: "{{ rclone_config_directory }}/rclone.conf"
+
+- name: Create cloud mount directories
+  ansible.builtin.file:
+    path: "{{ rclone_cloud_directory }}/{{ item.mount_dir }}"
+    state: directory
+  loop: "{{ rclone_mounts }}"
+  when: item.enabled | default(true)
+
+- name: Set ownership of rclone config directory to www-data
+  ansible.builtin.file:
+    path: "{{ rclone_config_directory }}"
+    owner: "{{ rclone_user_uid }}"
+    group: "{{ rclone_user_gid }}"
+    recurse: yes
+    state: directory
+
+- name: Set ownership of cloud mount directories to www-data
+  ansible.builtin.file:
+    path: "{{ rclone_cloud_directory }}/{{ item.mount_dir }}"
+    owner: "{{ rclone_user_uid }}"
+    group: "{{ rclone_user_gid }}"
+    state: directory
+  loop: "{{ rclone_mounts }}"
+  when: item.enabled | default(true)
+
+- name: Rclone Docker Containers
+  community.docker.docker_container:
+    name: "rclone-{{ item.name }}"
+    image: "{{ rclone_docker_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    capabilities:
+      - SYS_ADMIN
+    devices:
+      - /dev/fuse:/dev/fuse:rwm
+    security_opts:
+      - apparmor:unconfined
+    volumes:
+      - "{{ rclone_config_directory }}:/config"
+      - "{{ rclone_cloud_directory }}/{{ item.mount_dir }}:/data:shared"
+    env:
+      RCLONE_REMOTE_PATH: "{{ item.remote_path }}"
+      RCLONE_MOUNT_USER_OPTS: "{{ item.mount_flags | default(rclone_default_mount_flags) }}"
+      PUID: "{{ rclone_user_uid }}"
+      PGID: "{{ rclone_user_gid }}"
+    memory: "{{ item.memory | default(rclone_default_memory) }}"
+  loop: "{{ rclone_mounts }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: item.enabled | default(true)

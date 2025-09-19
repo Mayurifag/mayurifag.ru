@@ -110,7 +110,6 @@
         - hemmelig
       when: (hemmelig_enabled | default(False))
 
-
     - role: vaultwarden
       tags:
         - vaultwarden
@@ -125,6 +124,11 @@
       tags:
         - gitea
       when: (gitea_enabled | default(False))
+
+    - role: rclone
+      tags:
+        - rclone
+      when: (rclone_enabled | default(True))
 
     # requires gather_facts: yes
     - role: dockovpn

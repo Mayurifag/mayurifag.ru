@@ -1,0 +1,21 @@
+{% for mount in rclone_mounts %}
+{% if mount.enabled | default(true) %}
+[{{ mount.name }}]
+type = {{ mount.type }}
+{% if mount.type == 'iclouddrive' %}
+apple_id = {{ mount.apple_id | quote }}
+password = {{ mount.password | quote }}
+{% if mount.cookies is defined %}
+cookies = {{ mount.cookies | quote }}
+{% endif %}
+{% if mount.trust_token is defined %}
+trust_token = {{ mount.trust_token | quote }}
+{% endif %}
+{% elif mount.type == 'drive' %}
+client_id = {{ mount.client_id | quote }}
+client_secret = {{ mount.client_secret | quote }}
+token = {{ mount.token | quote }}
+{% endif %}
+
+{% endif %}
+{% endfor %}

@@ -113,3 +113,17 @@ gitea_admin_password: "change_this"
 watchtower_enabled: true
 watchtower_subdomain: "watchtower"
 watchtower_http_api_token: change_this
+
+rclone_enabled: true
+rclone_mounts:
+  - name: iCloud
+    enabled: true
+    remote_path: "iCloud:"
+    mount_dir: "iCloud"
+    type: iclouddrive
+    apple_id: "farazeus@gmail.com"
+    password: "your-app-specific-password"
+    cookies: "your-cookies-from-rclone-config"
+    trust_token: "your-trust-token-from-rclone-config"
+
+rclone_cloud_directory: "/home/{{ admin_username }}/Cloud"

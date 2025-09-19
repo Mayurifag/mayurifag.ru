@@ -1,0 +1,21 @@
+---
+rclone_enabled: true
+# Using wiserain/rclone which supports PUID/PGID for user permissions
+rclone_docker_image: "ghcr.io/wiserain/rclone:1.71.0"
+
+rclone_config_directory: "{{ docker_home }}/rclone/config"
+rclone_cloud_directory: "/home/{{ admin_username }}/Cloud"
+
+rclone_default_memory: "1g"
+rclone_default_mount_flags: >-
+  --vfs-cache-mode writes
+  --allow-non-empty
+  --log-level INFO
+  --dir-cache-time 24h
+  --buffer-size 256M
+
+# User/Group settings for www-data compatibility
+rclone_user_uid: "33" # www-data UID
+rclone_user_gid: "33" # www-data GID
+
+rclone_mounts: []

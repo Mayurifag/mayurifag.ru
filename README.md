@@ -25,6 +25,8 @@ Playbook is fine only for my personal opinionated usage!
 
 ### Your PC
 
+You'd better use `uv` probably for those, but still:
+
 * Ansible `python3 -m pip install --user ansible`
 * (only MacOS) - passlib `python3 -m pip install --user passlib` (to use crypto
 module from ansible)
