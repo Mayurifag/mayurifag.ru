@@ -3,8 +3,9 @@ site
 *.retry
 *.log
 .DS_Store
-# inventories
+# inventories and private files
 .cache
+*/private/
 
 # Vim
 [._]sw[a-p]

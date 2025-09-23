@@ -43,6 +43,25 @@ cp -rfp inventories/sample inventories/my-provision
 ansible-galaxy install -r requirements.yml
 ```
 
+### Private Files Configuration
+
+Some applications support optional private files (like cookies.txt for mus). To use these:
+
+1. Create a `private/` directory in your inventory:
+
+   ```sh
+   mkdir -p inventories/my-provision/private
+   ```
+
+2. Add your private files to this directory (they're already excluded from git):
+
+   ```sh
+   # For mus cookies support
+   cp your-cookies.txt inventories/my-provision/private/cookies.txt
+   ```
+
+The files will be automatically detected and mounted read-only into the containers if they exist.
+
 ### Production deployment
 
 #### TL;DR
