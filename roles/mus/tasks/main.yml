@@ -24,7 +24,7 @@
   ansible.builtin.copy:
     src: "{{ mus_cookies_file }}"
     dest: "{{ docker_home }}/mus/cookies.txt"
-    mode: "0644"
+    mode: "0666"
   when: mus_cookies_file != "" and cookies_file_stat.stat.exists | default(false)
 
 - name: Setup mus Docker Container
@@ -33,7 +33,7 @@
     image: "{{ mus_docker_image }}"
     pull: true
     recreate: true
-    volumes: "{{ mus_base_volumes + (mus_cookies_file != '' and cookies_file_stat.stat.exists | default(false) | ternary([docker_home + '/mus/cookies.txt:/app_data/cookies.txt:ro'], [])) }}"
+    volumes: "{{ mus_base_volumes + (mus_cookies_file != '' and cookies_file_stat.stat.exists | default(false) | ternary([docker_home + '/mus/cookies.txt:/app_data/cookies.txt:rw'], [])) }}"
     env:
       SECRET_KEY: "{{ mus_auth_route }}"
     restart_policy: unless-stopped
