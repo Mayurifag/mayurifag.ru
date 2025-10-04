@@ -113,3 +113,9 @@ gitea_admin_password: "change_this"
 watchtower_enabled: true
 watchtower_subdomain: "watchtower"
 watchtower_http_api_token: change_this
+
+obsidian_livesync_enabled: true
+obsidian_livesync_subdomain: "couchdbobsidian"
+obsidian_livesync_couchdb_user: "obsidian_user"
+obsidian_livesync_couchdb_password: "change_this"
+obsidian_livesync_couchdb_database: "obsidian"

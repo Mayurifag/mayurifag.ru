@@ -126,6 +126,11 @@
         - gitea
       when: (gitea_enabled | default(False))
 
+    - role: obsidian_livesync
+      tags:
+        - obsidian
+      when: (obsidian_livesync_enabled | default(False))
+
     # requires gather_facts: yes
     - role: dockovpn
       tags:

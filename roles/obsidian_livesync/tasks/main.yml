@@ -1,0 +1,60 @@
+---
+- name: Warn about data directory cleaning
+  ansible.builtin.debug:
+    msg: "WARNING: 'obsidian_livesync_clean_datadir' is true. The existing Obsidian LiveSync data directory will be completely removed."
+  when: obsidian_livesync_clean_datadir | default(false)
+
+- name: Remove Obsidian LiveSync data directory if requested
+  ansible.builtin.file:
+    path: "{{ obsidian_livesync_data_directory }}"
+    state: absent
+  when: obsidian_livesync_clean_datadir | default(false)
+
+- name: Create Obsidian LiveSync Directories
+  ansible.builtin.file:
+    path: "{{ obsidian_livesync_data_directory }}"
+    state: directory
+
+- name: Obsidian LiveSync Docker Container
+  community.docker.docker_container:
+    name: obsidian-livesync
+    image: "{{ obsidian_livesync_image }}"
+    pull: true
+    recreate: true
+    volumes:
+      - "{{ obsidian_livesync_data_directory }}:/opt/couchdb/data"
+    env:
+      SERVER_URL: "https://{{ obsidian_livesync_subdomain }}.{{ server_hostname }}"
+      COUCHDB_USER: "{{ obsidian_livesync_couchdb_user }}"
+      COUCHDB_PASSWORD: "{{ obsidian_livesync_couchdb_password }}"
+      COUCHDB_DATABASE: "{{ obsidian_livesync_couchdb_database }}"
+    restart_policy: unless-stopped
+    memory: "{{ obsidian_livesync_memory_limit }}"
+    labels:
+      traefik.enable: "{{ obsidian_livesync_available_externally }}"
+      traefik.http.routers.obsidian_livesync.rule: "Host(`{{ obsidian_livesync_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.obsidian_livesync.loadbalancer.server.port: "5984"
+      traefik.http.routers.obsidian_livesync.middlewares: "secure-headers@file"
+  register: obsidian_container
+
+- name: Pause for a few seconds to allow CouchDB to initialize
+  ansible.builtin.pause:
+    seconds: 5
+  when: obsidian_container.changed
+
+- name: Create required CouchDB databases
+  ansible.builtin.command: >
+    docker exec obsidian-livesync curl --fail -X PUT
+    http://{{ obsidian_livesync_couchdb_user }}:{{ obsidian_livesync_couchdb_password }}@localhost:5984/{{ item }}
+  register: create_db_result
+  changed_when: "create_db_result.rc == 0 and 'already exists' not in create_db_result.stdout"
+  retries: 15
+  delay: 5
+  # We consider it a success if the command runs (rc=0) or if it fails because the db already exists.
+  # CouchDB returns HTTP 412, so `curl --fail` exits with code 22 and prints an error containing "already exists".
+  until: create_db_result.rc == 0 or (create_db_result.rc == 22 and "already exists" in create_db_result.stdout)
+  loop:
+    - "_users"
+    - "_replicator"
+    - "{{ obsidian_livesync_couchdb_database }}"
+  when: obsidian_container.changed

@@ -134,6 +134,7 @@ Host mayurifag-prod
 | mus                  | <http://mus.mayurifag.local>                 | 8000      | ✅          |
 | Netdata              | <http://netdata.mayurifag.local>             | 19999     |            |
 | Nextcloud All-in-One | <http://nextcloud.mayurifag.local>           | 11000     |            |
+| Obsidian LiveSync    | <http://couchdbobsidian.mayurifag.local>     | 5984      |            |
 | Portainer            | <http://portainer.mayurifag.local>           | 9000      | ✅          |
 | Shadowsocks-rust     | <https://ss.mayurifag.local/xray> (uses TLS) | 1080      |            |
 | Traefik Dashboard    | <http://traefik.mayurifag.local>             | 8080      |            |
