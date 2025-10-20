@@ -140,7 +140,6 @@ Host mayurifag-prod
 | Traefik Dashboard    | <http://traefik.mayurifag.local>             | 8080      |            |
 | Vaultwarden          | <http://pw.mayurifag.local>                  | 80        |            |
 | Watchtower           | <http://watchtower.mayurifag.local>          | 8080      |            |
-| Wireguard-Easy       | <http://wg.mayurifag.local>                  | 58172     |            |
 
 <!-- markdownlint-enable line-length -->
 
@@ -169,6 +168,7 @@ write systemd services it seems instead of convenient
 * [ ] watchtowerrr - use config.json for auth to dockerhub to prevent limits
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
+  * [ ] <https://github.com/we-promise/sure>
 * [ ] Use tinyauth everywhere
   * [ ] Research how it works (header/cookie/??) / research for issues
   * [ ] Check if it works with PWA safari
@@ -229,7 +229,7 @@ write systemd services it seems instead of convenient
 * [x] Simple proxy server in docker
 * [x] Makefiles + info to launch only specified tags
 * [x] Make traefik dashboard available from internet
-* [ ] <https://github.com/usememos/memos> or Otterwiki
+* [ ] ~~<https://github.com/usememos/memos> or Otterwiki~~
 
 ### Low priority
 
@@ -269,17 +269,10 @@ write systemd services it seems instead of convenient
   * [ ] <https://github.com/alexjustesen/speedtest-tracker>
 * [x] Rename `my-headers` to `secure-headers` in traefik config and all
   containers
-* [ ] Think about VLESS and so on. Maybe 3x-ui or something working with
-  traefik exists. Look for configs and try.
+* [ ] ~~Think about VLESS and so on.~~
+* [ ] Remnawave panel and node
 * [ ] <https://github.com/binwiederhier/ntfy>
-* [ ] image of mayurifag.github.io has to be in ghcr
-
-## Older implementation
-
-There is branch `old-implementation-with-mailserver` without docker. I decided
-to re-write roles from scratch with all XP I got so far and include docker
-containers for better maintainability. But still there are some ideas I want to
-migrate into newer implementation.
+* [ ] docker image of mayurifag.github.io has to be in ghcr
 
 ## Based on / inspired / helpful
 

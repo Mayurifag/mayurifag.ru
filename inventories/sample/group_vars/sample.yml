@@ -60,10 +60,6 @@ lazydocker_enabled: true
 docker_enabled: true
 security_enabled: true
 
-wireguard_enabled: true
-wireguard_subdomain: "wg"
-wireguard_password_hash: "change_this"
-
 proxy_enabled: true
 proxy_user: change_this
 proxy_user_password: change_this
