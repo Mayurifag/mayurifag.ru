@@ -73,11 +73,6 @@
         - proxy
       when: (proxy_enabled | default(False))
 
-    - role: shadowsocks
-      tags:
-        - shadowsocks
-      when: (shadowsocks_enabled | default(False))
-
     - role: threexui
       tags:
         - threexui

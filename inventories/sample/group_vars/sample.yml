@@ -85,10 +85,6 @@ portainer_subdomain: "portainer"
 traefik_enabled: true
 traefik_subdomain: "traefik"
 
-shadowsocks_enabled: true
-shadowsocks_subdomain: "ss"
-shadowsocks_password: "change_this"
-
 hemmelig_enabled: true
 hemmelig_subdomain: "secret"
 
