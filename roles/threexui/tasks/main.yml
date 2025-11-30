@@ -28,9 +28,9 @@
       # Admin panel routing
       traefik.enable: "true"
       traefik.http.routers.threexui-panel.rule: "Host(`{{ threexui_subdomain }}.{{ server_hostname }}`)"
-      traefik.http.routers.threexui-panel.entrypoints: "web,websecure"
+      traefik.http.routers.threexui-panel.entrypoints: "websecure"
       traefik.http.routers.threexui-panel.tls.certresolver: "letsencrypt"
-      traefik.http.routers.threexui-panel.middlewares: "auth@file"
+      traefik.http.routers.threexui-panel.middlewares: "secure-headers@file"
       traefik.http.routers.threexui-panel.service: "threexui-panel"
       traefik.http.services.threexui-panel.loadbalancer.server.port: "{{ threexui_panel_port }}"
 

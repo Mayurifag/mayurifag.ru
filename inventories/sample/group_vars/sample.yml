@@ -58,7 +58,6 @@ swap_enabled: true
 mayurifag_github_io_enabled: true
 lazydocker_enabled: true
 docker_enabled: true
-security_enabled: true
 
 proxy_enabled: true
 proxy_user: change_this

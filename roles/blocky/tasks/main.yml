@@ -1,4 +1,32 @@
 ---
+- name: Check if systemd-resolved config exists
+  ansible.builtin.stat:
+    path: /etc/systemd/resolved.conf
+  register: resolved_conf
+
+- name: Ensure /etc/systemd/resolved.conf.d directory exists
+  ansible.builtin.file:
+    path: /etc/systemd/resolved.conf.d
+    state: directory
+    mode: "0755"
+  when: resolved_conf.stat.exists
+
+- name: Configure systemd-resolved to disable stub listener
+  ansible.builtin.copy:
+    dest: /etc/systemd/resolved.conf.d/no-stub.conf
+    content: |
+      [Resolve]
+      DNSStubListener=no
+    mode: "0644"
+  when: resolved_conf.stat.exists
+  register: resolved_stub_config
+
+- name: Restart systemd-resolved immediately
+  ansible.builtin.service:
+    name: systemd-resolved
+    state: restarted
+  # when: resolved_conf.stat.exists and resolved_stub_config.changed
+
 - name: Delete Blocky directory
   ansible.builtin.file:
     path: "{{ blocky_data_directory }}"

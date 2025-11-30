@@ -5,7 +5,7 @@
     state: absent
   with_items:
     - "{{ traefik_data_directory }}/dynamic_configs"
-    # - "{{ traefik_data_directory }}/letsencrypt"
+    - "{{ traefik_data_directory }}/letsencrypt"
 
 - name: Create Traefik Directories
   ansible.builtin.file:

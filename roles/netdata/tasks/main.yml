@@ -8,9 +8,8 @@
   community.docker.docker_container:
     name: netdata
     hostname: "{{ netdata_subdomain }}.{{ server_hostname }}"
-    image: netdata/netdata
-    state: started
-    detach: true
+    image: netdata/netdata:stable
+    recreate: true
     pull: true
     volumes:
       - /etc/passwd:/host/etc/passwd:ro
@@ -23,7 +22,7 @@
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /run/dbus:/run/dbus:ro
     env:
-      PGID: "{{ docker_group.gid }}"
+      PGID: "{{ docker_group.gid | string }}"
     capabilities:
       - SYS_PTRACE
       - SYS_ADMIN
@@ -31,6 +30,7 @@
       - apparmor:unconfined
     restart_policy: unless-stopped
     memory: "{{ netdata_memory }}"
+    # network_mode: host
     labels:
       traefik.enable: "{{ netdata_available_externally }}"
       traefik.http.routers.netdata.rule: "Host(`{{ netdata_subdomain }}.{{ server_hostname }}`)"
