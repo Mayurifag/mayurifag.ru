@@ -58,6 +58,7 @@ mayurifag_general_extra_packages:
   - aptitude
   - apt-utils
   - ca-certificates
+  - cron
   - curl
   - git
   - htop

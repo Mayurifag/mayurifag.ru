@@ -1,9 +1,4 @@
 ---
-# Perhaps I do not actually need this
-# - name: "Set hostname to {{ server_hostname }}"
-#   ansible.builtin.hostname:
-#     name: "{{ server_hostname }}"
-
 - name: "Set timezone to {{ server_timezone }}"
   community.general.timezone:
     name: "{{ server_timezone }}"
@@ -78,6 +73,66 @@
     name: ntp
     state: started
     enabled: yes
+
+- name: Ensure cron service is running and enabled
+  ansible.builtin.systemd:
+    name: cron
+    state: started
+    enabled: yes
+
+- name: Schedule weekly apt cleanup
+  ansible.builtin.cron:
+    name: "Weekly apt cleanup"
+    special_time: weekly
+    job: "apt-get autoremove -y && apt-get clean"
+
+- name: Schedule weekly docker cleanup
+  ansible.builtin.cron:
+    name: "Weekly docker cleanup"
+    special_time: weekly
+    job: "docker system prune --all --force --volumes"
+
+- name: Create systemd-journald configuration directory
+  ansible.builtin.file:
+    path: /etc/systemd/journald.conf.d
+    state: directory
+    mode: "0755"
+
+- name: Configure systemd-journald max size
+  ansible.builtin.copy:
+    dest: /etc/systemd/journald.conf.d/00-journal-size.conf
+    content: |
+      [Journal]
+      SystemMaxUse=100M
+      MaxRetentionSec=1month
+    mode: "0644"
+  register: journald_config
+
+- name: Restart systemd-journald
+  ansible.builtin.systemd:
+    name: systemd-journald
+    state: restarted
+  when: journald_config.changed
+
+- name: Create dumbfile directory
+  ansible.builtin.file:
+    path: /var/dumb
+    state: directory
+    mode: "0777"
+
+- name: Check if dumbfile exists
+  ansible.builtin.stat:
+    path: /var/dumb/dumbfile
+  register: dumbfile_stat
+
+- name: Create dumbfile for 20% of free space
+  ansible.builtin.shell: |
+    avail=$(df --output=avail -k /var/dumb | tail -n 1)
+    size=$((avail * 20 / 100))
+    fallocate -l "${size}K" /var/dumb/dumbfile
+  args:
+    executable: /bin/bash
+  when: not dumbfile_stat.stat.exists
 
 - name: Check if reboot is required
   ansible.builtin.stat:

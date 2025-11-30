@@ -1,0 +1,26 @@
+---
+threexui_enabled: true
+
+threexui_data_directory: "{{ docker_home }}/3x-ui"
+threexui_docker_image: ghcr.io/mhsanaei/3x-ui:latest
+threexui_subdomain: "threexui"
+
+# Admin panel credentials
+threexui_admin_username: "admin"
+threexui_admin_password: "change_this_password"
+
+# Panel port for admin interface (internal)
+threexui_panel_port: "2053"
+
+# VLESS inbound port (internal, Traefik will route to this)
+threexui_vless_port: "2096"
+
+# XHTTP settings
+threexui_xhttp_path: "/vless"
+
+# Xray settings
+threexui_vmess_aead_forced: "false"
+threexui_enable_fail2ban: "true"
+
+# Resources
+threexui_memory: 1g

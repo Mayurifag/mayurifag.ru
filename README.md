@@ -82,13 +82,6 @@ make deploy-tag "traefik,mus"
 
 #### Optional in-before steps
 
-* Remove old remote host identification
-
-<!-- markdownlint-disable line-length -->
-```sh
-ssh-keygen -R mayurifag.ru ; ssh-keygen -R $(host mayurifag.ru | awk '/has address/ {print $4}')
-```
-
 * Generate new ssh key and add it to your inventory vars file
 
 ```sh
@@ -107,6 +100,8 @@ vi ~/.ssh/config
 
 # ~/.ssh/config
 Host *
+    StrictHostKeyChecking ask
+    UpdateHostKeys ask
     Protocol 2
     ServerAliveInterval 120
     ServerAliveCountMax 2
@@ -126,6 +121,7 @@ Host mayurifag-prod
 | Name                 | Default endpoint                             | App. Port | Watchtower |
 | -------------------- | -------------------------------------------- | --------- | ---------- |
 | 3proxy               | <socks5://mayurifag.local:1080> or 3128      | 1080/3128 | ✅          |
+| 3x-ui                | <http://threexui.mayurifag.local>            | 2053/2096 |            |
 | Blocky               | [DNS] -> ip:53                               | 53        |            |
 | Dockovpn             | <http://dockovpn.mayurifag.local>            | 1194/8080 |            |
 | Gitea                | <http://git.mayurifag.local>                 | 3000/222  |            |
@@ -158,14 +154,13 @@ write systemd services it seems instead of convenient
 
 ### High priority
 
-* [ ] Cron task to clean caches and use free place
-  * [ ] Use dumb file for 20% of place to be flexible in case of something wrong with aliases to remove it and restore
-  * [ ] [Max log for systemctl journal](https://unix.stackexchange.com/questions/130786/can-i-remove-files-in-var-log-journal-and-var-cache-abrt-di-usr)
-  * [ ] clean apt cache
-  * [ ] clean docker caches - think of better commands `docker system prune -a --volumes` (or else)
+* [x] Add dumb file for 20% of free space - to easily remove. Also add alias to remove/create it
+* [x] [Max log for systemctl journal](https://unix.stackexchange.com/questions/130786/can-i-remove-files-in-var-log-journal-and-var-cache-abrt-di-usr)
+* [x] Cron task to clean caches and use free place
+  * [x] clean apt cache
+  * [x] clean docker caches - think of better commands `docker system prune -a --volumes` (or else)
 * [ ] sshd config contradicts with maintainer's ones so might be better to use
   some .d/ version (research). Actually might be better to rewrite this or something
-* [ ] watchtowerrr - use config.json for auth to dockerhub to prevent limits
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
   * [ ] <https://github.com/we-promise/sure>
@@ -270,9 +265,10 @@ write systemd services it seems instead of convenient
 * [x] Rename `my-headers` to `secure-headers` in traefik config and all
   containers
 * [ ] ~~Think about VLESS and so on.~~
-* [ ] Remnawave panel and node
+* [ ] Remnawave panel and node or 3x-ui
 * [ ] <https://github.com/binwiederhier/ntfy>
 * [ ] docker image of mayurifag.github.io has to be in ghcr
+* [ ] watchtowerrr - use config.json for auth to dockerhub to prevent limits
 
 ## Based on / inspired / helpful
 

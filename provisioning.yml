@@ -78,6 +78,11 @@
         - shadowsocks
       when: (shadowsocks_enabled | default(False))
 
+    - role: threexui
+      tags:
+        - threexui
+      when: (threexui_enabled | default(False))
+
     # TODO: for ubuntu have to disable systemd-resolved service, occupies 53 port
     # TODO: for ubuntu - change resolv.conf
     - role: blocky

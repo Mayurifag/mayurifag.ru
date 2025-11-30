@@ -54,4 +54,4 @@
       traefik.http.routers.traefik.entrypoints: "web,websecure"
     networks:
       - name: "bridge"
-      - name: "nextcloud-aio"
+      # - name: "nextcloud-aio"
