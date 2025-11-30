@@ -70,6 +70,7 @@ mayurifag_general_extra_packages:
   - nethogs
   - ntp
   - software-properties-common
+  - unattended-upgrades
   - unzip
   - wget
   - whois

@@ -15,15 +15,11 @@ Playbook is fine only for my personal opinionated usage!
 
 * `A` record for your TLD + wildcard/subdomain configuration in Cloudflare or
   your favourite DNS provider.
-* Debian 10-12 (Ubuntu works, though requires A LOT of interventions)
-* ssh authorization key for root user (Done by VPS or
-`ssh-copy-id root@mayurifag.ru`)
-* Be sure that you have open ports for needed applications (some vps providers
-  have default blocked ports or blocked them all)
-* (optionally) Large folder for docker data if you need it (might be done via
-  connecting some disk to your vps or ask your vps provider about some GB)
+* Debian 12
+* (optionally) Check that VPS provider has open ports for apps
+* (optionally) Check that you have storage setup correctly
 
-### Your PC
+### Mac/PC
 
 * Ansible `python3 -m pip install --user ansible`
 * (only MacOS) - passlib `python3 -m pip install --user passlib` (to use crypto
@@ -111,7 +107,6 @@ Host *
 Host mayurifag-prod
     HostName mayurifag.ru
     User root # Change user
-    Port 22
 ```
 
 ## Applications List
@@ -158,11 +153,8 @@ write systemd services it seems instead of convenient
 * [x] Cron task to clean caches and use free place
   * [x] clean apt cache
   * [x] clean docker caches - think of better commands `docker system prune -a --volumes` (or else)
-* [ ] sshd config contradicts with maintainer's ones so might be better to use
+* [x] sshd config contradicts with maintainer's ones so might be better to use
   some .d/ version (research). Actually might be better to rewrite this or something
-* [ ] maybe finance app - deprecated, so research alternatives.
-  * [ ] Has to support crypto, ibkr, russian brokers
-  * [ ] <https://github.com/we-promise/sure>
 * [ ] Use tinyauth everywhere
   * [ ] Research how it works (header/cookie/??) / research for issues
   * [ ] Check if it works with PWA safari
@@ -212,11 +204,10 @@ write systemd services it seems instead of convenient
   * [ ] fail2ban plugin for traefik?!
   * [ ] Add ufw with rules + make docker respect the rules. geerligguy.firewall
   * [ ] <https://madaidans-insecurities.github.io/guides/linux-hardening.html>
-* [ ] Add motd.txt to server
-  * [ ] About lazydocker
-  * [ ] Aliases
+* [ ] ~~Add motd.txt to server~~
+  * [ ] ~~About lazydocker~~
+  * [ ] ~~Aliases~~
 * [ ] ~~<https://github.com/EmbarkStudios/wg-ui>~~
-
 * [x] Doku <https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/docker/doku.md>
 * [ ] ~~<https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/other/firefox.md>~~
 * [x] FileRun
@@ -224,6 +215,9 @@ write systemd services it seems instead of convenient
 * [x] Makefiles + info to launch only specified tags
 * [x] Make traefik dashboard available from internet
 * [ ] ~~<https://github.com/usememos/memos> or Otterwiki~~
+* [ ] maybe finance app - deprecated, so research alternatives.
+  * [ ] Has to support crypto, ibkr, russian brokers
+  * [ ] <https://github.com/we-promise/sure>
 
 ### Low priority
 

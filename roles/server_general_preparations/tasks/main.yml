@@ -13,28 +13,10 @@
     state: present
   loop: "{{ sysctl_values }}"
 
-- name: Disable recommended packages
-  ansible.builtin.copy:
-    content: 'APT::Install-Recommends "0";'
-    dest: /etc/apt/apt.conf.d/00norecommends
-    mode: "0644"
-
-- name: Disable suggested packages
-  ansible.builtin.copy:
-    content: 'APT::Install-Suggests "0";'
-    dest: /etc/apt/apt.conf.d/01nosuggests
-    mode: "0644"
-
 - name: Update apt-cache
   ansible.builtin.apt:
     update_cache: yes
     cache_valid_time: 3600
-
-- name: Upgrade all packages
-  ansible.builtin.apt:
-    upgrade: dist
-    state: latest
-    force_apt_get: yes
 
 - name: Install extra packages
   ansible.builtin.apt:
@@ -42,13 +24,34 @@
     state: present
     force_apt_get: yes
 
-# TODO: this doesnt work sometimes. Its needed just to have some free space, so left commented
-# - name: Remove old kernel versions
-#   ansible.builtin.shell: apt-get purge $(dpkg -l 'linux-*' | sed '/^ii/!d;/'"$(uname -r | sed "s/\(.*\)-\([^0-9]\+\)/\1/")"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d' | head -n -2) -y
-#   args:
-#     executable: /bin/bash
-#   register: kernel_cleanup
-#   changed_when: kernel_cleanup.stdout != ""
+- name: Configure apt
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/51ansible-setup
+    content: |
+      APT::Install-Recommends "0";
+      APT::Install-Suggests "0";
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Download-Upgradeable-Packages "1";
+      APT::Periodic::Unattended-Upgrade "1";
+      APT::Periodic::AutocleanInterval "7";
+      Unattended-Upgrade::Automatic-Reboot "true";
+      Unattended-Upgrade::Automatic-Reboot-Time "04:00";
+      Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+      Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
+      Unattended-Upgrade::SyslogEnable "true";
+    mode: "0644"
+
+- name: Ensure unattended-upgrades service is enabled
+  ansible.builtin.systemd:
+    name: unattended-upgrades
+    enabled: yes
+    state: started
+
+- name: Upgrade all packages
+  ansible.builtin.apt:
+    upgrade: dist
+    state: latest
+    force_apt_get: yes
 
 - name: Remove orphaned packages and clean apt cache
   ansible.builtin.apt:
@@ -79,12 +82,6 @@
     name: cron
     state: started
     enabled: yes
-
-- name: Schedule weekly apt cleanup
-  ansible.builtin.cron:
-    name: "Weekly apt cleanup"
-    special_time: weekly
-    job: "apt-get autoremove -y && apt-get clean"
 
 - name: Schedule weekly docker cleanup
   ansible.builtin.cron:
