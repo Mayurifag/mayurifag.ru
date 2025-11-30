@@ -23,7 +23,9 @@ Playbook is fine only for my personal opinionated usage!
 
 * Ansible `python3 -m pip install --user ansible`
 * (only MacOS) - passlib `python3 -m pip install --user passlib` (to use crypto
-module from ansible)
+  module from ansible)
+* Setup inventory (if key not added, be prepared to add ansible_ssh_pass and
+  that after general server setup)
 
 ## Instructions
 

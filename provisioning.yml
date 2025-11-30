@@ -16,6 +16,10 @@
     ###
     ### Run general preparation
     ###
+    - role: server_general_preparations
+      tags:
+        - general
+
     - role: swapoff
       tags:
         - swap
@@ -26,14 +30,9 @@
         - swap
       when: (swap_enabled | default(False))
 
-    - role: server_general_preparations
-      tags:
-        - general
-
     - role: users
       tags:
         - users
-
     ###
     ### Requirements
     ###
@@ -130,8 +129,3 @@
       tags:
         - dockovpn
       when: (dockovpn_enabled | default(False))
-
-    - role: geerlingguy.security
-      tags:
-        - security
-      when: (security_enabled | default(False))

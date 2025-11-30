@@ -3,11 +3,17 @@
   community.general.timezone:
     name: "{{ server_timezone }}"
 
+- name: Remove deprecated sysctl values
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    state: absent
+    reload: yes
+  loop: "{{ sysctl_values_absent }}"
+
 - name: Apply custom sysctl values
   ansible.posix.sysctl:
     name: "{{ item.key }}"
     value: "{{ item.value }}"
-    ignoreerrors: yes
     sysctl_set: yes
     reload: yes
     state: present
@@ -103,13 +109,7 @@
       SystemMaxUse=100M
       MaxRetentionSec=1month
     mode: "0644"
-  register: journald_config
-
-- name: Restart systemd-journald
-  ansible.builtin.systemd:
-    name: systemd-journald
-    state: restarted
-  when: journald_config.changed
+  notify: Restart systemd-journald
 
 - name: Create dumbfile directory
   ansible.builtin.file:
@@ -124,6 +124,7 @@
 
 - name: Create dumbfile for 20% of free space
   ansible.builtin.shell: |
+    set -o pipefail
     avail=$(df --output=avail -k /var/dumb | tail -n 1)
     size=$((avail * 20 / 100))
     fallocate -l "${size}K" /var/dumb/dumbfile

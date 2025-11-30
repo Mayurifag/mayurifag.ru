@@ -35,26 +35,6 @@
       traefik.http.routers.obsidian_livesync.rule: "Host(`{{ obsidian_livesync_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.obsidian_livesync.loadbalancer.server.port: "5984"
       traefik.http.routers.obsidian_livesync.middlewares: "secure-headers@file"
-  register: obsidian_container
-
-- name: Pause for a few seconds to allow CouchDB to initialize
-  ansible.builtin.pause:
-    seconds: 5
-  when: obsidian_container.changed
-
-- name: Create required CouchDB databases
-  ansible.builtin.command: >
-    docker exec obsidian-livesync curl --fail -X PUT
-    http://{{ obsidian_livesync_couchdb_user }}:{{ obsidian_livesync_couchdb_password }}@localhost:5984/{{ item }}
-  register: create_db_result
-  changed_when: "create_db_result.rc == 0 and 'already exists' not in create_db_result.stdout"
-  retries: 15
-  delay: 5
-  # We consider it a success if the command runs (rc=0) or if it fails because the db already exists.
-  # CouchDB returns HTTP 412, so `curl --fail` exits with code 22 and prints an error containing "already exists".
-  until: create_db_result.rc == 0 or (create_db_result.rc == 22 and "already exists" in create_db_result.stdout)
-  loop:
-    - "_users"
-    - "_replicator"
-    - "{{ obsidian_livesync_couchdb_database }}"
-  when: obsidian_container.changed
+  notify:
+    - Pause for a few seconds to allow CouchDB to initialize
+    - Create required CouchDB databases

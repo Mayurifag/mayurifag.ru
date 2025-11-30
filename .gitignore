@@ -16,12 +16,10 @@ Session.vim
 # IntelliJ
 /.idea/
 
-roles/geerlingguy.*
-roles/robertdebock.*
-roles/darkwizard242.*
-roles/djx339.*
-inventories/my-provision
+/inventories/my-provision
 
 secret
 
 /makefiles/private.mk
+
+/.ansible/roles

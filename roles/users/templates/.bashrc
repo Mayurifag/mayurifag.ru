@@ -65,8 +65,8 @@ createdumb() {
     echo "File '$dumbfile' already exists."
   else
     if [ ! -d "/var/dumb" ]; then
-       echo "Directory /var/dumb does not exist."
-       return 1
+      echo "Directory /var/dumb does not exist."
+      return 1
     fi
 
     echo "Free space before: $(df -h /var/dumb | awk 'NR==2 {print $4}')"
