@@ -113,30 +113,29 @@ need to deploy my services once again.
 * [ ] Migrate <https://gethomepage.dev>
   * [ ] Make a service
   * [ ] Make labels on all services I have
-* [ ] Status page on some free service
-* [ ] VPS security
-  * [ ] Setup Crowdsec and firewall for docker
-  * [ ] Add ufw with rules + make docker respect the rules. geerligguy.firewall
-  * [ ] <https://madaidans-insecurities.github.io/guides/linux-hardening.html>
-  * [ ] <https://github.com/docker/docker-bench-security>
-  * [ ] <https://github.com/quay/clair>
-  * [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
-* [ ] maybe finance app - deprecated, so research alternatives.
-  * [ ] Has to support crypto, ibkr, russian brokers
-  * [ ] <https://github.com/we-promise/sure>
-* [ ] Speedtest
-  * [ ] Compatible with gethomepage and with tinyauth
-  * [ ] <https://hub.docker.com/r/linuxserver/librespeed>
-  * [ ] <https://github.com/alexjustesen/speedtest-tracker>
-* [ ] <https://github.com/binwiederhier/ntfy>
+* [ ] Crowdsec - each role?
+* [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker> - each role
 * [ ] Portainer - auto add user and env
   * [ ] <https://docs.portainer.io/admin/environments/add/api>
-* [ ] docker image of mayurifag.github.io has to be in ghcr
-* [ ] watchtowerrr - use config.json for auth to dockerhub to prevent limits
+
+### Non priority for now
+
 * [ ] LDAP via <https://github.com/lldap/lldap>
   * [ ] Create users through GraphQL scripting on deployment
   * [ ] Activate in tinyauth
   * [ ] Activate in apps (i.e. Nextcloud and others)
+* [ ] maybe finance app - deprecated, so research alternatives.
+  * [ ] Has to support crypto, ibkr, russian brokers
+  * [ ] <https://github.com/we-promise/sure>
+* [ ] VPS security
+  * [ ] <https://madaidans-insecurities.github.io/guides/linux-hardening.html>
+  * [ ] (wait for update) <https://github.com/docker/docker-bench-security>
+  * [ ] (not sure) <https://github.com/quay/clair>
+  * [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
+* [ ] Status page on some free service
+* [ ] <https://github.com/binwiederhier/ntfy>
+* [ ] docker image of mayurifag.github.io has to be in ghcr
+* [ ] watchtowerrr - use config.json for auth to dockerhub to prevent limits
 
 ## Based on / inspired / helpful
 
