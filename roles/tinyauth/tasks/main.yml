@@ -1,0 +1,37 @@
+---
+- name: Remove tinyauth directory
+  ansible.builtin.file:
+    path: "{{ tinyauth_data_directory }}"
+    state: absent
+
+- name: Create tinyauth directory
+  ansible.builtin.file:
+    path: "{{ tinyauth_data_directory }}"
+    state: directory
+    mode: "0755"
+
+- name: tinyauth Docker Container
+  community.docker.docker_container:
+    name: tinyauth
+    image: "{{ tinyauth_docker_image }}"
+    pull: true
+    recreate: true
+    volumes:
+      - "{{ tinyauth_data_directory }}:/data"
+    env:
+      APP_URL: "https://{{ tinyauth_subdomain }}.{{ server_hostname }}"
+      USERS: "{{ tinyauth_users }}"
+      DISABLE_ANALYTICS: "true"
+    restart_policy: unless-stopped
+    memory: "{{ tinyauth_memory }}"
+    labels:
+      traefik.enable: "true"
+      # Router for the Login UI
+      traefik.http.routers.tinyauth.rule: "Host(`{{ tinyauth_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.routers.tinyauth.service: "tinyauth"
+      traefik.http.services.tinyauth.loadbalancer.server.port: "3000"
+      traefik.http.routers.tinyauth.middlewares: "secure-headers@file"
+      # Middleware definition (Forward Auth)
+      traefik.http.middlewares.tinyauth.forwardauth.address: "http://tinyauth:3000/api/auth/traefik"
+      traefik.http.middlewares.tinyauth.forwardauth.trustForwardHeader: "true"
+      # traefik.http.middlewares.tinyauth.forwardauth.authResponseHeaders: "X-Tinyauth-User,X-Tinyauth-Group"

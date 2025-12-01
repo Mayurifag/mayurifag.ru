@@ -28,7 +28,6 @@
       # Admin panel routing
       traefik.enable: "true"
       traefik.http.routers.threexui-panel.rule: "Host(`{{ threexui_subdomain }}.{{ server_hostname }}`)"
-      traefik.http.routers.threexui-panel.entrypoints: "websecure"
       traefik.http.routers.threexui-panel.tls.certresolver: "letsencrypt"
       traefik.http.routers.threexui-panel.middlewares: "secure-headers@file"
       traefik.http.routers.threexui-panel.service: "threexui-panel"
@@ -36,7 +35,6 @@
 
       # VLESS+XHTTP routing (no auth, for proxy clients)
       traefik.http.routers.threexui-vless.rule: "Host(`{{ threexui_subdomain }}.{{ server_hostname }}`) && PathPrefix(`{{ threexui_xhttp_path }}`)"
-      traefik.http.routers.threexui-vless.entrypoints: "web,websecure"
       traefik.http.routers.threexui-vless.tls.certresolver: "letsencrypt"
       traefik.http.routers.threexui-vless.priority: "100"
       traefik.http.routers.threexui-vless.service: "threexui-vless"

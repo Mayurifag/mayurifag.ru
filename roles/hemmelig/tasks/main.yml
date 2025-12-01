@@ -8,8 +8,6 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
-    owner: "{{ admin_uid }}"
-    group: "{{ admin_gid }}"
   with_items:
     - "{{ hemmelig_data_directory }}/files"
     - "{{ hemmelig_data_directory }}/database"

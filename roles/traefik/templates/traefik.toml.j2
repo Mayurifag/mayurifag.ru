@@ -18,6 +18,7 @@ defaultEntryPoints = ["http", "https"]
 [providers]
   [providers.docker]
     exposedbydefault = false
+    watch = true
   [providers.file]
     directory = "/etc/traefik/dynamic_configs"
     watch = true
