@@ -1,0 +1,28 @@
+---
+- name: Ensure cron service is running and enabled
+  ansible.builtin.systemd:
+    name: cron
+    state: started
+    enabled: yes
+
+- name: Schedule weekly docker cleanup
+  ansible.builtin.cron:
+    name: "Weekly docker cleanup"
+    special_time: weekly
+    job: "docker system prune --all --force --volumes"
+
+- name: Create systemd-journald configuration directory
+  ansible.builtin.file:
+    path: /etc/systemd/journald.conf.d
+    state: directory
+    mode: "0755"
+
+- name: Configure systemd-journald max size
+  ansible.builtin.copy:
+    dest: /etc/systemd/journald.conf.d/00-journal-size.conf
+    content: |
+      [Journal]
+      SystemMaxUse=100M
+      MaxRetentionSec=1month
+    mode: "0644"
+  notify: Restart systemd-journald

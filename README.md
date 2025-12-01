@@ -114,7 +114,6 @@ need to deploy my services once again.
   * [ ] Make a service
   * [ ] Make labels on all services I have
 * [ ] Status page on some free service
-* [ ] <https://github.com/GabeDuarteM/blocky-ui>
 * [ ] VPS security
   * [ ] Setup Crowdsec and firewall for docker
   * [ ] Add ufw with rules + make docker respect the rules. geerligguy.firewall
