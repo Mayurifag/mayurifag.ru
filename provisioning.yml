@@ -123,9 +123,3 @@
       tags:
         - obsidian
       when: (obsidian_livesync_enabled | default(False))
-
-    # requires gather_facts: yes
-    - role: dockovpn
-      tags:
-        - dockovpn
-      when: (dockovpn_enabled | default(False))

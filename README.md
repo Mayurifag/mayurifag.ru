@@ -2,22 +2,14 @@
 
 [![Linters](https://github.com/Mayurifag/mayurifag.ru/actions/workflows/lint.yml/badge.svg)](https://github.com/Mayurifag/mayurifag.ru/actions/workflows/lint.yml)
 
-## Description
-
-**DONT USE THIS REPOSITORY NO MATTER WHAT** due to security reasons (i.e. there
-is no firewall rules, no custom fail2ban rules and it uses docker).
-
-Playbook is fine only for my personal opinionated usage!
-
 ## Requires
 
 ### VPS
 
-* `A` record for your TLD + wildcard/subdomain configuration in Cloudflare or
-  your favourite DNS provider.
-* Debian 12
-* (optionally) Check that VPS provider has open ports for apps
-* (optionally) Check that you have storage setup correctly
+* DNS `A` records for your TLD and wildcard (`*`)
+* Debian 12+
+* (optionally) Check that VPS provider has open ports for apps you use
+* (optionally) Check that you have correct storage setup
 
 ### Mac/PC
 
@@ -41,55 +33,25 @@ cp -rfp inventories/sample inventories/my-provision
 ansible-galaxy install -r requirements.yml
 ```
 
-### Private Files Configuration
-
-Some applications support optional private files (like cookies.txt for mus). To use these:
-
-1. Create a `private/` directory in your inventory:
-
-   ```sh
-   mkdir -p inventories/my-provision/private
-   ```
-
-2. Add your private files to this directory (they're already excluded from git):
-
-   ```sh
-   # For mus cookies support
-   cp your-cookies.txt inventories/my-provision/private/cookies.txt
-   ```
-
-The files will be automatically detected and mounted read-only into the containers if they exist.
-
 ### Production deployment
 
 #### TL;DR
 
-Maybe first you'll need to ssh and exec:
-
 ```sh
-apt-get --allow-releaseinfo-change update
-# or
-do-release-upgrade
-```
-
-```sh
-make deploy-prod
-# or
+# Tag by tag, and there is make deploy-prod available to deploy all-in-once
 make deploy-tag "traefik,mus"
 ```
 
-#### Optional in-before steps
+#### Optional steps
 
 * Generate new ssh key and add it to your inventory vars file
 
 ```sh
-ssh-keygen -t rsa -b 4096 -C "Mayurifag@mayurifag.ru" -f ~/Desktop/mayurifag.ru # rsa here, but you can use ed25519
+ssh-keygen -t ed25519 -C "Mayurifag@mayurifag.ru" -f ~/Desktop/mayurifag.ru
 xclip -sel clip < ~/Desktop/mayurifag.ru.pub
 vi inventories/my-provision/group_vars/sample.yml # add key here in section
-keepassxc # Make new ssh agent entry
+keepassxc # Make new ssh agent entry if you use keepassxc ssh agent
 ```
-
-<!-- markdownlint-enable line-length -->
 
 * Make new ssh config section. You need to change it after deploy.
 
@@ -113,21 +75,22 @@ Host mayurifag-prod
 
 ## Applications List
 
+This list changed a lot through years, I'm trying to remove things I do not use.
+
 <!-- markdownlint-disable line-length -->
 
-| Name                 | Default endpoint                         | App. Port | Watchtower |
+| Name                 | Default endpoint                         | Port(s)   | Autoupdate |
 | -------------------- | ---------------------------------------- | --------- | ---------- |
 | 3proxy               | <socks5://mayurifag.local:1080> or 3128  | 1080/3128 | ✅          |
 | 3x-ui                | <http://threexui.mayurifag.local>        | 2053/2096 |            |
 | Blocky               | [DNS] -> ip:53                           | 53        |            |
-| Dockovpn             | <http://dockovpn.mayurifag.local>        | 1194/8080 |            |
 | Gitea                | <http://git.mayurifag.local>             | 3000/222  |            |
 | Hemmelig             | <http://secret.mayurifag.local>          | 3000      |            |
 | mayurifag.github.io  | <http://mayurifag.local>                 | 8005      | ✅          |
 | mus                  | <http://mus.mayurifag.local>             | 8000      | ✅          |
 | Netdata              | <http://netdata.mayurifag.local>         | 19999     |            |
 | Nextcloud All-in-One | <http://nextcloud.mayurifag.local>       | 11000     |            |
-| Obsidian LiveSync    | <http://couchdbobsidian.mayurifag.local> | 5984      |            |
+| Obsidian LiveSync db | <http://couchdbobsidian.mayurifag.local> | 5984      |            |
 | Portainer            | <http://portainer.mayurifag.local>       | 9000      | ✅          |
 | Traefik Dashboard    | <http://traefik.mayurifag.local>         | 8080      |            |
 | Vaultwarden          | <http://pw.mayurifag.local>              | 80        |            |
@@ -143,127 +106,38 @@ The work is not in progress now, because I am okay with current implementation,
 but still I think there are some things existing for further development if I'll
 need to deploy my services once again.
 
-I also considered to use podman instead of docker, but it requires too much
-changes in codebase and I am not sure if it is worth it. It will also require to
-write systemd services it seems instead of convenient
-`restart_policy: unless-stopped`.
+### List
 
-### High priority
-
-* [x] Add dumb file for 20% of free space - to easily remove. Also add alias to remove/create it
-* [x] [Max log for systemctl journal](https://unix.stackexchange.com/questions/130786/can-i-remove-files-in-var-log-journal-and-var-cache-abrt-di-usr)
-* [x] Cron task to clean caches and use free place
-  * [x] clean apt cache
-  * [x] clean docker caches - think of better commands `docker system prune -a --volumes` (or else)
-* [x] sshd config contradicts with maintainer's ones so might be better to use
-  some .d/ version (research). Actually might be better to rewrite this or something
 * [ ] Use tinyauth everywhere
   * [ ] Research how it works (header/cookie/??) / research for issues
   * [ ] Check if it works with PWA safari
-* [x] Proxy to be http and socks5 in single container
-* [x] Sync time with ntp automatically. I need it for some of my time-sensitive
-  services.
-* [x] Some strange things with Traefik config. If problem with
-  "secure-headers@file" -> return "secure-headers@file"
-* [x] Log rotation for docker containers - or default settings after install
-* [ ] ~~<https://github.com/alexta69/metube>~~
-* [x] Add cleaning up apt-get to get extra 1GB
-* [x] Think how to rotate logs easily for docker (takes all the space in a
-  year or more)
-* [o] ~~Ssh configuration: change port and make the sshd configuration cheatsheet with Readme~~
-* [x] Comment out ports sections on containers and try to work with them
-* [x] Add Dozzle <https://github.com/amir20/dozzle>
-* [ ] Status page research - has to be available for free and nice dashboard
-  * [o] ~~Selfhosted <https://github.com/ledyba/uptime-kuma>~~
-* [x] Blocky DNS
-* [ ] ~~Add systemd services - do I need them or I'm fine~~
+* [ ] Setup and check 3x-ui/Remnawave
 * [ ] Migrate to dashboard which is easy maintainable: <https://gethomepage.dev>
   * [ ] Should have docker labels services configuration
   * [ ] ~~Has to support authentik/authelia/etc.~~
   * [ ] Also check for widgets availability
-* [ ] ~~Add Authentik / Remove baseauth~~
-* [ ] ~~Add Cloudflare companion tiredofit/traefik-cloudflare-companion:latest docker~~
-* [ ] ~~Add Vikunja <https://vikunja.io/docs/full-docker-example/>~~
-* [ ] ~~Move this section to issues and kanban~~ its fine to be here and to be
-  edited fast on-premise
-* [ ] ~~Add zswap~~
-* [ ] ~~<https://github.com/pglombardo/PasswordPusher>~~
-* [x] Migrate from mysql to postgres for nextcloud. Look other perfomance
-  boosters. cron at docker for nextcloud. bump versions
-  * [x] <https://github.com/ReinerNippes/nextcloud_on_docker>
-  * [x] <https://help.nextcloud.com/t/howto-ubuntu-docker-nextcloud-talk-collabora/76430>
-  * [x] <https://docs.nextcloud.com/server/18/admin_manual/configuration_server/caching_configuration.html>
-  * [x] <https://docs.nextcloud.com/server/18/admin_manual/installation/server_tuning.html>
-
-### Medium priority
-
-* [x] <https://github.com/epoupon/lms>
-* [ ] ~~Add automatic backup solution (duplicati?). Do I need anything more than/data/docker_data?~~
-* [x] Add pastebin - done via hemmelig
-* [ ] ~~Make traefik to write logs to file + logrotate them~~
-* [ ] ufw / fail2ban section
-  * [ ] ~~<https://shadowsocks.org/en/wiki/Setup-fail2ban.html>~~
-  * [ ] fail2ban plugin for traefik?!
+* [ ] Status page on some free service
+* [ ] VPS security
+  * [ ] Setup Crowdsec and firewall for docker
   * [ ] Add ufw with rules + make docker respect the rules. geerligguy.firewall
   * [ ] <https://madaidans-insecurities.github.io/guides/linux-hardening.html>
-* [ ] ~~Add motd.txt to server~~
-  * [ ] ~~About lazydocker~~
-  * [ ] ~~Aliases~~
-* [ ] ~~<https://github.com/EmbarkStudios/wg-ui>~~
-* [x] Doku <https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/docker/doku.md>
-* [ ] ~~<https://github.com/tborychowski/self-hosted-cookbook/blob/master/apps/other/firefox.md>~~
-* [x] FileRun
-* [x] Simple proxy server in docker
-* [x] Makefiles + info to launch only specified tags
-* [x] Make traefik dashboard available from internet
-* [ ] ~~<https://github.com/usememos/memos> or Otterwiki~~
+  * [ ] <https://github.com/docker/docker-bench-security>
+  * [ ] <https://github.com/quay/clair>
+  * [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
   * [ ] <https://github.com/we-promise/sure>
-
-### Low priority
-
-* [x] Ssh hardening:
-  * [ ] ~~If I change port on installation -- what I have to change then?~~
-  * [x] Check if current config is okay without changes done already by playbook
-  * [x] PubkeyAuthentication yes
-  * [x] AllowUsers root, admin_username
-  * [x] AllowTcpForwarding no
-  * [x] PermitEmptyPasswords no
-  * [x] X11Forwarding no
-* [ ] ~~Add zsh~~ no need as bashrc works fine
-* [x] Make CI working (decided not to have full e2e test suite, so fine for now)
-* [x] Add instructions for requirements and deployment
-* [x] Try to make deploy from zero to hero. Add instructions if needed.
-* [x] Add lightweight filesharing nextcloud alternative (FileRun?)
-* [ ] ~~Add web analytics (matomo?)~~
-* [ ] ~~Add rocket.chat~~
-* [ ] ~~Add url shortener~~
-* [ ] ~~Add wiki - do I need it? Research first~~
-* [x] Add Git (gitea/gitlab/else)
-* [ ] ~~Add ci/cd runner for selfhosted git~~
-* [x] Add ~~bitwarden~~ Vaultwarden
-* [ ] Check security <https://github.com/docker/docker-bench-security>
-  <https://github.com/quay/clair>
-* [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
-* [x] Migrate from dante to something docker based
-  * [x] <https://hub.docker.com/r/serjs/go-socks5-proxy/>
-  * [x] <https://github.com/schors/tgdante2>
-* [x] Migrate from shadowsocks-rust + v2ray to shadowsocks2-go + x-ray / maybe
-      docker
-  * [x] <https://github.com/dmirubtsov/ss-xray-docker>
-  * [x] <https://habr.com/ru/post/358126/>
-* [ ] Some kind of speedtest - check if compatible with other providers + with
-      homepage.dev + with traefik + with authelia
+* [ ] Speedtest
+  * [ ] Compatible with gethomepage and with tinyauth
   * [ ] <https://hub.docker.com/r/linuxserver/librespeed>
   * [ ] <https://github.com/alexjustesen/speedtest-tracker>
-* [x] Rename `my-headers` to `secure-headers` in traefik config and all
-  containers
-* [ ] ~~Think about VLESS and so on.~~
-* [ ] Remnawave panel and node or 3x-ui
 * [ ] <https://github.com/binwiederhier/ntfy>
 * [ ] docker image of mayurifag.github.io has to be in ghcr
 * [ ] watchtowerrr - use config.json for auth to dockerhub to prevent limits
+* [ ] LDAP via <https://github.com/lldap/lldap>
+  * [ ] Create users through GraphQL scripting on deployment
+  * [ ] Activate in tinyauth
+  * [ ] Activate in apps (i.e. Nextcloud and others)
 
 ## Based on / inspired / helpful
 
