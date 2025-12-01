@@ -83,16 +83,16 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | -------------------- | ---------------------------------------- | --------- | ---------- |
 | 3proxy               | <socks5://mayurifag.local:1080> or 3128  | 1080/3128 | ✅          |
 | 3x-ui                | <http://threexui.mayurifag.local>        | 2053/2096 |            |
-| Blocky               | [DNS] -> ip:53                           | 53        |            |
+| Blocky               | <http://dns.mayurifag.local> / TLS :853  | 853/4000  |            |
 | Gitea                | <http://git.mayurifag.local>             | 3000/222  |            |
 | Hemmelig             | <http://secret.mayurifag.local>          | 3000      |            |
 | mayurifag.github.io  | <http://mayurifag.local>                 | 8005      | ✅          |
 | mus                  | <http://mus.mayurifag.local>             | 8000      | ✅          |
 | Netdata              | <http://netdata.mayurifag.local>         | 19999     |            |
-| Nextcloud All-in-One | <http://nextcloud.mayurifag.local>       | 11000     |            |
+| Nextcloud            | <http://nextcloud.mayurifag.local>       | 11000     |            |
 | Obsidian LiveSync db | <http://couchdbobsidian.mayurifag.local> | 5984      |            |
 | Portainer            | <http://portainer.mayurifag.local>       | 9000      | ✅          |
-| Traefik Dashboard    | <http://traefik.mayurifag.local>         | 8080      |            |
+| Traefik dashboard    | <http://traefik.mayurifag.local>         | 8080      |            |
 | Vaultwarden          | <http://pw.mayurifag.local>              | 80        |            |
 | Watchtower           | <http://watchtower.mayurifag.local>      | 8080      |            |
 

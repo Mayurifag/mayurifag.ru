@@ -30,7 +30,6 @@
       - apparmor:unconfined
     restart_policy: unless-stopped
     memory: "{{ netdata_memory }}"
-    # network_mode: host
     labels:
       traefik.enable: "{{ netdata_available_externally }}"
       traefik.http.routers.netdata.rule: "Host(`{{ netdata_subdomain }}.{{ server_hostname }}`)"
