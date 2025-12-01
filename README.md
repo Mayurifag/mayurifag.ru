@@ -108,15 +108,13 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] Use tinyauth everywhere
-  * [ ] Research how it works (header/cookie/??) / research for issues
-  * [ ] Check if it works with PWA safari
-* [ ] Setup and check 3x-ui/Remnawave
-* [ ] Migrate to dashboard which is easy maintainable: <https://gethomepage.dev>
-  * [ ] Should have docker labels services configuration
-  * [ ] ~~Has to support authentik/authelia/etc.~~
-  * [ ] Also check for widgets availability
+* [ ] Check tinyauth - redirects
+* [ ] Check 3x-ui/Remnawave - working
+* [ ] Migrate <https://gethomepage.dev>
+  * [ ] Make a service
+  * [ ] Make labels on all services I have
 * [ ] Status page on some free service
+* [ ] <https://github.com/GabeDuarteM/blocky-ui>
 * [ ] VPS security
   * [ ] Setup Crowdsec and firewall for docker
   * [ ] Add ufw with rules + make docker respect the rules. geerligguy.firewall
@@ -132,6 +130,8 @@ need to deploy my services once again.
   * [ ] <https://hub.docker.com/r/linuxserver/librespeed>
   * [ ] <https://github.com/alexjustesen/speedtest-tracker>
 * [ ] <https://github.com/binwiederhier/ntfy>
+* [ ] Portainer - auto add user and env
+  * [ ] <https://docs.portainer.io/admin/environments/add/api>
 * [ ] docker image of mayurifag.github.io has to be in ghcr
 * [ ] watchtowerrr - use config.json for auth to dockerhub to prevent limits
 * [ ] LDAP via <https://github.com/lldap/lldap>

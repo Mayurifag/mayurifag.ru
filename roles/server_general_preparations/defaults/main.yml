@@ -70,6 +70,7 @@ mayurifag_general_extra_packages:
   - linux-headers-generic
   - linux-image-generic
   - mc
+  - mosh
   - ncdu
   - net-tools
   - nethogs

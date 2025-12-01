@@ -56,7 +56,7 @@
       TZ: "{{ server_timezone }}"
     restart_policy: unless-stopped
     ports:
-      - "53:53"
+      # - "53:53" # Do not expose 53 port, its open for DNS Amplification Attack
       - "853:853"
     labels:
       traefik.enable: "{{ blocky_available_externally }}"
