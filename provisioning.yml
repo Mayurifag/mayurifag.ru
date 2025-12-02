@@ -46,15 +46,15 @@
         - watchtower
       when: (watchtower_enabled | default(False))
 
-    - role: tinyauth
-      tags:
-        - tinyauth
-      when: (tinyauth_enabled | default(False))
-
     - role: traefik
       tags:
         - traefik
       when: (traefik_enabled | default(False))
+
+    - role: tinyauth
+      tags:
+        - tinyauth
+      when: (tinyauth_enabled | default(False))
 
     - role: mayurifag_github_io
       tags:

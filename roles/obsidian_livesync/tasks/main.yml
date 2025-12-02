@@ -21,6 +21,8 @@
     image: "{{ obsidian_livesync_image }}"
     pull: true
     recreate: true
+    networks:
+      - name: "web"
     volumes:
       - "{{ obsidian_livesync_data_directory }}:/opt/couchdb/data"
     env:

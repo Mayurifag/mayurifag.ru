@@ -22,6 +22,8 @@
       - "{{ hemmelig_data_directory }}/database:/home/node/hemmelig/database/"
     restart_policy: unless-stopped
     memory: "{{ hemmelig_memory }}"
+    networks:
+      - name: "web"
     labels:
       traefik.enable: "{{ hemmelig_available_externally }}"
       traefik.http.routers.hemmelig.rule: "Host(`{{ hemmelig_subdomain }}.{{ server_hostname }}`)"

@@ -55,6 +55,8 @@
     env:
       TZ: "{{ server_timezone }}"
     restart_policy: unless-stopped
+    networks:
+      - name: "web"
     ports:
       # - "53:53" # Do not expose 53 port, its open for DNS Amplification Attack
       - "853:853"

@@ -28,6 +28,8 @@
       - "{{ gitea_ssh_port }}:{{ gitea_ssh_port }}"
     restart_policy: unless-stopped
     memory: "{{ gitea_memory_limit }}"
+    networks:
+      - name: "web"
     env:
       USER_UID: "1000"
       USER_GID: "1000"

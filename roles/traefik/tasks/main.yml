@@ -29,6 +29,16 @@
   loop: "{{ query('filetree', '../templates/dynamic_configs') }}"
   when: item.state == 'file'
 
+- name: Create web network
+  community.docker.docker_network:
+    name: web
+    state: present
+
+- name: Create nextcloud-aio network
+  community.docker.docker_network:
+    name: nextcloud-aio
+    state: present
+
 - name: Traefik Docker Container
   community.docker.docker_container:
     name: traefik
@@ -52,5 +62,5 @@
       traefik.http.routers.traefik.service: "api@internal"
       traefik.http.routers.traefik.middlewares: "tinyauth@docker,secure-headers@file"
     networks:
-      - name: "bridge"
-      # - name: "nextcloud-aio"
+      - name: "web"
+      - name: "nextcloud-aio"

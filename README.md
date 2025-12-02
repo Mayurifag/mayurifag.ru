@@ -108,7 +108,6 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] Check tinyauth - redirects
 * [ ] Check 3x-ui/Remnawave - working
 * [ ] Migrate <https://gethomepage.dev>
   * [ ] Make a service

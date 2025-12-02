@@ -37,7 +37,9 @@
     env:
       SECRET_KEY: "{{ mus_auth_route }}"
     restart_policy: unless-stopped
-    security_opts: ["apparmor:unconfined"]
+    # security_opts: ["apparmor:unconfined"]
+    networks:
+      - name: "web"
     memory: "{{ mus_memory }}"
     labels:
       traefik.enable: "{{ mus_available_externally }}"

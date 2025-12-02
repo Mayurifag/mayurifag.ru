@@ -12,6 +12,7 @@
     recreate: true
     pull: true
     volumes:
+      - /:/host/root:ro,rslave
       - /etc/passwd:/host/etc/passwd:ro
       - /etc/group:/host/etc/group:ro
       - /etc/localtime:/etc/localtime:ro
@@ -23,6 +24,12 @@
       - /run/dbus:/run/dbus:ro
     env:
       PGID: "{{ docker_group.gid | string }}"
+      DISABLE_TELEMETRY: "1"
+      DO_NOT_TRACK: "1"
+      NETDATA_DISABLE_CLOUD: "1"
+      NETDATA_CLAIM_TOKEN: ""
+      NETDATA_CLAIM_URL: ""
+      NETDATA_CLAIM_ROOMS: ""
     capabilities:
       - SYS_PTRACE
       - SYS_ADMIN
@@ -30,6 +37,8 @@
       - apparmor:unconfined
     restart_policy: unless-stopped
     memory: "{{ netdata_memory }}"
+    networks:
+      - name: "web"
     labels:
       traefik.enable: "{{ netdata_available_externally }}"
       traefik.http.routers.netdata.rule: "Host(`{{ netdata_subdomain }}.{{ server_hostname }}`)"

@@ -24,6 +24,8 @@
       DISABLE_ANALYTICS: "true"
     restart_policy: unless-stopped
     memory: "{{ tinyauth_memory }}"
+    networks:
+      - name: "web"
     labels:
       traefik.enable: "true"
       # Router for the Login UI
