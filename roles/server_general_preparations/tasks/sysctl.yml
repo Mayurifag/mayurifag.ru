@@ -1,0 +1,17 @@
+---
+- name: Remove deprecated sysctl values
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    state: absent
+    reload: yes
+  loop: "{{ sysctl_values_absent }}"
+
+# move to /etc/sysctl.d/ansible file
+- name: Apply custom sysctl values
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_set: yes
+    reload: yes
+    state: present
+  loop: "{{ sysctl_values }}"

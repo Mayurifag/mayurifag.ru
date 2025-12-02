@@ -18,6 +18,8 @@
       - "/etc/timezone:/etc/timezone:ro"
     restart_policy: always
     memory: "{{ portainer_memory }}"
+    networks:
+      - name: "web"
     labels:
       traefik.enable: "{{ portainer_available_externally }}"
       traefik.http.routers.portainer.rule: "Host(`{{ portainer_subdomain }}.{{ server_hostname }}`)"

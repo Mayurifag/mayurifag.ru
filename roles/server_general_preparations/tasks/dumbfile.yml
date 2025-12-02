@@ -1,0 +1,22 @@
+---
+# Dumbfile is file to remove fast when storage will full
+- name: Create dumbfile directory
+  ansible.builtin.file:
+    path: /var/dumb
+    state: directory
+    mode: "0777"
+
+- name: Check if dumbfile exists
+  ansible.builtin.stat:
+    path: /var/dumb/dumbfile
+  register: dumbfile_stat
+
+- name: Create dumbfile for 20% of free space
+  ansible.builtin.shell: |
+    set -o pipefail
+    avail=$(df --output=avail -k /var/dumb | tail -n 1)
+    size=$((avail * 20 / 100))
+    fallocate -l "${size}K" /var/dumb/dumbfile
+  args:
+    executable: /bin/bash
+  when: not dumbfile_stat.stat.exists

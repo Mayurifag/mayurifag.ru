@@ -83,16 +83,16 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | -------------------- | ---------------------------------------- | --------- | ---------- |
 | 3proxy               | <socks5://mayurifag.local:1080> or 3128  | 1080/3128 | ✅          |
 | 3x-ui                | <http://threexui.mayurifag.local>        | 2053/2096 |            |
-| Blocky               | [DNS] -> ip:53                           | 53        |            |
+| Blocky               | <http://dns.mayurifag.local> / TLS :853  | 853/4000  |            |
 | Gitea                | <http://git.mayurifag.local>             | 3000/222  |            |
 | Hemmelig             | <http://secret.mayurifag.local>          | 3000      |            |
 | mayurifag.github.io  | <http://mayurifag.local>                 | 8005      | ✅          |
 | mus                  | <http://mus.mayurifag.local>             | 8000      | ✅          |
 | Netdata              | <http://netdata.mayurifag.local>         | 19999     |            |
-| Nextcloud All-in-One | <http://nextcloud.mayurifag.local>       | 11000     |            |
+| Nextcloud            | <http://nextcloud.mayurifag.local>       | 11000     |            |
 | Obsidian LiveSync db | <http://couchdbobsidian.mayurifag.local> | 5984      |            |
 | Portainer            | <http://portainer.mayurifag.local>       | 9000      | ✅          |
-| Traefik Dashboard    | <http://traefik.mayurifag.local>         | 8080      |            |
+| Traefik dashboard    | <http://traefik.mayurifag.local>         | 8080      |            |
 | Vaultwarden          | <http://pw.mayurifag.local>              | 80        |            |
 | Watchtower           | <http://watchtower.mayurifag.local>      | 8080      |            |
 
@@ -108,36 +108,33 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] Use tinyauth everywhere
-  * [ ] Research how it works (header/cookie/??) / research for issues
-  * [ ] Check if it works with PWA safari
-* [ ] Setup and check 3x-ui/Remnawave
-* [ ] Migrate to dashboard which is easy maintainable: <https://gethomepage.dev>
-  * [ ] Should have docker labels services configuration
-  * [ ] ~~Has to support authentik/authelia/etc.~~
-  * [ ] Also check for widgets availability
-* [ ] Status page on some free service
-* [ ] VPS security
-  * [ ] Setup Crowdsec and firewall for docker
-  * [ ] Add ufw with rules + make docker respect the rules. geerligguy.firewall
-  * [ ] <https://madaidans-insecurities.github.io/guides/linux-hardening.html>
-  * [ ] <https://github.com/docker/docker-bench-security>
-  * [ ] <https://github.com/quay/clair>
-  * [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
-* [ ] maybe finance app - deprecated, so research alternatives.
-  * [ ] Has to support crypto, ibkr, russian brokers
-  * [ ] <https://github.com/we-promise/sure>
-* [ ] Speedtest
-  * [ ] Compatible with gethomepage and with tinyauth
-  * [ ] <https://hub.docker.com/r/linuxserver/librespeed>
-  * [ ] <https://github.com/alexjustesen/speedtest-tracker>
-* [ ] <https://github.com/binwiederhier/ntfy>
-* [ ] docker image of mayurifag.github.io has to be in ghcr
-* [ ] watchtowerrr - use config.json for auth to dockerhub to prevent limits
+* [ ] Check 3x-ui/Remnawave - working
+* [ ] Migrate <https://gethomepage.dev>
+  * [ ] Make a service
+  * [ ] Make labels on all services I have
+* [ ] Crowdsec - each role?
+* [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker> - each role
+* [ ] Portainer - auto add user and env
+  * [ ] <https://docs.portainer.io/admin/environments/add/api>
+
+### Non priority for now
+
 * [ ] LDAP via <https://github.com/lldap/lldap>
   * [ ] Create users through GraphQL scripting on deployment
   * [ ] Activate in tinyauth
   * [ ] Activate in apps (i.e. Nextcloud and others)
+* [ ] maybe finance app - deprecated, so research alternatives.
+  * [ ] Has to support crypto, ibkr, russian brokers
+  * [ ] <https://github.com/we-promise/sure>
+* [ ] VPS security
+  * [ ] <https://madaidans-insecurities.github.io/guides/linux-hardening.html>
+  * [ ] (wait for update) <https://github.com/docker/docker-bench-security>
+  * [ ] (not sure) <https://github.com/quay/clair>
+  * [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
+* [ ] Status page on some free service
+* [ ] <https://github.com/binwiederhier/ntfy>
+* [ ] docker image of mayurifag.github.io has to be in ghcr
+* [ ] watchtowerrr - use config.json for auth to dockerhub to prevent limits
 
 ## Based on / inspired / helpful
 

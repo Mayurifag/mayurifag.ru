@@ -5,23 +5,23 @@ export EDITOR=vi
 # ALIASES #
 ###########
 
-# TODO: filesize and date formatting
-alias ls='ls -AlF --color=auto'
+alias apt-get='sudo apt-get'
+alias apt='sudo apt'
+alias aptclean='sudo apt autoremove && sudo apt clean && sudo apt autoclean'
+alias disksize='df -h --total | grep -v tmpfs'
+alias dusize='sudo ncdu /'
 alias grep='grep --color=auto'
-alias update='sudo apt update && sudo apt upgrade -y'
 alias install='sudo apt install'
-alias remove='sudo apt remove'
+alias ld='lazydocker'
 alias lips='echo "Local IP: $(hostname -I | cut -d" " -f1)"; echo "Public IP: $(curl -s ifconfig.me)"'
+alias ls='ls -AlF --color=auto'
 alias meminfo='free -m -l -t -s'
 alias ports='sudo ss -ltnp'
-alias dusize='sudo ncdu /'
-alias disksize='df -h --total | grep -v tmpfs'
 alias reboot='sudo reboot'
+alias remove='sudo apt remove'
 alias shutdown='sudo shutdown now'
-alias apt-get='sudo apt-get'
-alias aptclean='sudo apt autoremove && sudo apt clean && sudo apt autoclean'
+alias update='sudo apt update && sudo apt upgrade -y'
 alias yabs='curl -sL https://yabs.sh | bash'
-alias apt='sudo apt'
 
 ############
 # COMMANDS #
@@ -42,8 +42,15 @@ HISTCONTROL=ignoredups # Ignore duplicate commands in history
 # PROMPT #
 ###########
 
+# Determine user color: Red if root, Yellow if standard user
+if [ "$EUID" -eq 0 ]; then
+  USER_COLOR="\[\033[38;5;196m\]" # Red
+else
+  USER_COLOR="\[\033[38;5;11m\]"  # Yellow (Original)
+fi
+
 # Set a more informative prompt
-export PS1="\[\033[38;5;11m\]\u\[$(tput sgr0)\]\[\033[38;5;15m\]@\h:\[$(tput sgr0)\]\[\033[38;5;6m\][\w]:\[$(tput sgr0)\]\[\033[38;5;15m\] \\$ \[$(tput sgr0)\]"
+export PS1="${USER_COLOR}\u\[$(tput sgr0)\]\[\033[38;5;15m\]@\h:\[$(tput sgr0)\]\[\033[38;5;6m\][\w]:\[$(tput sgr0)\]\[\033[38;5;15m\] \\$ \[$(tput sgr0)\]"
 
 ###########
 # OPTIONS #
@@ -59,52 +66,40 @@ shopt -s autocd # Enable autocd to allow directory names to be used as commands
 # DUMB FILE    #
 ################
 
+DUMB_FILE="/var/dumb/dumbfile"
+
+# Helper to print stats (KISS)
+_dumb_info() {
+  echo "Free space: $(df -h "${DUMB_FILE%/*}" | awk 'NR==2 {print $4}')"
+}
+
 createdumb() {
-  local dumbfile="/var/dumb/dumbfile"
-  if [ -f "$dumbfile" ]; then
-    echo "File '$dumbfile' already exists."
+  [ -f "$DUMB_FILE" ] && { echo "File '$DUMB_FILE' already exists."; return 0; }
+  [ ! -d "${DUMB_FILE%/*}" ] && { echo "Directory ${DUMB_FILE%/*} does not exist."; return 1; }
+
+  _dumb_info
+
+  # Calculate 20% of available space (in KB)
+  local avail_kb=$(df --output=avail -k "${DUMB_FILE%/*}" | tail -n 1)
+  local size_kb=$((avail_kb * 20 / 100))
+
+  echo "Creating file with size: $((size_kb / 1024))M..."
+
+  if fallocate -l "${size_kb}K" "$DUMB_FILE"; then
+    ls -lh "$DUMB_FILE"
   else
-    if [ ! -d "/var/dumb" ]; then
-      echo "Directory /var/dumb does not exist."
-      return 1
-    fi
-
-    echo "Free space before: $(df -h /var/dumb | awk 'NR==2 {print $4}')"
-
-    local avail
-    avail=$(df --output=avail -k /var/dumb | tail -n 1)
-    local size=$((avail * 20 / 100))
-
-    echo "Creating '$dumbfile'..."
-    if fallocate -l "${size}K" "$dumbfile"; then
-      local created_size
-      created_size=$(du -h "$dumbfile" | awk '{print $1}')
-      echo "Done. Created '$dumbfile' with size: $created_size"
-    else
-      echo "Failed to create file."
-      return 1
-    fi
-
-    echo "Free space after: $(df -h /var/dumb | awk 'NR==2 {print $4}')"
+    echo "Failed to create file."
+    return 1
   fi
+
+  _dumb_info
 }
 
 removedumb() {
-  local dumbfile="/var/dumb/dumbfile"
-  if [ -f "$dumbfile" ]; then
-    echo "Free space before: $(df -h /var/dumb | awk 'NR==2 {print $4}')"
-    local size_before
-    size_before=$(du -h "$dumbfile" | awk '{print $1}')
+  [ ! -f "$DUMB_FILE" ] && { echo "File '$DUMB_FILE' does not exist."; return 1; }
 
-    if rm "$dumbfile"; then
-      echo "Removed '$dumbfile' (was $size_before)."
-    else
-      echo "Failed to remove '$dumbfile'."
-      return 1
-    fi
+  _dumb_info
 
-    echo "Free space after: $(df -h /var/dumb | awk 'NR==2 {print $4}')"
-  else
-    echo "File '$dumbfile' does not exist."
-  fi
+  # Verbose remove
+  rm -v "$DUMB_FILE" && _dumb_info
 }

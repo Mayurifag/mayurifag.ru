@@ -1,0 +1,23 @@
+---
+- name: "Set timezone to {{ server_timezone }}"
+  community.general.timezone:
+    name: "{{ server_timezone }}"
+
+- name: Ensure the locale en_US.UTF-8 exists
+  community.general.locale_gen:
+    name: en_US.UTF-8
+    state: present
+
+- name: Ensure the locale ru_RU.UTF-8 exists
+  community.general.locale_gen:
+    name: ru_RU.UTF-8
+    state: present
+
+- name: Set en_US.UTF-8 as default locale
+  ansible.builtin.command: localectl set-locale LANG=en_US.UTF-8
+
+- name: Ensure NTP service is running and enabled
+  ansible.builtin.systemd:
+    name: ntp
+    state: started
+    enabled: yes

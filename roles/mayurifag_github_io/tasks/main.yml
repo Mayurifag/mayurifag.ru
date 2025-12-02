@@ -7,6 +7,8 @@
     recreate: true
     restart_policy: unless-stopped
     memory: "{{ mayurifag_github_io_memory }}"
+    networks:
+      - name: "web"
     labels:
       traefik.enable: "{{ mayurifag_github_io_available_externally }}"
       traefik.http.routers.mayurifag_github_io.rule: "Host(`{{ server_hostname }}`)"

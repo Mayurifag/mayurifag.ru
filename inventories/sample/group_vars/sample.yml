@@ -5,8 +5,6 @@
 admin_username: change_this
 admin_userpassword: change_this
 admin_email: change_this@gmail.com
-admin_uid: 1000
-admin_gid: 1001
 
 root_userpassword: change_this
 
@@ -17,10 +15,6 @@ server_timezone: Etc/UTC
 server_hostname: mayurifag.local
 swap_file_size_mb: "1024"
 swap_swappiness: "15"
-
-# htpasswd -nbB admin admin
-# admin:$2y$05$9GXnLumjrUFrG96d4ljNkewDXSYIAUeRjLTafcdazV6g3jRPmulJO
-base_auth_credentials: "admin:$2y$05$9GXnLumjrUFrG96d4ljNkewDXSYIAUeRjLTafcdazV6g3jRPmulJO"
 
 traefik_dns_provider: cloudflare
 traefik_environment_variables:
@@ -103,3 +97,8 @@ obsidian_livesync_subdomain: "couchdbobsidian"
 obsidian_livesync_couchdb_user: "obsidian_user"
 obsidian_livesync_couchdb_password: "change_this"
 obsidian_livesync_couchdb_database: "obsidian"
+
+tinyauth_enabled: true
+tinyauth_subdomain: "auth"
+# Default user: test / test
+tinyauth_users: "test:$$2a$$10$$EuSvtUG9rKOOiBdb8aHQUOyBvAseOhLQxnyIgYqK8td/ileY4iH9u"

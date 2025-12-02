@@ -1,0 +1,45 @@
+---
+- name: Update apt-cache
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install extra packages
+  ansible.builtin.apt:
+    name: "{{ mayurifag_general_extra_packages }}"
+    state: present
+    force_apt_get: yes
+
+- name: Configure apt
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/51ansible-setup
+    content: |
+      APT::Install-Recommends "0";
+      APT::Install-Suggests "0";
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Download-Upgradeable-Packages "1";
+      APT::Periodic::Unattended-Upgrade "1";
+      APT::Periodic::AutocleanInterval "7";
+      Unattended-Upgrade::Automatic-Reboot "true";
+      Unattended-Upgrade::Automatic-Reboot-Time "04:00";
+      Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+      Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
+      Unattended-Upgrade::SyslogEnable "true";
+    mode: "0644"
+
+- name: Ensure unattended-upgrades service is enabled
+  ansible.builtin.systemd:
+    name: unattended-upgrades
+    enabled: yes
+    state: started
+
+- name: Upgrade all packages
+  ansible.builtin.apt:
+    upgrade: dist
+    state: latest
+    force_apt_get: yes
+
+- name: Remove orphaned packages and clean apt cache
+  ansible.builtin.apt:
+    autoremove: yes
+    autoclean: yes

@@ -13,9 +13,6 @@
   hosts: all
   gather_facts: yes
   roles:
-    ###
-    ### Run general preparation
-    ###
     - role: server_general_preparations
       tags:
         - general
@@ -33,12 +30,7 @@
     - role: users
       tags:
         - users
-    ###
-    ### Requirements
-    ###
-    # TODO: role requires gather_facts: yes - fix it or change to another role
-    # TODO: recheck on clear installation
-    # TODO: make cron task to remove unused docker images
+
     - role: geerlingguy.docker
       tags:
         - docker
@@ -54,13 +46,15 @@
         - watchtower
       when: (watchtower_enabled | default(False))
 
-    ###
-    ### Docker applications
-    ###
     - role: traefik
       tags:
         - traefik
       when: (traefik_enabled | default(False))
+
+    - role: tinyauth
+      tags:
+        - tinyauth
+      when: (tinyauth_enabled | default(False))
 
     - role: mayurifag_github_io
       tags:
@@ -77,8 +71,6 @@
         - threexui
       when: (threexui_enabled | default(False))
 
-    # TODO: for ubuntu have to disable systemd-resolved service, occupies 53 port
-    # TODO: for ubuntu - change resolv.conf
     - role: blocky
       tags:
         - blocky
