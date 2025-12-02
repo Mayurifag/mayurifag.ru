@@ -1,0 +1,19 @@
+---
+crowdsec_enabled: true
+
+crowdsec_data_directory: "{{ docker_home }}/crowdsec"
+crowdsec_config_directory: "{{ crowdsec_data_directory }}/config"
+crowdsec_traefik_logs_directory: "{{ docker_home }}/traefik/logs"
+
+crowdsec_image: crowdsecurity/crowdsec:latest
+crowdsec_memory: 512m
+
+crowdsec_collections:
+  - crowdsecurity/traefik
+  - crowdsecurity/http-cve
+  - crowdsecurity/base-http-scenarios
+  - crowdsecurity/sshd
+  - crowdsecurity/linux
+  - crowdsecurity/appsec-generic-rules
+  - crowdsecurity/appsec-virtual-patching
+  - crowdsecurity/appsec-crs

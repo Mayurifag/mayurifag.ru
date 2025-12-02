@@ -41,10 +41,10 @@
         - lazydocker
       when: (lazydocker_enabled | default(False))
 
-    - role: watchtower
+    - role: crowdsec
       tags:
-        - watchtower
-      when: (watchtower_enabled | default(False))
+        - crowdsec
+      when: (crowdsec_enabled | default(False))
 
     - role: traefik
       tags:
@@ -115,3 +115,8 @@
       tags:
         - obsidian
       when: (obsidian_livesync_enabled | default(False))
+
+    - role: watchtower
+      tags:
+        - watchtower
+      when: (watchtower_enabled | default(False))
