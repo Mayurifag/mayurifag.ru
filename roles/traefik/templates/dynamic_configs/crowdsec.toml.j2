@@ -1,0 +1,23 @@
+[http.middlewares.crowdsec.plugin.crowdsec-bouncer-traefik-plugin]
+  enabled = true
+  logLevel = "INFO"
+  updateIntervalSeconds = 15
+  updateMaxFailure = 0
+  defaultDecisionSeconds = 15
+  httpTimeoutSeconds = 10
+  crowdsecMode = "stream"
+  crowdsecAppsecEnabled = true
+  crowdsecAppsecHost = "crowdsec:7422"
+  crowdsecAppsecFailureBlock = true
+  crowdsecAppsecUnreachableBlock = true
+  crowdsecLapiKey ="{{ crowdsec_api_key }}"
+  crowdsecLapiHost = "crowdsec:8080"
+  crowdsecLapiScheme = "http"
+  forwardedHeadersTrustedIPs = [ "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16" ]
+  clientTrustedIPs = [ "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16" ]
+
+  [http.middlewares.default-whitelist.ipAllowList]
+  sourceRange = [ "10.0.0.0/8", "192.168.0.0/16", "172.16.0.0/12" ]
+
+  [http.middlewares.secured.chain]
+  middlewares = [ "default-whitelist", "default-headers" ]

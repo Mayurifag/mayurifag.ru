@@ -1,5 +1,5 @@
 {% if enable_tls == true %}
-defaultEntryPoints = ["http", "https"]
+defaultEntryPoints = ["web", "websecure"]
 {% endif %}
 [entryPoints]
   [entryPoints.web]
@@ -8,12 +8,15 @@ defaultEntryPoints = ["http", "https"]
     [entryPoints.web.http.redirections.entryPoint]
       to = "websecure"
       scheme = "https"
+      permanent = true
     [entryPoints.websecure]
       address = ":443"
       [entryPoints.websecure.http3]
-      [entryPoints.websecure.http.tls]
-        certResolver = "letsencrypt"
-        options = "default"
+      [entryPoints.websecure.http]
+        middlewares = [ "crowdsec@file" ]
+        [entryPoints.websecure.http.tls]
+          certResolver = "letsencrypt"
+          options = "default"
 {% endif %}
 [providers]
   [providers.docker]
@@ -23,6 +26,9 @@ defaultEntryPoints = ["http", "https"]
     watch = true
 [log]
   level = "{{ traefik_log_level }}"
+[accessLog]
+  filePath = "/var/log/traefik/access.log"
+  bufferingSize = 100
 [global]
   sendAnonymousUsage = false
 [api]
@@ -44,3 +50,7 @@ defaultEntryPoints = ["http", "https"]
 [serversTransport]
   insecureSkipVerify = true
 {% endif %}
+
+[experimental.plugins.crowdsec-bouncer-traefik-plugin]
+  moduleName = "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
+  version = "v1.4.6"

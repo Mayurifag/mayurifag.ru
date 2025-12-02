@@ -108,21 +108,24 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] Check 3x-ui/Remnawave - working
-* [ ] Migrate <https://gethomepage.dev>
-  * [ ] Make a service
-  * [ ] Make labels on all services I have
-* [ ] Crowdsec - each role?
-* [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker> - each role
-* [ ] Portainer - auto add user and env
-  * [ ] <https://docs.portainer.io/admin/environments/add/api>
-
-### Non priority for now
-
+* [ ] Crowdsec
+  * [ ] check things are working (metrics)
+  * [ ] Add readme section about cloud dashboard and connection
 * [ ] LDAP via <https://github.com/lldap/lldap>
   * [ ] Create users through GraphQL scripting on deployment
   * [ ] Activate in tinyauth
   * [ ] Activate in apps (i.e. Nextcloud and others)
+* [ ] Portainer - auto add user and env
+  * [ ] <https://docs.portainer.io/admin/environments/add/api>
+* [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker> - each role
+* [ ] Check 3x-ui/Remnawave - working
+* [ ] OCIS - POSIX fs
+
+### Non priority for now
+
+* [ ] Migrate <https://gethomepage.dev>
+  * [ ] Make a service
+  * [ ] Make labels on all services I have
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
   * [ ] <https://github.com/we-promise/sure>

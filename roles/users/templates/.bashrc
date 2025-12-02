@@ -23,6 +23,9 @@ alias shutdown='sudo shutdown now'
 alias update='sudo apt update && sudo apt upgrade -y'
 alias yabs='curl -sL https://yabs.sh | bash'
 
+# CrowdSec
+alias cscli='docker exec crowdsec cscli'
+
 ############
 # COMMANDS #
 ############

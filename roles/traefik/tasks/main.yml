@@ -14,12 +14,35 @@
   with_items:
     - "{{ traefik_data_directory }}/dynamic_configs"
     - "{{ traefik_data_directory }}/letsencrypt"
+    - "{{ traefik_logs_directory }}"
 
 - name: Create Traefik config.toml from template
   ansible.builtin.template:
     src: traefik.toml.j2
     dest: "{{ traefik_data_directory }}/traefik.toml"
   register: template_config
+
+- name: Check for CrowdSec Bouncer Key file
+  ansible.builtin.stat:
+    path: "/tmp/crowdsec_traefik_bouncer.key"
+  register: crowdsec_key_file
+
+- name: Read CrowdSec Bouncer Key
+  ansible.builtin.slurp:
+    src: "/tmp/crowdsec_traefik_bouncer.key"
+  register: crowdsec_key_content
+  when: crowdsec_key_file.stat.exists
+
+- name: Remove CrowdSec Bouncer Key file
+  ansible.builtin.file:
+    path: "/tmp/crowdsec_traefik_bouncer.key"
+    state: absent
+  when: crowdsec_key_file.stat.exists
+
+- name: Set CrowdSec API Key fact
+  ansible.builtin.set_fact:
+    crowdsec_api_key: "{{ crowdsec_key_content['content'] | b64decode | trim }}"
+  when: crowdsec_key_file.stat.exists
 
 - name: Create Traefik dynamic configuration files
   ansible.builtin.template:
@@ -50,7 +73,10 @@
       - "{{ traefik_data_directory }}/traefik.toml:/etc/traefik/traefik.toml:ro"
       - "{{ traefik_data_directory }}/dynamic_configs:/etc/traefik/dynamic_configs:ro"
       - "{{ traefik_data_directory }}/letsencrypt:/letsencrypt:rw"
+      - "{{ traefik_logs_directory }}:/var/log/traefik:rw"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     env: "{{ traefik_environment_variables }}"
     restart_policy: unless-stopped
     memory: "{{ traefik_memory }}"
@@ -60,7 +86,7 @@
       traefik.http.routers.traefik.rule: "Host(`{{ traefik_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.traefik.loadbalancer.server.port: "8080"
       traefik.http.routers.traefik.service: "api@internal"
-      traefik.http.routers.traefik.middlewares: "tinyauth@docker,secure-headers@file"
+      traefik.http.routers.traefik.middlewares: "crowdsec@file,tinyauth@docker,secure-headers@file"
     networks:
       - name: "web"
       - name: "nextcloud-aio"
