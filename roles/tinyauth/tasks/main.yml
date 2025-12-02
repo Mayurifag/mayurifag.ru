@@ -10,7 +10,7 @@
     state: directory
     mode: "0755"
 
-- name: tinyauth Docker Container
+- name: Tinyauth Docker Container
   community.docker.docker_container:
     name: tinyauth
     image: "{{ tinyauth_docker_image }}"

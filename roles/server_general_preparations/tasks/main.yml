@@ -1,7 +1,18 @@
 ---
-- ansible.builtin.include_tasks: timezone_locales.yml
-- ansible.builtin.include_tasks: sysctl.yml
-- ansible.builtin.include_tasks: packages.yml
-- ansible.builtin.include_tasks: maintenance.yml
-- ansible.builtin.include_tasks: dumbfile.yml
-- ansible.builtin.include_tasks: reboot.yml
+- name: Include timezone and locales tasks
+  ansible.builtin.include_tasks: timezone_locales.yml
+
+- name: Include sysctl configuration tasks
+  ansible.builtin.include_tasks: sysctl.yml
+
+- name: Include package installation tasks
+  ansible.builtin.include_tasks: packages.yml
+
+- name: Include maintenance tasks
+  ansible.builtin.include_tasks: maintenance.yml
+
+- name: Include dumbfile tasks
+  ansible.builtin.include_tasks: dumbfile.yml
+
+- name: Include reboot tasks
+  ansible.builtin.include_tasks: reboot.yml
