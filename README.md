@@ -112,7 +112,7 @@ need to deploy my services once again.
   * [ ] check things are working (metrics)
   * [ ] Add readme section about cloud dashboard and connection
 * [ ] LDAP via <https://github.com/lldap/lldap>
-  * [ ] Create users through GraphQL scripting on deployment
+  * [ ] Create users through GraphQL scripting on deployment / bootstrap script
   * [ ] Activate in tinyauth
   * [ ] Activate in apps (i.e. Nextcloud and others)
 * [ ] Portainer - auto add user and env
