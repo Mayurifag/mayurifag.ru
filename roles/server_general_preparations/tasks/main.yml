@@ -1,4 +1,7 @@
 ---
+- name: Include hostname configuration
+  ansible.builtin.include_tasks: hostname.yml
+
 - name: Include timezone and locales tasks
   ansible.builtin.include_tasks: timezone_locales.yml
 

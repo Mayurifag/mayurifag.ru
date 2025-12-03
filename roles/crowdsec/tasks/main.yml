@@ -4,13 +4,12 @@
     database: passwd
     key: "{{ admin_username }}"
 
-- name: Remove CrowdSec Directories
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    - "{{ crowdsec_data_directory }}"
-    - "{{ crowdsec_config_directory }}"
+# - name: Remove CrowdSec Directories
+#   ansible.builtin.file:
+#     path: "{{ item }}"
+#     state: absent
+#   with_items:
+#     - "{{ crowdsec_directory }}"
 
 - name: Create CrowdSec Directories
   ansible.builtin.file:
@@ -27,6 +26,19 @@
     dest: "{{ crowdsec_config_directory }}/acquis.yaml"
     mode: "0644"
 
+- name: Create profiles config
+  ansible.builtin.template:
+    src: profiles.yaml.j2
+    dest: "{{ crowdsec_config_directory }}/profiles.yaml"
+    mode: "0644"
+
+- name: Ensure auth.log exists
+  ansible.builtin.file:
+    path: /var/log/auth.log
+    state: touch
+    mode: "0640"
+  changed_when: false
+
 - name: CrowdSec Docker Container
   community.docker.docker_container:
     name: crowdsec
@@ -37,15 +49,20 @@
     memory: "{{ crowdsec_memory }}"
     networks:
       - name: "web"
+    dns_servers:
+      - "1.1.1.1"
+      - "8.8.8.8"
     volumes:
       - "{{ crowdsec_data_directory }}:/var/lib/crowdsec/data"
-      - "{{ crowdsec_config_directory }}/acquis.yaml:/etc/crowdsec/acquis.yaml"
+      - "{{ crowdsec_config_directory }}:/etc/crowdsec"
       - "/var/log/auth.log:/var/log/auth.log:ro"
       - "{{ crowdsec_traefik_logs_directory }}:/var/log/traefik:ro"
     env:
       COLLECTIONS: "{{ crowdsec_collections | join(' ') }}"
       GID: "{{ ansible_facts.getent_passwd[admin_username][2] }}"
       UID: "{{ ansible_facts.getent_passwd[admin_username][1] }}"
+      # ENROLL_KEY: "{{ crowdsec_enroll_key }}"
+      # ENROLL_INSTANCE_NAME: "{{ crowdsec_instance_name }}"
 
 - name: Wait for CrowdSec LAPI to be ready
   ansible.builtin.command: docker exec crowdsec cscli lapi status

@@ -6,7 +6,8 @@
     reload: yes
   loop: "{{ sysctl_values_absent }}"
 
-# move to /etc/sysctl.d/ansible file
+# It might be done via /etc/sysctl.d/ansible file, that will be faster, but its
+# not debuggable. Also I will see if something deprecated when go one by one.
 - name: Apply custom sysctl values
   ansible.posix.sysctl:
     name: "{{ item.key }}"
