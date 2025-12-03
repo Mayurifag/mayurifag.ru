@@ -75,6 +75,7 @@ mayurifag_general_extra_packages:
   - net-tools
   - nethogs
   - ntp
+  - rsyslog
   - software-properties-common
   - unattended-upgrades
   - unzip

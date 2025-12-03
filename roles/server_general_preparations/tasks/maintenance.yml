@@ -26,3 +26,9 @@
       MaxRetentionSec=1month
     mode: "0644"
   notify: Restart systemd-journald
+
+- name: Ensure rsyslog is running (generates auth.log)
+  ansible.builtin.systemd:
+    name: rsyslog
+    state: started
+    enabled: yes
