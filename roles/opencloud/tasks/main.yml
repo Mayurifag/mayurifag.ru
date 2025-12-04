@@ -1,0 +1,75 @@
+---
+- name: Remove OpenCloud Config Directory if needed
+  ansible.builtin.file:
+    path: "{{ opencloud_data_directory }}"
+    state: absent
+
+- name: Create OpenCloud Directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+    owner: "1000"
+    group: "1000"
+  with_items:
+    - "{{ opencloud_data_directory }}"
+    - "{{ opencloud_data_directory }}/config"
+    - "{{ opencloud_data_directory }}/var"
+    - "{{ opencloud_files_directory }}"
+
+- name: OpenCloud Docker Container
+  community.docker.docker_container:
+    name: opencloud
+    image: "{{ opencloud_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    entrypoint:
+      - /bin/sh
+    command:
+      - -c
+      - "opencloud init || true; opencloud server"
+    volumes:
+      - "{{ opencloud_data_directory }}/config:/etc/opencloud"
+      - "{{ opencloud_data_directory }}/var:/var/lib/opencloud"
+      - "{{ opencloud_files_directory }}:/storage"
+    env:
+      OC_DOMAIN: "{{ opencloud_subdomain }}.{{ server_hostname }}"
+      OC_URL: "https://{{ opencloud_subdomain }}.{{ server_hostname }}"
+      PROXY_HTTP_ADDR: "0.0.0.0:9200"
+      PROXY_HTTPS_ADDR: ""
+      PROXY_TLS: "false" # Traefik handles TLS
+      OC_INSECURE: "true"
+      OC_LOG_LEVEL: "{{ opencloud_log_level }}"
+      LOG_PRETTY: "true"
+      FRONTEND_CHECK_FOR_UPDATES: "false"
+      OC_SHARING_PUBLIC_SHARE_MUST_HAVE_PASSWORD: "false"
+
+      STORAGE_USERS_DRIVER: "posix"
+      STORAGE_USERS_ID_CACHE_STORE: "nats-js-kv"
+      STORAGE_USERS_POSIX_WATCH_FS: "true"
+      STORAGE_USERS_POSIX_ROOT: "/storage"
+
+      OC_LDAP_URI: "ldap://lldap:3890"
+      OC_LDAP_BIND_DN: "uid=observer,ou=people,{{ lldap_base_dn }}"
+      OC_LDAP_BIND_PASSWORD: "{{ lldap_observer_user_password }}"
+      OC_LDAP_USER_BASE_DN: "ou=people,{{ lldap_base_dn }}"
+      OC_LDAP_GROUP_BASE_DN: "ou=groups,{{ lldap_base_dn }}"
+      OC_LDAP_INSECURE: "true"
+      OC_LDAP_LOGIN_ATTRIBUTES: "uid,mail"
+      OC_LDAP_USER_SCHEMA_ID: "uid"
+      OC_LDAP_DISABLE_USER_MECHANISM: "none"
+      OC_LDAP_SERVER_WRITE_ENABLED: "false"
+      GRAPH_LDAP_SERVER_UUID: "true"
+      GRAPH_LDAP_SERVER_USE_PASSWORD_MODIFY_EXOP: "false"
+    networks:
+      - name: "web"
+    labels:
+      traefik.enable: "{{ opencloud_available_externally }}"
+      traefik.http.routers.opencloud.rule: "Host(`{{ opencloud_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.opencloud.loadbalancer.server.port: "9200"
+      traefik.http.routers.opencloud.middlewares: "secure-headers@file"
+      homepage.group: "Services"
+      homepage.name: "OpenCloud"
+      homepage.icon: "owncloud.png"
+      homepage.href: "https://{{ opencloud_subdomain }}.{{ server_hostname }}"

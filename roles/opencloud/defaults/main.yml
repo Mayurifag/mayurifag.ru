@@ -1,0 +1,12 @@
+---
+opencloud_enabled: true
+opencloud_available_externally: "true"
+
+opencloud_subdomain: "cloud"
+
+opencloud_image: "opencloudeu/opencloud:4"
+
+opencloud_data_directory: "{{ docker_home }}/opencloud"
+opencloud_files_directory: "{{ files_home }}/OpenCloud"
+
+opencloud_log_level: "warn"

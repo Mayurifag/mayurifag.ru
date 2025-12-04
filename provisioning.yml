@@ -116,6 +116,11 @@
         - nextcloud
       when: (nextcloud_enabled | default(False))
 
+    - role: opencloud
+      tags:
+        - opencloud
+      when: (opencloud_enabled | default(False))
+
     - role: gitea
       tags:
         - gitea

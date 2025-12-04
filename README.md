@@ -92,6 +92,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | Netdata              | <http://netdata.mayurifag.local>         | 19999     | ldap |            |
 | Nextcloud            | <http://nextcloud.mayurifag.local>       | 11000     | todo |            |
 | Obsidian LiveSync db | <http://couchdbobsidian.mayurifag.local> | 5984      | app  |            |
+| OpenCloud            | <http://cloud.mayurifag.local>           | 9200      | ldap |            |
 | Portainer            | <http://portainer.mayurifag.local>       | 9000      | app  | ✅          |
 | Traefik dashboard    | <http://traefik.mayurifag.local>         | 8080      | ldap |            |
 | Tinyauth             | <http://auth.mayurifag.local>            | 3000      | ldap | ✅          |
@@ -116,10 +117,6 @@ need to deploy my services once again.
   * [ ] Make tinyauth defence and change keepassxc entry
   * [ ] Edit POST_INSTALL info with real information on adding inbound+client+qr
   * [ ] Information about client apps (win/linux/macos/android/ios)
-* [ ] OCIS - POSIX fs
-
-### Non priority for now
-
 * [ ] Refactor dynamic configs for traefik - some are static, some need to be
   moved to the services themself
   * [ ] Crowdsec will be after traefik
@@ -136,6 +133,7 @@ need to deploy my services once again.
   * [ ] Is it possible to have data in nextcloud?
 * [ ] Status page for services
   * [ ] Has to be free and allow deploy from ansible via API
+* [ ] pdf <https://github.com/alam00000/bentopdf>
 
 ### Thinking if I need it / probably wont do ideas / notes
 
@@ -157,6 +155,11 @@ need to deploy my services once again.
   * [ ] Revisit all blocklists
   * [ ] POST_INSTALL DNS over HTTPS setup on clients
   * [ ] <https://www.youtube.com/watch?v=UjqZPLL0UvM>
+  * [ ] Do I want my own blocks? 🏴‍☠️
+  * [ ] Perhaps I wont need dynamic config also if I get rid of 53 port
 * [ ] Homepage.dev ideas
   * [ ] Stocks SPY/QQQ - requires finnhub api key
   * [ ] World clock? moscow time
+* [ ] url shorten <https://github.com/anhostfr/nah.pet>
+* [ ] Email 💩
+  * [ ] Parsedmarc
