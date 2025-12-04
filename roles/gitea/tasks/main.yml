@@ -1,4 +1,9 @@
 ---
+- name: Get admin user info
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ admin_username }}"
+
 - name: Stop and remove Gitea container if it exists
   community.docker.docker_container:
     name: gitea
@@ -31,8 +36,8 @@
     networks:
       - name: "web"
     env:
-      USER_UID: "1000"
-      USER_GID: "1000"
+      USER_UID: "{{ ansible_facts.getent_passwd[admin_username][1] }}"
+      USER_GID: "{{ ansible_facts.getent_passwd[admin_username][2] }}"
       DB_TYPE: "sqlite3"
       ROOT_URL: "https://{{ gitea_subdomain }}.{{ server_hostname }}"
       SSH_DOMAIN: "{{ gitea_subdomain }}.{{ server_hostname }}"

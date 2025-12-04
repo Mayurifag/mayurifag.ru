@@ -82,7 +82,8 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | Name                 | Default endpoint                         | Port(s)   | Auth | Watchtower |
 | -------------------- | ---------------------------------------- | --------- | ---- | ---------- |
 | 3proxy               | <socks5://mayurifag.local:1080> or 3128  | 1080/3128 | app  | ✅          |
-| 3x-ui                | <http://threexui.mayurifag.local>        | 2053/2096 | app  |            |
+| 3x-ui panel          | <http://3x.mayurifag.local>              | 2053      | app  |            |
+| 3x-ui subscriptions  | <http://3xsub.mayurifag.local>           | 2096      | app  |            |
 | Blocky               | <http://dns.mayurifag.local> / TLS :853  | 853/4000  | app  |            |
 | Gitea                | <http://git.mayurifag.local>             | 3000/222  | todo |            |
 | Hemmelig.app         | <http://secret.mayurifag.local>          | 3000      | app  |            |
@@ -100,6 +101,8 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 
 <!-- markdownlint-enable line-length -->
 
+Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
+
 ## TODO
 
 ### Work is not in progress
@@ -110,11 +113,13 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] Check 3x-ui/Remnawave - try to connect
-* [ ] Migrate <https://gethomepage.dev>
+* [ ] (wait) Next deploy of 3x-ui
+  * [ ] Make tinyauth defence and change keepassxc entry
+  * [ ] Edit POST_INSTALL info with real information on adding inbound+client+qr
+* [ ] Get <https://gethomepage.dev>
   * [ ] Make a service
   * [ ] Make labels on all services I have
-* [ ] Blocky readme - DNS over encrypted things
+* [ ] Blocky POST_INSTALL - DNS over encrypted things
 * [ ] OCIS - POSIX fs
 
 ### Non priority for now
@@ -122,7 +127,7 @@ need to deploy my services once again.
 * [ ] Refactor dynamic configs for traefik - some are static, some need to be
   moved to the services themself
   * [ ] Crowdsec will be after traefik
-* [ ] Crowdsec webui dashboard and readme section about that
+* [ ] Crowdsec web-ui dashboard and readme section about that
 * [ ] Firewall
   * [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker>
   * [ ] Block everything except ssh. Check ufw status and allowances

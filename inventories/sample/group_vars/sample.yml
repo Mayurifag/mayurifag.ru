@@ -111,3 +111,7 @@ lldap_enabled: true
 lldap_subdomain: "ldap"
 lldap_jwt_secret: "change_this_random_string_min_32_chars"
 lldap_key_seed: "change_this_random_string_min_32_chars"
+
+threexui_enabled: true
+threexui_panel_subdomain: "3x"
+threexui_subscription_subdomain: "3xsub"
