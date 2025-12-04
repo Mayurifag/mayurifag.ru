@@ -6,6 +6,3 @@ tinyauth_docker_image: ghcr.io/steveiliop56/tinyauth:v4
 tinyauth_subdomain: "auth"
 
 tinyauth_memory: 512m
-
-# test:test - username and password
-tinyauth_users: "test:$$2a$$10$$EuSvtUG9rKOOiBdb8aHQUOyBvAseOhLQxnyIgYqK8td/ileY4iH9u"

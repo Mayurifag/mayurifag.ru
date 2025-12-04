@@ -1,0 +1,77 @@
+---
+- name: Remove LLDAP Directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ lldap_data_directory }}"
+
+- name: Create LLDAP Directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+    owner: "{{ admin_username }}"
+    group: "{{ admin_username }}"
+  with_items:
+    - "{{ lldap_data_directory }}"
+
+- name: LLDAP Docker Container with port opened for bootstrap scripts
+  community.docker.docker_container:
+    name: lldap
+    image: "{{ lldap_image }}"
+    pull: true
+    recreate: true
+    volumes:
+      - "{{ lldap_data_directory }}:/data"
+    env:
+      LLDAP_JWT_SECRET: "{{ lldap_jwt_secret }}"
+      LLDAP_KEY_SEED: "{{ lldap_key_seed }}"
+      LLDAP_LDAP_BASE_DN: "{{ lldap_base_dn }}"
+      LLDAP_LDAP_USER_PASS: "{{ admin_userldappassword }}"
+      LLDAP_LDAP_USER_EMAIL: "lldap_admin@{{ server_hostname }}"
+      LLDAP_HTTP_URL: "https://{{ lldap_subdomain }}.{{ server_hostname }}"
+      LLDAP_LDAP_PORT: "3890"
+      LLDAP_HTTP_PORT: "17170"
+    ports:
+      - "127.0.0.1:{{ lldap_port }}:17170"
+
+- name: Wait for LLDAP container to be healthy
+  community.docker.docker_container_info:
+    name: lldap
+  register: lldap_info
+  until: lldap_info.container.State.Health.Status == "healthy"
+  retries: 60
+  delay: 2
+  changed_when: false
+
+- name: Include bootstrap tasks
+  ansible.builtin.include_tasks: bootstrap.yml
+
+- name: LLDAP Docker Container without exposed ports except for traefik - prod
+  community.docker.docker_container:
+    name: lldap
+    image: "{{ lldap_image }}"
+    recreate: true
+    restart_policy: unless-stopped
+    volumes:
+      - "{{ lldap_data_directory }}:/data"
+    env:
+      LLDAP_JWT_SECRET: "{{ lldap_jwt_secret }}"
+      LLDAP_KEY_SEED: "{{ lldap_key_seed }}"
+      LLDAP_LDAP_BASE_DN: "{{ lldap_base_dn }}"
+      LLDAP_LDAP_USER_PASS: "{{ admin_userldappassword }}"
+      LLDAP_LDAP_USER_EMAIL: "lldap_admin@{{ server_hostname }}"
+      LLDAP_HTTP_URL: "https://{{ lldap_subdomain }}.{{ server_hostname }}"
+      LLDAP_LDAP_PORT: "3890"
+      LLDAP_HTTP_PORT: "17170"
+    # ports: []
+    networks:
+      - name: "web"
+    memory: "{{ lldap_memory }}"
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "{{ lldap_available_externally }}"
+      traefik.http.routers.lldap.rule: "Host(`{{ lldap_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.lldap.loadbalancer.server.port: "17170"
+      traefik.http.routers.lldap.middlewares: "secure-headers@file"

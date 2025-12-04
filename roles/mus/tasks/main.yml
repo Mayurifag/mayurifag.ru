@@ -1,31 +1,9 @@
 ---
-- name: Check if cookies file exists (on local machine)
-  ansible.builtin.stat:
-    path: "{{ mus_cookies_file }}"
-  register: cookies_file_stat
-  delegate_to: localhost
-  when: mus_cookies_file != ""
-
-- name: Debug cookies file status
-  ansible.builtin.debug:
-    msg:
-      - "Cookies file path: {{ mus_cookies_file }}"
-      - "File exists: {{ cookies_file_stat.stat.exists | default(false) }}"
-  when: mus_cookies_file != ""
-
 - name: Create mus data directory
   ansible.builtin.file:
     path: "{{ docker_home }}/mus"
     state: directory
     mode: "0755"
-  when: mus_cookies_file != "" and cookies_file_stat.stat.exists | default(false)
-
-- name: Copy cookies file to remote server
-  ansible.builtin.copy:
-    src: "{{ mus_cookies_file }}"
-    dest: "{{ docker_home }}/mus/cookies.txt"
-    mode: "0666"
-  when: mus_cookies_file != "" and cookies_file_stat.stat.exists | default(false)
 
 - name: Setup mus Docker Container
   community.docker.docker_container:
@@ -33,9 +11,8 @@
     image: "{{ mus_docker_image }}"
     pull: true
     recreate: true
-    volumes: "{{ mus_base_volumes + (mus_cookies_file != '' and cookies_file_stat.stat.exists | default(false) | ternary([docker_home + '/mus/cookies.txt:/app_data/cookies.txt:rw'], [])) }}"
-    env:
-      SECRET_KEY: "{{ mus_auth_route }}"
+    volumes:
+      - "{{ mus_music_directory }}:/app_data/music:rw"
     restart_policy: unless-stopped
     # security_opts: ["apparmor:unconfined"]
     networks:
@@ -45,9 +22,5 @@
       traefik.enable: "{{ mus_available_externally }}"
       traefik.http.routers.mus.rule: "Host(`{{ mus_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.mus.loadbalancer.server.port: "8000"
-      traefik.http.routers.mus.middlewares: "secure-headers@file"
+      traefik.http.routers.mus.middlewares: "secure-headers@file,tinyauth@docker"
       com.centurylinklabs.watchtower.enable: "true"
-      mus.cookies.deployed: "{{ (mus_cookies_file != '' and cookies_file_stat.stat.exists | default(false)) | string }}"
-  vars:
-    mus_base_volumes:
-      - "{{ mus_music_directory }}:/app_data/music:rw"

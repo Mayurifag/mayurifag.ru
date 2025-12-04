@@ -51,6 +51,11 @@
         - traefik
       when: (traefik_enabled | default(False))
 
+    - role: lldap
+      tags:
+        - lldap
+      when: (lldap_enabled | default(False))
+
     - role: tinyauth
       tags:
         - tinyauth

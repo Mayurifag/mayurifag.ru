@@ -1,0 +1,197 @@
+---
+- name: Authenticate with LLDAP
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ lldap_port }}/auth/simple/login"
+    method: POST
+    body_format: json
+    body:
+      username: "admin"
+      password: "{{ admin_userldappassword }}"
+  register: lldap_auth_response
+
+- name: Set LLDAP Token
+  ansible.builtin.set_fact:
+    lldap_token: "{{ lldap_auth_response.json.token }}"
+
+- name: Get existing groups
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ lldap_port }}/api/graphql"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ lldap_token }}"
+    body_format: json
+    body:
+      query: "{ groups { id displayName } }"
+  register: lldap_groups
+
+- name: Debug existing groups
+  ansible.builtin.debug:
+    msg: "Existing groups: {{ lldap_groups.json.data.groups | map(attribute='displayName') | list }}"
+
+- name: Create required groups
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ lldap_port }}/api/graphql"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ lldap_token }}"
+    body_format: json
+    body:
+      query: "mutation($name: String!) { createGroup(name: $name) { id } }"
+      variables:
+        name: "{{ item }}"
+  loop: "{{ ['lldap_strict_readonly', 'lldap_admin'] | difference(lldap_groups.json.data.groups | map(attribute='displayName') | list) }}"
+
+- name: Get existing users
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ lldap_port }}/api/graphql"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ lldap_token }}"
+    body_format: json
+    body:
+      query: "{ users { id } }"
+  register: lldap_users
+
+- name: Debug existing users
+  ansible.builtin.debug:
+    msg: "Existing users: {{ lldap_users.json.data.users | map(attribute='id') | list }}"
+
+- name: Create Observer User
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ lldap_port }}/api/graphql"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ lldap_token }}"
+    body_format: json
+    body:
+      query: "mutation($user: CreateUserInput!) { createUser(user: $user) { id } }"
+      variables:
+        user:
+          id: "observer"
+          email: "observer@{{ server_hostname }}"
+          displayName: "Observer"
+  when: "'observer' not in lldap_users.json.data.users | map(attribute='id') | list"
+  register: create_observer_user
+  changed_when: true
+  failed_when: create_observer_user.status != 200 or 'errors' in create_observer_user.json
+
+- name: Set Observer User Password
+  ansible.builtin.command:
+    argv:
+      - docker
+      - exec
+      - lldap
+      - /app/lldap_set_password
+      - --base-url
+      - http://localhost:17170
+      - --token
+      - "{{ lldap_token }}"
+      - --username
+      - "observer"
+      - --password
+      - "{{ lldap_observer_user_password }}"
+  no_log: true
+  when: create_observer_user is not skipped
+
+- name: Create Admin User ({{ admin_username }})
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ lldap_port }}/api/graphql"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ lldap_token }}"
+    body_format: json
+    body:
+      query: "mutation($user: CreateUserInput!) { createUser(user: $user) { id } }"
+      variables:
+        user:
+          id: "{{ admin_username }}"
+          email: "{{ admin_email }}"
+          displayName: "{{ admin_username }}"
+  when: "admin_username not in lldap_users.json.data.users | map(attribute='id') | list"
+  register: create_admin_user
+  changed_when: true
+  failed_when: create_admin_user.status != 200 or 'errors' in create_admin_user.json
+
+- name: Set Admin User Password
+  ansible.builtin.command:
+    argv:
+      - docker
+      - exec
+      - lldap
+      - /app/lldap_set_password
+      - --base-url
+      - http://localhost:17170
+      - --token
+      - "{{ lldap_token }}"
+      - --username
+      - "{{ admin_username }}"
+      - --password
+      - "{{ admin_userldappassword }}"
+  no_log: true
+  when: create_admin_user is not skipped
+
+- name: Get user details for group membership
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ lldap_port }}/api/graphql"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ lldap_token }}"
+    body_format: json
+    body:
+      query: "{ users { id groups { displayName } } }"
+  register: lldap_users_details
+
+- name: Verify Admin User Exists
+  ansible.builtin.assert:
+    that:
+      - "admin_username in lldap_users_details.json.data.users | map(attribute='id') | list"
+    fail_msg: "Admin user '{{ admin_username }}' was not found in LLDAP after creation attempt."
+
+- name: Refresh existing groups (to get IDs of newly created ones)
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ lldap_port }}/api/graphql"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ lldap_token }}"
+    body_format: json
+    body:
+      query: "{ groups { id displayName } }"
+  register: lldap_groups_refresh
+
+- name: Add Observer to lldap_strict_readonly
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ lldap_port }}/api/graphql"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ lldap_token }}"
+    body_format: json
+    body:
+      query: "mutation($userId: String!, $groupId: Int!) { addUserToGroup(userId: $userId, groupId: $groupId) { ok } }"
+      variables:
+        userId: "observer"
+        groupId: "{{ lldap_groups_refresh.json.data.groups | selectattr('displayName', 'equalto', 'lldap_strict_readonly') | map(attribute='id') | first | int }}"
+  vars:
+    # Use default to prevent crash if user is missing, though previous tasks should ensure existence
+    observer_user_obj: "{{ lldap_users_details.json.data.users | selectattr('id', 'equalto', 'observer') | first | default({'groups': []}) }}"
+  when:
+    - "'observer' in lldap_users_details.json.data.users | map(attribute='id') | list"
+    - "'lldap_strict_readonly' not in observer_user_obj.groups | map(attribute='displayName') | list"
+
+- name: Add Admin to lldap_admin
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ lldap_port }}/api/graphql"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ lldap_token }}"
+    body_format: json
+    body:
+      query: "mutation($userId: String!, $groupId: Int!) { addUserToGroup(userId: $userId, groupId: $groupId) { ok } }"
+      variables:
+        userId: "{{ admin_username }}"
+        groupId: "{{ lldap_groups_refresh.json.data.groups | selectattr('displayName', 'equalto', 'lldap_admin') | map(attribute='id') | first | int }}"
+  vars:
+    # Use default to prevent crash if user is missing
+    admin_user_obj: "{{ lldap_users_details.json.data.users | selectattr('id', 'equalto', admin_username) | first | default({'groups': []}) }}"
+  when:
+    - "admin_username in lldap_users_details.json.data.users | map(attribute='id') | list"
+    - "'lldap_admin' not in admin_user_obj.groups | map(attribute='displayName') | list"
