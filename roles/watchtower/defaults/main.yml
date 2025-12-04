@@ -5,7 +5,7 @@ watchtower_available_externally: "true"
 watchtower_subdomain: "watchtower"
 watchtower_http_api_token: change_this
 
-watchtower_image: containrrr/watchtower:latest
+watchtower_image: nickfedor/watchtower:latest
 
 # every week
 watchtower_command: --debug --label-enable --http-api-update --http-api-periodic-polls --cleanup --interval 604800

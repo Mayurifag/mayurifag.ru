@@ -79,24 +79,24 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 
 <!-- markdownlint-disable line-length -->
 
-| Name                 | Default endpoint                         | Port(s)   | Autoupdate | Auth |
-| -------------------- | ---------------------------------------- | --------- | ---------- | ---- |
-| 3proxy               | <socks5://mayurifag.local:1080> or 3128  | 1080/3128 | ✅          | app  |
-| 3x-ui                | <http://threexui.mayurifag.local>        | 2053/2096 |            | app  |
-| Blocky               | <http://dns.mayurifag.local> / TLS :853  | 853/4000  |            | -    |
-| Gitea                | <http://git.mayurifag.local>             | 3000/222  |            | app  |
-| Hemmelig             | <http://secret.mayurifag.local>          | 3000      |            | app  |
-| mayurifag.github.io  | <http://mayurifag.local>                 | 8005      | ✅          | ldap |
-| mus                  | <http://mus.mayurifag.local>             | 8000      | ✅          | ldap |
-| lldap                | <http://ldap.mayurifag.local>            | 17170     | ✅          | ✅    |
-| Netdata              | <http://netdata.mayurifag.local>         | 19999     |            |      |
-| Nextcloud            | <http://nextcloud.mayurifag.local>       | 11000     |            |      |
-| Obsidian LiveSync db | <http://couchdbobsidian.mayurifag.local> | 5984      |            |      |
-| Portainer            | <http://portainer.mayurifag.local>       | 9000      | ✅          |      |
-| Traefik dashboard    | <http://traefik.mayurifag.local>         | 8080      |            |      |
-| Tinyauth             | <http://auth.mayurifag.local>            | 3000      | ✅          |
-| Vaultwarden          | <http://pw.mayurifag.local>              | 80        |            |      |
-| Watchtower           | <http://watchtower.mayurifag.local>      | 8080      |            |      |
+| Name                 | Default endpoint                         | Port(s)   | Auth | Watchtower |
+| -------------------- | ---------------------------------------- | --------- | ---- | ---------- |
+| 3proxy               | <socks5://mayurifag.local:1080> or 3128  | 1080/3128 | app  | ✅          |
+| 3x-ui                | <http://threexui.mayurifag.local>        | 2053/2096 | app  |            |
+| Blocky               | <http://dns.mayurifag.local> / TLS :853  | 853/4000  | app  |            |
+| Gitea                | <http://git.mayurifag.local>             | 3000/222  | todo |            |
+| Hemmelig.app         | <http://secret.mayurifag.local>          | 3000      | app  |            |
+| mayurifag.github.io  | <http://mayurifag.local>                 | 8005      | ldap | ✅          |
+| mus                  | <http://mus.mayurifag.local>             | 8000      | ldap | ✅          |
+| lldap                | <http://ldap.mayurifag.local>            | 17170     | ldap | ✅          |
+| Netdata              | <http://netdata.mayurifag.local>         | 19999     | ldap |            |
+| Nextcloud            | <http://nextcloud.mayurifag.local>       | 11000     | todo |            |
+| Obsidian LiveSync db | <http://couchdbobsidian.mayurifag.local> | 5984      | app  |            |
+| Portainer            | <http://portainer.mayurifag.local>       | 9000      | app  | ✅          |
+| Traefik dashboard    | <http://traefik.mayurifag.local>         | 8080      | ldap |            |
+| Tinyauth             | <http://auth.mayurifag.local>            | 3000      | ldap | ✅          |
+| Vaultwarden          | <http://pw.mayurifag.local>              | 80        | app  |            |
+| Watchtower HTTP API  | <http://watchtower.mayurifag.local>      | 8080      | app  | ✅          |
 
 <!-- markdownlint-enable line-length -->
 
@@ -110,10 +110,6 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] LDAP via <https://github.com/lldap/lldap>
-  * [x] Create users through GraphQL scripting on deployment / bootstrap script
-  * [x] Activate in tinyauth
-  * [ ] Activate in apps (i.e. Nextcloud and others)
 * [ ] Portainer - auto add user and env
   * [ ] <https://docs.portainer.io/admin/environments/add/api>
 * [ ] Check 3x-ui/Remnawave - working
