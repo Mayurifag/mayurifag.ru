@@ -15,3 +15,8 @@
       traefik.http.routers.watchtower.rule: "Host(`{{ watchtower_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.watchtower.loadbalancer.server.port: "8080"
       com.centurylinklabs.watchtower.enable: "true"
+
+      homepage.group: "Infrastructure"
+      homepage.name: "Watchtower"
+      homepage.icon: "watchtower.png"
+      homepage.href: "https://{{ watchtower_subdomain }}.{{ server_hostname }}"

@@ -58,3 +58,8 @@
       traefik.http.routers.gitea.rule: "Host(`{{ gitea_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.gitea.loadbalancer.server.port: "3000"
       traefik.http.routers.gitea.middlewares: "secure-headers@file"
+
+      homepage.group: "Development"
+      homepage.name: "Gitea"
+      homepage.icon: "gitea.png"
+      homepage.href: "https://{{ gitea_subdomain }}.{{ server_hostname }}"

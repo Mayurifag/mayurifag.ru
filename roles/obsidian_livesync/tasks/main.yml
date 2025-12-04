@@ -37,6 +37,11 @@
       traefik.http.routers.obsidian_livesync.rule: "Host(`{{ obsidian_livesync_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.obsidian_livesync.loadbalancer.server.port: "5984"
       traefik.http.routers.obsidian_livesync.middlewares: "secure-headers@file"
+
+      homepage.group: "API"
+      homepage.name: "Obsidian LiveSync CouchDB"
+      homepage.icon: "obsidian.png"
+      homepage.href: "https://{{ obsidian_livesync_subdomain }}.{{ server_hostname }}/_utils/"
   notify:
     - Pause for a few seconds to allow CouchDB to initialize
     - Create required CouchDB databases

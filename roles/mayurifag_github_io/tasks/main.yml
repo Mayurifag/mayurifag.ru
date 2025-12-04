@@ -16,3 +16,8 @@
       traefik.http.routers.mayurifag_github_io.middlewares: "secure-headers@file,tinyauth@docker"
       # traefik.http.routers.mayurifag_github_io.middlewares: "secure-headers@file"
       com.centurylinklabs.watchtower.enable: "true"
+
+      homepage.group: "Websites"
+      homepage.name: "Website"
+      homepage.icon: "globe.png"
+      homepage.href: "https://{{ server_hostname }}"

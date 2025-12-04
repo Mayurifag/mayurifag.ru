@@ -42,3 +42,8 @@
       # Middleware definition (Forward Auth)
       traefik.http.middlewares.tinyauth.forwardauth.address: "http://tinyauth:3000/api/auth/traefik"
       traefik.http.middlewares.tinyauth.forwardauth.trustForwardHeader: "true"
+
+      homepage.group: "Infrastructure"
+      homepage.name: "TinyAuth"
+      homepage.icon: "shield.png"
+      homepage.href: "https://{{ tinyauth_subdomain }}.{{ server_hostname }}"

@@ -75,3 +75,8 @@
       traefik.http.routers.lldap.rule: "Host(`{{ lldap_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.lldap.loadbalancer.server.port: "17170"
       traefik.http.routers.lldap.middlewares: "secure-headers@file"
+
+      homepage.group: "Infrastructure"
+      homepage.name: "LLDAP"
+      homepage.icon: "lldap.png"
+      homepage.href: "https://{{ lldap_subdomain }}.{{ server_hostname }}"

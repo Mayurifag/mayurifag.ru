@@ -29,3 +29,8 @@
       traefik.http.routers.hemmelig.rule: "Host(`{{ hemmelig_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.hemmelig.loadbalancer.server.port: "3000"
       traefik.http.routers.hemmelig.middlewares: "secure-headers@file"
+
+      homepage.group: "Services"
+      homepage.name: "Hemmelig"
+      homepage.icon: "lock.png"
+      homepage.href: "https://{{ hemmelig_subdomain }}.{{ server_hostname }}"

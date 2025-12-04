@@ -21,3 +21,8 @@
       traefik.http.routers.vaultwarden.rule: "Host(`{{ vaultwarden_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.vaultwarden.loadbalancer.server.port: "80"
       traefik.http.routers.vaultwarden.middlewares: "secure-headers@file"
+
+      homepage.group: "Services"
+      homepage.name: "Vaultwarden"
+      homepage.icon: "vaultwarden.png"
+      homepage.href: "https://{{ vaultwarden_subdomain }}.{{ server_hostname }}"

@@ -61,6 +61,11 @@
         - tinyauth
       when: (tinyauth_enabled | default(False))
 
+    - role: homepage
+      tags:
+        - homepage
+      when: (homepage_enabled | default(False))
+
     - role: mayurifag_github_io
       tags:
         - mayurifag_github_io

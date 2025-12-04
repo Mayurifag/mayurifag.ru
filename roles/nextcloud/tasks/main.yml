@@ -48,3 +48,8 @@
       traefik.http.routers.ncaio.rule: "Host(`ncaio.{{ server_hostname }}`)"
       traefik.http.services.ncaio.loadbalancer.server.port: "28888"
       traefik.http.routers.ncaio.middlewares: "tinyauth@docker,secure-headers@file"
+
+      # homepage.group: "Services"
+      # homepage.name: "Nextcloud"
+      # homepage.icon: "nextcloud.png"
+      # homepage.href: "https://{{ nextcloud_subdomain }}.{{ server_hostname }}"

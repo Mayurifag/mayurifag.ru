@@ -68,3 +68,9 @@
       traefik.http.services.blocky.loadbalancer.server.port: "4000"
       traefik.frontend.rule: "HostRegexp:{catchall:.*}"
       traefik.frontend.priority: "1"
+
+      homepage.group: "API"
+      homepage.name: "Blocky"
+      homepage.icon: "blocky.png"
+      homepage.href: "https://{{ blocky_subdomain }}.{{ server_hostname }}"
+      homepage.description: "DNS-over-HTTPS with adblocking"

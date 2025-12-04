@@ -88,6 +88,12 @@
       traefik.http.services.traefik.loadbalancer.server.port: "8080"
       traefik.http.routers.traefik.service: "api@internal"
       traefik.http.routers.traefik.middlewares: "crowdsec@file,tinyauth@docker,secure-headers@file"
+
+      # Homepage
+      homepage.group: "Infrastructure"
+      homepage.name: "Traefik"
+      homepage.icon: "traefik.png"
+      homepage.href: "https://{{ traefik_subdomain }}.{{ server_hostname }}/dashboard/"
     networks:
       - name: "web"
       - name: "nextcloud-aio"

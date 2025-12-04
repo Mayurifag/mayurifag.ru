@@ -84,6 +84,9 @@ portainer_subdomain: "portainer"
 traefik_enabled: true
 traefik_subdomain: "traefik"
 
+homepage_enabled: true
+homepage_subdomain: "home"
+
 hemmelig_enabled: true
 hemmelig_subdomain: "secret"
 

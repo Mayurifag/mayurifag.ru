@@ -8,8 +8,7 @@
 
 * DNS `A` records for your TLD and wildcard (`*`)
 * Debian 12+
-* (optionally) Check that VPS provider has open ports for apps you use
-* (optionally) Check that you have correct storage setup
+* Open ports on server provider' side
 
 ### Mac/PC
 
@@ -38,13 +37,12 @@ ansible-galaxy install -r requirements.yml
 #### TL;DR
 
 ```sh
-# Tag by tag, and there is make deploy-prod available to deploy all-in-once
 make deploy-tag "traefik,mus"
 ```
 
 #### Optional steps
 
-* Generate new ssh key and add it to your inventory vars file
+* Generate new ssh key and add it to inventory vars file and password manager
 
 ```sh
 ssh-keygen -t ed25519 -C "Mayurifag@mayurifag.ru" -f ~/Desktop/mayurifag.ru
@@ -53,7 +51,7 @@ vi inventories/my-provision/group_vars/sample.yml # add key here in section
 keepassxc # Make new ssh agent entry if you use keepassxc ssh agent
 ```
 
-* Make new ssh config section. You need to change it after deploy.
+* Make new ssh config section for convenience
 
 ```sh
 vi ~/.ssh/config
@@ -87,6 +85,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | Blocky               | <http://dns.mayurifag.local> / TLS :853  | 853/4000  | app  |            |
 | Gitea                | <http://git.mayurifag.local>             | 3000/222  | todo |            |
 | Hemmelig.app         | <http://secret.mayurifag.local>          | 3000      | app  |            |
+| Homepage.dev         | <http://home.mayurifag.local>            | 3000      | ldap | ✅          |
 | mayurifag.github.io  | <http://mayurifag.local>                 | 8005      | ldap | ✅          |
 | mus                  | <http://mus.mayurifag.local>             | 8000      | ldap | ✅          |
 | lldap                | <http://ldap.mayurifag.local>            | 17170     | ldap | ✅          |
@@ -116,10 +115,7 @@ need to deploy my services once again.
 * [ ] (wait) Next deploy of 3x-ui
   * [ ] Make tinyauth defence and change keepassxc entry
   * [ ] Edit POST_INSTALL info with real information on adding inbound+client+qr
-* [ ] Get <https://gethomepage.dev>
-  * [ ] Make a service
-  * [ ] Make labels on all services I have
-* [ ] Blocky POST_INSTALL - DNS over encrypted things
+  * [ ] Information about client apps (win/linux/macos/android/ios)
 * [ ] OCIS - POSIX fs
 
 ### Non priority for now
@@ -137,21 +133,30 @@ need to deploy my services once again.
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
   * [ ] <https://github.com/we-promise/sure>
+  * [ ] Is it possible to have data in nextcloud?
+* [ ] Status page for services
+  * [ ] Has to be free and allow deploy from ansible via API
+
+### Thinking if I need it / probably wont do ideas / notes
+
+* [ ] Traefik
+  * [ ] tracing/observability tests with my apps
+  * [ ] No AI Bots Middleware with robots.txt - plugin install
+* [ ] Watchtowerrr
+  * [ ] use config.json for auth to dockerhub to prevent limits
+  * [ ] use metrics for homepage <https://gethomepage.dev/widgets/services/watchtower/>
+* [ ] <https://github.com/binwiederhier/ntfy>
+* [ ] docker image of mayurifag.github.io has to be in ghcr
 * [ ] VPS security
   * [ ] <https://madaidans-insecurities.github.io/guides/linux-hardening.html>
   * [ ] (wait for update) <https://github.com/docker/docker-bench-security>
   * [ ] (not sure) <https://github.com/quay/clair>
   * [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
-* [ ] Status page on some free service
-* [ ] <https://github.com/binwiederhier/ntfy>
-* [ ] docker image of mayurifag.github.io has to be in ghcr
-* [ ] watchtowerrr - use config.json for auth to dockerhub to prevent limits
-* [ ] traefik observability tests
-
-## Based on / inspired / helpful
-
-* <https://github.com/davestephens/ansible-nas>
-* <https://davidstephens.uk/ansible-nas/testing>
-* <https://www.smarthomebeginner.com/traefik-2-docker-tutorial>
-* <https://www.smarthomebeginner.com/cloudflare-settings-for-traefik-docker>
-* <https://www.reddit.com/r/selfhosted/>
+* [ ] DNS and Blocky changes
+  * [ ] Leave only DNS-over-HTTPS (plain DNS might be used in DDOS, DoT useless)
+  * [ ] Revisit all blocklists
+  * [ ] POST_INSTALL DNS over HTTPS setup on clients
+  * [ ] <https://www.youtube.com/watch?v=UjqZPLL0UvM>
+* [ ] Homepage.dev ideas
+  * [ ] Stocks SPY/QQQ - requires finnhub api key
+  * [ ] World clock? moscow time

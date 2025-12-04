@@ -1,11 +1,10 @@
 ---
-- name: Remove 3x-ui Directories
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    - "{{ threexui_data_directory }}/db"
-    # - "{{ threexui_data_directory }}/cert"
+# - name: Remove 3x-ui Directories
+#   ansible.builtin.file:
+#     path: "{{ item }}"
+#     state: absent
+#   with_items:
+#     - "{{ threexui_data_directory }}/db"
 
 - name: Create 3x-ui Directories
   ansible.builtin.file:
@@ -51,3 +50,9 @@
       traefik.tcp.routers.threexui-reality.tls.passthrough: "true"
       traefik.tcp.routers.threexui-reality.service: "threexui-reality"
       traefik.tcp.services.threexui-reality.loadbalancer.server.port: "443"
+
+      homepage.group: "Networking"
+      homepage.name: "3x-ui"
+      homepage.description: "Also subscriptions on {{ threexui_subscription_subdomain }}.{{ server_hostname }}"
+      homepage.icon: "v2ray.png"
+      homepage.href: "https://{{ threexui_panel_subdomain }}.{{ server_hostname }}"

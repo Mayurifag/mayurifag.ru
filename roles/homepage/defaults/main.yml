@@ -1,0 +1,9 @@
+---
+homepage_enabled: true
+homepage_available_externally: "true"
+
+homepage_subdomain: "home"
+homepage_image: "ghcr.io/gethomepage/homepage:latest"
+
+homepage_data_directory: "{{ docker_home }}/homepage"
+homepage_config_directory: "{{ homepage_data_directory }}/config"

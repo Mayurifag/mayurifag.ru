@@ -1,0 +1,105 @@
+---
+- name: Create Homepage directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  with_items:
+    - "{{ homepage_data_directory }}"
+    - "{{ homepage_config_directory }}"
+
+- name: Create Homepage settings.yaml
+  ansible.builtin.copy:
+    dest: "{{ homepage_config_directory }}/settings.yaml"
+    content: |
+      ---
+      title: "{{ server_hostname }}"
+      theme: dark
+      color: slate
+      disableUpdateCheck: true
+      # layout:
+      #   Infrastructure:
+      #     style: row
+      #     columns: 3
+      #   Networking:
+      #     style: row
+      #     columns: 3
+      #   Services:
+      #     style: row
+      #     columns: 3
+      #   Media:
+      #     style: row
+      #     columns: 3
+      #   Development:
+      #     style: row
+      #     columns: 3
+      #   Monitoring:
+      #     style: row
+      #     columns: 3
+      #   Websites:
+      #     style: row
+      #     columns: 3
+    mode: "0644"
+
+- name: Create Homepage docker.yaml
+  ansible.builtin.copy:
+    dest: "{{ homepage_config_directory }}/docker.yaml"
+    content: |
+      ---
+      my-docker:
+        socket: /var/run/docker.sock
+    mode: "0644"
+
+- name: Create Homepage services.yaml
+  ansible.builtin.copy:
+    dest: "{{ homepage_config_directory }}/services.yaml"
+    content: |
+      ---
+      # Services are discovered via Docker labels
+    mode: "0644"
+
+- name: Create Homepage widgets.yaml
+  ansible.builtin.copy:
+    dest: "{{ homepage_config_directory }}/widgets.yaml"
+    content: |
+      ---
+      - resources:
+          cpu: true
+          memory: true
+          disk: /
+      - search:
+          provider: google
+          target: _blank
+          focus: true
+          showSearchSuggestions: true
+    mode: "0644"
+
+- name: Create Homepage bookmarks.yaml
+  ansible.builtin.copy:
+    dest: "{{ homepage_config_directory }}/bookmarks.yaml"
+    content: |
+      ---
+      []
+    mode: "0644"
+
+- name: Homepage Docker Container
+  community.docker.docker_container:
+    name: homepage
+    image: "{{ homepage_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    volumes:
+      - "{{ homepage_config_directory }}:/app/config"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    env:
+      HOMEPAGE_ALLOWED_HOSTS: "{{ homepage_subdomain }}.{{ server_hostname }}"
+      LOG_TARGETS: "stdout"
+    networks:
+      - name: "web"
+    labels:
+      traefik.enable: "{{ homepage_available_externally }}"
+      traefik.http.routers.homepage.rule: "Host(`{{ homepage_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.homepage.loadbalancer.server.port: "3000"
+      traefik.http.routers.homepage.middlewares: "tinyauth@docker,secure-headers@file"
+      com.centurylinklabs.watchtower.enable: "true"
