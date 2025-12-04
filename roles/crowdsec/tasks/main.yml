@@ -46,17 +46,13 @@
     pull: true
     recreate: true
     restart_policy: unless-stopped
-    memory: "{{ crowdsec_memory }}"
     networks:
       - name: "web"
-    dns_servers:
-      - "1.1.1.1"
-      - "8.8.8.8"
     volumes:
       - "{{ crowdsec_data_directory }}:/var/lib/crowdsec/data"
       - "{{ crowdsec_config_directory }}:/etc/crowdsec"
       - "/var/log/auth.log:/var/log/auth.log:ro"
-      - "{{ crowdsec_traefik_logs_directory }}:/var/log/traefik:ro"
+      - "{{ traefik_logs_directory }}:/var/log/traefik:ro"
     env:
       COLLECTIONS: "{{ crowdsec_collections | join(' ') }}"
       GID: "{{ ansible_facts.getent_passwd[admin_username][2] }}"
@@ -72,6 +68,9 @@
   delay: 2
   changed_when: false
 
+# because of this config crowdsec provision has to be deployed with traefik now
+# I should never delete this bouncer, only if dynamic config in traefik doesnt exist
+# or create dynamic config for traefik here on this role
 - name: Create Traefik Bouncer
   ansible.builtin.shell: |
     docker exec crowdsec cscli bouncers delete traefik-bouncer || true
