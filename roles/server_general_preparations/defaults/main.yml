@@ -58,6 +58,9 @@ sysctl_values:
   - { key: net.core.default_qdisc, value: fq }
   - { key: net.ipv4.tcp_congestion_control, value: bbr }
 
+  # fix crowdsec container dns resolution
+  - { key: net.ipv4.ip_forward, value: 1 }
+
 mayurifag_general_extra_packages:
   - apt-transport-https
   - aptitude
@@ -69,6 +72,7 @@ mayurifag_general_extra_packages:
   - htop
   - linux-headers-generic
   - linux-image-generic
+  - logrotate
   - mc
   - mosh
   - ncdu

@@ -4,10 +4,8 @@ crowdsec_enabled: true
 crowdsec_directory: "{{ docker_home }}/crowdsec"
 crowdsec_data_directory: "{{ crowdsec_directory }}/data"
 crowdsec_config_directory: "{{ crowdsec_directory }}/config"
-crowdsec_traefik_logs_directory: "{{ docker_home }}/traefik/logs"
 
 crowdsec_image: crowdsecurity/crowdsec:latest
-crowdsec_memory: 512m
 
 # Ban duration (1 week)
 crowdsec_ban_duration: "168h"

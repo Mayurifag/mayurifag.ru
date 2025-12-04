@@ -108,24 +108,29 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] Crowdsec
-  * [ ] check things are working (metrics)
-  * [ ] Add readme section about cloud dashboard and connection
 * [ ] LDAP via <https://github.com/lldap/lldap>
   * [ ] Create users through GraphQL scripting on deployment / bootstrap script
   * [ ] Activate in tinyauth
   * [ ] Activate in apps (i.e. Nextcloud and others)
 * [ ] Portainer - auto add user and env
   * [ ] <https://docs.portainer.io/admin/environments/add/api>
-* [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker> - each role
 * [ ] Check 3x-ui/Remnawave - working
+* [ ] Migrate <https://gethomepage.dev>
+  * [ ] Make a service
+  * [ ] Make labels on all services I have
+* [ ] Blocky readme - DNS over encrypted things
 * [ ] OCIS - POSIX fs
 
 ### Non priority for now
 
-* [ ] Migrate <https://gethomepage.dev>
-  * [ ] Make a service
-  * [ ] Make labels on all services I have
+* [ ] Refactor dynamic configs for traefik - some are static, some need to be
+  moved to the services themself
+  * [ ] Crowdsec will be after traefik
+* [ ] Crowdsec webui dashboard and readme section about that
+* [ ] Firewall
+  * [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker> - each role
+  * [ ] Crowdsec iptables firewall
+    * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
   * [ ] <https://github.com/we-promise/sure>

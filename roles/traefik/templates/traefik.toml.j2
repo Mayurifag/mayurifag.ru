@@ -28,7 +28,7 @@ defaultEntryPoints = ["web", "websecure"]
   level = "{{ traefik_log_level }}"
 [accessLog]
   filePath = "/var/log/traefik/access.log"
-  bufferingSize = 100
+  bufferingSize = 10
 [global]
   sendAnonymousUsage = false
 [api]

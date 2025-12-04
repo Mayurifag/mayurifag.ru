@@ -1,11 +1,12 @@
 ---
-- name: Remove Traefik Config Directory
+- name: Remove Traefik Config Directory and logs
   ansible.builtin.file:
     path: "{{ item }}"
     state: absent
   with_items:
     - "{{ traefik_data_directory }}/dynamic_configs"
     # - "{{ traefik_data_directory }}/letsencrypt"
+    - "{{ traefik_logs_directory }}"
 
 - name: Create Traefik Directories
   ansible.builtin.file:
@@ -90,3 +91,39 @@
     networks:
       - name: "web"
       - name: "nextcloud-aio"
+
+- name: Ensure logrotate is installed
+  ansible.builtin.apt:
+    name: logrotate
+    state: present
+
+- name: Configure Traefik log rotation
+  ansible.builtin.copy:
+    dest: /etc/logrotate.d/traefik
+    content: |
+      {{ traefik_logs_directory }}/*.log
+      {
+        daily
+        rotate 7
+        missingok
+        notifempty
+        compress
+        delaycompress
+        postrotate
+          docker kill --signal="USR1" traefik
+        endscript
+      }
+    mode: "0644"
+
+- name: Check if CrowdSec container exists
+  community.docker.docker_container_info:
+    name: crowdsec
+  register: crowdsec_info
+
+- name: Restart CrowdSec to ensure logs are mounted correctly
+  community.docker.docker_container:
+    name: crowdsec
+    restart: yes
+    state: started
+  when:
+    - crowdsec_info.exists
