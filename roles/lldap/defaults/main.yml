@@ -1,0 +1,10 @@
+---
+lldap_enabled: true
+lldap_available_externally: "true"
+
+lldap_subdomain: "ldap"
+lldap_data_directory: "{{ docker_home }}/lldap"
+lldap_port: 17170
+
+lldap_image: lldap/lldap:latest
+lldap_memory: 512m

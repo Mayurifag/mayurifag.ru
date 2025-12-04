@@ -4,9 +4,13 @@
 ##
 admin_username: change_this
 admin_userpassword: change_this
+admin_userldappassword: change_this
 admin_email: change_this@gmail.com
 
 root_userpassword: change_this
+
+lldap_base_dn: "dc=mayurifag,dc=local"
+lldap_observer_user_password: "change_this_observer_password"
 
 # change this
 admin_authorized_keys: ""
@@ -70,7 +74,6 @@ blocky_enabled: true
 mus_enabled: true
 mus_subdomain: "mus"
 mus_music_directory: "/home/{{ admin_username }}/music_folder/"
-mus_auth_route: change_this
 
 vaultwarden_enabled: true
 vaultwarden_subdomain: "pw"
@@ -103,5 +106,8 @@ obsidian_livesync_couchdb_database: "obsidian"
 
 tinyauth_enabled: true
 tinyauth_subdomain: "auth"
-# Default user: test / test
-tinyauth_users: "test:$$2a$$10$$EuSvtUG9rKOOiBdb8aHQUOyBvAseOhLQxnyIgYqK8td/ileY4iH9u"
+
+lldap_enabled: true
+lldap_subdomain: "ldap"
+lldap_jwt_secret: "change_this_random_string_min_32_chars"
+lldap_key_seed: "change_this_random_string_min_32_chars"

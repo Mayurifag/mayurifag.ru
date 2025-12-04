@@ -20,13 +20,19 @@
       - "{{ tinyauth_data_directory }}:/data"
     env:
       APP_URL: "https://{{ tinyauth_subdomain }}.{{ server_hostname }}"
-      USERS: "{{ tinyauth_users }}"
       DISABLE_ANALYTICS: "true"
+      LDAP_ADDRESS: ldap://lldap:3890
+      LDAP_BIND_DN: "uid=observer,ou=people,{{ lldap_base_dn }}"
+      LDAP_BIND_PASSWORD: "{{ lldap_observer_user_password }}"
+      LDAP_BASE_DN: "{{ lldap_base_dn }}"
+      LDAP_SEARCH_FILTER: (uid=%s)
+      LDAP_INSECURE: "true"
     restart_policy: unless-stopped
     memory: "{{ tinyauth_memory }}"
     networks:
       - name: "web"
     labels:
+      com.centurylinklabs.watchtower.enable: "true"
       traefik.enable: "true"
       # Router for the Login UI
       traefik.http.routers.tinyauth.rule: "Host(`{{ tinyauth_subdomain }}.{{ server_hostname }}`)"
@@ -36,4 +42,3 @@
       # Middleware definition (Forward Auth)
       traefik.http.middlewares.tinyauth.forwardauth.address: "http://tinyauth:3000/api/auth/traefik"
       traefik.http.middlewares.tinyauth.forwardauth.trustForwardHeader: "true"
-      # traefik.http.middlewares.tinyauth.forwardauth.authResponseHeaders: "X-Tinyauth-User,X-Tinyauth-Group"

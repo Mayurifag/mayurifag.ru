@@ -5,10 +5,5 @@ mus_available_externally: "true"
 mus_docker_image: ghcr.io/mayurifag/mus:latest
 mus_subdomain: "mus"
 mus_music_directory: "/home/{{ admin_username }}/music_folder/"
-mus_auth_route: change_this
-
-# Optional cookies file - will be automatically detected and mounted read-only if it exists
-# Default location: inventories/my-provision/private/cookies.txt
-mus_cookies_file: "{{ playbook_dir }}/inventories/my-provision/private/cookies.txt"
 
 mus_memory: 1g
