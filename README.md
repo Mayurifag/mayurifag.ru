@@ -110,9 +110,7 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] Portainer - auto add user and env
-  * [ ] <https://docs.portainer.io/admin/environments/add/api>
-* [ ] Check 3x-ui/Remnawave - working
+* [ ] Check 3x-ui/Remnawave - try to connect
 * [ ] Migrate <https://gethomepage.dev>
   * [ ] Make a service
   * [ ] Make labels on all services I have
@@ -126,7 +124,9 @@ need to deploy my services once again.
   * [ ] Crowdsec will be after traefik
 * [ ] Crowdsec webui dashboard and readme section about that
 * [ ] Firewall
-  * [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker> - each role
+  * [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker>
+  * [ ] Block everything except ssh. Check ufw status and allowances
+  * [ ] open port if needed in each ansible role
   * [ ] Crowdsec iptables firewall
     * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
 * [ ] maybe finance app - deprecated, so research alternatives.
