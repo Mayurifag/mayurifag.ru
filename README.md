@@ -121,12 +121,13 @@ need to deploy my services once again.
   moved to the services themself
   * [ ] Crowdsec will be after traefik
 * [ ] Crowdsec web-ui dashboard and readme section about that
+  * [ ] see if there is solution to unban false positive and if not, add smth
 * [ ] Firewall
   * [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker>
   * [ ] Block everything except ssh. Check ufw status and allowances
   * [ ] open port if needed in each ansible role
   * [ ] Crowdsec iptables firewall
-    * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
+  * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
   * [ ] <https://github.com/we-promise/sure>

@@ -1,10 +1,4 @@
 ---
-- name: Create mus data directory
-  ansible.builtin.file:
-    path: "{{ docker_home }}/mus"
-    state: directory
-    mode: "0755"
-
 - name: Setup mus Docker Container
   community.docker.docker_container:
     name: mus

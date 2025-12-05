@@ -1,0 +1,6 @@
+name: custom-whitelist/opencloud-whitelist
+description: "Whitelist events related to Opencloud server"
+whitelist:
+  reason: "Opencloud Whitelist for WebDAV"
+  expression:
+    - evt.Parsed.request contains '/dav/spaces/'

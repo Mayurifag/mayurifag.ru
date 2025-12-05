@@ -19,6 +19,7 @@
   with_items:
     - "{{ crowdsec_data_directory }}"
     - "{{ crowdsec_config_directory }}"
+    - "{{ crowdsec_config_directory }}/parsers/s02-enrich"
 
 - name: Create acquisition config
   ansible.builtin.template:
@@ -30,6 +31,12 @@
   ansible.builtin.template:
     src: profiles.yaml.j2
     dest: "{{ crowdsec_config_directory }}/profiles.yaml"
+    mode: "0644"
+
+- name: Create Whitelist configuration
+  ansible.builtin.template:
+    src: whitelist.yaml.j2
+    dest: "{{ crowdsec_config_directory }}/parsers/s02-enrich/whitelist.yaml"
     mode: "0644"
 
 - name: Ensure auth.log exists
