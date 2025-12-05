@@ -37,6 +37,11 @@ ansible_python_interpreter: /usr/bin/python3
 docker_home: /home/{{ admin_username }}/docker_data
 files_home: /home/{{ admin_username }}/Files
 
+# Traefik Directories (Shared with CrowdSec)
+traefik_data_directory: "{{ docker_home }}/traefik"
+traefik_logs_directory: "{{ traefik_data_directory }}/logs"
+traefik_dynamic_configs_directory: "{{ traefik_data_directory }}/dynamic_configs"
+
 ##
 ## Galaxy extensions
 ##

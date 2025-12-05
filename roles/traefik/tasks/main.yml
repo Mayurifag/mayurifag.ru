@@ -1,10 +1,10 @@
 ---
-- name: Remove Traefik Config Directory and logs
+- name: Remove Traefik logs and probably other directories
   ansible.builtin.file:
     path: "{{ item }}"
     state: absent
   with_items:
-    - "{{ traefik_data_directory }}/dynamic_configs"
+    # - "{{ traefik_dynamic_configs_directory }}"
     # - "{{ traefik_data_directory }}/letsencrypt"
     - "{{ traefik_logs_directory }}"
 
@@ -13,7 +13,7 @@
     path: "{{ item }}"
     state: directory
   with_items:
-    - "{{ traefik_data_directory }}/dynamic_configs"
+    - "{{ traefik_dynamic_configs_directory }}"
     - "{{ traefik_data_directory }}/letsencrypt"
     - "{{ traefik_logs_directory }}"
 
@@ -23,32 +23,10 @@
     dest: "{{ traefik_data_directory }}/traefik.toml"
   register: template_config
 
-- name: Check for CrowdSec Bouncer Key file
-  ansible.builtin.stat:
-    path: "/tmp/crowdsec_traefik_bouncer.key"
-  register: crowdsec_key_file
-
-- name: Read CrowdSec Bouncer Key
-  ansible.builtin.slurp:
-    src: "/tmp/crowdsec_traefik_bouncer.key"
-  register: crowdsec_key_content
-  when: crowdsec_key_file.stat.exists
-
-- name: Remove CrowdSec Bouncer Key file
-  ansible.builtin.file:
-    path: "/tmp/crowdsec_traefik_bouncer.key"
-    state: absent
-  when: crowdsec_key_file.stat.exists
-
-- name: Set CrowdSec API Key fact
-  ansible.builtin.set_fact:
-    crowdsec_api_key: "{{ crowdsec_key_content['content'] | b64decode | trim }}"
-  when: crowdsec_key_file.stat.exists
-
 - name: Create Traefik dynamic configuration files
   ansible.builtin.template:
     src: "{{ item.src }}"
-    dest: "{{ traefik_data_directory }}/dynamic_configs/{{ item.path | regex_replace('\\.j2$', '') }}"
+    dest: "{{ traefik_dynamic_configs_directory }}/{{ item.path | regex_replace('\\.j2$', '') }}"
     force: yes
   loop: "{{ query('filetree', '../templates/dynamic_configs') }}"
   when: item.state == 'file'
@@ -72,7 +50,7 @@
       - "443:443"
     volumes:
       - "{{ traefik_data_directory }}/traefik.toml:/etc/traefik/traefik.toml:ro"
-      - "{{ traefik_data_directory }}/dynamic_configs:/etc/traefik/dynamic_configs:ro"
+      - "{{ traefik_dynamic_configs_directory }}:/etc/traefik/dynamic_configs:ro"
       - "{{ traefik_data_directory }}/letsencrypt:/letsencrypt:rw"
       - "{{ traefik_logs_directory }}:/var/log/traefik:rw"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"

@@ -41,15 +41,15 @@
         - lazydocker
       when: (lazydocker_enabled | default(False))
 
-    - role: crowdsec
-      tags:
-        - crowdsec
-      when: (crowdsec_enabled | default(False))
-
     - role: traefik
       tags:
         - traefik
       when: (traefik_enabled | default(False))
+
+    - role: crowdsec
+      tags:
+        - crowdsec
+      when: (crowdsec_enabled | default(False))
 
     - role: lldap
       tags:

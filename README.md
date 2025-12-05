@@ -117,16 +117,13 @@ need to deploy my services once again.
   * [ ] Make tinyauth defence and change keepassxc entry
   * [ ] Edit POST_INSTALL info with real information on adding inbound+client+qr
   * [ ] Information about client apps (win/linux/macos/android/ios)
-* [ ] Refactor dynamic configs for traefik - some are static, some need to be
-  moved to the services themself
-  * [ ] Crowdsec will be after traefik
 * [ ] Crowdsec web-ui dashboard and readme section about that
   * [ ] see if there is solution to unban false positive and if not, add smth
 * [ ] Firewall
   * [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker>
   * [ ] Block everything except ssh. Check ufw status and allowances
   * [ ] open port if needed in each ansible role
-  * [ ] Crowdsec iptables firewall
+  * [ ] Crowdsec iptables firewall - remediation component.
   * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
