@@ -62,12 +62,10 @@
       - "853:853"
     labels:
       traefik.enable: "{{ blocky_available_externally }}"
-      traefik.tcp.routers.blocky-dns.rule: "HostSNI(`{{ server_hostname }}`)"
-      traefik.tcp.routers.blocky-dns.tls.options: "dot@file"
       traefik.http.routers.blocky.rule: "Host(`{{ blocky_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.blocky.loadbalancer.server.port: "4000"
-      traefik.frontend.rule: "HostRegexp:{catchall:.*}"
-      traefik.frontend.priority: "1"
+      # traefik.frontend.rule: "HostRegexp:{catchall:.*}"
+      # traefik.frontend.priority: "1"
 
       homepage.group: "API"
       homepage.name: "Blocky"
