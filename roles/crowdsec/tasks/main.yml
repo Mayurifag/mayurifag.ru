@@ -94,3 +94,46 @@
     minute: "0"
     hour: "*/3"
     job: "docker exec crowdsec cscli hub update && docker exec crowdsec cscli hub upgrade"
+
+- name: Check CrowdSec enrollment status
+  ansible.builtin.command: docker exec crowdsec cscli console status
+  register: crowdsec_enroll_status
+  changed_when: false
+  failed_when: false
+  when:
+    - crowdsec_enroll_key is defined
+    - crowdsec_enroll_key != "change_me"
+    - crowdsec_enroll_key | length > 0
+
+- name: Enroll CrowdSec in Console
+  block:
+    - name: Register CAPI credentials
+      ansible.builtin.command: docker exec crowdsec cscli capi register
+      changed_when: true
+
+    - name: Enroll using provided key
+      ansible.builtin.command: >
+        docker exec crowdsec cscli console enroll {{ crowdsec_enroll_key }}
+        --name "{{ crowdsec_instance_name | default(server_hostname) }}"
+      changed_when: true
+
+    - name: Restart CrowdSec container after enrollment
+      community.docker.docker_container:
+        name: crowdsec
+        restart: yes
+        state: started
+
+    - name: Wait for CrowdSec LAPI to be ready (after restart)
+      ansible.builtin.command: docker exec crowdsec cscli lapi status
+      register: crowdsec_lapi_status_after_enroll
+      until: crowdsec_lapi_status_after_enroll.rc == 0
+      retries: 30
+      delay: 2
+      changed_when: false
+
+  when:
+    - crowdsec_enroll_key is defined
+    - crowdsec_enroll_key != "change_me"
+    - crowdsec_enroll_key | length > 0
+    - crowdsec_enroll_status is not skipped
+    - "'Enrolled: true' not in crowdsec_enroll_status.stdout"

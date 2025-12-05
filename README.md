@@ -117,14 +117,13 @@ need to deploy my services once again.
   * [ ] Make tinyauth defence and change keepassxc entry
   * [ ] Edit POST_INSTALL info with real information on adding inbound+client+qr
   * [ ] Information about client apps (win/linux/macos/android/ios)
-* [ ] Crowdsec web-ui dashboard and readme section about that
-  * [ ] see if there is solution to unban false positive and if not, add smth
 * [ ] Firewall
   * [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker>
   * [ ] Block everything except ssh. Check ufw status and allowances
   * [ ] open port if needed in each ansible role
   * [ ] Crowdsec iptables firewall - remediation component.
   * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
+  * [ ] see if there is solution to unban false positive and if not, add smth
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
   * [ ] <https://github.com/we-promise/sure>
@@ -144,6 +143,7 @@ need to deploy my services once again.
 * [ ] <https://github.com/binwiederhier/ntfy>
 * [ ] docker image of mayurifag.github.io has to be in ghcr
 * [ ] VPS security
+  * [ ] Kernel params to have less /var/log/syslog noise - add to crowdsec btw
   * [ ] <https://madaidans-insecurities.github.io/guides/linux-hardening.html>
   * [ ] (wait for update) <https://github.com/docker/docker-bench-security>
   * [ ] (not sure) <https://github.com/quay/clair>
@@ -158,6 +158,7 @@ need to deploy my services once again.
 * [ ] Homepage.dev ideas
   * [ ] Stocks SPY/QQQ - requires finnhub api key
   * [ ] World clock? moscow time
+  * [ ] For crowdsec - link to <https://app.crowdsec.net/>
 * [ ] url shorten <https://github.com/anhostfr/nah.pet>
 * [ ] Email 💩
   * [ ] Parsedmarc
