@@ -3,6 +3,6 @@ bentopdf_enabled: true
 bentopdf_available_externally: "true"
 
 bentopdf_subdomain: "pdf"
-bentopdf_image: "ghcr.io/alam00000/bentopdf:latest"
+bentopdf_image: "bentopdf/bentopdf-simple:latest"
 
 bentopdf_memory: "1g"
