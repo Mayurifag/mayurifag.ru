@@ -106,6 +106,12 @@
     - crowdsec_enroll_key | length > 0
 
 - name: Enroll CrowdSec in Console
+  when:
+    - crowdsec_enroll_key is defined
+    - crowdsec_enroll_key != "change_me"
+    - crowdsec_enroll_key | length > 0
+    - crowdsec_enroll_status is not skipped
+    - "'Enrolled: true' not in crowdsec_enroll_status.stdout"
   block:
     - name: Register CAPI credentials
       ansible.builtin.command: docker exec crowdsec cscli capi register
@@ -130,10 +136,3 @@
       retries: 30
       delay: 2
       changed_when: false
-
-  when:
-    - crowdsec_enroll_key is defined
-    - crowdsec_enroll_key != "change_me"
-    - crowdsec_enroll_key | length > 0
-    - crowdsec_enroll_status is not skipped
-    - "'Enrolled: true' not in crowdsec_enroll_status.stdout"
