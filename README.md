@@ -22,7 +22,7 @@
 
 ### Initial setup
 
-```sh
+~~~sh
 git clone https://github.com/Mayurifag/mayurifag.ru.git
 cd mayurifag.ru
 cp -rfp inventories/sample inventories/my-provision
@@ -30,30 +30,30 @@ cp -rfp inventories/sample inventories/my-provision
 # or ln from some place like that:
 # ln -s ~/Nextcloud/Software/dotfiles/my-provision inventories/my-provision
 ansible-galaxy install -r requirements.yml
-```
+~~~
 
 ### Production deployment
 
 #### TL;DR
 
-```sh
+~~~sh
 make deploy-tag "traefik,mus"
-```
+~~~
 
 #### Optional steps
 
 * Generate new ssh key and add it to inventory vars file and password manager
 
-```sh
+~~~sh
 ssh-keygen -t ed25519 -C "Mayurifag@mayurifag.ru" -f ~/Desktop/mayurifag.ru
 xclip -sel clip < ~/Desktop/mayurifag.ru.pub
 vi inventories/my-provision/group_vars/sample.yml # add key here in section
 keepassxc # Make new ssh agent entry if you use keepassxc ssh agent
-```
+~~~
 
 * Make new ssh config section for convenience
 
-```sh
+~~~sh
 vi ~/.ssh/config
 
 # ~/.ssh/config
@@ -69,7 +69,7 @@ Host *
 Host mayurifag-prod
     HostName mayurifag.ru
     User root # Change user
-```
+~~~
 
 ## Applications List
 
@@ -82,6 +82,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | 3proxy               | <socks5://mayurifag.local:1080> or 3128  | 1080/3128 | app  | ✅          |
 | 3x-ui panel          | <http://3x.mayurifag.local>              | 2053      | app  |            |
 | 3x-ui subscriptions  | <http://3xsub.mayurifag.local>           | 2096      | app  |            |
+| BentoPDF             | <http://pdf.mayurifag.local>             | 8080      | ldap | ✅          |
 | Blocky               | <http://dns.mayurifag.local> / TLS :853  | 853/4000  | app  |            |
 | Gitea                | <http://git.mayurifag.local>             | 3000/222  | todo |            |
 | Hemmelig.app         | <http://secret.mayurifag.local>          | 3000      | app  |            |
@@ -117,6 +118,7 @@ need to deploy my services once again.
   * [ ] Make tinyauth defence and change keepassxc entry
   * [ ] Edit POST_INSTALL info with real information on adding inbound+client+qr
   * [ ] Information about client apps (win/linux/macos/android/ios)
+* [ ] opencloud -> auth if tinyauth logined
 * [ ] Firewall
   * [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker>
   * [ ] Block everything except ssh. Check ufw status and allowances
@@ -124,13 +126,14 @@ need to deploy my services once again.
   * [ ] Crowdsec iptables firewall - remediation component.
   * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
   * [ ] see if there is solution to unban false positive and if not, add smth
+* [ ] Home has to contain processes monitoring - glances?
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
   * [ ] <https://github.com/we-promise/sure>
   * [ ] Is it possible to have data in nextcloud?
 * [ ] Status page for services
   * [ ] Has to be free and allow deploy from ansible via API
-* [ ] pdf <https://github.com/alam00000/bentopdf>
+* [ ] Remove nextcloud and vaultwarden roles in 2026
 
 ### Thinking if I need it / probably wont do ideas / notes
 
@@ -141,7 +144,7 @@ need to deploy my services once again.
   * [ ] use config.json for auth to dockerhub to prevent limits
   * [ ] use metrics for homepage <https://gethomepage.dev/widgets/services/watchtower/>
 * [ ] <https://github.com/binwiederhier/ntfy>
-* [ ] docker image of mayurifag.github.io has to be in ghcr
+* [ ] docker image of mayurifag.github.io has to be in ghcr like mus
 * [ ] VPS security
   * [ ] Kernel params to have less /var/log/syslog noise - add to crowdsec btw
   * [ ] <https://madaidans-insecurities.github.io/guides/linux-hardening.html>
@@ -161,4 +164,6 @@ need to deploy my services once again.
   * [ ] For crowdsec - link to <https://app.crowdsec.net/>
 * [ ] url shorten <https://github.com/anhostfr/nah.pet>
 * [ ] Email 💩
+  * [ ] research something super simple. Preferably single docker container
   * [ ] Parsedmarc
+* [ ] 3x-ui → remnawave panel and node roles. It has to be scriptable!!

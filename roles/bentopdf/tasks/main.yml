@@ -1,0 +1,22 @@
+---
+- name: BentoPDF Docker Container
+  community.docker.docker_container:
+    name: bentopdf
+    image: "{{ bentopdf_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ bentopdf_memory }}"
+    networks:
+      - name: "web"
+    labels:
+      traefik.enable: "{{ bentopdf_available_externally }}"
+      traefik.http.routers.bentopdf.rule: "Host(`{{ bentopdf_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.bentopdf.loadbalancer.server.port: "8080"
+      traefik.http.routers.bentopdf.middlewares: "tinyauth@docker,secure-headers@file"
+      com.centurylinklabs.watchtower.enable: "true"
+
+      homepage.group: "Services"
+      homepage.name: "BentoPDF"
+      homepage.icon: "bentopdf.png"
+      homepage.href: "https://{{ bentopdf_subdomain }}.{{ server_hostname }}"

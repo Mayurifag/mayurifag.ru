@@ -131,6 +131,11 @@
         - obsidian
       when: (obsidian_livesync_enabled | default(False))
 
+    - role: bentopdf
+      tags:
+        - bentopdf
+      when: (bentopdf_enabled | default(False))
+
     - role: watchtower
       tags:
         - watchtower

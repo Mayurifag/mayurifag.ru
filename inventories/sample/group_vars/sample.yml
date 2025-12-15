@@ -126,3 +126,6 @@ threexui_subscription_subdomain: "3xsub"
 
 opencloud_enabled: true
 opencloud_subdomain: "cloud"
+
+bentopdf_enabled: true
+bentopdf_subdomain: "pdf"
