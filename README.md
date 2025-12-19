@@ -114,6 +114,8 @@ need to deploy my services once again.
 
 ### List
 
+* [ ] Applications list in readme: remove ports and list only used on VPS ones
+  for ufw. Should contain tcp/udp probably, etc.
 * [ ] (wait) Next deploy of 3x-ui
   * [ ] Make tinyauth defence and change keepassxc entry
   * [ ] Edit POST_INSTALL info with real information on adding inbound+client+qr
@@ -143,6 +145,9 @@ need to deploy my services once again.
 * [ ] Watchtowerrr
   * [ ] use config.json for auth to dockerhub to prevent limits
   * [ ] use metrics for homepage <https://gethomepage.dev/widgets/services/watchtower/>
+  * [ ] actually maybe migrate <https://getwud.github.io/wud> but it will
+        require to change webhook on mayurifag.github.io and mus. But more
+        maintained and includes nice web ui
 * [ ] <https://github.com/binwiederhier/ntfy>
 * [ ] docker image of mayurifag.github.io has to be in ghcr like mus
 * [ ] VPS security
@@ -167,3 +172,8 @@ need to deploy my services once again.
   * [ ] research something super simple. Preferably single docker container
   * [ ] Parsedmarc
 * [ ] 3x-ui → remnawave panel and node roles. It has to be scriptable!!
+* [ ] Good yet simple monitoring
+  * [ ] <https://beszel.dev/>
+* [ ] Prevent using 80 port? I do not test locally anyway nowadays
+  * [ ] Remove enable_tls sections, remove 80 port usage everywhere
+* [ ] Bentopdf to stirlingpdf? Something which easily makes edits.
