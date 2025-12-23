@@ -1,8 +1,8 @@
 ---
-- name: Remove OpenCloud Config Directory if needed
-  ansible.builtin.file:
-    path: "{{ opencloud_data_directory }}"
-    state: absent
+# - name: Remove OpenCloud Config Directory if needed
+#   ansible.builtin.file:
+#     path: "{{ opencloud_data_directory }}"
+#     state: absent
 
 - name: Create OpenCloud Directories
   ansible.builtin.file:
@@ -12,10 +12,16 @@
     owner: "1000"
     group: "1000"
   with_items:
-    - "{{ opencloud_data_directory }}"
+    # - "{{ opencloud_data_directory }}"
     - "{{ opencloud_data_directory }}/config"
     - "{{ opencloud_data_directory }}/var"
     - "{{ opencloud_files_directory }}"
+
+- name: Configure OpenCloud Traefik Transport (Timeouts)
+  ansible.builtin.template:
+    src: traefik_opencloud.toml.j2
+    dest: "{{ traefik_dynamic_configs_directory }}/opencloud.toml"
+    mode: "0644"
 
 - name: OpenCloud Docker Container
   community.docker.docker_container:
@@ -68,7 +74,17 @@
       traefik.enable: "{{ opencloud_available_externally }}"
       traefik.http.routers.opencloud.rule: "Host(`{{ opencloud_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.opencloud.loadbalancer.server.port: "9200"
-      traefik.http.routers.opencloud.middlewares: "secure-headers@file"
+
+      traefik.http.services.opencloud.loadbalancer.serverstransport: "opencloud-transport@file"
+
+      # WebDAV Service Discovery (CalDAV/CardDAV)
+      # Redirects /.well-known/(cal|card)dav to /remote.php/dav/
+      traefik.http.middlewares.opencloud-dav.redirectregex.regex: "^https?://([^/]+)/\\.well-known/(card|cal)dav"
+      traefik.http.middlewares.opencloud-dav.redirectregex.replacement: "https://$1/remote.php/dav/"
+      traefik.http.middlewares.opencloud-dav.redirectregex.permanent: "true"
+
+      traefik.http.routers.opencloud.middlewares: "secure-headers@file,opencloud-dav"
+
       homepage.group: "Services"
       homepage.name: "OpenCloud"
       homepage.icon: "owncloud.png"
