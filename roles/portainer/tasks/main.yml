@@ -71,5 +71,5 @@
 
       homepage.group: "Infrastructure"
       homepage.name: "Portainer"
-      homepage.icon: "portainer.png"
+      homepage.icon: "portainer.svg"
       homepage.href: "https://{{ portainer_subdomain }}.{{ server_hostname }}"

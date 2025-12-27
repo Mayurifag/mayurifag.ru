@@ -18,5 +18,5 @@
 
       homepage.group: "Services"
       homepage.name: "BentoPDF"
-      homepage.icon: "bentopdf.png"
+      homepage.icon: "bentopdf.svg"
       homepage.href: "https://{{ bentopdf_subdomain }}.{{ server_hostname }}"

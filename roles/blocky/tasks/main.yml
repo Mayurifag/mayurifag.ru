@@ -69,6 +69,6 @@
 
       homepage.group: "API"
       homepage.name: "Blocky"
-      homepage.icon: "blocky.png"
+      homepage.icon: "blocky.svg"
       homepage.href: "https://{{ blocky_subdomain }}.{{ server_hostname }}"
       homepage.description: "DNS-over-HTTPS with adblocking"

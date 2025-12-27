@@ -18,5 +18,5 @@
 
       homepage.group: "Infrastructure"
       homepage.name: "Watchtower"
-      homepage.icon: "watchtower.png"
+      homepage.icon: "watchtower.svg"
       homepage.href: "https://{{ watchtower_subdomain }}.{{ server_hostname }}"

@@ -9,6 +9,13 @@
     [entryPoints.websecure]
       address = ":443"
       [entryPoints.websecure.http3]
+
+      # Extended timeouts for OpenCloud/Nextcloud large file operations
+      [entryPoints.websecure.transport.respondingTimeouts]
+        readTimeout = "12h"
+        writeTimeout = "12h"
+        idleTimeout = "3m"
+
       [entryPoints.websecure.http]
         middlewares = [ "crowdsec@file" ]
         [entryPoints.websecure.http.tls]

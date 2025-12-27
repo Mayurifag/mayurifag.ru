@@ -45,5 +45,5 @@
 
       homepage.group: "Infrastructure"
       homepage.name: "TinyAuth"
-      homepage.icon: "shield.png"
+      homepage.icon: "tinyauth.svg"
       homepage.href: "https://{{ tinyauth_subdomain }}.{{ server_hostname }}"

@@ -47,7 +47,7 @@
 
       homepage.group: "Monitoring"
       homepage.name: "Netdata"
-      homepage.icon: "netdata.png"
+      homepage.icon: "netdata.svg"
       homepage.href: "https://{{ netdata_subdomain }}.{{ server_hostname }}"
       homepage.widget.type: "netdata"
       homepage.widget.url: "http://netdata:19999"

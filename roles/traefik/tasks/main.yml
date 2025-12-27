@@ -70,7 +70,7 @@
       # Homepage
       homepage.group: "Infrastructure"
       homepage.name: "Traefik"
-      homepage.icon: "traefik.png"
+      homepage.icon: "traefik.svg"
       homepage.href: "https://{{ traefik_subdomain }}.{{ server_hostname }}/dashboard/"
     networks:
       - name: "web"

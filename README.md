@@ -129,13 +129,15 @@ need to deploy my services once again.
   * [ ] Is it possible to have data in opencloud?
 * [ ] Status page for services
   * [ ] Has to be free and allow deploy from ansible via API
+  * [ ] maybe just main website check and self service to report docker unhealth
 * [ ] Remove nextcloud and vaultwarden roles in 2026
-* [ ] Fix pictures from homepage in all roles
 * [ ] Remove "available_externally" everywhere, doesnt make sense for today
 * [ ] Think what tmux configuration/plugins might I need
   * [ ] named sessions per user if i had more users
   * [ ] auto-reconnect logic
   * [ ] some cheatsheet alias probably xd
+* [ ] Bentopdf is kinda meh, migrate to something else after tests
+* [ ] Bandwhich - will require downloading binary to root
 
 ### Thinking if I need it / probably wont do ideas / notes
 
@@ -156,6 +158,7 @@ need to deploy my services once again.
   * [ ] (wait for update) <https://github.com/docker/docker-bench-security>
   * [ ] (not sure) <https://github.com/quay/clair>
   * [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
+  * [ ] <https://github.com/imthenachoman/How-To-Secure-A-Linux-Server>
 * [ ] DNS and Blocky changes
   * [ ] Leave only DNS-over-HTTPS (plain DNS might be used in DDOS, DoT useless)
   * [ ] Revisit all blocklists
