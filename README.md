@@ -53,20 +53,15 @@ ssh-keygen -R 123.123.123.123
 ssh-keygen -R mayurifag.ru # clean ssh if there were interactions before
 ~~~
 
-* Make new ssh config section for convenience
+* Make new ssh config section for convenience and using tmux by default
 
 ~~~sh
-vi ~/.ssh/config
-
 # ~/.ssh/config
-Host *
-    Protocol 2
-    ServerAliveInterval 120
-    ServerAliveCountMax 2
-
 Host mayurifag-prod
     HostName mayurifag.ru
     User admin_user # Change user
+    RequestTTY yes
+    RemoteCommand tmux attach -d || tmux new-session -s main
 ~~~
 
 ## Applications List
@@ -137,6 +132,7 @@ need to deploy my services once again.
 * [ ] Remove nextcloud and vaultwarden roles in 2026
 * [ ] Fix pictures from homepage in all roles
 * [ ] Remove "available_externally" everywhere, doesnt make sense for today
+* [ ] Think what tmux configuration/plugins might I need
 
 ### Thinking if I need it / probably wont do ideas / notes
 

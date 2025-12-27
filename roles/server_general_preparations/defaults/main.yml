@@ -81,6 +81,7 @@ mayurifag_general_extra_packages:
   - ntp
   - rsyslog
   - software-properties-common
+  - tmux
   - unattended-upgrades
   - unzip
   - wget
