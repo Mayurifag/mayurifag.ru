@@ -126,13 +126,16 @@ need to deploy my services once again.
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
   * [ ] <https://github.com/we-promise/sure>
-  * [ ] Is it possible to have data in nextcloud?
+  * [ ] Is it possible to have data in opencloud?
 * [ ] Status page for services
   * [ ] Has to be free and allow deploy from ansible via API
 * [ ] Remove nextcloud and vaultwarden roles in 2026
 * [ ] Fix pictures from homepage in all roles
 * [ ] Remove "available_externally" everywhere, doesnt make sense for today
 * [ ] Think what tmux configuration/plugins might I need
+  * [ ] named sessions per user if i had more users
+  * [ ] auto-reconnect logic
+  * [ ] some cheatsheet alias probably xd
 
 ### Thinking if I need it / probably wont do ideas / notes
 
