@@ -26,7 +26,7 @@
 git clone https://github.com/Mayurifag/mayurifag.ru.git
 cd mayurifag.ru
 cp -rfp inventories/sample inventories/my-provision
-# ... change my-provision ...
+# Now you are required to change my-provision files.
 # or ln from some place like that:
 # ln -s ~/Nextcloud/Software/dotfiles/my-provision inventories/my-provision
 ansible-galaxy install -r requirements.yml
@@ -49,6 +49,8 @@ ssh-keygen -t ed25519 -C "Mayurifag@mayurifag.ru" -f ~/Desktop/mayurifag.ru
 xclip -sel clip < ~/Desktop/mayurifag.ru.pub
 vi inventories/my-provision/group_vars/sample.yml # add key here in section
 keepassxc # Make new ssh agent entry if you use keepassxc ssh agent
+ssh-keygen -R 123.123.123.123
+ssh-keygen -R mayurifag.ru # clean ssh if there were interactions before
 ~~~
 
 * Make new ssh config section for convenience
@@ -58,17 +60,13 @@ vi ~/.ssh/config
 
 # ~/.ssh/config
 Host *
-    StrictHostKeyChecking ask
-    UpdateHostKeys ask
     Protocol 2
     ServerAliveInterval 120
     ServerAliveCountMax 2
 
-[...]
-
 Host mayurifag-prod
     HostName mayurifag.ru
-    User root # Change user
+    User admin_user # Change user
 ~~~
 
 ## Applications List
@@ -84,6 +82,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | 3x-ui subscriptions  | <http://3xsub.mayurifag.local>           | 2096      | app  |            |
 | BentoPDF             | <http://pdf.mayurifag.local>             | 8080      | ldap | ✅          |
 | Blocky               | <http://dns.mayurifag.local> / TLS :853  | 853/4000  | app  |            |
+| ConvertX             | <http://convert.mayurifag.local>         | 3000      | ldap | ✅          |
 | Gitea                | <http://git.mayurifag.local>             | 3000/222  | todo |            |
 | Hemmelig.app         | <http://secret.mayurifag.local>          | 3000      | app  |            |
 | Homepage.dev         | <http://home.mayurifag.local>            | 3000      | ldap | ✅          |
@@ -136,6 +135,8 @@ need to deploy my services once again.
 * [ ] Status page for services
   * [ ] Has to be free and allow deploy from ansible via API
 * [ ] Remove nextcloud and vaultwarden roles in 2026
+* [ ] Fix pictures from homepage in all roles
+* [ ] Remove "available_externally" everywhere, doesnt make sense for today
 
 ### Thinking if I need it / probably wont do ideas / notes
 

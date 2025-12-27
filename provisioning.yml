@@ -136,6 +136,11 @@
         - bentopdf
       when: (bentopdf_enabled | default(False))
 
+    - role: convertx
+      tags:
+        - convertx
+      when: (convertx_enabled | default(False))
+
     - role: watchtower
       tags:
         - watchtower

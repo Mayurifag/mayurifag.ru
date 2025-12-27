@@ -1,0 +1,24 @@
+---
+- name: ConvertX Docker Container
+  community.docker.docker_container:
+    name: convertx
+    image: "{{ convertx_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    networks:
+      - name: "web"
+    env:
+      # BEWARE: its intended, we already use auth from tinyauth
+      ALLOW_UNAUTHENTICATED: "true"
+    labels:
+      traefik.enable: "{{ convertx_available_externally }}"
+      traefik.http.routers.convertx.rule: "Host(`{{ convertx_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.convertx.loadbalancer.server.port: "3000"
+      traefik.http.routers.convertx.middlewares: "tinyauth@docker,secure-headers@file"
+      com.centurylinklabs.watchtower.enable: "true"
+
+      homepage.group: "Services"
+      homepage.name: "ConvertX"
+      homepage.icon: "convertx.png"
+      homepage.href: "https://{{ convertx_subdomain }}.{{ server_hostname }}"

@@ -129,3 +129,6 @@ opencloud_subdomain: "cloud"
 
 bentopdf_enabled: true
 bentopdf_subdomain: "pdf"
+
+convertx_enabled: true
+convertx_subdomain: "convert"

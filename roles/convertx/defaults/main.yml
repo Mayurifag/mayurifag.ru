@@ -1,0 +1,6 @@
+---
+convertx_enabled: true
+convertx_available_externally: "true"
+
+convertx_subdomain: "convert"
+convertx_image: "c4illin/convertx:latest"
