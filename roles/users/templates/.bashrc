@@ -8,6 +8,7 @@ export EDITOR=vi
 alias apt-get='sudo apt-get'
 alias apt='sudo apt'
 alias aptclean='sudo apt autoremove && sudo apt clean && sudo apt autoclean'
+alias ctop='docker run --rm -it --name=ctop --volume /var/run/docker.sock:/var/run/docker.sock:ro quay.io/vektorlab/ctop:latest'
 alias disksize='df -h --total | grep -v tmpfs'
 alias dusize='sudo ncdu /'
 alias grep='grep --color=auto'
