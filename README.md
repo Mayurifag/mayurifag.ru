@@ -136,6 +136,7 @@ need to deploy my services once again.
   * [ ] named sessions per user if i had more users
   * [ ] auto-reconnect logic
   * [ ] some cheatsheet alias probably xd
+  * [ ] tmux with `nice` priority <https://x.com/SA5280/status/2001732941639282759>
 * [ ] Bentopdf is kinda meh, migrate to something else after tests
 * [ ] Bandwhich - will require downloading binary to root
 
