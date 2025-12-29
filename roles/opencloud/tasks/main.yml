@@ -12,7 +12,6 @@
     owner: "1000"
     group: "1000"
   with_items:
-    # - "{{ opencloud_data_directory }}"
     - "{{ opencloud_data_directory }}/config"
     - "{{ opencloud_data_directory }}/var"
     - "{{ opencloud_files_directory }}"
@@ -50,6 +49,8 @@
       LOG_PRETTY: "true"
       FRONTEND_CHECK_FOR_UPDATES: "false"
       OC_SHARING_PUBLIC_SHARE_MUST_HAVE_PASSWORD: "false"
+      # For webdav sync of Obsidian Remotely Save performance
+      OCDAV_ALLOW_PROPFIND_DEPTH_INFINITY: "true"
 
       STORAGE_USERS_DRIVER: "posix"
       STORAGE_USERS_ID_CACHE_STORE: "nats-js-kv"

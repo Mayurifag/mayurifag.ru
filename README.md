@@ -130,7 +130,7 @@ need to deploy my services once again.
 * [ ] Status page for services
   * [ ] Has to be free and allow deploy from ansible via API
   * [ ] maybe just main website check and self service to report docker unhealth
-* [ ] Remove nextcloud and vaultwarden roles in 2026
+* [ ] Remove obsidian couchdb, nextcloud and vaultwarden roles in 2026
 * [ ] Remove "available_externally" everywhere, doesnt make sense for today
 * [ ] Think what tmux configuration/plugins might I need
   * [ ] named sessions per user if i had more users
@@ -139,6 +139,7 @@ need to deploy my services once again.
   * [ ] tmux with `nice` priority <https://x.com/SA5280/status/2001732941639282759>
 * [ ] Bentopdf is kinda meh, migrate to something else after tests
 * [ ] Bandwhich - will require downloading binary to root
+* [ ] selfhost QR <https://github.com/lyqht/mini-qr>
 
 ### Thinking if I need it / probably wont do ideas / notes
 
