@@ -113,7 +113,7 @@ need to deploy my services once again.
   * [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker>
   * [ ] Block everything except ssh. Check ufw status and allowances
   * [ ] open port if needed in each ansible role
-  * [ ] prevent icmp packets
+* [ ] I have exim4 service from debian by default.. wtf. I'd better to uninstall it and disable port
 * [ ] Replace 3x-ui with remnawave completely
   * [ ] Make sure subscription is working
   * [ ] Information about client apps (win/linux/macos/android/ios)
@@ -131,11 +131,14 @@ need to deploy my services once again.
 * [ ] Bentopdf is kinda meh, migrate to something else after tests
 * [ ] Bandwhich - will require downloading binary to root
 * [ ] Crowdsec iptables firewall - remediation component.
+  * [ ] Crowdsec has to be inside traefik role
   * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
   * [ ] see if there is solution to unban false positive and if not, add smth
 
 ### Thinking if I need it / probably wont do ideas / notes
 
+* [ ] <https://github.com/pranshuparmar/witr>
+* [ ] general role has too much things inside it, split it
 * [ ] Think what tmux configuration/plugins might I need
   * [ ] named sessions per user if i had more users
   * [ ] auto-reconnect logic

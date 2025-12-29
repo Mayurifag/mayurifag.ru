@@ -6,6 +6,7 @@
     state: directory
     mode: "0777"
 
+# why this might take a lot of time?
 - name: Check if dumbfile exists
   ansible.builtin.stat:
     path: /var/dumb/dumbfile
