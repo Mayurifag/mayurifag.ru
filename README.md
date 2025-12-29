@@ -93,6 +93,41 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 
 Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 
+## Firewall
+
+ufw is configured to a restrictive default of **deny** for all incoming,
+outgoing, and routed traffic.
+
+All Docker-related traffic is managed by the `ufw-docker` utility to allow
+containers on the `web` network to communicate and be reached by Traefik without
+explicitly opening a port to the host.
+
+Only ports explicitly required for host services or applications running outside
+the Traefik/Docker network are opened.
+
+### Explicit UFW Rules (IPv4)
+
+|     Rule     | Direction | App/Purpose                                    |
+| :----------: | :-------: | :--------------------------------------------- |
+| **Incoming** |           |                                                |
+|   `22/tcp`   |   `IN`    | **OpenSSH**                                    |
+|  `443/tcp`   |   `IN`    | **Traefik** HTTPS                              |
+|  `443/udp`   |   `IN`    | **Traefik** HTTPS UDP/HTTP3                    |
+|  `222/tcp`   |   `IN`    | **Gitea** (SSH Gitea access)                   |
+|  `853/tcp`   |   `IN`    | **Blocky** (DNS-over-TLS)                      |
+|  `1080/tcp`  |   `IN`    | **3proxy** (SOCKS5 proxy access)               |
+|  `1081/tcp`  |   `IN`    | **3proxy** (HTTP proxy access)                 |
+| **Outgoing** |           |                                                |
+|   `53/udp`   |   `OUT`   | **DNS**                                        |
+|   `53/tcp`   |   `OUT`   | **DNS**                                        |
+|   `80/tcp`   |   `OUT`   | **HTTP** (debian updates, not sure if needed)  |
+|  `443/tcp`   |   `OUT`   | **HTTPS**                                      |
+|  `443/udp`   |   `OUT`   | **HTTPS/HTTP3**                                |
+| `67:68/udp`  |   `OUT`   | **DHCP** (Dynamic Host Configuration Protocol) |
+|  `123/udp`   |   `OUT`   | **NTP** (Time synchronization)                 |
+|   `22/tcp`   |   `OUT`   | **SSH**                                        |
+|   `43/tcp`   |   `OUT`   | **whois**                                      |
+
 ## TODO
 
 ### Work is not in progress

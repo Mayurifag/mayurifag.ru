@@ -22,6 +22,11 @@
   with_items:
     - "{{ gitea_data_directory }}/"
 
+- name: Allow Gitea SSH (port {{ gitea_ssh_port }}/tcp)
+  ansible.builtin.command: ufw allow {{ gitea_ssh_port }}/tcp comment "Allow Gitea SSH ({{ gitea_ssh_port }}/tcp)"
+  register: ufw_gitea
+  changed_when: "'Rule added' in ufw_gitea.stdout"
+
 - name: Gitea Docker Container
   community.docker.docker_container:
     name: gitea
@@ -63,3 +68,8 @@
       homepage.name: "Gitea"
       homepage.icon: "gitea.png"
       homepage.href: "https://{{ gitea_subdomain }}.{{ server_hostname }}"
+
+- name: Restart Docker after new UFW rules are added
+  ansible.builtin.service:
+    name: docker
+    state: restarted

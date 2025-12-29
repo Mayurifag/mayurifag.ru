@@ -23,6 +23,7 @@ alias remove='sudo apt remove'
 alias shutdown='sudo shutdown now'
 alias update='sudo apt update && sudo apt upgrade -y'
 alias yabs='curl -sL https://yabs.sh | bash'
+alias ufw='sudo ufw'
 alias systemctl='sudo systemctl'
 
 # CrowdSec
@@ -34,6 +35,31 @@ alias cscli='docker exec crowdsec cscli'
 
 mkcd() { mkdir -p "$1" && cd "$1"; }
 backup() { cp "$1"{,.bak}; }
+
+iptables-reset() {
+  echo "Flushing all iptables rules..."
+  sudo iptables -P INPUT ACCEPT
+  sudo iptables -P FORWARD ACCEPT
+  sudo iptables -P OUTPUT ACCEPT
+  sudo iptables -t nat -F
+  sudo iptables -t mangle -F
+  sudo iptables -F
+  sudo iptables -X
+
+  echo "Flushing all ip6tables rules..."
+  sudo ip6tables -P INPUT ACCEPT
+  sudo ip6tables -P FORWARD ACCEPT
+  sudo ip6tables -P OUTPUT ACCEPT
+  sudo ip6tables -t nat -F
+  sudo ip6tables -t mangle -F
+  sudo ip6tables -F
+  sudo ip6tables -X
+
+  echo "Restarting Docker to regenerate default chains..."
+  sudo systemctl restart docker
+
+  echo "Done. UFW is effectively disabled."
+}
 
 ###########
 # HISTORY #

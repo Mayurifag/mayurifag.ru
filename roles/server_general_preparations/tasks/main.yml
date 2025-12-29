@@ -17,6 +17,9 @@
 - name: Include maintenance tasks
   ansible.builtin.include_tasks: maintenance.yml
 
+- name: Include ufw tasks
+  ansible.builtin.include_tasks: ufw.yml
+
 - name: Include dumbfile tasks
   ansible.builtin.include_tasks: dumbfile.yml
 

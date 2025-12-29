@@ -1,4 +1,14 @@
 ---
+- name: Allow 3proxy SOCKS (port {{ proxy_socks_port }}/tcp)
+  ansible.builtin.command: ufw allow {{ proxy_socks_port }}/tcp comment "Allow 3proxy SOCKS ({{ proxy_socks_port }}/tcp)"
+  register: ufw_socks
+  changed_when: "'Rule added' in ufw_socks.stdout"
+
+- name: Allow 3proxy HTTP (port {{ proxy_http_port }}/tcp)
+  ansible.builtin.command: ufw allow {{ proxy_http_port }}/tcp comment "Allow 3proxy HTTP ({{ proxy_http_port }}/tcp)"
+  register: ufw_http
+  changed_when: "'Rule added' in ufw_http.stdout"
+
 - name: Start 3proxy Docker Container
   community.docker.docker_container:
     name: 3proxy
@@ -14,3 +24,18 @@
     memory: "{{ proxy_memory }}"
     labels:
       com.centurylinklabs.watchtower.enable: "true"
+
+- name: Allow SOCKS port 1080 through ufw-docker
+  ansible.builtin.command: /usr/local/bin/ufw-docker allow 3proxy 1080
+  register: ufw_docker_socks
+  changed_when: "'Rule added' in ufw_docker_socks.stdout"
+
+- name: Allow HTTP port 3128 through ufw-docker
+  ansible.builtin.command: /usr/local/bin/ufw-docker allow 3proxy 3128
+  register: ufw_docker_http
+  changed_when: "'Rule added' in ufw_docker_http.stdout"
+
+- name: Restart Docker to apply UFW rules for exposed ports
+  ansible.builtin.service:
+    name: docker
+    state: restarted

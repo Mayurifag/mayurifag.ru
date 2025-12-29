@@ -3,3 +3,8 @@
   ansible.builtin.systemd:
     name: systemd-journald
     state: restarted
+
+- name: Restart ufw
+  ansible.builtin.service:
+    name: ufw
+    state: restarted

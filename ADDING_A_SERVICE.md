@@ -24,10 +24,19 @@ Define all configuration variables here. The following are **examples** of requi
 This file contains the deployment logic.
 
 - **Directory Creation**: Ensure necessary host directories (e.g., `app_name_data_directory`) are created.
+- **UFW Rules (if applicable)**: If the container exposes non-Traefik ports (e.g., SSH, SOCKS proxy) directly to the host/internet, add `community.general.ufw` tasks to allow traffic.
 - **Docker Container**: Use `community.docker.docker_container`.
   - Set `name`, `image`, `pull: true`, `recreate: true`, `restart_policy: unless-stopped`.
   - Configure `volumes` and `memory`.
   - **Networking**: Containers exposed by Traefik **must** be connected to the `web` network: `networks: [ { name: "web" } ]`. This is the designated network for Traefik routing.
+- **Docker Restart After UFW**: If new `ufw allow` rules were added in this task file, add a final task to restart the Docker service, as ufw-docker integration often requires this to function correctly with newly exposed ports:
+
+~~~yaml
+- name: Restart Docker after new UFW rules are added
+  ansible.builtin.service:
+    name: docker
+    state: restarted
+~~~
 
 ## 4. Traefik Labels
 

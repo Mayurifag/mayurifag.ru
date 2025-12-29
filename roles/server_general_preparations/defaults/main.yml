@@ -61,6 +61,62 @@ sysctl_values:
   # fix crowdsec container dns resolution
   - { key: net.ipv4.ip_forward, value: 1 }
 
+# Combined UFW Rule Definitions (type: in, out)
+
+ufw_rules:
+  # Default Ingress (ssh and web)
+  - { port: 22, proto: "tcp", direction: in, comment: "Allow OpenSSH" }
+  - {
+      port: 443,
+      proto: "tcp",
+      direction: in,
+      comment: "Allow Traefik Ingress HTTPS/WebSecure (TCP)",
+    }
+  - {
+      port: 443,
+      proto: "udp",
+      direction: in,
+      comment: "Allow Traefik Ingress HTTPS/WebSecure (UDP/HTTP3)",
+    }
+  - { port: 546, proto: "udp", direction: in, comment: "Allow DHCPv6 Client" }
+
+  # Default Egress (DNS, HTTP/S, NTP, etc.)
+  - {
+      port: 53,
+      proto: "udp",
+      direction: out,
+      comment: "Allow Outgoing DNS (UDP)",
+    }
+  - {
+      port: 53,
+      proto: "tcp",
+      direction: out,
+      comment: "Allow Outgoing DNS (TCP)",
+    }
+  - {
+      port: 80,
+      proto: "tcp",
+      direction: out,
+      comment: "Allow Outgoing HTTP (APT)",
+    }
+  - { port: 443, proto: "tcp", direction: out, comment: "Allow Outgoing HTTPS" }
+  - {
+      port: 443,
+      proto: "udp",
+      direction: out,
+      comment: "Allow Outgoing HTTPS/HTTP3",
+    }
+  - {
+      port: "67:68",
+      proto: "udp",
+      direction: out,
+      comment: "Allow Outgoing DHCP",
+    }
+  - { port: 123, proto: "udp", direction: out, comment: "Allow Outgoing NTP" }
+  - { port: 22, proto: "tcp", direction: out, comment: "Allow Outgoing SSH" }
+  - { port: 43, proto: "tcp", direction: out, comment: "Allow Outgoing Whois" }
+  - { port: 547, proto: "udp", direction: out, comment: "Allow DHCPv6 Server" }
+
 mayurifag_general_extra_packages:
   - apt-transport-https
   - aptitude

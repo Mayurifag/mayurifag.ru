@@ -1,0 +1,111 @@
+---
+- name: Backup current iptables rules
+  ansible.builtin.shell: |
+    set -o pipefail
+    iptables-save > /root/firewall.rules
+  args:
+    executable: /bin/bash
+  changed_when: true
+  failed_when: false
+
+- name: Backup current ip6tables rules
+  ansible.builtin.shell: |
+    set -o pipefail
+    ip6tables-save > /root/firewall6.rules
+  args:
+    executable: /bin/bash
+  changed_when: true
+  failed_when: false
+
+- name: Install ufw
+  ansible.builtin.apt:
+    name: ufw
+    state: present
+    update_cache: yes
+
+- name: Set default UFW policies
+  community.general.ufw:
+    direction: "{{ item.direction }}"
+    policy: "{{ item.policy }}"
+  loop:
+    - { direction: incoming, policy: deny }
+    - { direction: outgoing, policy: deny }
+    - { direction: routed, policy: allow }
+
+# - name: Allow loopback traffic in
+#   ansible.builtin.command: ufw allow in on lo comment "Allow loopback in"
+#   register: ufw_lo_in
+#   changed_when: "'Rule added' in ufw_lo_in.stdout"
+
+# - name: Allow loopback traffic out
+#   ansible.builtin.command: ufw allow out on lo comment "Allow loopback out"
+#   register: ufw_lo_out
+#   changed_when: "'Rule added' in ufw_lo_out.stdout"
+
+- name: Apply UFW rules
+  ansible.builtin.command: >
+    ufw allow {{ item.direction }} {{ item.port }}/{{ item.proto }} comment "{{ item.comment }}"
+  loop: "{{ ufw_rules }}"
+  register: ufw_result
+  changed_when: "'Rule added' in ufw_result.stdout"
+
+- name: Set UFW logging to full
+  ansible.builtin.command: ufw logging full
+  changed_when: false
+
+- name: Ensure UFW service is started and enabled
+  ansible.builtin.service:
+    name: ufw
+    state: started
+    enabled: yes
+  notify: Restart ufw
+
+- name: Explicitly enable UFW
+  ansible.builtin.command: ufw --force enable
+  register: ufw_enable_result
+  changed_when: "'Firewall is active and enabled' not in ufw_enable_result.stdout"
+
+- name: Download ufw-docker utility
+  ansible.builtin.get_url:
+    url: https://github.com/chaifeng/ufw-docker/raw/master/ufw-docker
+    dest: /usr/local/bin/ufw-docker
+    mode: "0755"
+
+- name: Check if ufw-docker is already installed
+  ansible.builtin.shell: grep -q "BEGIN UFW AND DOCKER" /etc/ufw/after.rules
+  register: ufw_docker_check
+  changed_when: false
+  failed_when: false
+
+- name: Install ufw-docker integration
+  ansible.builtin.command: /usr/local/bin/ufw-docker install
+  when: ufw_docker_check.rc != 0
+  notify: Restart ufw
+
+- name: Restart Docker service after ufw-docker install
+  ansible.builtin.service:
+    name: docker
+    state: restarted
+
+- name: Flush handlers to apply rules and ensure restart
+  ansible.builtin.meta: flush_handlers
+
+- name: Show UFW status (IPv4)
+  ansible.builtin.command: ufw status verbose
+  register: ufw_status_ipv4
+  changed_when: false
+
+- name: Debug UFW status (IPv4)
+  ansible.builtin.debug:
+    var: ufw_status_ipv4.stdout_lines
+
+- name: Show UFW status (IPv6)
+  ansible.builtin.shell: ufw status verbose | grep IPv6
+  register: ufw_status_ipv6
+  changed_when: false
+  failed_when: false
+
+- name: Debug UFW status (IPv6)
+  ansible.builtin.debug:
+    var: ufw_status_ipv6.stdout_lines
+  when: ufw_status_ipv6.stdout | length > 0

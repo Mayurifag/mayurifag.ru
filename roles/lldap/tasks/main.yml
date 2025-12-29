@@ -36,6 +36,11 @@
     ports:
       - "127.0.0.1:{{ lldap_port }}:17170"
 
+- name: Allow LLDAP bootstrap port through ufw-docker
+  ansible.builtin.command: /usr/local/bin/ufw-docker allow lldap 17170
+  register: ufw_docker_lldap
+  changed_when: "'Rule added' in ufw_docker_lldap.stdout"
+
 - name: Wait for LLDAP container to be healthy
   community.docker.docker_container_info:
     name: lldap
@@ -47,6 +52,12 @@
 
 - name: Include bootstrap tasks
   ansible.builtin.include_tasks: bootstrap.yml
+
+- name: Remove LLDAP bootstrap port rule
+  ansible.builtin.command: /usr/local/bin/ufw-docker delete allow lldap 17170
+  register: ufw_docker_lldap_del
+  changed_when: "'Rule deleted' in ufw_docker_lldap_del.stdout"
+  # ignore_errors: true
 
 - name: LLDAP Docker Container without exposed ports except for traefik - prod
   community.docker.docker_container:
