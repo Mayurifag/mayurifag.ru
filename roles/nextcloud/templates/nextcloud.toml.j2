@@ -25,7 +25,6 @@
   [http.middlewares.nextcloud-secure-headers.headers.customResponseHeaders]
     X-Robots-Tag = "noindex, nofollow"
 
-{% if enable_tls == true %}
 [tls.options.default]
 minVersion = "VersionTLS12"
 sniStrict = true
@@ -38,4 +37,3 @@ cipherSuites = [
   "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305"
 ]
 curvePreferences = [ "CurveP521", "CurveP384" ]
-{% endif %}

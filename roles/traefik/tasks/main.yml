@@ -46,7 +46,6 @@
     name: traefik
     image: "{{ traefik_docker_image }}"
     ports:
-      - "80:80"
       - "443:443"
     volumes:
       - "{{ traefik_data_directory }}/traefik.toml:/etc/traefik/traefik.toml:ro"

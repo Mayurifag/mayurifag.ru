@@ -55,7 +55,6 @@ docker_daemon_options:
 
 ##################################
 
-enable_tls: true
 bootstrap_enabled: true
 swap_enabled: true
 mayurifag_github_io_enabled: true

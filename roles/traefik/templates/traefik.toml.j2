@@ -1,27 +1,20 @@
 [entryPoints]
-  [entryPoints.web]
-    address = ":80"
-{% if enable_tls == true %}
-    [entryPoints.web.http.redirections.entryPoint]
-      to = "websecure"
-      scheme = "https"
-      permanent = true
-    [entryPoints.websecure]
-      address = ":443"
-      [entryPoints.websecure.http3]
+  [entryPoints.websecure]
+    address = ":443"
+    [entryPoints.websecure.http3]
 
-      # Extended timeouts for OpenCloud/Nextcloud large file operations
-      [entryPoints.websecure.transport.respondingTimeouts]
-        readTimeout = "12h"
-        writeTimeout = "12h"
-        idleTimeout = "3m"
+    # Extended timeouts for OpenCloud/Nextcloud large file operations
+    [entryPoints.websecure.transport.respondingTimeouts]
+      readTimeout = "12h"
+      writeTimeout = "12h"
+      idleTimeout = "3m"
 
-      [entryPoints.websecure.http]
-        middlewares = [ "crowdsec@file" ]
-        [entryPoints.websecure.http.tls]
-          certResolver = "letsencrypt"
-          options = "default"
-{% endif %}
+    [entryPoints.websecure.http]
+      middlewares = [ "crowdsec@file" ]
+      [entryPoints.websecure.http.tls]
+        certResolver = "letsencrypt"
+        options = "default"
+
 [providers]
   [providers.docker]
     exposedbydefault = false
@@ -40,7 +33,6 @@
   insecure = false
   debug = true
 
-{% if enable_tls == true %}
 [certificatesResolvers]
   [certificatesResolvers.letsencrypt]
     [certificatesResolvers.letsencrypt.acme]
@@ -51,10 +43,13 @@
         provider = "{{ traefik_dns_provider }}"
         resolvers = ["1.1.1.1:53", "8.8.8.8:53"]
 
-{# Not sure if I need it #}
+{#
+Not sure if I need it - i dont speak https with any container,
+maybe needed for remnawave in future
+
 [serversTransport]
   insecureSkipVerify = true
-{% endif %}
+#}
 
 [experimental.plugins.crowdsec-bouncer-traefik-plugin]
   moduleName = "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"

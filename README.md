@@ -90,7 +90,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | Obsidian LiveSync db | `couchdbobsidian` | app  |            |                        |
 | OpenCloud            | `cloud`           | ldap |            |                        |
 | Portainer            | `portainer`       | app  | ✅          |                        |
-| Traefik dashboard    | `traefik`         | ldap |            | `443/tcp` and `80/tcp` |
+| Traefik dashboard    | `traefik`         | ldap |            | `443/tcp`              |
 | Tinyauth             | `auth`            | ldap | ✅          |                        |
 | Vaultwarden          | `pw`              | app  |            |                        |
 | Watchtower HTTP API  | `watchtower`      | app  | ✅          |                        |
@@ -109,14 +109,11 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] Remove 80 port usage and enable_tls usage as it will be a new default
-* [ ] Firewall
+* [ ] ufw
   * [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker>
   * [ ] Block everything except ssh. Check ufw status and allowances
   * [ ] open port if needed in each ansible role
-  * [ ] Crowdsec iptables firewall - remediation component.
-  * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
-  * [ ] see if there is solution to unban false positive and if not, add smth
+  * [ ] prevent icmp packets
 * [ ] Replace 3x-ui with remnawave completely
   * [ ] Make sure subscription is working
   * [ ] Information about client apps (win/linux/macos/android/ios)
@@ -133,6 +130,9 @@ need to deploy my services once again.
 * [ ] Remove obsidian couchdb, nextcloud and vaultwarden roles in 2026
 * [ ] Bentopdf is kinda meh, migrate to something else after tests
 * [ ] Bandwhich - will require downloading binary to root
+* [ ] Crowdsec iptables firewall - remediation component.
+  * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
+  * [ ] see if there is solution to unban false positive and if not, add smth
 
 ### Thinking if I need it / probably wont do ideas / notes
 
@@ -141,7 +141,9 @@ need to deploy my services once again.
   * [ ] auto-reconnect logic
   * [ ] some cheatsheet alias probably xd
   * [ ] tmux with `nice` priority <https://x.com/SA5280/status/2001732941639282759>
+* [ ] When Tinyauth will be an OIDC provider make it work for opencloud
 * [ ] Traefik
+  * [ ] Update 3.6.4 was breaking change, test with opencloud
   * [ ] tracing/observability tests with my apps
   * [ ] No AI Bots Middleware with robots.txt - plugin install
   * [ ] To use LDAP auth onto opencloud and so on I have to use
@@ -175,11 +177,7 @@ need to deploy my services once again.
 * [ ] url shorten <https://github.com/anhostfr/nah.pet>
 * [ ] Email 💩
   * [ ] research something super simple. Preferably single docker container
-  * [ ] Parsedmarc
-* [ ] 3x-ui → remnawave panel and node roles. It has to be scriptable!!
+  * [ ] Parsedmarc app
 * [ ] Good yet simple monitoring
   * [ ] <https://beszel.dev/>
 * [ ] Bentopdf to stirlingpdf? Something which easily makes edits.
-* [ ] Tinyauth is awesome though I need something from Authelia, Authentik, or
-      Keycloak to have simple login onto opencloud and also I have to not break
-      mobile login
