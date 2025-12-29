@@ -70,30 +70,30 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 
 <!-- markdownlint-disable line-length -->
 
-| Name                 | Default endpoint                         | Port(s)   | Auth | Watchtower |
-| -------------------- | ---------------------------------------- | --------- | ---- | ---------- |
-| 3proxy               | <socks5://mayurifag.local:1080> or 3128  | 1080/3128 | app  | ✅          |
-| 3x-ui panel          | <http://3x.mayurifag.local>              | 2053      | app  |            |
-| 3x-ui subscriptions  | <http://3xsub.mayurifag.local>           | 2096      | app  |            |
-| BentoPDF             | <http://pdf.mayurifag.local>             | 8080      | ldap | ✅          |
-| Blocky               | <http://dns.mayurifag.local> / TLS :853  | 853/4000  | app  |            |
-| ConvertX             | <http://convert.mayurifag.local>         | 3000      | ldap | ✅          |
-| Gitea                | <http://git.mayurifag.local>             | 3000/222  | todo |            |
-| Hemmelig.app         | <http://secret.mayurifag.local>          | 3000      | app  |            |
-| Homepage.dev         | <http://home.mayurifag.local>            | 3000      | ldap | ✅          |
-| Mini-QR              | <http://qr.mayurifag.local>              | 8080      | ldap | ✅          |
-| mayurifag.github.io  | <http://mayurifag.local>                 | 8005      | ldap | ✅          |
-| mus                  | <http://mus.mayurifag.local>             | 8000      | ldap | ✅          |
-| lldap                | <http://ldap.mayurifag.local>            | 17170     | ldap | ✅          |
-| Netdata              | <http://netdata.mayurifag.local>         | 19999     | ldap |            |
-| Nextcloud            | <http://nextcloud.mayurifag.local>       | 11000     | todo |            |
-| Obsidian LiveSync db | <http://couchdbobsidian.mayurifag.local> | 5984      | app  |            |
-| OpenCloud            | <http://cloud.mayurifag.local>           | 9200      | ldap |            |
-| Portainer            | <http://portainer.mayurifag.local>       | 9000      | app  | ✅          |
-| Traefik dashboard    | <http://traefik.mayurifag.local>         | 8080      | ldap |            |
-| Tinyauth             | <http://auth.mayurifag.local>            | 3000      | ldap | ✅          |
-| Vaultwarden          | <http://pw.mayurifag.local>              | 80        | app  |            |
-| Watchtower HTTP API  | <http://watchtower.mayurifag.local>      | 8080      | app  | ✅          |
+| Name                 | Subdomain         | Auth | Watchtower | Exposed ports          |
+| :------------------- | :---------------- | ---- | ---------- | ---------------------- |
+| 3proxy               |                   | app  | ✅          | `1080/tcp`, `3128/tcp` |
+| 3x-ui panel          | `3x`              | app  |            |                        |
+| 3x-ui subscriptions  | `3xsub`           | app  |            |                        |
+| BentoPDF             | `pdf`             | ldap | ✅          |                        |
+| Blocky               | `dns`             | app  |            | `853/tcp`              |
+| ConvertX             | `convert`         | ldap | ✅          |                        |
+| Gitea                | `git`             | todo |            | `222/tcp`              |
+| Hemmelig.app         | `secret`          | app  |            |                        |
+| Homepage.dev         | `home`            | ldap | ✅          |                        |
+| Mini-QR              | `qr`              | ldap | ✅          |                        |
+| mayurifag.github.io  | `<TLD>`           | ldap | ✅          |                        |
+| mus                  | `mus`             | ldap | ✅          |                        |
+| lldap                | `ldap`            | ldap | ✅          |                        |
+| Netdata              | `netdata`         | ldap |            |                        |
+| Nextcloud            | `nextcloud`       | todo |            |                        |
+| Obsidian LiveSync db | `couchdbobsidian` | app  |            |                        |
+| OpenCloud            | `cloud`           | ldap |            |                        |
+| Portainer            | `portainer`       | app  | ✅          |                        |
+| Traefik dashboard    | `traefik`         | ldap |            | `443/tcp` and `80/tcp` |
+| Tinyauth             | `auth`            | ldap | ✅          |                        |
+| Vaultwarden          | `pw`              | app  |            |                        |
+| Watchtower HTTP API  | `watchtower`      | app  | ✅          |                        |
 
 <!-- markdownlint-enable line-length -->
 
@@ -109,13 +109,7 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] Applications list in readme: remove ports and list only used on VPS ones
-  for ufw. Should contain tcp/udp probably, etc.
-* [ ] (wait) Next deploy of 3x-ui
-  * [ ] Make tinyauth defence and change keepassxc entry
-  * [ ] Edit POST_INSTALL info with real information on adding inbound+client+qr
-  * [ ] Information about client apps (win/linux/macos/android/ios)
-* [ ] opencloud -> auth if tinyauth logined
+* [ ] Remove 80 port usage and enable_tls usage as it will be a new default
 * [ ] Firewall
   * [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker>
   * [ ] Block everything except ssh. Check ufw status and allowances
@@ -123,6 +117,11 @@ need to deploy my services once again.
   * [ ] Crowdsec iptables firewall - remediation component.
   * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
   * [ ] see if there is solution to unban false positive and if not, add smth
+* [ ] Replace 3x-ui with remnawave completely
+  * [ ] Make sure subscription is working
+  * [ ] Information about client apps (win/linux/macos/android/ios)
+  * [ ] How can I easily deploy nodes to multiple servers with current setup?
+  * [ ] Scripts to automate setup
 * [ ] Home has to contain processes monitoring - glances?
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
@@ -132,20 +131,21 @@ need to deploy my services once again.
   * [ ] Has to be free and allow deploy from ansible via API
   * [ ] maybe just main website check and self service to report docker unhealth
 * [ ] Remove obsidian couchdb, nextcloud and vaultwarden roles in 2026
+* [ ] Bentopdf is kinda meh, migrate to something else after tests
+* [ ] Bandwhich - will require downloading binary to root
+
+### Thinking if I need it / probably wont do ideas / notes
+
 * [ ] Think what tmux configuration/plugins might I need
   * [ ] named sessions per user if i had more users
   * [ ] auto-reconnect logic
   * [ ] some cheatsheet alias probably xd
   * [ ] tmux with `nice` priority <https://x.com/SA5280/status/2001732941639282759>
-* [ ] Bentopdf is kinda meh, migrate to something else after tests
-* [ ] Bandwhich - will require downloading binary to root
-* [ ] selfhost QR <https://github.com/lyqht/mini-qr>
-
-### Thinking if I need it / probably wont do ideas / notes
-
 * [ ] Traefik
   * [ ] tracing/observability tests with my apps
   * [ ] No AI Bots Middleware with robots.txt - plugin install
+  * [ ] To use LDAP auth onto opencloud and so on I have to use
+        <https://github.com/wiltonsr/ldapAuth> though I dont want to commit that
 * [ ] Watchtowerrr
   * [ ] use config.json for auth to dockerhub to prevent limits
   * [ ] use metrics for homepage <https://gethomepage.dev/widgets/services/watchtower/>
@@ -179,6 +179,7 @@ need to deploy my services once again.
 * [ ] 3x-ui → remnawave panel and node roles. It has to be scriptable!!
 * [ ] Good yet simple monitoring
   * [ ] <https://beszel.dev/>
-* [ ] Prevent using 80 port? I do not test locally anyway nowadays
-  * [ ] Remove enable_tls sections, remove 80 port usage everywhere
 * [ ] Bentopdf to stirlingpdf? Something which easily makes edits.
+* [ ] Tinyauth is awesome though I need something from Authelia, Authentik, or
+      Keycloak to have simple login onto opencloud and also I have to not break
+      mobile login
