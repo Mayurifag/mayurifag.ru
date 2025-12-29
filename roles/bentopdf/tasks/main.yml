@@ -10,7 +10,7 @@
     networks:
       - name: "web"
     labels:
-      traefik.enable: "{{ bentopdf_available_externally }}"
+      traefik.enable: "true"
       traefik.http.routers.bentopdf.rule: "Host(`{{ bentopdf_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.bentopdf.loadbalancer.server.port: "8080"
       traefik.http.routers.bentopdf.middlewares: "tinyauth@docker,secure-headers@file"

@@ -132,3 +132,6 @@ bentopdf_subdomain: "pdf"
 
 convertx_enabled: true
 convertx_subdomain: "convert"
+
+mini_qr_enabled: true
+mini_qr_subdomain: "qr"

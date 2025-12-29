@@ -71,7 +71,7 @@
     memory: "{{ lldap_memory }}"
     labels:
       com.centurylinklabs.watchtower.enable: "true"
-      traefik.enable: "{{ lldap_available_externally }}"
+      traefik.enable: "true"
       traefik.http.routers.lldap.rule: "Host(`{{ lldap_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.lldap.loadbalancer.server.port: "17170"
       traefik.http.routers.lldap.middlewares: "secure-headers@file"

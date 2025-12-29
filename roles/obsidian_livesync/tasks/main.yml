@@ -33,7 +33,7 @@
     restart_policy: unless-stopped
     memory: "{{ obsidian_livesync_memory_limit }}"
     labels:
-      traefik.enable: "{{ obsidian_livesync_available_externally }}"
+      traefik.enable: "true"
       traefik.http.routers.obsidian_livesync.rule: "Host(`{{ obsidian_livesync_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.obsidian_livesync.loadbalancer.server.port: "5984"
       traefik.http.routers.obsidian_livesync.middlewares: "secure-headers@file"

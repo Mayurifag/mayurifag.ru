@@ -1,6 +1,5 @@
 ---
 gitea_enabled: true
-gitea_available_externally: "true"
 
 gitea_subdomain: "git"
 

@@ -13,7 +13,7 @@
       - name: "web"
     memory: "{{ mus_memory }}"
     labels:
-      traefik.enable: "{{ mus_available_externally }}"
+      traefik.enable: "true"
       traefik.http.routers.mus.rule: "Host(`{{ mus_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.mus.loadbalancer.server.port: "8000"
       traefik.http.routers.mus.middlewares: "secure-headers@file,tinyauth@docker"

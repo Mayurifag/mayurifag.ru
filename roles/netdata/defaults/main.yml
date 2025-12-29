@@ -1,6 +1,5 @@
 ---
 netdata_enabled: true
-netdata_available_externally: "true"
 
 # network
 netdata_subdomain: "netdata"

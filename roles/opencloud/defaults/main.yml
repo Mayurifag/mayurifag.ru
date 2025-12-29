@@ -1,6 +1,5 @@
 ---
 opencloud_enabled: true
-opencloud_available_externally: "true"
 
 opencloud_subdomain: "cloud"
 

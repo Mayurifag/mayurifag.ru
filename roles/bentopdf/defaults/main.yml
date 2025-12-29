@@ -1,6 +1,5 @@
 ---
 bentopdf_enabled: true
-bentopdf_available_externally: "true"
 
 bentopdf_subdomain: "pdf"
 bentopdf_image: "bentopdf/bentopdf-simple:latest"

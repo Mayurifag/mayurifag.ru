@@ -98,7 +98,7 @@
     networks:
       - name: "web"
     labels:
-      traefik.enable: "{{ homepage_available_externally }}"
+      traefik.enable: "true"
       traefik.http.routers.homepage.rule: "Host(`{{ homepage_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.homepage.loadbalancer.server.port: "3000"
       traefik.http.routers.homepage.middlewares: "tinyauth@docker,secure-headers@file"

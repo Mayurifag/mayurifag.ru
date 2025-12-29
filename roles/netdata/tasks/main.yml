@@ -40,7 +40,7 @@
     networks:
       - name: "web"
     labels:
-      traefik.enable: "{{ netdata_available_externally }}"
+      traefik.enable: "true"
       traefik.http.routers.netdata.rule: "Host(`{{ netdata_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.netdata.loadbalancer.server.port: "19999"
       traefik.http.routers.netdata.middlewares: "tinyauth@docker,secure-headers@file"

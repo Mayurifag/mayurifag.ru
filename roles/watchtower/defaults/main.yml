@@ -1,6 +1,5 @@
 ---
 watchtower_enabled: true
-watchtower_available_externally: "true"
 
 watchtower_subdomain: "watchtower"
 watchtower_http_api_token: change_this

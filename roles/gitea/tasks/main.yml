@@ -54,7 +54,7 @@
       GITEA__admin__PASSWORD: "{{ gitea_admin_password }}"
       GITEA__admin__EMAIL: "{{ gitea_admin_email }}"
     labels:
-      traefik.enable: "{{ gitea_available_externally }}"
+      traefik.enable: "true"
       traefik.http.routers.gitea.rule: "Host(`{{ gitea_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.gitea.loadbalancer.server.port: "3000"
       traefik.http.routers.gitea.middlewares: "secure-headers@file"

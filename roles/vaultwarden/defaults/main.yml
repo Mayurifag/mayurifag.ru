@@ -1,6 +1,5 @@
 ---
 vaultwarden_enabled: true
-vaultwarden_available_externally: "true"
 
 vaultwarden_subdomain: "pw"
 

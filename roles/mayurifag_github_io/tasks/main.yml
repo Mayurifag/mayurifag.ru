@@ -10,7 +10,7 @@
     networks:
       - name: "web"
     labels:
-      traefik.enable: "{{ mayurifag_github_io_available_externally }}"
+      traefik.enable: "true"
       traefik.http.routers.mayurifag_github_io.rule: "Host(`{{ server_hostname }}`)"
       traefik.http.services.mayurifag_github_io.loadbalancer.server.port: "80"
       traefik.http.routers.mayurifag_github_io.middlewares: "secure-headers@file,tinyauth@docker"

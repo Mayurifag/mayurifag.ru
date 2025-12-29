@@ -72,7 +72,7 @@
     networks:
       - name: "web"
     labels:
-      traefik.enable: "{{ opencloud_available_externally }}"
+      traefik.enable: "true"
       traefik.http.routers.opencloud.rule: "Host(`{{ opencloud_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.opencloud.loadbalancer.server.port: "9200"
 

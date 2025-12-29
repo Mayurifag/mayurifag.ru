@@ -1,6 +1,5 @@
 ---
 homepage_enabled: true
-homepage_available_externally: "true"
 
 homepage_subdomain: "home"
 homepage_image: "ghcr.io/gethomepage/homepage:latest"

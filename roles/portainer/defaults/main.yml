@@ -1,6 +1,5 @@
 ---
 portainer_enabled: true
-portainer_available_externally: "true"
 
 portainer_data_directory: "{{ docker_home }}/portainer/"
 portainer_subdomain: "portainer"

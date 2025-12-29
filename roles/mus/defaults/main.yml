@@ -1,6 +1,5 @@
 ---
 mus_enabled: true
-mus_available_externally: "true"
 
 mus_docker_image: ghcr.io/mayurifag/mus:latest
 mus_subdomain: "mus"

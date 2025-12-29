@@ -1,7 +1,6 @@
 ---
 # enable or disable the application
 mayurifag_github_io_enabled: true
-mayurifag_github_io_available_externally: "true"
 
 # specs
 mayurifag_github_io_memory: 1g

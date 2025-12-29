@@ -1,6 +1,5 @@
 ---
 lldap_enabled: true
-lldap_available_externally: "true"
 
 lldap_subdomain: "ldap"
 lldap_data_directory: "{{ docker_home }}/lldap"

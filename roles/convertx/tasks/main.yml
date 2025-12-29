@@ -12,7 +12,7 @@
       # BEWARE: its intended, we already use auth from tinyauth
       ALLOW_UNAUTHENTICATED: "true"
     labels:
-      traefik.enable: "{{ convertx_available_externally }}"
+      traefik.enable: "true"
       traefik.http.routers.convertx.rule: "Host(`{{ convertx_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.convertx.loadbalancer.server.port: "3000"
       traefik.http.routers.convertx.middlewares: "tinyauth@docker,secure-headers@file"

@@ -11,7 +11,7 @@
       WATCHTOWER_HTTP_API_TOKEN: "{{ watchtower_http_api_token }}"
     command: "{{ watchtower_command }}"
     labels:
-      traefik.enable: "{{ watchtower_available_externally }}"
+      traefik.enable: "true"
       traefik.http.routers.watchtower.rule: "Host(`{{ watchtower_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.watchtower.loadbalancer.server.port: "8080"
       com.centurylinklabs.watchtower.enable: "true"

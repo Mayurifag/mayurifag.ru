@@ -141,6 +141,11 @@
         - convertx
       when: (convertx_enabled | default(False))
 
+    - role: mini_qr
+      tags:
+        - qr
+      when: (mini_qr_enabled | default(False))
+
     - role: watchtower
       tags:
         - watchtower

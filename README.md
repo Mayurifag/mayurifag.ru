@@ -28,7 +28,7 @@ cd mayurifag.ru
 cp -rfp inventories/sample inventories/my-provision
 # Now you are required to change my-provision files.
 # or ln from some place like that:
-# ln -s ~/Nextcloud/Software/dotfiles/my-provision inventories/my-provision
+# ln -s /Volumes/exfat/OpenCloud/Personal/Software/dotfiles/my-provision/ inventories/my-provision
 ansible-galaxy install -r requirements.yml
 ~~~
 
@@ -81,6 +81,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | Gitea                | <http://git.mayurifag.local>             | 3000/222  | todo |            |
 | Hemmelig.app         | <http://secret.mayurifag.local>          | 3000      | app  |            |
 | Homepage.dev         | <http://home.mayurifag.local>            | 3000      | ldap | ✅          |
+| Mini-QR              | <http://qr.mayurifag.local>              | 8080      | ldap | ✅          |
 | mayurifag.github.io  | <http://mayurifag.local>                 | 8005      | ldap | ✅          |
 | mus                  | <http://mus.mayurifag.local>             | 8000      | ldap | ✅          |
 | lldap                | <http://ldap.mayurifag.local>            | 17170     | ldap | ✅          |
@@ -131,7 +132,6 @@ need to deploy my services once again.
   * [ ] Has to be free and allow deploy from ansible via API
   * [ ] maybe just main website check and self service to report docker unhealth
 * [ ] Remove obsidian couchdb, nextcloud and vaultwarden roles in 2026
-* [ ] Remove "available_externally" everywhere, doesnt make sense for today
 * [ ] Think what tmux configuration/plugins might I need
   * [ ] named sessions per user if i had more users
   * [ ] auto-reconnect logic
