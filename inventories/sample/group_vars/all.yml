@@ -12,11 +12,11 @@ root_userpassword: change_this
 lldap_base_dn: "dc=mayurifag,dc=local"
 lldap_observer_user_password: "change_this_observer_password"
 
-# change this
 admin_authorized_keys: ""
 
 server_timezone: Etc/UTC
 server_hostname: mayurifag.local
+server_ssh_port: 2222
 swap_file_size_mb: "1024"
 swap_swappiness: "15"
 

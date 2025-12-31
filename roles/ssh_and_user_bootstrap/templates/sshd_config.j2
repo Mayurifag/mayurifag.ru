@@ -1,5 +1,6 @@
 # Ansible managed: /etc/ssh/sshd_config.d/10-ansible.conf
 
+Port {{ server_ssh_port }}
 Protocol 2
 # for faster sshing we do not need dns, but later it might be needed to be used with bastion or something
 UseDNS no

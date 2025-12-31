@@ -1,19 +1,9 @@
 ---
-- name: Bootstrap
-  hosts: all
-  become: yes
-  gather_facts: no
-  roles:
-    - role: robertdebock.bootstrap
-      tags:
-        - bootstrap
-      when: (bootstrap_enabled | default(True))
-
 - name: Provisioning
-  hosts: all
+  hosts: sample
   gather_facts: yes
   roles:
-    - role: server_general_preparations
+    - role: server_preparations
       tags:
         - general
 
@@ -27,9 +17,9 @@
         - swap
       when: (swap_enabled | default(False))
 
-    - role: users
+    - role: bashrc
       tags:
-        - users
+        - bashrc
 
     - role: geerlingguy.docker
       tags:

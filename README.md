@@ -37,7 +37,8 @@ ansible-galaxy install -r requirements.yml
 #### TL;DR
 
 ~~~sh
-make deploy-tag "traefik,mus"
+make boostrap # run once, - thats ssh configuration
+make deploy "traefik,mus" # no tags = deploy everything
 ~~~
 
 #### Optional steps

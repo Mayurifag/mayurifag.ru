@@ -1,10 +1,14 @@
 [all]
 ## Remote deployment example
-# provision-server ansible_host=192.168.1.30 ansible_user=root ansible_ssh_pass=something
-# provision-server ansible_host=192.168.1.30 ansible_user=username ansible_become=yes ansible_become_user=root
+# provision-server ansible_host=192.168.1.30
 
 ## Local deployment example
 # provision-server ansible_connection=local ansible_host=localhost
 
+[bootstrap]
+# Initial connection as root on port 22
+bootstrap-server ansible_host=192.168.1.30 ansible_user=root ansible_port=22
+
 [sample]
-provision-server
+# Connection as admin on the new custom port
+provision-server ansible_host=192.168.1.30 ansible_user={{ admin_username }} ansible_port={{ server_ssh_port }}
