@@ -107,6 +107,7 @@ need to deploy my services once again.
   * [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker>
   * [ ] Block everything except ssh. Check ufw status and allowances
   * [ ] open port if needed in each ansible role
+  * [ ] IP Masquerading ?
 * [ ] Replace 3x-ui with remnawave completely
   * [ ] Make sure subscription is working
   * [ ] Information about client apps (win/linux/macos/android/ios)

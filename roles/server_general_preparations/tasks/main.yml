@@ -1,4 +1,7 @@
 ---
+- name: Include iptables backup tasks
+  ansible.builtin.include_tasks: iptables_backup.yml
+
 - name: Include hostname configuration
   ansible.builtin.include_tasks: hostname.yml
 

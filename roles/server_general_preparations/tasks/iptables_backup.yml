@@ -1,0 +1,57 @@
+---
+- name: Create iptables backup directory
+  ansible.builtin.file:
+    path: /root/iptables_backup
+    state: directory
+    mode: "0700"
+    owner: root
+    group: root
+
+- name: Check if iptables exists
+  ansible.builtin.command: which iptables
+  register: iptables_check
+  failed_when: false
+  changed_when: false
+
+- name: Backup IPv4 iptables rules (fresh state only)
+  ansible.builtin.shell: "iptables-save > /root/iptables_backup/rules.v4"
+  args:
+    creates: /root/iptables_backup/rules.v4
+  when: iptables_check.rc == 0
+
+- name: Check if ip6tables exists
+  ansible.builtin.command: which ip6tables
+  register: ip6tables_check
+  failed_when: false
+  changed_when: false
+
+- name: Backup IPv6 iptables rules (fresh state only)
+  ansible.builtin.shell: "ip6tables-save > /root/iptables_backup/rules.v6"
+  args:
+    creates: /root/iptables_backup/rules.v6
+  when: ip6tables_check.rc == 0
+
+- name: Create README for iptables backup
+  ansible.builtin.copy:
+    dest: /root/iptables_backup/README.txt
+    mode: "0644"
+    content: |
+      IPTABLES FRESH STATE BACKUP
+      ===========================
+
+      These files represent the state of the firewall before major Ansible provisioning
+      (specifically before Docker or UFW installation).
+
+      FILES:
+      - rules.v4: IPv4 rules
+      - rules.v6: IPv6 rules
+
+      RESTORATION:
+      To restore these rules manually, run:
+
+      sudo iptables-restore < /root/iptables_backup/rules.v4
+      sudo ip6tables-restore < /root/iptables_backup/rules.v6
+
+      WARNING:
+      Restoring these rules while Docker is running may break container networking.
+      It is recommended to stop the Docker service before restoring.
