@@ -1,0 +1,8 @@
+{
+  "files.exclude": {
+    "**/.ansible": true
+  },
+  "search.exclude": {
+    "**/.ansible": true
+  }
+}

@@ -17,9 +17,9 @@
         - swap
       when: (swap_enabled | default(False))
 
-    - role: bashrc
+    - role: home_folder
       tags:
-        - bashrc
+        - home_folder
 
     - role: geerlingguy.docker
       tags:

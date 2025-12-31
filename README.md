@@ -58,9 +58,10 @@ ssh-keygen -R mayurifag.ru # clean ssh if there were interactions before
 
 ~~~sh
 # ~/.ssh/config
-Host mayurifag-prod
-    HostName mayurifag.ru
+Host change_that
+    HostName change.that
     User admin_user # Change user
+    Port 2222 # change port
     RequestTTY yes
     RemoteCommand tmux attach -d || tmux new-session -s main
 ~~~

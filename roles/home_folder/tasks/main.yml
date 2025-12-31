@@ -1,0 +1,47 @@
+---
+- name: Apply bash settings for admin user
+  ansible.builtin.template:
+    src: "templates/.bashrc"
+    dest: "/home/{{ admin_username }}/.bashrc"
+    owner: "{{ admin_username }}"
+    group: "{{ admin_username }}"
+    mode: "0644"
+
+- name: Apply bash settings for root user
+  ansible.builtin.template:
+    src: "templates/.bashrc"
+    dest: "/root/.bashrc"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Ensure .tmux/plugins directory exists
+  ansible.builtin.file:
+    path: "/home/{{ admin_username }}/.tmux/plugins"
+    state: directory
+    owner: "{{ admin_username }}"
+    group: "{{ admin_username }}"
+    mode: "0755"
+
+- name: Clone Tmux Plugin Manager (TPM)
+  ansible.builtin.git:
+    repo: https://github.com/tmux-plugins/tpm
+    dest: "/home/{{ admin_username }}/.tmux/plugins/tpm"
+    version: master
+    update: yes
+  become: false
+
+- name: Configure .tmux.conf
+  ansible.builtin.template:
+    src: ".tmux.conf.j2"
+    dest: "/home/{{ admin_username }}/.tmux.conf"
+    owner: "{{ admin_username }}"
+    group: "{{ admin_username }}"
+    mode: "0644"
+
+- name: Install Tmux Plugins
+  ansible.builtin.command: "/home/{{ admin_username }}/.tmux/plugins/tpm/bin/install_plugins"
+  become: false
+  changed_when: false
+  environment:
+    TMUX_PLUGIN_MANAGER_PATH: "/home/{{ admin_username }}/.tmux/plugins/"
