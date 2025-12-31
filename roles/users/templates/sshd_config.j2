@@ -1,7 +1,9 @@
 # Ansible managed: /etc/ssh/sshd_config.d/10-ansible.conf
 
 Protocol 2
-UseDNS yes
+# for faster sshing we do not need dns, but later it might be needed to be used with bastion or something
+UseDNS no
+GSSAPIAuthentication no
 
 # Permit only admin_username and only via key
 PermitEmptyPasswords no

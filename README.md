@@ -70,30 +70,30 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 
 <!-- markdownlint-disable line-length -->
 
-| Name                 | Subdomain         | Auth | Watchtower | Exposed ports          |
-| :------------------- | :---------------- | ---- | ---------- | ---------------------- |
-| 3proxy               |                   | app  | ✅          | `1080/tcp`, `3128/tcp` |
-| 3x-ui panel          | `3x`              | app  |            |                        |
-| 3x-ui subscriptions  | `3xsub`           | app  |            |                        |
-| BentoPDF             | `pdf`             | ldap | ✅          |                        |
-| Blocky               | `dns`             | app  |            | `853/tcp`              |
-| ConvertX             | `convert`         | ldap | ✅          |                        |
-| Gitea                | `git`             | todo |            | `222/tcp`              |
-| Hemmelig.app         | `secret`          | app  |            |                        |
-| Homepage.dev         | `home`            | ldap | ✅          |                        |
-| Mini-QR              | `qr`              | ldap | ✅          |                        |
-| mayurifag.github.io  | `<TLD>`           | ldap | ✅          |                        |
-| mus                  | `mus`             | ldap | ✅          |                        |
-| lldap                | `ldap`            | ldap | ✅          |                        |
-| Netdata              | `netdata`         | ldap |            |                        |
-| Nextcloud            | `nextcloud`       | todo |            |                        |
-| Obsidian LiveSync db | `couchdbobsidian` | app  |            |                        |
-| OpenCloud            | `cloud`           | ldap |            |                        |
-| Portainer            | `portainer`       | app  | ✅          |                        |
-| Traefik dashboard    | `traefik`         | ldap |            | `443/tcp`              |
-| Tinyauth             | `auth`            | ldap | ✅          |                        |
-| Vaultwarden          | `pw`              | app  |            |                        |
-| Watchtower HTTP API  | `watchtower`      | app  | ✅          |                        |
+| Name                 | Subdomain         | Auth | Watchtower |
+| :------------------- | :---------------- | ---- | ---------- |
+| 3proxy               |                   | app  | +          |
+| 3x-ui panel and sub  | `3x`/`3xsub`      | app  |            |
+| BentoPDF             | `pdf`             | ldap | +          |
+| Blocky               | `dns`             | app  |            |
+| ConvertX             | `convert`         | ldap | +          |
+| Gitea                | `git`             | todo |            |
+| Hemmelig.app         | `secret`          | app  |            |
+| Homepage.dev         | `home`            | ldap | +          |
+| Linkwarden           | `bookmarks`       | app  | +          |
+| Mini-QR              | `qr`              | ldap | +          |
+| mayurifag.github.io  | `<TLD>`           | ldap | +          |
+| mus                  | `mus`             | ldap | +          |
+| lldap                | `ldap`            | ldap | +          |
+| Netdata              | `netdata`         | ldap |            |
+| Nextcloud            | `nextcloud`       | todo |            |
+| Obsidian LiveSync db | `couchdbobsidian` | app  |            |
+| OpenCloud            | `cloud`           | ldap |            |
+| Portainer            | `portainer`       | app  | +          |
+| Traefik / Crowdsec   | `traefik`         | ldap |            |
+| Tinyauth             | `auth`            | ldap | +          |
+| Vaultwarden          | `pw`              | app  |            |
+| Watchtower HTTP API  | `watchtower`      | app  | +          |
 
 <!-- markdownlint-enable line-length -->
 
@@ -113,31 +113,28 @@ need to deploy my services once again.
   * [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker>
   * [ ] Block everything except ssh. Check ufw status and allowances
   * [ ] open port if needed in each ansible role
-* [ ] I have exim4 service from debian by default.. wtf. I'd better to uninstall it and disable port
 * [ ] Replace 3x-ui with remnawave completely
   * [ ] Make sure subscription is working
   * [ ] Information about client apps (win/linux/macos/android/ios)
   * [ ] How can I easily deploy nodes to multiple servers with current setup?
   * [ ] Scripts to automate setup
-* [ ] Home has to contain processes monitoring - glances?
+* [ ] Homepage has to contain processes monitoring - glances?
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
   * [ ] <https://github.com/we-promise/sure>
   * [ ] Is it possible to have data in opencloud?
-* [ ] Status page for services
-  * [ ] Has to be free and allow deploy from ansible via API
-  * [ ] maybe just main website check and self service to report docker unhealth
-* [ ] Remove obsidian couchdb, nextcloud and vaultwarden roles in 2026
-* [ ] Bentopdf is kinda meh, migrate to something else after tests
+* [ ] Remove obsidian couchdb, netdata, nextcloud and vaultwarden roles in 2026
+* [ ] Bentopdf is kinda meh, migrate to something else after tests (i.e. edit)
 * [ ] Bandwhich - will require downloading binary to root
 * [ ] Crowdsec iptables firewall - remediation component.
   * [ ] Crowdsec has to be inside traefik role
   * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
   * [ ] see if there is solution to unban false positive and if not, add smth
+* [ ] Portainer - setup automatic LDAP
 
 ### Thinking if I need it / probably wont do ideas / notes
 
-* [ ] <https://github.com/pranshuparmar/witr>
+* [ ] <https://github.com/pranshuparmar/witr> - from official repos
 * [ ] general role has too much things inside it, split it
 * [ ] Think what tmux configuration/plugins might I need
   * [ ] named sessions per user if i had more users
@@ -181,6 +178,10 @@ need to deploy my services once again.
 * [ ] Email 💩
   * [ ] research something super simple. Preferably single docker container
   * [ ] Parsedmarc app
-* [ ] Good yet simple monitoring
+* [ ] Status page for services
+  * [ ] Has to be free and allow deploy from ansible via API
+  * [ ] maybe just main website check and self service to report docker unhealth
   * [ ] <https://beszel.dev/>
 * [ ] Bentopdf to stirlingpdf? Something which easily makes edits.
+* [ ] fresh deploy - migrate to <https://github.com/HexmosTech/udwall> instead
+      of ufw-docker

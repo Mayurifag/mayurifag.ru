@@ -1,0 +1,26 @@
+---
+linkwarden_enabled: false
+
+linkwarden_subdomain: "bookmarks"
+linkwarden_image: "ghcr.io/linkwarden/linkwarden:latest"
+
+linkwarden_directory: "{{ docker_home }}/linkwarden"
+linkwarden_data_directory: "{{ linkwarden_directory }}/data"
+
+linkwarden_admin_email: "{{ admin_email }}"
+
+linkwarden_memory: "2g"
+
+linkwarden_openai_base_url: "https://generativelanguage.googleapis.com/v1beta/openai/"
+linkwarden_openai_model: "gemini-flash-latest"
+linkwarden_openai_api_key: "set_this_to_your_google_ai_studio_key"
+linkwarden_pagination_take_count: "250"
+
+# PostgreSQL variables
+linkwarden_db_name: linkwarden_db
+linkwarden_db_user: linkwarden_user
+linkwarden_db_host: linkwarden-db
+linkwarden_db_port: 5432
+linkwarden_db_data_directory: "{{ linkwarden_directory }}/postgres"
+linkwarden_db_image: postgres:16-alpine
+linkwarden_db_memory: "1g"

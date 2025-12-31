@@ -146,6 +146,11 @@
         - qr
       when: (mini_qr_enabled | default(False))
 
+    - role: linkwarden
+      tags:
+        - linkwarden
+      when: (linkwarden_enabled | default(False))
+
     - role: watchtower
       tags:
         - watchtower

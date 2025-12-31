@@ -23,6 +23,7 @@ alias remove='sudo apt remove'
 alias shutdown='sudo shutdown now'
 alias update='sudo apt update && sudo apt upgrade -y'
 alias yabs='curl -sL https://yabs.sh | bash'
+alias systemctl='sudo systemctl'
 
 # CrowdSec
 alias cscli='docker exec crowdsec cscli'

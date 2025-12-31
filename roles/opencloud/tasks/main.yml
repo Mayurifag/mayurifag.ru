@@ -51,6 +51,7 @@
       OC_SHARING_PUBLIC_SHARE_MUST_HAVE_PASSWORD: "false"
       # For webdav sync of Obsidian Remotely Save performance
       OCDAV_ALLOW_PROPFIND_DEPTH_INFINITY: "true"
+      STORAGE_SYSTEM_LOG_LEVEL: "error" # Prevent unnecessary warnings pollution of logs
 
       STORAGE_USERS_DRIVER: "posix"
       STORAGE_USERS_ID_CACHE_STORE: "nats-js-kv"
