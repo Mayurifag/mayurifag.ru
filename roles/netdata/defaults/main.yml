@@ -1,8 +1,0 @@
----
-netdata_enabled: true
-
-# network
-netdata_subdomain: "netdata"
-
-# specs
-netdata_memory: 1g

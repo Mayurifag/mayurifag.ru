@@ -70,17 +70,9 @@ proxy_user_password: change_this
 proxy_socks_port: "1080"
 proxy_http_port: "1081"
 
-netdata_enabled: true
-netdata_subdomain: "netdata"
-
-blocky_enabled: true
-
 mus_enabled: true
 mus_subdomain: "mus"
 mus_music_directory: "/home/{{ admin_username }}/music_folder/"
-
-vaultwarden_enabled: true
-vaultwarden_subdomain: "pw"
 
 portainer_enabled: true
 portainer_subdomain: "portainer"
@@ -94,9 +86,6 @@ homepage_subdomain: "home"
 hemmelig_enabled: true
 hemmelig_subdomain: "secret"
 
-nextcloud_enabled: true
-nextcloud_subdomain: "nextcloud"
-
 gitea_enabled: true
 gitea_subdomain: "git"
 gitea_admin_password: "change_this"
@@ -104,12 +93,6 @@ gitea_admin_password: "change_this"
 watchtower_enabled: true
 watchtower_subdomain: "watchtower"
 watchtower_http_api_token: change_this
-
-obsidian_livesync_enabled: true
-obsidian_livesync_subdomain: "couchdbobsidian"
-obsidian_livesync_couchdb_user: "obsidian_user"
-obsidian_livesync_couchdb_password: "change_this"
-obsidian_livesync_couchdb_database: "obsidian"
 
 tinyauth_enabled: true
 tinyauth_subdomain: "auth"

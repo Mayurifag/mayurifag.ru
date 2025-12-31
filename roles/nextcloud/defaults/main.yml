@@ -1,8 +1,0 @@
----
-nextcloud_enabled: true
-
-nextcloud_subdomain: "nextcloud"
-nextcloud_data_directory: "{{ docker_home }}/nextcloud"
-nextcloud_files_directory: "{{ files_home }}"
-
-nextcloud_docker_image: nextcloud/all-in-one:latest

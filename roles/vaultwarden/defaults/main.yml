@@ -1,6 +1,0 @@
----
-vaultwarden_enabled: true
-
-vaultwarden_subdomain: "pw"
-
-vaultwarden_data_directory: "{{ docker_home }}/vaultwarden"

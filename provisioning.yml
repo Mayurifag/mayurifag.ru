@@ -81,11 +81,6 @@
         - threexui
       when: (threexui_enabled | default(False))
 
-    - role: blocky
-      tags:
-        - blocky
-      when: (blocky_enabled | default(False))
-
     - role: portainer
       tags:
         - portainer
@@ -96,25 +91,10 @@
         - mus
       when: (mus_enabled | default(False))
 
-    - role: netdata
-      tags:
-        - netdata
-      when: (netdata_enabled | default(False))
-
     - role: hemmelig
       tags:
         - hemmelig
       when: (hemmelig_enabled | default(False))
-
-    - role: vaultwarden
-      tags:
-        - vaultwarden
-      when: (vaultwarden_enabled | default(False))
-
-    - role: nextcloud
-      tags:
-        - nextcloud
-      when: (nextcloud_enabled | default(False))
 
     - role: opencloud
       tags:
@@ -125,11 +105,6 @@
       tags:
         - gitea
       when: (gitea_enabled | default(False))
-
-    - role: obsidian_livesync
-      tags:
-        - obsidian
-      when: (obsidian_livesync_enabled | default(False))
 
     - role: bentopdf
       tags:

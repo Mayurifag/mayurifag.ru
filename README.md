@@ -70,30 +70,25 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 
 <!-- markdownlint-disable line-length -->
 
-| Name                 | Subdomain         | Auth | Watchtower |
-| :------------------- | :---------------- | ---- | ---------- |
-| 3proxy               |                   | app  | +          |
-| 3x-ui panel and sub  | `3x`/`3xsub`      | app  |            |
-| BentoPDF             | `pdf`             | ldap | +          |
-| Blocky               | `dns`             | app  |            |
-| ConvertX             | `convert`         | ldap | +          |
-| Gitea                | `git`             | todo |            |
-| Hemmelig.app         | `secret`          | app  |            |
-| Homepage.dev         | `home`            | ldap | +          |
-| Linkwarden           | `bookmarks`       | app  | +          |
-| Mini-QR              | `qr`              | ldap | +          |
-| mayurifag.github.io  | `<TLD>`           | ldap | +          |
-| mus                  | `mus`             | ldap | +          |
-| lldap                | `ldap`            | ldap | +          |
-| Netdata              | `netdata`         | ldap |            |
-| Nextcloud            | `nextcloud`       | todo |            |
-| Obsidian LiveSync db | `couchdbobsidian` | app  |            |
-| OpenCloud            | `cloud`           | ldap |            |
-| Portainer            | `portainer`       | app  | +          |
-| Traefik / Crowdsec   | `traefik`         | ldap |            |
-| Tinyauth             | `auth`            | ldap | +          |
-| Vaultwarden          | `pw`              | app  |            |
-| Watchtower HTTP API  | `watchtower`      | app  | +          |
+| Name                | Subdomain    | Auth | Watchtower |
+| :------------------ | :----------- | ---- | ---------- |
+| 3proxy              |              | app  | +          |
+| 3x-ui panel and sub | `3x`/`3xsub` | app  |            |
+| BentoPDF            | `pdf`        | ldap | +          |
+| ConvertX            | `convert`    | ldap | +          |
+| Gitea               | `git`        | todo |            |
+| Hemmelig.app        | `secret`     | app  |            |
+| Homepage.dev        | `home`       | ldap | +          |
+| Linkwarden          | `bookmarks`  | app  | +          |
+| Mini-QR             | `qr`         | ldap | +          |
+| mayurifag.github.io | `<TLD>`      | ldap | +          |
+| mus                 | `mus`        | ldap | +          |
+| lldap               | `ldap`       | ldap | +          |
+| OpenCloud           | `cloud`      | ldap |            |
+| Portainer           | `portainer`  | app  | +          |
+| Traefik / Crowdsec  | `traefik`    | ldap |            |
+| Tinyauth            | `auth`       | ldap | +          |
+| Watchtower HTTP API | `watchtower` | app  | +          |
 
 <!-- markdownlint-enable line-length -->
 
@@ -123,8 +118,6 @@ need to deploy my services once again.
   * [ ] Has to support crypto, ibkr, russian brokers
   * [ ] <https://github.com/we-promise/sure>
   * [ ] Is it possible to have data in opencloud?
-* [ ] Remove blocky, obsidian couchdb, netdata, nextcloud and vaultwarden roles
-      in 2026
 * [ ] Bentopdf is kinda meh, migrate to something else after tests (i.e. edit)
 * [ ] Bandwhich - will require downloading binary to root
 * [ ] Crowdsec iptables firewall - remediation component.

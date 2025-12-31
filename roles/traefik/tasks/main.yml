@@ -36,11 +36,6 @@
     name: web
     state: present
 
-- name: Create nextcloud-aio network
-  community.docker.docker_network:
-    name: nextcloud-aio
-    state: present
-
 - name: Traefik Docker Container
   community.docker.docker_container:
     name: traefik
@@ -72,7 +67,6 @@
       homepage.href: "https://{{ traefik_subdomain }}.{{ server_hostname }}/dashboard/"
     networks:
       - name: "web"
-      - name: "nextcloud-aio"
 
 - name: Ensure logrotate is installed
   ansible.builtin.apt:

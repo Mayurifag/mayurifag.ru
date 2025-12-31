@@ -1,7 +1,0 @@
----
-blocky_enabled: true
-
-blocky_subdomain: "dns"
-
-# directories
-blocky_data_directory: "{{ docker_home }}/blocky"
