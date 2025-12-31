@@ -4,13 +4,13 @@
     database: passwd
     key: "{{ admin_username }}"
 
-# - name: Remove CrowdSec Directories
-#   ansible.builtin.file:
-#     path: "{{ item }}"
-#     state: absent
-#   with_items:
-# - "{{ crowdsec_data_directory }}"
-# - "{{ crowdsec_config_directory }}"
+- name: Remove CrowdSec Directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ crowdsec_data_directory }}"
+    - "{{ crowdsec_config_directory }}"
 
 - name: Create CrowdSec Directories
   ansible.builtin.file:

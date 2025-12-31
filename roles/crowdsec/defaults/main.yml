@@ -5,7 +5,7 @@ crowdsec_directory: "{{ docker_home }}/crowdsec"
 crowdsec_data_directory: "{{ crowdsec_directory }}/data"
 crowdsec_config_directory: "{{ crowdsec_directory }}/config"
 
-crowdsec_image: crowdsecurity/crowdsec:latest
+crowdsec_image: crowdsecurity/crowdsec:v1.7.4
 
 # Ban duration (1 week)
 crowdsec_ban_duration: "168h"

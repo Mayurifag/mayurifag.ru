@@ -123,7 +123,8 @@ need to deploy my services once again.
   * [ ] Has to support crypto, ibkr, russian brokers
   * [ ] <https://github.com/we-promise/sure>
   * [ ] Is it possible to have data in opencloud?
-* [ ] Remove obsidian couchdb, netdata, nextcloud and vaultwarden roles in 2026
+* [ ] Remove blocky, obsidian couchdb, netdata, nextcloud and vaultwarden roles
+      in 2026
 * [ ] Bentopdf is kinda meh, migrate to something else after tests (i.e. edit)
 * [ ] Bandwhich - will require downloading binary to root
 * [ ] Crowdsec iptables firewall - remediation component.
