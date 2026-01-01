@@ -11,7 +11,12 @@ should automatically enroll your instance to the
 
 ## Linkding
 
-Install the browser extension [Chrome](https://chrome.google.com/webstore/detail/linkding-extension/beakmhbijpdhipnjhnclmhgjlddhidpe) / [Firefox](https://addons.mozilla.org/en-US/firefox/addon/linkding-extension/).
+Install the browser extension:
+
+- [Chrome](https://chrome.google.com/webstore/detail/linkding-extension/beakmhbijpdhipnjhnclmhgjlddhidpe)
+- [Firefox](https://addons.mozilla.org/en-US/firefox/addon/linkding-extension/).
+
+It will require to setup token: `/admin/authtoken/tokenproxy/1/change/`
 
 ## OpenCloud
 

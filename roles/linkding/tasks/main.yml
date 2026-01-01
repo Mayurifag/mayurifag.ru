@@ -25,14 +25,28 @@
     env:
       LD_SUPERUSER_NAME: "{{ admin_username }}"
       LD_SUPERUSER_PASSWORD: "{{ admin_userldappassword }}"
-      LD_CSRF_TRUSTED_ORIGINS: "https://*,http://*"
+      LD_CSRF_TRUSTED_ORIGINS: "https://{{ linkding_subdomain }}.{{ server_hostname }}"
     networks:
       - name: "web"
     labels:
       traefik.enable: "true"
       traefik.http.routers.linkding.rule: "Host(`{{ linkding_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.linkding.loadbalancer.server.port: "9090"
-      traefik.http.routers.linkding.middlewares: "secure-headers@file"
+
+      # Replaces secure-headers@file to fix Referrer-Policy causing Origin: null (same-origin needed)
+      traefik.http.middlewares.linkding-headers.headers.stsSeconds: "31536000"
+      traefik.http.middlewares.linkding-headers.headers.stsIncludeSubdomains: "true"
+      traefik.http.middlewares.linkding-headers.headers.stsPreload: "true"
+      traefik.http.middlewares.linkding-headers.headers.forceSTSHeader: "true"
+      traefik.http.middlewares.linkding-headers.headers.contentTypeNosniff: "true"
+      traefik.http.middlewares.linkding-headers.headers.browserXssFilter: "true"
+      traefik.http.middlewares.linkding-headers.headers.referrerPolicy: "same-origin"
+      # throw https and domain
+      traefik.http.middlewares.linkding-headers.headers.customrequestheaders.X-Forwarded-Proto: "https"
+      traefik.http.middlewares.linkding-headers.headers.customrequestheaders.X-Forwarded-Host: "{{ linkding_subdomain }}.{{ server_hostname }}"
+
+      traefik.http.routers.linkding.middlewares: "linkding-headers"
+
       com.centurylinklabs.watchtower.enable: "true"
 
       homepage.group: "Services"

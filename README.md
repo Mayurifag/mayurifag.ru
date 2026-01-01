@@ -170,3 +170,4 @@ need to deploy my services once again.
 * [ ] tmux
   * [ ] add dracula disk usage (used/total) or totally redesign it
   * [ ] tmux with `nice` priority <https://x.com/SA5280/status/2001732941639282759>
+* [ ] Linkeding to smth else supported in floccus when helium browser fixed for them
