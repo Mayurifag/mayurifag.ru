@@ -1,13 +1,12 @@
 set -g mouse on
-set-option -g history-limit 50000
-
-# Prefix
-set -g prefix C-b
 
 # Indices
 set -g base-index 1
 setw -g pane-base-index 1
 set -g renumber-windows on
+
+# Detach instead of killing session when the last window closes
+set-option -g exit-empty off
 
 # Splits
 bind-key "|" split-window -h -c "#{pane_current_path}"
@@ -19,19 +18,15 @@ bind c new-window -c "#{pane_current_path}"
 # Plugins
 set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-sensible'
-set -g @plugin 'tmux-plugins/tmux-resurrect'
-set -g @plugin 'tmux-plugins/tmux-continuum'
+set -g @plugin 'jaclu/tmux-menus'
+set -g @plugin 'noscript/tmux-mighty-scroll'
 set -g @plugin 'dracula/tmux'
 
 # Theme
-set -g @dracula-plugins "cpu-usage ram-usage time"
-set -g @dracula-show-powerline true
-set -g @dracula-show-flags true
-set -g @dracula-refresh-rate 5
-set -g @dracula-show-left-icon session
-set -g @dracula-border-contrast true
+set -g @dracula-plugins "cpu-usage ram-usage"
+set -g @dracula-theme "dark"
 
-# Persistence
-set -g @continuum-restore 'on'
+{# C-b Space = menu #}
+set -g @menus_trigger 'Space'
 
 run '~/.tmux/plugins/tpm/tpm'

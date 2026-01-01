@@ -20,7 +20,7 @@
 
     - role: home_folder
       tags:
-        - home_folder
+        - home
 
     - role: geerlingguy.docker
       tags:

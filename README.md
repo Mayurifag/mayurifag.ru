@@ -94,8 +94,12 @@ need to deploy my services once again.
 
 ### List
 
+* [ ] tmux
+  * [ ] execute tmux kill-server before removing tmux related things on deploy
+  * [ ] add dracula disk usage (used/total)
+  * [ ] tmux with `nice` priority <https://x.com/SA5280/status/2001732941639282759>
 * [ ] ufw
-  * [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker>
+  * [ ] ufw - for docker too <https://github.com/HexmosTech/udwall>
   * [ ] Block everything except ssh. Check ufw status and allowances
   * [ ] open port if needed in each ansible role
   * [ ] IP Masquerading ?
@@ -109,7 +113,7 @@ need to deploy my services once again.
   * [ ] Has to support crypto, ibkr, russian brokers
   * [ ] <https://github.com/we-promise/sure>
   * [ ] Is it possible to have data in opencloud?
-* [ ] Bentopdf is kinda meh, migrate to something else after tests (i.e. edit)
+* [ ] Bentopdf to stirlingpdf? Something which easily makes edits.
 * [ ] Bandwhich - will require downloading binary to root
 * [ ] Crowdsec iptables firewall - remediation component.
   * [ ] traefik and crowdsec have to be in a single role - too much connected
@@ -124,11 +128,6 @@ need to deploy my services once again.
   * [ ] Hemmelig - too much things, analytics and so on
 * [ ] <https://github.com/pranshuparmar/witr> - from official repos
 * [ ] general role has too much things inside it, split it
-* [ ] Think what tmux configuration/plugins might I need
-  * [ ] named sessions per user if i had more users
-  * [ ] auto-reconnect logic
-  * [ ] some cheatsheet alias probably xd
-  * [ ] tmux with `nice` priority <https://x.com/SA5280/status/2001732941639282759>
 * [ ] When Tinyauth will be an OIDC provider make it work for opencloud
 * [ ] Traefik
   * [ ] Update 3.6.4 was breaking change, test with opencloud
@@ -170,6 +169,3 @@ need to deploy my services once again.
   * [ ] Has to be free and allow deploy from ansible via API
   * [ ] maybe just main website check and self service to report docker unhealth
   * [ ] <https://beszel.dev/>
-* [ ] Bentopdf to stirlingpdf? Something which easily makes edits.
-* [ ] fresh deploy - migrate to <https://github.com/HexmosTech/udwall> instead
-      of ufw-docker
