@@ -8,3 +8,16 @@ the Ansible deployment is complete.
 If you provided a valid `crowdsec_enroll_key` in `group_vars`, the deployment
 should automatically enroll your instance to the
 [CrowdSec Console](https://app.crowdsec.net/).
+
+## Linkwarden
+
+Linkwarden configuration requires to generate Access Token and remake extension
+settings. Also put it in password manager.
+
+## OpenCloud
+
+Make sure that Personal space is generated. Things I have to restore:
+
+- Obsidian
+- ejson folder ln
+- my-provision folder ln
