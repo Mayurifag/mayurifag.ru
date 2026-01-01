@@ -1,8 +1,0 @@
----
-- name: Server Bootstrap
-  hosts: bootstrap
-  become: yes
-  gather_facts: yes
-  roles:
-    - role: robertdebock.bootstrap
-    - role: ssh_and_user_bootstrap

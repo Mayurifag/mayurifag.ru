@@ -1,0 +1,14 @@
+---
+- name: Pre-connection cleanup
+  hosts: sample
+  gather_facts: no
+  connection: local
+  tasks:
+    - name: Remove host keys from known_hosts
+      ansible.builtin.known_hosts:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ ansible_host }}"
+        - "{{ server_hostname }}"
+      delegate_to: localhost

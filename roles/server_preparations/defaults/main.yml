@@ -78,7 +78,6 @@ mayurifag_general_extra_packages:
   - ncdu
   - net-tools
   - nethogs
-  - ntp
   - rsyslog
   - software-properties-common
   - tmux

@@ -4,33 +4,7 @@
     path: "{{ hemmelig_data_directory }}"
     state: absent
 
-- name: Create Hemmelig Directories
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-  with_items:
-    - "{{ hemmelig_data_directory }}/files"
-    - "{{ hemmelig_data_directory }}/database"
-
 - name: Create Hemmelig container
   community.docker.docker_container:
     name: hemmelig
-    image: "{{ hemmelig_docker_image }}"
-    pull: true
-    volumes:
-      - "{{ hemmelig_data_directory }}/files:/var/tmp/hemmelig/upload/files"
-      - "{{ hemmelig_data_directory }}/database:/home/node/hemmelig/database/"
-    restart_policy: unless-stopped
-    memory: "{{ hemmelig_memory }}"
-    networks:
-      - name: "web"
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.hemmelig.rule: "Host(`{{ hemmelig_subdomain }}.{{ server_hostname }}`)"
-      traefik.http.services.hemmelig.loadbalancer.server.port: "3000"
-      traefik.http.routers.hemmelig.middlewares: "secure-headers@file"
-
-      homepage.group: "Services"
-      homepage.name: "Hemmelig"
-      homepage.icon: "lock.png"
-      homepage.href: "https://{{ hemmelig_subdomain }}.{{ server_hostname }}"
+    state: absent

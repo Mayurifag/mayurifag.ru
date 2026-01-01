@@ -2,6 +2,7 @@
 - name: Provisioning
   hosts: sample
   gather_facts: yes
+  become: yes
   roles:
     - role: server_preparations
       tags:
@@ -31,16 +32,6 @@
         - lazydocker
       when: (lazydocker_enabled | default(False))
 
-    - role: traefik
-      tags:
-        - traefik
-      when: (traefik_enabled | default(False))
-
-    - role: crowdsec
-      tags:
-        - crowdsec
-      when: (crowdsec_enabled | default(False))
-
     - role: lldap
       tags:
         - lldap
@@ -50,6 +41,16 @@
       tags:
         - tinyauth
       when: (tinyauth_enabled | default(False))
+
+    - role: traefik
+      tags:
+        - traefik
+      when: (traefik_enabled | default(False))
+
+    - role: crowdsec
+      tags:
+        - crowdsec
+      when: (crowdsec_enabled | default(False))
 
     - role: homepage
       tags:

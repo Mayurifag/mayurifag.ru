@@ -1,0 +1,16 @@
+---
+- name: Server Bootstrap
+  hosts: sample
+  gather_facts: yes
+  become: yes
+  vars:
+    # Force connection as root on default port for initial bootstrap
+    ansible_user: root
+    ansible_port: 22
+  vars_prompt:
+    - name: ansible_password
+      prompt: "Enter SSH password for root (initial connection)"
+      private: yes
+  roles:
+    - role: robertdebock.bootstrap
+    - role: ssh_and_user_bootstrap

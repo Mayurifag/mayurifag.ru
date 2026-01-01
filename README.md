@@ -29,6 +29,7 @@ cp -rfp inventories/sample inventories/my-provision
 # Now you are required to change my-provision files.
 # or ln from some place like that:
 # ln -s /Volumes/exfat/OpenCloud/Personal/Software/dotfiles/my-provision/ inventories/my-provision
+# Dont forget you are required to generate ssh key and copy public into provision
 ansible-galaxy install -r requirements.yml
 ~~~
 
@@ -37,22 +38,11 @@ ansible-galaxy install -r requirements.yml
 #### TL;DR
 
 ~~~sh
-make boostrap # run once, - thats ssh configuration
-make deploy "traefik,mus" # no tags = deploy everything
+make boostrap # run once, its cleaning known_hosts and makes ssh configuration
+make deploy "traefik,mus" # or make deploy-all if you are sure
 ~~~
 
 #### Optional steps
-
-* Generate new ssh key and add it to inventory vars file and password manager
-
-~~~sh
-ssh-keygen -t ed25519 -C "Mayurifag@mayurifag.ru" -f ~/Desktop/mayurifag.ru
-xclip -sel clip < ~/Desktop/mayurifag.ru.pub
-vi inventories/my-provision/group_vars/sample.yml # add key here in section
-keepassxc # Make new ssh agent entry if you use keepassxc ssh agent
-ssh-keygen -R 123.123.123.123
-ssh-keygen -R mayurifag.ru # clean ssh if there were interactions before
-~~~
 
 * Make new ssh config section for convenience and using tmux by default
 
@@ -105,6 +95,7 @@ need to deploy my services once again.
 
 ### List
 
+* [ ] fix hemmelig
 * [ ] ufw
   * [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker>
   * [ ] Block everything except ssh. Check ufw status and allowances
@@ -123,6 +114,7 @@ need to deploy my services once again.
 * [ ] Bentopdf is kinda meh, migrate to something else after tests (i.e. edit)
 * [ ] Bandwhich - will require downloading binary to root
 * [ ] Crowdsec iptables firewall - remediation component.
+  * [ ] traefik and crowdsec have to be in a single role - too much connected
   * [ ] Crowdsec has to be inside traefik role
   * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
   * [ ] see if there is solution to unban false positive and if not, add smth

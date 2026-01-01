@@ -16,8 +16,12 @@
 - name: Set en_US.UTF-8 as default locale
   ansible.builtin.command: localectl set-locale LANG=en_US.UTF-8
 
-- name: Ensure NTP service is running and enabled
+- name: Ensure systemd-timesyncd service is running and enabled
   ansible.builtin.systemd:
-    name: ntp
+    name: systemd-timesyncd
     state: started
     enabled: yes
+
+- name: Force time synchronization with systemd-timesyncd
+  ansible.builtin.command: timedatectl set-ntp true
+  changed_when: false

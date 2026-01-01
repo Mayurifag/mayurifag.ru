@@ -55,7 +55,6 @@ docker_daemon_options:
 
 ##################################
 
-bootstrap_enabled: true
 swap_enabled: true
 mayurifag_github_io_enabled: true
 lazydocker_enabled: true
