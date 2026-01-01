@@ -1,0 +1,41 @@
+---
+- name: Remove Linkding Data Directory
+  ansible.builtin.file:
+    path: "{{ linkding_data_directory }}"
+    state: absent
+
+- name: Create Linkding Data Directory
+  ansible.builtin.file:
+    path: "{{ linkding_data_directory }}"
+    state: directory
+    mode: "0755"
+    owner: "1000"
+    group: "1000"
+
+- name: Linkding Docker Container
+  community.docker.docker_container:
+    name: linkding
+    image: "{{ linkding_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ linkding_memory }}"
+    volumes:
+      - "{{ linkding_data_directory }}:/etc/linkding/data"
+    env:
+      LD_SUPERUSER_NAME: "{{ admin_username }}"
+      LD_SUPERUSER_PASSWORD: "{{ admin_userldappassword }}"
+      LD_CSRF_TRUSTED_ORIGINS: "https://*,http://*"
+    networks:
+      - name: "web"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.linkding.rule: "Host(`{{ linkding_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.linkding.loadbalancer.server.port: "9090"
+      traefik.http.routers.linkding.middlewares: "secure-headers@file"
+      com.centurylinklabs.watchtower.enable: "true"
+
+      homepage.group: "Services"
+      homepage.name: "Linkding"
+      homepage.icon: "linkding.png"
+      homepage.href: "https://{{ linkding_subdomain }}.{{ server_hostname }}"

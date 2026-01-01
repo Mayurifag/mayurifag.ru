@@ -69,7 +69,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | ConvertX            | `convert`    | ldap | +          |
 | Gitea               | `git`        | todo |            |
 | Homepage.dev        | `home`       | ldap | +          |
-| Linkwarden          | `bookmarks`  | app  | +          |
+| Linkding            | `bookmarks`  | app  | +          |
 | Mini-QR             | `qr`         | ldap | +          |
 | mayurifag.github.io | `<TLD>`      | ldap | +          |
 | mus                 | `mus`        | ldap | +          |
@@ -94,10 +94,6 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] tmux
-  * [ ] execute tmux kill-server before removing tmux related things on deploy
-  * [ ] add dracula disk usage (used/total)
-  * [ ] tmux with `nice` priority <https://x.com/SA5280/status/2001732941639282759>
 * [ ] ufw
   * [ ] ufw - for docker too <https://github.com/HexmosTech/udwall>
   * [ ] Block everything except ssh. Check ufw status and allowances
@@ -114,13 +110,11 @@ need to deploy my services once again.
   * [ ] <https://github.com/we-promise/sure>
   * [ ] Is it possible to have data in opencloud?
 * [ ] Bentopdf to stirlingpdf? Something which easily makes edits.
-* [ ] Bandwhich - will require downloading binary to root
 * [ ] Crowdsec iptables firewall - remediation component.
   * [ ] traefik and crowdsec have to be in a single role - too much connected
   * [ ] Crowdsec has to be inside traefik role
   * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
   * [ ] see if there is solution to unban false positive and if not, add smth
-* [ ] Portainer - setup automatic LDAP
 
 ### Thinking if I need it / probably wont do ideas / notes
 
@@ -128,7 +122,10 @@ need to deploy my services once again.
   * [ ] Hemmelig - too much things, analytics and so on
 * [ ] <https://github.com/pranshuparmar/witr> - from official repos
 * [ ] general role has too much things inside it, split it
-* [ ] When Tinyauth will be an OIDC provider make it work for opencloud
+* [ ] When Tinyauth will be an OIDC provider
+  * [ ] make it work for opencloud
+  * [ ] Portainer - setup automatic LDAP
+  * [ ] Linkding
 * [ ] Traefik
   * [ ] Update 3.6.4 was breaking change, test with opencloud
   * [ ] tracing/observability tests with my apps
@@ -169,3 +166,7 @@ need to deploy my services once again.
   * [ ] Has to be free and allow deploy from ansible via API
   * [ ] maybe just main website check and self service to report docker unhealth
   * [ ] <https://beszel.dev/>
+* [ ] Bandwhich - will require downloading binary to root - wait for deb repo
+* [ ] tmux
+  * [ ] add dracula disk usage (used/total) or totally redesign it
+  * [ ] tmux with `nice` priority <https://x.com/SA5280/status/2001732941639282759>

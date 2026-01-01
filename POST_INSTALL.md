@@ -9,15 +9,17 @@ If you provided a valid `crowdsec_enroll_key` in `group_vars`, the deployment
 should automatically enroll your instance to the
 [CrowdSec Console](https://app.crowdsec.net/).
 
-## Linkwarden
+## Linkding
 
-Linkwarden configuration requires to generate Access Token and remake extension
-settings. Also put it in password manager.
+Install the browser extension [Chrome](https://chrome.google.com/webstore/detail/linkding-extension/beakmhbijpdhipnjhnclmhgjlddhidpe) / [Firefox](https://addons.mozilla.org/en-US/firefox/addon/linkding-extension/).
 
 ## OpenCloud
 
 Make sure that Personal space is generated. Things I have to restore:
 
-- Obsidian
+- Obsidian (also update in docs)
 - ejson folder ln
 - my-provision folder ln
+- Windows Portable apps shortcuts
+- Windows - Available offline for Personal space
+- Webdav requires token for now. Restore mobiles

@@ -102,10 +102,10 @@
         - qr
       when: (mini_qr_enabled | default(False))
 
-    - role: linkwarden
+    - role: linkding
       tags:
-        - linkwarden
-      when: (linkwarden_enabled | default(False))
+        - linkding
+      when: (linkding_enabled | default(False))
 
     - role: watchtower
       tags:

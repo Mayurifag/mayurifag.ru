@@ -15,6 +15,10 @@
     group: root
     mode: "0644"
 
+- name: Kill running tmux server
+  ansible.builtin.command: tmux kill-server
+  failed_when: false
+
 - name: Remove .tmux directory for clean install
   ansible.builtin.file:
     path: "/home/{{ admin_username }}/.tmux"
