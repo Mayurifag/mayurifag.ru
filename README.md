@@ -65,6 +65,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | Name                | Subdomain    | Auth | Watchtower |
 | :------------------ | :----------- | ---- | ---------- |
 | 3proxy              |              | app  | +          |
+| 3x-ui panel and sub | `3x`/`3xsub` | app  |            |
 | BentoPDF            | `pdf`        | ldap | +          |
 | ConvertX            | `convert`    | ldap | +          |
 | Gitea               | `git`        | todo |            |

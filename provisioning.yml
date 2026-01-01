@@ -67,6 +67,11 @@
         - proxy
       when: (proxy_enabled | default(False))
 
+    - role: threexui
+      tags:
+        - threexui
+      when: (threexui_enabled | default(False))
+
     - role: portainer
       tags:
         - portainer
