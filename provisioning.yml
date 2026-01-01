@@ -77,11 +77,6 @@
         - mus
       when: (mus_enabled | default(False))
 
-    - role: hemmelig
-      tags:
-        - hemmelig
-      when: (hemmelig_enabled | default(False))
-
     - role: opencloud
       tags:
         - opencloud

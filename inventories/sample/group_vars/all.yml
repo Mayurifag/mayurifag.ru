@@ -82,9 +82,6 @@ traefik_subdomain: "traefik"
 homepage_enabled: true
 homepage_subdomain: "home"
 
-hemmelig_enabled: true
-hemmelig_subdomain: "secret"
-
 gitea_enabled: true
 gitea_subdomain: "git"
 gitea_admin_password: "change_this"

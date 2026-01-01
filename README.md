@@ -68,7 +68,6 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | BentoPDF            | `pdf`        | ldap | +          |
 | ConvertX            | `convert`    | ldap | +          |
 | Gitea               | `git`        | todo |            |
-| Hemmelig.app        | `secret`     | app  |            |
 | Homepage.dev        | `home`       | ldap | +          |
 | Linkwarden          | `bookmarks`  | app  | +          |
 | Mini-QR             | `qr`         | ldap | +          |
@@ -95,7 +94,6 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] fix hemmelig
 * [ ] ufw
   * [ ] ufw - for docker too <https://github.com/chaifeng/ufw-docker>
   * [ ] Block everything except ssh. Check ufw status and allowances
@@ -122,6 +120,8 @@ need to deploy my services once again.
 
 ### Thinking if I need it / probably wont do ideas / notes
 
+* [ ] Add simple secret sharing app
+  * [ ] Hemmelig - too much things, analytics and so on
 * [ ] <https://github.com/pranshuparmar/witr> - from official repos
 * [ ] general role has too much things inside it, split it
 * [ ] Think what tmux configuration/plugins might I need
