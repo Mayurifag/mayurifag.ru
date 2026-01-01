@@ -1,8 +1,16 @@
 ---
+# - name: Remove opencloud container
+#   community.docker.docker_container:
+#     name: opencloud
+#     state: absent
+
 # - name: Remove OpenCloud Config Directory if needed
 #   ansible.builtin.file:
-#     path: "{{ opencloud_data_directory }}"
+#     path: "{{ item }}"
 #     state: absent
+#   with_items:
+#     - "{{ opencloud_data_directory }}"
+#     - "{{ opencloud_files_directory }}"
 
 - name: Create OpenCloud Directories
   ansible.builtin.file:
