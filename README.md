@@ -65,7 +65,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | Name                | Subdomain    | Auth | Watchtower |
 | :------------------ | :----------- | ---- | ---------- |
 | 3proxy              |              | app  | +          |
-| 3x-ui panel and sub | `3x`/`3xsub` | app  |            |
+| 3x-ui               | `3x`         | app  |            |
 | BentoPDF            | `pdf`        | ldap | +          |
 | ConvertX            | `convert`    | ldap | +          |
 | Gitea               | `git`        | todo |            |
@@ -100,11 +100,6 @@ need to deploy my services once again.
   * [ ] Block everything except ssh. Check ufw status and allowances
   * [ ] open port if needed in each ansible role
   * [ ] IP Masquerading ?
-* [ ] Replace 3x-ui with remnawave completely
-  * [ ] Make sure subscription is working
-  * [ ] Information about client apps (win/linux/macos/android/ios)
-  * [ ] How can I easily deploy nodes to multiple servers with current setup?
-  * [ ] Scripts to automate setup
 * [ ] Homepage has to contain processes monitoring - glances?
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
@@ -122,17 +117,10 @@ need to deploy my services once again.
 * [ ] Add simple secret sharing app
   * [ ] Hemmelig - too much things, analytics and so on
 * [ ] <https://github.com/pranshuparmar/witr> - from official repos
-* [ ] general role has too much things inside it, split it
 * [ ] When Tinyauth will be an OIDC provider
   * [ ] make it work for opencloud
   * [ ] Portainer - setup automatic LDAP
   * [ ] Linkding
-* [ ] Traefik
-  * [ ] Update 3.6.4 was breaking change, test with opencloud
-  * [ ] tracing/observability tests with my apps
-  * [ ] No AI Bots Middleware with robots.txt - plugin install
-  * [ ] To use LDAP auth onto opencloud and so on I have to use
-        <https://github.com/wiltonsr/ldapAuth> though I dont want to commit that
 * [ ] Watchtowerrr
   * [ ] use config.json for auth to dockerhub to prevent limits
   * [ ] use metrics for homepage <https://gethomepage.dev/widgets/services/watchtower/>
@@ -148,13 +136,6 @@ need to deploy my services once again.
   * [ ] (not sure) <https://github.com/quay/clair>
   * [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
   * [ ] <https://github.com/imthenachoman/How-To-Secure-A-Linux-Server>
-* [ ] DNS and Blocky changes
-  * [ ] Leave only DNS-over-HTTPS (plain DNS might be used in DDOS, DoT useless)
-  * [ ] Revisit all blocklists
-  * [ ] POST_INSTALL DNS over HTTPS setup on clients
-  * [ ] <https://www.youtube.com/watch?v=UjqZPLL0UvM>
-  * [ ] Do I want my own blocks? 🏴‍☠️
-  * [ ] Perhaps I wont need dynamic config also if I get rid of 53 port
 * [ ] Homepage.dev ideas
   * [ ] Stocks SPY/QQQ - requires finnhub api key
   * [ ] World clock? moscow time
@@ -172,3 +153,7 @@ need to deploy my services once again.
   * [ ] add dracula disk usage (used/total) or totally redesign it
   * [ ] tmux with `nice` priority <https://x.com/SA5280/status/2001732941639282759>
 * [ ] Linkeding to smth else supported in floccus when helium browser fixed for them
+* [ ] Traefik
+  * [ ] Update 3.6.4 was breaking change, test with opencloud
+  * [ ] tracing/observability tests with my apps
+  * [ ] No AI Bots Middleware with robots.txt - plugin install

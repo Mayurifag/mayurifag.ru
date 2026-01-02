@@ -1,10 +1,16 @@
 ---
-# - name: Remove 3x-ui Directories
-#   ansible.builtin.file:
-#     path: "{{ item }}"
-#     state: absent
-#   with_items:
-#     - "{{ threexui_data_directory }}/db"
+- name: Stop and remove 3x-ui container if it exists
+  community.docker.docker_container:
+    name: 3x-ui
+    state: absent
+    force_kill: yes
+
+- name: Remove 3x-ui Directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ threexui_data_directory }}"
 
 - name: Create 3x-ui Directories
   ansible.builtin.file:
@@ -38,12 +44,14 @@
       traefik.http.routers.threexui-panel.service: "threexui-panel"
       traefik.http.services.threexui-panel.loadbalancer.server.port: "2053"
       traefik.http.routers.threexui-panel.middlewares: "secure-headers@file"
+      traefik.http.routers.threexui-panel.priority: "1"
 
-      # Subscription
-      traefik.http.routers.threexui-sub.rule: "Host(`{{ threexui_subscription_subdomain }}.{{ server_hostname }}`)"
+      # Subscription on /sub/ path
+      traefik.http.routers.threexui-sub.rule: "Host(`{{ threexui_panel_subdomain }}.{{ server_hostname }}`) && PathPrefix(`/sub/`)"
       traefik.http.routers.threexui-sub.service: "threexui-subscription"
       traefik.http.services.threexui-subscription.loadbalancer.server.port: "2096"
       traefik.http.routers.threexui-sub.middlewares: "secure-headers@file"
+      traefik.http.routers.threexui-sub.priority: "10"
 
       # Reality TCP
       traefik.tcp.routers.threexui-reality.rule: "HostSNI(`{{ threexui_reality_domain }}`)"
@@ -53,6 +61,6 @@
 
       homepage.group: "Networking"
       homepage.name: "3x-ui"
-      homepage.description: "Also subscriptions on {{ threexui_subscription_subdomain }}.{{ server_hostname }}"
+      homepage.description: "Also subscriptions on https://{{ threexui_panel_subdomain }}.{{ server_hostname }}/sub/"
       homepage.icon: "v2ray.png"
       homepage.href: "https://{{ threexui_panel_subdomain }}.{{ server_hostname }}"

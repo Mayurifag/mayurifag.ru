@@ -31,24 +31,24 @@ Make sure that Personal space is generated. Things I have to restore:
 
 ## 3x-ui (Xray)
 
+Be absolutely sure the domain you picked SNI into is fine with that. Sometimes
+that just wont work, i.e. you cant use <live.vkvideo.ru> as SNI target now.
+
 ### 1. Default Credentials
 
 By default, the 3x-ui panel is deployed with insecure credentials.
 
-* **Username**: `admin`
-* **Password**: `admin`
+- **Username**: `admin`
+- **Password**: `admin`
 
 **Action Required**:
 
-1. Log in to the panel (default URL: `https://3x.mayurifag.local`).
-2. Go to **Settings** (or Panel Settings).
-3. Change the Username and Password immediately.
-4. Restart the panel if prompted.
+- Log in to the panel (default URL: `https://3x.mayurifag.local`).
+- Go to **Settings** (or Panel Settings).
+- Change the Username and Password immediately.
+- Set **Subscription**: `Proxy URL` to `https://3x.mayurifag.local/sub/`
 
 ### 2. VLESS Reality XTLS Setup
-
-To enable the stealth proxy that works behind Traefik on port 443, follow these
-steps strictly.
 
 **Panel Configuration**:
 
@@ -56,13 +56,15 @@ Navigate to **Inbounds** -> **Add Inbound**.
 
 Configure the inbound with these specific settings:
 
-* **Remark**: `Reality-TCP`
-* **Protocol**: `vless`
-* **Listening Port**: `443`
-* **Network**: `tcp`
-* **Security**: `reality`
-* **Dest**: `learn.microsoft.com:443` (from `threexui_reality_domain`).
-* **Server Names**: `learn.microsoft.com` (Must match `Dest` domain).
-* **uTLS**: `chrome`.
-* **Private Key**: Click **Get New Key**.
-* **Flow**: `xtls-rprx-vision`.
+- **Protocol**: `vless`
+- **Listening Port**: `443`
+- **Security**: `reality`
+- Client ->  **Flow**: `xtls-rprx-vision`.
+- **Transmission**: `XHTTP`
+- **Dest**: `learn.microsoft.com:443` (from `threexui_reality_domain`).
+- **Server Names**: `learn.microsoft.com` (Must match `Dest` domain).
+- **uTLS**: `chrome`.
+- **Private Key**: Click **Get New Key**.
+- **Save**.
+
+Then just use subscription with [Happ](https://www.happ.su/main/)
