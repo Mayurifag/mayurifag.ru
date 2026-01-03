@@ -159,3 +159,5 @@ need to deploy my services once again.
   * [ ] Block everything. There are a lot of exceptions: ssh/web/dns/dhcp/ntp
   * [ ] open port if needed in each ansible role
   * [ ] IP Masquerading ?
+* [ ] <https://github.com/crocodilestick/Calibre-Web-Automated>
+  * [ ] <ghcr.io/calibrain/calibre-web-automated-book-downloader>

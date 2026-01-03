@@ -17,28 +17,19 @@
       theme: dark
       color: slate
       disableUpdateCheck: true
-      # layout:
-      #   Infrastructure:
-      #     style: row
-      #     columns: 3
-      #   Networking:
-      #     style: row
-      #     columns: 3
-      #   Services:
-      #     style: row
-      #     columns: 3
-      #   Media:
-      #     style: row
-      #     columns: 3
-      #   Development:
-      #     style: row
-      #     columns: 3
-      #   Monitoring:
-      #     style: row
-      #     columns: 3
-      #   Websites:
-      #     style: row
-      #     columns: 3
+      layout:
+        Monitoring:
+          style: row
+          columns: 3
+        Infrastructure:
+          style: row
+          columns: 3
+        Networking:
+          style: row
+          columns: 3
+        Services:
+          style: row
+          columns: 3
     mode: "0644"
 
 - name: Create Homepage docker.yaml
