@@ -95,11 +95,6 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] ufw
-  * [ ] ufw - for docker too <https://github.com/HexmosTech/udwall>
-  * [ ] Block everything except ssh. Check ufw status and allowances
-  * [ ] open port if needed in each ansible role
-  * [ ] IP Masquerading ?
 * [ ] Homepage has to contain processes monitoring - glances?
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
@@ -114,6 +109,7 @@ need to deploy my services once again.
 
 ### Thinking if I need it / probably wont do ideas / notes
 
+* [ ] Linkding to smth else supported in floccus when helium browser fixed for them
 * [ ] Add simple secret sharing app
   * [ ] Hemmelig - too much things, analytics and so on
 * [ ] <https://github.com/pranshuparmar/witr> - from official repos
@@ -152,8 +148,14 @@ need to deploy my services once again.
 * [ ] tmux
   * [ ] add dracula disk usage (used/total) or totally redesign it
   * [ ] tmux with `nice` priority <https://x.com/SA5280/status/2001732941639282759>
-* [ ] Linkeding to smth else supported in floccus when helium browser fixed for them
 * [ ] Traefik
   * [ ] Update 3.6.4 was breaking change, test with opencloud
   * [ ] tracing/observability tests with my apps
   * [ ] No AI Bots Middleware with robots.txt - plugin install
+* [ ] ufw
+  * [ ] Waiting for <https://github.com/shinebayar-g/ufw-docker-automated>
+  * [ ] Problem for docker is that on server reboot or else address of docker
+        container is changing so rules have to be updated
+  * [ ] Block everything. There are a lot of exceptions: ssh/web/dns/dhcp/ntp
+  * [ ] open port if needed in each ansible role
+  * [ ] IP Masquerading ?
