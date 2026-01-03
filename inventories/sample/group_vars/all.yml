@@ -115,3 +115,7 @@ mini_qr_subdomain: "qr"
 
 linkding_enabled: true
 linkding_subdomain: "bookmarks"
+
+glances_enabled: true
+glances_subdomain: "glances"
+glances_password: "change_this_glances_password"

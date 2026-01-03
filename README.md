@@ -69,6 +69,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | BentoPDF            | `pdf`        | ldap | +          |
 | ConvertX            | `convert`    | ldap | +          |
 | Gitea               | `git`        | todo |            |
+| Glances             | `glances`    | app  | +          |
 | Homepage.dev        | `home`       | ldap | +          |
 | Linkding            | `bookmarks`  | app  | +          |
 | Mini-QR             | `qr`         | ldap | +          |
@@ -159,3 +160,5 @@ need to deploy my services once again.
   * [ ] Block everything. There are a lot of exceptions: ssh/web/dns/dhcp/ntp
   * [ ] open port if needed in each ansible role
   * [ ] IP Masquerading ?
+* [ ] <https://github.com/crocodilestick/Calibre-Web-Automated>
+  * [ ] <ghcr.io/calibrain/calibre-web-automated-book-downloader>

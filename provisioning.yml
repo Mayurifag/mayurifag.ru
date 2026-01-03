@@ -32,6 +32,11 @@
         - lazydocker
       when: (lazydocker_enabled | default(False))
 
+    - role: glances
+      tags:
+        - glances
+      when: (glances_enabled | default(False))
+
     - role: lldap
       tags:
         - lldap

@@ -1,0 +1,116 @@
+---
+- name: Create Glances directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  with_items:
+    - "{{ glances_data_directory }}"
+    - "{{ glances_config_directory }}"
+
+- name: Create Glances config
+  ansible.builtin.template:
+    src: glances.conf.j2
+    dest: "{{ glances_config_directory }}/glances.conf"
+    mode: "0644"
+
+# Logic to determine disk device (e.g., sda) and network interface (e.g., eth0)
+- name: Set facts for Glances metrics
+  ansible.builtin.set_fact:
+    glances_net_interface: "{{ ansible_default_ipv4.interface | default('eth0') }}"
+    glances_disk_device: "{{ (ansible_mounts | selectattr('mount', 'equalto', '/') | first | default({'device': '/dev/sda'})).device | regex_replace('^/dev/', '') | regex_replace('(\\d+)$', '') }}"
+
+- name: Glances Docker Container
+  community.docker.docker_container:
+    name: glances
+    image: "{{ glances_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    pid_mode: host
+    network_mode: host
+    privileged: true
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/etc/os-release:/etc/os-release:ro"
+      - "{{ glances_config_directory }}/glances.conf:/glances/conf/glances.conf"
+    env:
+      GLANCES_OPT: "-w"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.glances.rule: "Host(`{{ glances_subdomain }}.{{ server_hostname }}`)"
+      # Since network_mode is host, we must explicitly tell Traefik where to find the service
+      traefik.http.services.glances.loadbalancer.server.url: "http://{{ ansible_host }}:61208"
+      traefik.http.routers.glances.middlewares: "tinyauth@docker,secure-headers@file"
+      com.centurylinklabs.watchtower.enable: "true"
+
+      # Homepage Service Discovery
+      homepage.group: "Monitoring"
+      homepage.name: "Glances"
+      homepage.icon: "glances.png"
+      homepage.href: "https://{{ glances_subdomain }}.{{ server_hostname }}"
+      homepage.description: "System Monitoring"
+
+      # Widget 0: Info
+      homepage.widgets[0].type: "glances"
+      homepage.widgets[0].metric: "info"
+      homepage.widgets[0].url: "http://{{ ansible_host }}:61208"
+      homepage.widgets[0].username: "admin"
+      homepage.widgets[0].password: "{{ glances_password }}"
+      homepage.widgets[0].version: "4"
+
+      # Widget 1: CPU
+      homepage.widgets[1].type: "glances"
+      homepage.widgets[1].metric: "cpu"
+      homepage.widgets[1].url: "http://{{ ansible_host }}:61208"
+      homepage.widgets[1].username: "admin"
+      homepage.widgets[1].password: "{{ glances_password }}"
+      homepage.widgets[1].version: "4"
+
+      # Widget 2: Memory
+      homepage.widgets[2].type: "glances"
+      homepage.widgets[2].metric: "memory"
+      homepage.widgets[2].url: "http://{{ ansible_host }}:61208"
+      homepage.widgets[2].username: "admin"
+      homepage.widgets[2].password: "{{ glances_password }}"
+      homepage.widgets[2].version: "4"
+
+      # Widget 3: Process
+      homepage.widgets[3].type: "glances"
+      homepage.widgets[3].metric: "process"
+      homepage.widgets[3].url: "http://{{ ansible_host }}:61208"
+      homepage.widgets[3].username: "admin"
+      homepage.widgets[3].password: "{{ glances_password }}"
+      homepage.widgets[3].version: "4"
+
+      # Widget 4: Containers
+      homepage.widgets[4].type: "glances"
+      homepage.widgets[4].metric: "containers"
+      homepage.widgets[4].url: "http://{{ ansible_host }}:61208"
+      homepage.widgets[4].username: "admin"
+      homepage.widgets[4].password: "{{ glances_password }}"
+      homepage.widgets[4].version: "4"
+
+      # Widget 5: Network
+      homepage.widgets[5].type: "glances"
+      homepage.widgets[5].metric: "network:{{ glances_net_interface }}"
+      homepage.widgets[5].url: "http://{{ ansible_host }}:61208"
+      homepage.widgets[5].username: "admin"
+      homepage.widgets[5].password: "{{ glances_password }}"
+      homepage.widgets[5].version: "4"
+
+      # Widget 6: Disk
+      homepage.widgets[6].type: "glances"
+      homepage.widgets[6].metric: "disk:{{ glances_disk_device }}"
+      homepage.widgets[6].url: "http://{{ ansible_host }}:61208"
+      homepage.widgets[6].username: "admin"
+      homepage.widgets[6].password: "{{ glances_password }}"
+      homepage.widgets[6].version: "4"
+
+      # Widget 7: File System
+      homepage.widgets[7].type: "glances"
+      homepage.widgets[7].metric: "fs:/"
+      homepage.widgets[7].url: "http://{{ ansible_host }}:61208"
+      homepage.widgets[7].username: "admin"
+      homepage.widgets[7].password: "{{ glances_password }}"
+      homepage.widgets[7].version: "4"

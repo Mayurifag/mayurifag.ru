@@ -1,0 +1,8 @@
+---
+glances_enabled: true
+
+glances_subdomain: "glances"
+glances_image: "nicolargo/glances:latest-full"
+
+glances_data_directory: "{{ docker_home }}/glances"
+glances_config_directory: "{{ glances_data_directory }}/config"
