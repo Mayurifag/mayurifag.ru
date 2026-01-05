@@ -4,7 +4,6 @@ proxy_image: ghcr.io/tarampampam/3proxy:latest
 
 proxy_user: "proxyuser"
 proxy_user_password: "secret"
-proxy_socks_port: "1080"
 proxy_http_port: "1081"
 
 proxy_memory: 1g

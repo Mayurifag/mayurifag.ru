@@ -8,7 +8,6 @@
       PROXY_LOGIN: "{{ proxy_user }}"
       PROXY_PASSWORD: "{{ proxy_user_password }}"
     ports:
-      - "{{ proxy_socks_port }}:1080/tcp"
       - "{{ proxy_http_port }}:3128/tcp"
     restart_policy: unless-stopped
     memory: "{{ proxy_memory }}"

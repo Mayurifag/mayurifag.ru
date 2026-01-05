@@ -95,7 +95,6 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] Homepage has to contain processes monitoring - glances?
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
   * [ ] <https://github.com/we-promise/sure>
@@ -161,3 +160,6 @@ need to deploy my services once again.
   * [ ] IP Masquerading ?
 * [ ] <https://github.com/crocodilestick/Calibre-Web-Automated>
   * [ ] <ghcr.io/calibrain/calibre-web-automated-book-downloader>
+* [ ] Migrate to https proxy (dumbproxy) when "MV3 onAuthRequired is not
+      triggered by requests made by extension pages"
+      <https://issues.chromium.org/issues/40880379> will be resolved
