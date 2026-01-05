@@ -29,6 +29,16 @@ Make sure that Personal space is generated. Things I have to restore:
 - Windows - Available offline for Personal space
 - Webdav requires token for now. Restore mobiles
 
+## Dumbproxy (HTTPS Proxy)
+
+To use your secure proxy in Chrome (or Firefox) via FoxyProxy:
+
+1. **Add New Proxy** in FoxyProxy.
+2. **Proxy Type**: `HTTPS`
+3. **Address**: `p.mayurifag.local` (replace with your `proxy_subdomain`).
+4. **Port**: `443`.
+5. **Authentication**: Enter your `proxy_user` and `proxy_user_password`.
+
 ## 3x-ui (Xray)
 
 Be absolutely sure the domain you picked SNI into is fine with that. Sometimes

@@ -1,16 +1,40 @@
 ---
-- name: Start 3proxy Docker Container
+# - name: Remove existing Dumbproxy Traefik configuration
+#   ansible.builtin.file:
+#     path: "{{ traefik_dynamic_configs_directory }}/dumbproxy.toml"
+#     state: absent
+
+- name: Create Dumbproxy Traefik configuration
+  ansible.builtin.template:
+    src: traefik_dumbproxy.toml.j2
+    dest: "{{ traefik_dynamic_configs_directory }}/dumbproxy.toml"
+    mode: "0644"
+
+- name: Start Dumbproxy Docker Container
   community.docker.docker_container:
-    name: 3proxy
+    name: dumbproxy
     image: "{{ proxy_image }}"
     recreate: true
-    env:
-      PROXY_LOGIN: "{{ proxy_user }}"
-      PROXY_PASSWORD: "{{ proxy_user_password }}"
-    ports:
-      - "{{ proxy_socks_port }}:1080/tcp"
-      - "{{ proxy_http_port }}:3128/tcp"
+    command: "-bind-address=:8080 -proxyproto -auth 'static://?username={{ proxy_user }}&password={{ proxy_user_password }}&hidden_domain={{ server_hostname }}'"
     restart_policy: unless-stopped
     memory: "{{ proxy_memory }}"
+    volumes:
+      - "{{ proxy_data_directory }}/dumbproxy.htpasswd:/etc/dumbproxy.htpasswd:ro"
+    networks:
+      - name: "web"
     labels:
+      traefik.enable: "true"
+      traefik.tcp.routers.dumbproxy.service: "dumbproxy"
+      traefik.tcp.routers.dumbproxy.rule: HostSNI(`{{ proxy_subdomain }}.{{ server_hostname }}`)
+      traefik.tcp.routers.dumbproxy.tls: "true"
+      traefik.tcp.routers.dumbproxy.tls.passthrough: "false"
+      traefik.tcp.routers.dumbproxy.tls.certResolver: "letsencrypt"
+      traefik.tcp.services.dumbproxy.loadBalancer.server.port: "8080"
+      traefik.tcp.services.dumbproxy.loadbalancer.serverstransport: "dumbproxy-transport@file"
+
       com.centurylinklabs.watchtower.enable: "true"
+
+      homepage.group: "Networking"
+      homepage.name: "Dumbproxy"
+      homepage.description: "Secure HTTPS Proxy at {{ proxy_subdomain }}.{{ server_hostname }}"
+      homepage.icon: "mdi-server-network"

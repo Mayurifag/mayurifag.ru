@@ -64,10 +64,10 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 
 | Name                | Subdomain    | Auth | Watchtower |
 | :------------------ | :----------- | ---- | ---------- |
-| 3proxy              |              | app  | +          |
 | 3x-ui               | `3x`         | app  |            |
 | BentoPDF            | `pdf`        | ldap | +          |
 | ConvertX            | `convert`    | ldap | +          |
+| dumbproxy           | `p`          | app  | +          |
 | Gitea               | `git`        | todo |            |
 | Homepage.dev        | `home`       | ldap | +          |
 | Linkding            | `bookmarks`  | app  | +          |
@@ -95,7 +95,10 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] Homepage has to contain processes monitoring - glances?
+* [ ] dumbproxy
+  * [ ] static -> htpasswd (docker inspect showing prevent)
+  * [ ] hidden domain setup
+  * [ ] change password
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
   * [ ] <https://github.com/we-promise/sure>

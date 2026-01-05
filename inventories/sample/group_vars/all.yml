@@ -64,10 +64,9 @@ crowdsec_enabled: true
 crowdsec_enroll_key: "change_me"
 
 proxy_enabled: true
-proxy_user: change_this
-proxy_user_password: change_this
-proxy_socks_port: "1080"
-proxy_http_port: "1081"
+proxy_subdomain: "p"
+proxy_user: "change_this"
+proxy_user_password: "change_this"
 
 mus_enabled: true
 mus_subdomain: "mus"
