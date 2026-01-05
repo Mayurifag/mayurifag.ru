@@ -158,8 +158,10 @@ need to deploy my services once again.
   * [ ] Block everything. There are a lot of exceptions: ssh/web/dns/dhcp/ntp
   * [ ] open port if needed in each ansible role
   * [ ] IP Masquerading ?
+  * [ ] research <https://github.com/capnspacehook/whalewall> (not updated though)
 * [ ] <https://github.com/crocodilestick/Calibre-Web-Automated>
   * [ ] <ghcr.io/calibrain/calibre-web-automated-book-downloader>
 * [ ] Migrate to https proxy (dumbproxy) when "MV3 onAuthRequired is not
       triggered by requests made by extension pages"
       <https://issues.chromium.org/issues/40880379> will be resolved
+* [ ] zerobyte - webapp for restic backups - wait until developed

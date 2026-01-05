@@ -51,3 +51,35 @@
 - name: Install Tmux Plugins
   ansible.builtin.command: "/home/{{ admin_username }}/.tmux/plugins/tpm/bin/install_plugins"
   become: false
+
+- name: Ensure .config/lazydocker directory exists for admin user
+  ansible.builtin.file:
+    path: "/home/{{ admin_username }}/.config/lazydocker"
+    state: directory
+    owner: "{{ admin_username }}"
+    group: "{{ admin_username }}"
+    mode: "0755"
+
+- name: Ensure .config/lazydocker directory exists for root user
+  ansible.builtin.file:
+    path: "/root/.config/lazydocker"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Configure lazydocker for admin user
+  ansible.builtin.template:
+    src: ".config/lazydocker/config.yml.j2"
+    dest: "/home/{{ admin_username }}/.config/lazydocker/config.yml"
+    owner: "{{ admin_username }}"
+    group: "{{ admin_username }}"
+    mode: "0644"
+
+- name: Configure lazydocker for root user
+  ansible.builtin.template:
+    src: ".config/lazydocker/config.yml.j2"
+    dest: "/root/.config/lazydocker/config.yml"
+    owner: root
+    group: root
+    mode: "0644"
