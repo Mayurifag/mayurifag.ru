@@ -16,3 +16,10 @@ whitelist:
   reason: "Opencloud Whitelist for WebDAV"
   expression:
     - evt.Parsed.request contains '/dav/spaces/'
+---
+name: custom-whitelist/mus-player-state
+description: "Whitelist /api/v1/player/state polling for mus"
+whitelist:
+  reason: "Polling requests to /api/v1/player/state (often 401) should not be banned"
+  expression:
+    - evt.Parsed.target_uri == "/api/v1/player/state"
