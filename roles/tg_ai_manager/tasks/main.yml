@@ -23,7 +23,7 @@
     labels:
       traefik.enable: "true"
       traefik.http.routers.tg_ai_manager.rule: "Host(`{{ tg_ai_manager_subdomain }}.{{ server_hostname }}`)"
-      traefik.http.services.tg_ai_manager.loadbalancer.server.port: "8080"
+      traefik.http.services.tg_ai_manager.loadbalancer.server.port: "8000"
       traefik.http.routers.tg_ai_manager.middlewares: "tinyauth@docker,secure-headers@file"
       com.centurylinklabs.watchtower.enable: "true"
 
