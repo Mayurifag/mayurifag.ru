@@ -1,0 +1,33 @@
+---
+- name: Create tg-ai-manager Directory
+  ansible.builtin.file:
+    path: "{{ tg_ai_manager_data_directory }}"
+    state: directory
+    mode: "0755"
+
+- name: tg-ai-manager Docker Container
+  community.docker.docker_container:
+    name: tg-ai-manager
+    image: "{{ tg_ai_manager_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ tg_ai_manager_memory }}"
+    volumes:
+      - "{{ tg_ai_manager_data_directory }}:/app_data"
+    env:
+      TG_API_ID: "{{ tg_ai_manager_api_id }}"
+      TG_API_HASH: "{{ tg_ai_manager_api_hash }}"
+    networks:
+      - name: "web"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.tg_ai_manager.rule: "Host(`{{ tg_ai_manager_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.tg_ai_manager.loadbalancer.server.port: "8080"
+      traefik.http.routers.tg_ai_manager.middlewares: "tinyauth@docker,secure-headers@file"
+      com.centurylinklabs.watchtower.enable: "true"
+
+      homepage.group: "Services"
+      homepage.name: "TG AI Manager"
+      homepage.icon: "mdi-robot"
+      homepage.href: "https://{{ tg_ai_manager_subdomain }}.{{ server_hostname }}"

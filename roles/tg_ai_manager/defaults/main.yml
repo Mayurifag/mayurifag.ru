@@ -1,0 +1,11 @@
+---
+tg_ai_manager_enabled: true
+
+tg_ai_manager_subdomain: "tg"
+tg_ai_manager_image: "ghcr.io/mayurifag/tg-ai-manager:latest"
+
+tg_ai_manager_data_directory: "{{ docker_home }}/tg-ai-manager"
+tg_ai_manager_memory: "2g"
+
+tg_ai_manager_api_id: "123456"
+tg_ai_manager_api_hash: "abcdef1234567890"

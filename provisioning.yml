@@ -116,3 +116,8 @@
       tags:
         - watchtower
       when: (watchtower_enabled | default(False))
+
+    - role: tg_ai_manager
+      tags:
+        - tg_ai_manager
+      when: (tg_ai_manager_enabled | default(False))

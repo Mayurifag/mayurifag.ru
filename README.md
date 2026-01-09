@@ -77,6 +77,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | lldap               | `ldap`       | ldap | +          |
 | OpenCloud           | `cloud`      | ldap |            |
 | Portainer           | `portainer`  | app  | +          |
+| TG AI Manager       | `tg`         | ldap | +          |
 | Traefik / Crowdsec  | `traefik`    | ldap |            |
 | Tinyauth            | `auth`       | ldap | +          |
 | Watchtower HTTP API | `watchtower` | app  | +          |
