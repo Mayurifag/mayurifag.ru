@@ -70,7 +70,6 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | ConvertX            | `convert`    | ldap | +          |
 | Gitea               | `git`        | todo |            |
 | Homepage.dev        | `home`       | ldap | +          |
-| Linkding            | `bookmarks`  | app  | +          |
 | Mini-QR             | `qr`         | ldap | +          |
 | mayurifag.github.io | `<TLD>`      | ldap | +          |
 | mus                 | `mus`        | ldap | +          |
@@ -96,6 +95,10 @@ need to deploy my services once again.
 
 ### List
 
+* [ ] Host Obsidian vault
+* [ ] Some opensonic host like gonic (search alternatives)
+* [ ] <https://github.com/crocodilestick/Calibre-Web-Automated>
+  * [ ] <ghcr.io/calibrain/calibre-web-automated-book-downloader>
 * [ ] maybe finance app - deprecated, so research alternatives.
   * [ ] Has to support crypto, ibkr, russian brokers
   * [ ] <https://github.com/we-promise/sure>
@@ -109,20 +112,15 @@ need to deploy my services once again.
 
 ### Thinking if I need it / probably wont do ideas / notes
 
-* [ ] Linkding to smth else supported in floccus when helium browser fixed for them
 * [ ] Add simple secret sharing app
   * [ ] Hemmelig - too much things, analytics and so on
 * [ ] <https://github.com/pranshuparmar/witr> - from official repos
 * [ ] When Tinyauth will be an OIDC provider
   * [ ] make it work for opencloud
   * [ ] Portainer - setup automatic LDAP
-  * [ ] Linkding
 * [ ] Watchtowerrr
   * [ ] use config.json for auth to dockerhub to prevent limits
   * [ ] use metrics for homepage <https://gethomepage.dev/widgets/services/watchtower/>
-  * [ ] actually maybe migrate <https://getwud.github.io/wud> but it will
-        require to change webhook on mayurifag.github.io and mus. But more
-        maintained and includes nice web ui
 * [ ] <https://github.com/binwiederhier/ntfy>
 * [ ] docker image of mayurifag.github.io has to be in ghcr like mus
 * [ ] VPS security
@@ -133,13 +131,11 @@ need to deploy my services once again.
   * [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
   * [ ] <https://github.com/imthenachoman/How-To-Secure-A-Linux-Server>
 * [ ] Homepage.dev ideas
+  * [ ] redesign
   * [ ] Stocks SPY/QQQ - requires finnhub api key
   * [ ] World clock? moscow time
   * [ ] For crowdsec - link to <https://app.crowdsec.net/>
 * [ ] url shorten <https://github.com/anhostfr/nah.pet>
-* [ ] Email 💩
-  * [ ] research something super simple. Preferably single docker container
-  * [ ] Parsedmarc app
 * [ ] Status page for services
   * [ ] Has to be free and allow deploy from ansible via API
   * [ ] maybe just main website check and self service to report docker unhealth
@@ -160,9 +156,4 @@ need to deploy my services once again.
   * [ ] open port if needed in each ansible role
   * [ ] IP Masquerading ?
   * [ ] research <https://github.com/capnspacehook/whalewall> (not updated though)
-* [ ] <https://github.com/crocodilestick/Calibre-Web-Automated>
-  * [ ] <ghcr.io/calibrain/calibre-web-automated-book-downloader>
-* [ ] Migrate to https proxy (dumbproxy) when "MV3 onAuthRequired is not
-      triggered by requests made by extension pages"
-      <https://issues.chromium.org/issues/40880379> will be resolved
 * [ ] zerobyte - webapp for restic backups - wait until developed

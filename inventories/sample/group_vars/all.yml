@@ -112,9 +112,6 @@ convertx_subdomain: "convert"
 mini_qr_enabled: true
 mini_qr_subdomain: "qr"
 
-linkding_enabled: true
-linkding_subdomain: "bookmarks"
-
 tg_ai_manager_enabled: true
 tg_ai_manager_subdomain: "tg"
 tg_ai_manager_api_id: "123456"

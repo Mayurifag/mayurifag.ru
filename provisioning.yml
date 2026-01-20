@@ -107,11 +107,6 @@
         - qr
       when: (mini_qr_enabled | default(False))
 
-    - role: linkding
-      tags:
-        - linkding
-      when: (linkding_enabled | default(False))
-
     - role: watchtower
       tags:
         - watchtower

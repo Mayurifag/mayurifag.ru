@@ -1,8 +1,0 @@
----
-linkding_enabled: true
-
-linkding_subdomain: "bookmarks"
-linkding_image: "sissbruecker/linkding:latest"
-linkding_memory: "512m"
-
-linkding_data_directory: "{{ docker_home }}/linkding"
