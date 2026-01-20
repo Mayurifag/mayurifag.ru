@@ -70,6 +70,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | ConvertX            | `convert`    | ldap | +          |
 | Gitea               | `git`        | todo |            |
 | Homepage.dev        | `home`       | ldap | +          |
+| MkDocs              | `docs`       | ldap | +          |
 | Mini-QR             | `qr`         | ldap | +          |
 | mayurifag.github.io | `<TLD>`      | ldap | +          |
 | mus                 | `mus`        | ldap | +          |
@@ -95,7 +96,6 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] Host Obsidian vault
 * [ ] Some opensonic host like gonic (search alternatives)
 * [ ] <https://github.com/crocodilestick/Calibre-Web-Automated>
   * [ ] <ghcr.io/calibrain/calibre-web-automated-book-downloader>

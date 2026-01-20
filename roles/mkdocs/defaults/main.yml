@@ -1,0 +1,12 @@
+---
+mkdocs_enabled: true
+
+mkdocs_subdomain: "docs"
+mkdocs_image: "squidfunk/mkdocs-material:latest"
+
+# Directory containing the markdown files (maps to /docs/docs in container)
+mkdocs_docs_directory: "{{ docker_home }}/mkdocs/docs"
+mkdocs_config_directory: "{{ docker_home }}/mkdocs"
+
+mkdocs_memory: "256m"
+mkdocs_site_name: "Notes"

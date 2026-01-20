@@ -1,0 +1,41 @@
+---
+- name: Create MkDocs directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  with_items:
+    - "{{ mkdocs_config_directory }}"
+
+- name: Create mkdocs.yml configuration
+  ansible.builtin.template:
+    src: mkdocs.yml.j2
+    dest: "{{ mkdocs_config_directory }}/mkdocs.yml"
+    mode: "0644"
+
+- name: MkDocs Docker Container
+  community.docker.docker_container:
+    name: mkdocs
+    image: "{{ mkdocs_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ mkdocs_memory }}"
+    # On new release probably livereload wont be needed https://github.com/mkdocs/mkdocs/issues/4032
+    command: serve -a 0.0.0.0:8000 --livereload
+    networks:
+      - name: "web"
+    volumes:
+      - "{{ mkdocs_config_directory }}/mkdocs.yml:/docs/mkdocs.yml:ro"
+      - "{{ mkdocs_docs_directory }}:/docs/docs:ro"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.mkdocs.rule: "Host(`{{ mkdocs_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.mkdocs.loadbalancer.server.port: "8000"
+      traefik.http.routers.mkdocs.middlewares: "tinyauth@docker,secure-headers@file"
+      com.centurylinklabs.watchtower.enable: "true"
+
+      homepage.group: "Static"
+      homepage.name: "MkDocs"
+      homepage.icon: "mdi-book-open-page-variant"
+      homepage.href: "https://{{ mkdocs_subdomain }}.{{ server_hostname }}"

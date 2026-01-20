@@ -62,6 +62,11 @@
         - mayurifag_github_io
       when: (mayurifag_github_io_enabled | default(False))
 
+    - role: mkdocs
+      tags:
+        - mkdocs
+      when: (mkdocs_enabled | default(False))
+
     - role: proxy
       tags:
         - proxy
