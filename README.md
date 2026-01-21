@@ -76,6 +76,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | mus                 | `mus`        | ldap | +          |
 | Navidrome           | `navidrome`  | app  | +          |
 | lldap               | `ldap`       | ldap | +          |
+| OPDShelf            | `opds`       | ldap | +          |
 | OpenCloud           | `cloud`      | ldap |            |
 | Portainer           | `portainer`  | app  | +          |
 | TG AI Manager       | `tg`         | ldap | +          |
