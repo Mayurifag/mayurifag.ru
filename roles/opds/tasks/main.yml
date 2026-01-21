@@ -1,0 +1,55 @@
+---
+- name: OPDS Docker Container
+  community.docker.docker_container:
+    name: opds
+    image: "{{ opds_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ opds_memory }}"
+    volumes:
+      - "{{ opds_books_directory }}:/app/books"
+    networks:
+      - name: "web"
+    labels:
+      traefik.enable: "true"
+
+      # Middleware: Increase upload size limit
+      traefik.http.middlewares.opds-limit.buffering.maxRequestBodyBytes: "{{ opds_upload_limit | string }}"
+
+      # Router 1: Public Access (Reader feed and browsing)
+      traefik.http.routers.opds.rule: "Host(`{{ opds_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.routers.opds.service: "opds"
+      traefik.http.services.opds.loadbalancer.server.port: "3000"
+      # traefik.http.routers.opds.middlewares: "secure-headers@file,opds-limit"
+      traefik.http.routers.opds.priority: "1"
+
+      # Router 2: Admin Access (Protected /admin path)
+      traefik.http.routers.opds-admin.rule: "Host(`{{ opds_subdomain }}.{{ server_hostname }}`) && PathPrefix(`/admin`)"
+      traefik.http.routers.opds-admin.service: "opds"
+      traefik.http.routers.opds-admin.middlewares: "tinyauth@docker,secure-headers@file,opds-limit"
+      traefik.http.routers.opds-admin.priority: "100"
+
+      com.centurylinklabs.watchtower.enable: "true"
+
+      homepage.group: "Services"
+      homepage.name: "OPDShelf"
+      homepage.icon: "mdi-book-open-variant"
+      homepage.href: "https://{{ opds_subdomain }}.{{ server_hostname }}"
+
+# Since I upload books on OpenCloud, I want them to be imported automatically which opds catalog cant do right now
+# I do restarts with sidecar container every hour to force rescan as a shitty workaround
+- name: OPDS Restarter Sidecar
+  community.docker.docker_container:
+    name: opds-restarter
+    image: docker:cli
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "64m"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command:
+      ["sh", "-c", "while true; do sleep 3600; docker restart opds; done"]
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"

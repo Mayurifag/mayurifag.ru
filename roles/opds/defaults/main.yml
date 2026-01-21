@@ -1,0 +1,12 @@
+---
+opds_enabled: true
+
+opds_subdomain: "opds"
+opds_image: "koalilla/opds-server:latest"
+
+opds_books_directory: "{{ files_home }}/Books"
+
+opds_memory: "512m"
+
+# Upload limit in bytes (e.g. 200MB)
+opds_upload_limit: 209715200

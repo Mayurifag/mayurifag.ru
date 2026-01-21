@@ -1,0 +1,41 @@
+---
+- name: Create Navidrome Data Directory
+  ansible.builtin.file:
+    path: "{{ navidrome_data_directory }}"
+    state: directory
+    mode: "0755"
+    owner: "1000"
+    group: "1000"
+
+- name: Navidrome Docker Container
+  community.docker.docker_container:
+    name: navidrome
+    image: "{{ navidrome_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ navidrome_memory }}"
+    volumes:
+      - "{{ navidrome_data_directory }}:/data"
+      - "{{ navidrome_music_directory }}:/music:ro"
+    env:
+      ND_ENABLEINSIGHTSCOLLECTOR: "false"
+      ND_AGENTS: ""
+      ND_ENABLEGRAVATAR: "true"
+      ND_SCANSCHEDULE: "1h"
+      ND_LOGLEVEL: "info"
+      ND_DATAFOLDER: "/data"
+      ND_MUSICFOLDER: "/music"
+    networks:
+      - name: "web"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.navidrome.rule: "Host(`{{ navidrome_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.navidrome.loadbalancer.server.port: "4533"
+      traefik.http.routers.navidrome.middlewares: "secure-headers@file"
+      com.centurylinklabs.watchtower.enable: "true"
+
+      homepage.group: "Services"
+      homepage.name: "Navidrome"
+      homepage.icon: "navidrome.svg"
+      homepage.href: "https://{{ navidrome_subdomain }}.{{ server_hostname }}"

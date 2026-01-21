@@ -5,7 +5,7 @@
     state: directory
     mode: "0755"
 
-- name: tg-ai-manager Docker Container
+- name: Start tg-ai-manager Docker Container
   community.docker.docker_container:
     name: tg-ai-manager
     image: "{{ tg_ai_manager_image }}"

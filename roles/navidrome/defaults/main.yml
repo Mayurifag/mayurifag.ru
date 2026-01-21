@@ -1,0 +1,10 @@
+---
+navidrome_enabled: true
+
+navidrome_subdomain: "navidrome"
+navidrome_image: "deluan/navidrome:latest"
+
+navidrome_data_directory: "{{ docker_home }}/navidrome/data"
+navidrome_music_directory: "/home/{{ admin_username }}/music_folder/"
+
+navidrome_memory: "1g"

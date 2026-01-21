@@ -87,6 +87,11 @@
         - mus
       when: (mus_enabled | default(False))
 
+    - role: navidrome
+      tags:
+        - navidrome
+      when: (navidrome_enabled | default(False))
+
     - role: opencloud
       tags:
         - opencloud
@@ -111,6 +116,11 @@
       tags:
         - qr
       when: (mini_qr_enabled | default(False))
+
+    - role: opds
+      tags:
+        - opds
+      when: (opds_enabled | default(False))
 
     - role: watchtower
       tags:

@@ -74,6 +74,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | Mini-QR             | `qr`         | ldap | +          |
 | mayurifag.github.io | `<TLD>`      | ldap | +          |
 | mus                 | `mus`        | ldap | +          |
+| Navidrome           | `navidrome`  | app  | +          |
 | lldap               | `ldap`       | ldap | +          |
 | OpenCloud           | `cloud`      | ldap |            |
 | Portainer           | `portainer`  | app  | +          |
@@ -96,7 +97,6 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] Some opensonic host like gonic (search alternatives)
 * [ ] <https://github.com/crocodilestick/Calibre-Web-Automated>
   * [ ] <ghcr.io/calibrain/calibre-web-automated-book-downloader>
 * [ ] maybe finance app - deprecated, so research alternatives.

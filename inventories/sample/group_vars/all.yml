@@ -72,6 +72,14 @@ mus_enabled: true
 mus_subdomain: "mus"
 mus_music_directory: "/home/{{ admin_username }}/music_folder/"
 
+navidrome_enabled: true
+navidrome_subdomain: "navidrome"
+navidrome_music_directory: "/home/{{ admin_username }}/music_folder/"
+
+opds_enabled: true
+opds_subdomain: "opds"
+opds_books_directory: "{{ files_home }}/Books"
+
 portainer_enabled: true
 portainer_subdomain: "portainer"
 
