@@ -97,32 +97,30 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] <https://github.com/crocodilestick/Calibre-Web-Automated>
-  * [ ] <ghcr.io/calibrain/calibre-web-automated-book-downloader>
-* [ ] maybe finance app - deprecated, so research alternatives.
+* [ ] <https://github.com/we-promise/sure> - or its alternatives
   * [ ] Has to support crypto, ibkr, russian brokers
-  * [ ] <https://github.com/we-promise/sure>
   * [ ] Is it possible to have data in opencloud?
 * [ ] Bentopdf to stirlingpdf? Something which easily makes edits.
+  * [ ] Check locally first before deploy on some pdf invoice
 * [ ] Crowdsec iptables firewall - remediation component.
   * [ ] traefik and crowdsec have to be in a single role - too much connected
   * [ ] Crowdsec has to be inside traefik role
   * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
   * [ ] see if there is solution to unban false positive and if not, add smth
 
-### Thinking if I need it / probably wont do ideas / notes
+### Thinking if I need it / On hold / probably wont do - ideas / notes
 
 * [ ] Add simple secret sharing app
   * [ ] Hemmelig - too much things, analytics and so on
-* [ ] <https://github.com/pranshuparmar/witr> - from official repos
+  * [ ] also maybe url shorten like <https://github.com/anhostfr/nah.pet>
+* [ ] <https://github.com/pranshuparmar/witr> - wait debian repos to include it
+* [ ] Bandwhich - will require downloading binary to root - wait for deb repo
 * [ ] When Tinyauth will be an OIDC provider
   * [ ] make it work for opencloud
   * [ ] Portainer - setup automatic LDAP
 * [ ] Watchtowerrr
   * [ ] use config.json for auth to dockerhub to prevent limits
   * [ ] use metrics for homepage <https://gethomepage.dev/widgets/services/watchtower/>
-* [ ] <https://github.com/binwiederhier/ntfy>
-* [ ] docker image of mayurifag.github.io has to be in ghcr like mus
 * [ ] VPS security
   * [ ] Kernel params to have less /var/log/syslog noise - add to crowdsec btw
   * [ ] <https://madaidans-insecurities.github.io/guides/linux-hardening.html>
@@ -135,12 +133,10 @@ need to deploy my services once again.
   * [ ] Stocks SPY/QQQ - requires finnhub api key
   * [ ] World clock? moscow time
   * [ ] For crowdsec - link to <https://app.crowdsec.net/>
-* [ ] url shorten <https://github.com/anhostfr/nah.pet>
 * [ ] Status page for services
   * [ ] Has to be free and allow deploy from ansible via API
   * [ ] maybe just main website check and self service to report docker unhealth
   * [ ] <https://beszel.dev/>
-* [ ] Bandwhich - will require downloading binary to root - wait for deb repo
 * [ ] tmux
   * [ ] add dracula disk usage (used/total) or totally redesign it
   * [ ] tmux with `nice` priority <https://x.com/SA5280/status/2001732941639282759>
