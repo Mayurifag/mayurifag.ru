@@ -72,7 +72,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | Homepage.dev        | `home`       | ldap | +          |
 | MkDocs              | `docs`       | ldap | +          |
 | Mini-QR             | `qr`         | ldap | +          |
-| mayurifag.github.io | `<TLD>`      | ldap | +          |
+| mayurifag.github.io |              | ldap | +          |
 | mus                 | `mus`        | ldap | +          |
 | Navidrome           | `navidrome`  | app  | +          |
 | lldap               | `ldap`       | ldap | +          |
@@ -98,27 +98,27 @@ need to deploy my services once again.
 
 ### List
 
-* [ ] <https://github.com/we-promise/sure> - or its alternatives
-  * [ ] Has to support crypto, ibkr, russian brokers
-  * [ ] Is it possible to have data in opencloud?
-* [ ] Bentopdf to stirlingpdf? Something which easily makes edits.
-  * [ ] Check locally first before deploy on some pdf invoice
 * [ ] Crowdsec iptables firewall - remediation component.
-  * [ ] traefik and crowdsec have to be in a single role - too much connected
   * [ ] Crowdsec has to be inside traefik role
   * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
   * [ ] see if there is solution to unban false positive and if not, add smth
 
-### Thinking if I need it / On hold / probably wont do - ideas / notes
+### On hold
 
-* [ ] Add simple secret sharing app
-  * [ ] Hemmelig - too much things, analytics and so on
-  * [ ] also maybe url shorten like <https://github.com/anhostfr/nah.pet>
 * [ ] <https://github.com/pranshuparmar/witr> - wait debian repos to include it
 * [ ] Bandwhich - will require downloading binary to root - wait for deb repo
 * [ ] When Tinyauth will be an OIDC provider
   * [ ] make it work for opencloud
   * [ ] Portainer - setup automatic LDAP
+* [ ] zerobyte - webapp for restic backups - wait until developed stable version
+
+### Thinking if I need it / probably wont do - ideas / notes
+
+* [ ] Add simple secret sharing app
+  * [ ] Hemmelig - too much things, analytics and so on
+  * [ ] also maybe url shorten like <https://github.com/anhostfr/nah.pet>
+  * [ ] I also might need to share files
+  * [ ] <https://github.com/Luzifer/ots> seems fine
 * [ ] Watchtowerrr
   * [ ] use config.json for auth to dockerhub to prevent limits
   * [ ] use metrics for homepage <https://gethomepage.dev/widgets/services/watchtower/>
@@ -139,11 +139,9 @@ need to deploy my services once again.
   * [ ] maybe just main website check and self service to report docker unhealth
   * [ ] <https://beszel.dev/>
 * [ ] tmux
+  * [ ] Reliably fix scrolling and other annoying things
   * [ ] add dracula disk usage (used/total) or totally redesign it
   * [ ] tmux with `nice` priority <https://x.com/SA5280/status/2001732941639282759>
-* [ ] Traefik
-  * [ ] tracing/observability tests with my apps
-  * [ ] No AI Bots Middleware with robots.txt - plugin install
 * [ ] ufw
   * [ ] Waiting for <https://github.com/shinebayar-g/ufw-docker-automated>
   * [ ] Problem for docker is that on server reboot or else address of docker
@@ -152,4 +150,6 @@ need to deploy my services once again.
   * [ ] open port if needed in each ansible role
   * [ ] IP Masquerading ?
   * [ ] research <https://github.com/capnspacehook/whalewall> (not updated though)
-* [ ] zerobyte - webapp for restic backups - wait until developed
+* [ ] <https://github.com/we-promise/sure> - or its alternatives
+  * [ ] Has to support crypto, ibkr, russian brokers, banks, georgian banks - no way today
+  * [ ] Is it possible to have data in opencloud?
