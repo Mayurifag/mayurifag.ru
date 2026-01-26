@@ -51,7 +51,9 @@
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     env: "{{ traefik_environment_variables }}"
-    restart_policy: unless-stopped
+    restart_policy: always
+    networks:
+      - name: "web"
     memory: "{{ traefik_memory }}"
     recreate: true
     labels:
@@ -65,8 +67,6 @@
       homepage.name: "Traefik"
       homepage.icon: "traefik.svg"
       homepage.href: "https://{{ traefik_subdomain }}.{{ server_hostname }}/dashboard/"
-    networks:
-      - name: "web"
 
 - name: Ensure logrotate is installed
   ansible.builtin.apt:
