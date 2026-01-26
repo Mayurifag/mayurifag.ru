@@ -142,7 +142,6 @@ need to deploy my services once again.
   * [ ] add dracula disk usage (used/total) or totally redesign it
   * [ ] tmux with `nice` priority <https://x.com/SA5280/status/2001732941639282759>
 * [ ] Traefik
-  * [ ] Update 3.6.4 was breaking change, test with opencloud
   * [ ] tracing/observability tests with my apps
   * [ ] No AI Bots Middleware with robots.txt - plugin install
 * [ ] ufw

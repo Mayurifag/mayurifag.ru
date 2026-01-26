@@ -2,6 +2,6 @@
 bentopdf_enabled: true
 
 bentopdf_subdomain: "pdf"
-bentopdf_image: "bentopdf/bentopdf-simple:latest"
+bentopdf_image: "ghcr.io/alam00000/bentopdf-simple:latest"
 
 bentopdf_memory: "1g"
