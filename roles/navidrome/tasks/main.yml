@@ -26,6 +26,7 @@
       ND_LOGLEVEL: "info"
       ND_DATAFOLDER: "/data"
       ND_MUSICFOLDER: "/music"
+      ND_SESSIONTIMEOUT: "999999h"
     networks:
       - name: "web"
     labels:
