@@ -99,6 +99,18 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
   * [ ] make it work for opencloud
   * [ ] Portainer - setup automatic LDAP
 * [ ] zerobyte - webapp for restic backups - wait until developed stable version
+* [ ] Track finances selfhosted
+  * [ ] Has to support auto import crypto, ibkr, russian brokers, banks, georgian banks - no way today
+  * [ ] Save data to opencloud
+  * [ ] <https://github.com/we-promise/sure>
+* [ ] ufw
+  * [ ] Waiting for <https://github.com/shinebayar-g/ufw-docker-automated>
+  * [ ] Problem for docker is that on server reboot or else address of docker
+        container is changing so rules have to be updated
+  * [ ] Block everything. There are a lot of exceptions: ssh/web/dns/dhcp/ntp
+  * [ ] open port if needed in each ansible role
+  * [ ] IP Masquerading ?
+  * [ ] research <https://github.com/capnspacehook/whalewall> (not updated though)
 
 ### Thinking if I need it / probably wont do - ideas / notes
 
@@ -107,6 +119,7 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
   * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
   * [ ] see if there is solution to unban false positive and if not, add smth
   * [ ] whitelist my vps ips so at least ssh proxy jump will work in worst case
+  * [ ] i need to remove generic rules and make configuration more permissive
 * [ ] Add simple secret sharing app
   * [ ] Hemmelig - too much things, analytics and so on
   * [ ] also maybe url shorten like <https://github.com/anhostfr/nah.pet>
@@ -135,15 +148,3 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
   * [ ] Reliably fix scrolling and other annoying things
   * [ ] add dracula disk usage (used/total) or totally redesign it
   * [ ] tmux with `nice` priority <https://x.com/SA5280/status/2001732941639282759>
-* [ ] ufw
-  * [ ] Waiting for <https://github.com/shinebayar-g/ufw-docker-automated>
-  * [ ] Problem for docker is that on server reboot or else address of docker
-        container is changing so rules have to be updated
-  * [ ] Block everything. There are a lot of exceptions: ssh/web/dns/dhcp/ntp
-  * [ ] open port if needed in each ansible role
-  * [ ] IP Masquerading ?
-  * [ ] research <https://github.com/capnspacehook/whalewall> (not updated though)
-* [ ] Track finances selfhosted
-  * [ ] Has to support auto import crypto, ibkr, russian brokers, banks, georgian banks - no way today
-  * [ ] Save data to opencloud
-  * [ ] <https://github.com/we-promise/sure>
