@@ -32,6 +32,11 @@
         - lazydocker
       when: (lazydocker_enabled | default(False))
 
+    - role: traefik
+      tags:
+        - traefik
+      when: (traefik_enabled | default(False))
+
     - role: lldap
       tags:
         - lldap
@@ -41,11 +46,6 @@
       tags:
         - tinyauth
       when: (tinyauth_enabled | default(False))
-
-    - role: traefik
-      tags:
-        - traefik
-      when: (traefik_enabled | default(False))
 
     - role: crowdsec
       tags:

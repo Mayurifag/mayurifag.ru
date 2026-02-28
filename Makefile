@@ -24,7 +24,7 @@ bootstrap:
 	echo "3. Make everything your provider required to do interactively - cant automate that with ansible"; \
 	echo "4. Exit the SSH session."; \
 	echo ""; \
-	echo "Then run 'make sshconfig', you will be asked a password."; \
+	echo "Then run 'make sshconfig'"; \
 	echo "-----------------------------------------------------------------------"
 
 .PHONY: sshconfig

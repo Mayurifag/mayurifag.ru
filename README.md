@@ -92,7 +92,6 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 
 ### On hold
 
-* [ ] Next install - fully update all requirements.yml files
 * [ ] <https://github.com/pranshuparmar/witr> - wait debian repos to include it
 * [ ] Bandwhich - will require downloading binary to root - wait for deb repo
 * [ ] When Tinyauth will be an OIDC provider

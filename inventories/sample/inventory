@@ -3,5 +3,7 @@ server ansible_host=192.168.1.30 # change to ip
 
 [sample:vars]
 ansible_user=change_this # Admin user for provisioning
-ansible_port=change_this # Custom SSH port
 ansible_become_user=root
+server_hostname=mayurifag.local # Domain name for the server
+server_ssh_port=2222 # Custom SSH port
+ansible_port="{{ server_ssh_port }}"

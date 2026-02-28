@@ -9,15 +9,6 @@ If you provided a valid `crowdsec_enroll_key` in `group_vars`, the deployment
 should automatically enroll your instance to the
 [CrowdSec Console](https://app.crowdsec.net/).
 
-## Linkding
-
-Install the browser extension:
-
-- [Chrome](https://chrome.google.com/webstore/detail/linkding-extension/beakmhbijpdhipnjhnclmhgjlddhidpe)
-- [Firefox](https://addons.mozilla.org/en-US/firefox/addon/linkding-extension/).
-
-It will require to setup token: `/admin/authtoken/tokenproxy/1/change/`
-
 ## OpenCloud
 
 Make sure that Personal space is generated. Things I have to restore:
@@ -44,9 +35,9 @@ By default, the 3x-ui panel is deployed with insecure credentials.
 **Action Required**:
 
 - Log in to the panel (default URL: `https://3x.mayurifag.local`).
-- Go to **Settings** (or Panel Settings).
-- Change the Username and Password immediately.
-- Set **Subscription**: `Proxy URL` to `https://3x.mayurifag.local/sub/`
+- Go to **Panel Settings**.
+- **Authentication** -> Change the Username and Password immediately.
+- **Subscription** -> `Reverse Proxy URI` to `https://3x.mayurifag.local/sub/`
 
 ### 2. VLESS Reality XTLS Setup
 
@@ -59,12 +50,14 @@ Configure the inbound with these specific settings:
 - **Protocol**: `vless`
 - **Listening Port**: `443`
 - **Security**: `reality`
-- Client ->  **Flow**: `xtls-rprx-vision`.
+- Client -> Email: `username`; **Flow**: `xtls-rprx-vision`.
 - **Transmission**: `XHTTP`
-- **Dest**: `learn.microsoft.com:443` (from `threexui_reality_domain`).
-- **Server Names**: `learn.microsoft.com` (Must match `Dest` domain).
-- **uTLS**: `chrome`.
+- **Target**: `learn.microsoft.com:443` (from `threexui_reality_domain`).
+- **SNI**: `learn.microsoft.com` (Must match `Dest` domain).
 - **Private Key**: Click **Get New Key**.
 - **Save**.
 
-Then just use subscription with [Happ](https://www.happ.su/main/)
+Then just use subscription with [Happ](https://www.happ.su/main/).
+
+There is also some
+[tuning](https://vc.ru/id206643/2149746-nastroika-3x-ui-bez-oshibok) available.

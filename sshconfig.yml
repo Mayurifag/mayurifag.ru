@@ -1,16 +1,44 @@
 ---
 - name: Server Bootstrap
   hosts: sample
-  gather_facts: yes
-  become: yes
+  gather_facts: no
   vars:
-    # Force connection as root on default port for initial bootstrap
-    ansible_user: root
     ansible_port: 22
+    # Connection credentials
+    ansible_user: "{{ init_ssh_user }}"
+    ansible_password: "{{ init_ssh_pass if init_ssh_pass != '' else omit }}"
+
+    # Privilege escalation (Magic variables for the connection)
+    # This automatically handles 'become: yes' logic based on the user
+    ansible_become: "{{ init_ssh_user != 'root' }}"
+    ansible_become_method: sudo
+    ansible_become_password: "{{ init_sudo_pass if init_sudo_pass != '' else omit }}"
+
+    # Explicitly tell the bootstrap role which user we are connecting with
+    bootstrap_user: "{{ init_ssh_user }}"
+
   vars_prompt:
-    - name: ansible_password
-      prompt: "Enter SSH password for root (initial connection)"
+    - name: init_ssh_user
+      prompt: "Initial SSH username provided by host (e.g., root, ubuntu, or admin)"
+      default: "root"
+      private: no
+    - name: init_ssh_pass
+      prompt: "SSH password (leave blank if you use SSH keys)"
+      default: ""
       private: yes
-  roles:
-    - role: robertdebock.bootstrap
-    - role: ssh_and_user_bootstrap
+    - name: init_sudo_pass
+      prompt: "Sudo password if user is NOT root (leave blank if passwordless sudo or root)"
+      default: ""
+      private: yes
+
+  tasks:
+    - name: Run bootstrap to ensure Python is installed
+      ansible.builtin.include_role:
+        name: robertdebock.bootstrap
+
+    - name: Gather facts now that Python is guaranteed to be installed
+      ansible.builtin.setup:
+
+    - name: Run SSH and User setup
+      ansible.builtin.include_role:
+        name: ssh_and_user_bootstrap
