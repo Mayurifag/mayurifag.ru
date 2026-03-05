@@ -1,0 +1,7 @@
+---
+echoip_enabled: true
+
+echoip_subdomain: "ip"
+echoip_image: "mpolden/echoip:latest"
+
+echoip_memory: "128m"

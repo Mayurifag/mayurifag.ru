@@ -1,0 +1,25 @@
+---
+- name: EchoIP Docker Container
+  community.docker.docker_container:
+    name: echoip
+    image: "{{ echoip_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ echoip_memory }}"
+    command:
+      - "-H"
+      - "X-Forwarded-For"
+    networks:
+      - name: "web"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.echoip.rule: "Host(`{{ echoip_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.echoip.loadbalancer.server.port: "8080"
+      traefik.http.routers.echoip.middlewares: "secure-headers@file"
+      com.centurylinklabs.watchtower.enable: "true"
+
+      homepage.group: "Networking"
+      homepage.name: "EchoIP"
+      homepage.icon: "mdi-ip-network-outline"
+      homepage.href: "https://{{ echoip_subdomain }}.{{ server_hostname }}"

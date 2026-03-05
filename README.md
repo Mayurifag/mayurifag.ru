@@ -68,6 +68,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | 3x-ui               | `3x`         | app  |            |
 | BentoPDF            | `pdf`        | ldap | +          |
 | ConvertX            | `convert`    | ldap | +          |
+| EchoIP              | `ip`         | none | +          |
 | Gitea               | `git`        | todo |            |
 | Homepage.dev        | `home`       | ldap | +          |
 | MkDocs              | `docs`       | ldap | +          |
@@ -86,9 +87,13 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 
 <!-- markdownlint-enable line-length -->
 
-Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
+Refer to[POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 
 ## TODO
+
+* [ ] `make` commands should be refactored. I want to see for each deploy where
+      things are deployed and have easy instrumentation to change that because
+      for now i have 2 machines with different ip/domains.
 
 ### On hold
 
