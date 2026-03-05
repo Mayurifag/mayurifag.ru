@@ -13,9 +13,10 @@ I also \might\ have .git files in my spaces which also trigger false positives
 name: custom-whitelist/opencloud-whitelist
 description: "Whitelist events related to Opencloud server"
 whitelist:
-  reason: "Opencloud Whitelist for WebDAV"
+  reason: "Opencloud Whitelist for WebDAV and .git files"
   expression:
-    - evt.Parsed.request contains '/dav/spaces/'
+    - evt.Parsed.request contains '/remote.php/'
+    - evt.Parsed.request contains '/dav/'
 ---
 name: custom-whitelist/mus-player-state
 description: "Whitelist /api/v1/player/state polling for mus"
@@ -23,3 +24,4 @@ whitelist:
   reason: "Polling requests to /api/v1/player/state (often 401) should not be banned"
   expression:
     - evt.Parsed.target_uri == "/api/v1/player/state"
+    - evt.Parsed.request contains "/api/v1/player/state"
