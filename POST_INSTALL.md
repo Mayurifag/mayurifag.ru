@@ -61,3 +61,10 @@ Then just use subscription with [Happ](https://www.happ.su/main/).
 
 There is also some
 [tuning](https://vc.ru/id206643/2149746-nastroika-3x-ui-bez-oshibok) available.
+
+## Gitea
+
+Requires setup after installation:
+
+- Create admin user
+- Add SSH and GPG keys

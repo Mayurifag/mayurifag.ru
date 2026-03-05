@@ -16,8 +16,3 @@ gitea_memory_limit: "1g"
 gitea_ssh_port: "222"
 gitea_disable_registration: "true"
 gitea_install_lock: "false"
-
-# Admin user configuration
-gitea_admin_username: "gitea_admin"
-gitea_admin_password: "change_this"
-gitea_admin_email: "{{ admin_email }}"
