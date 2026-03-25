@@ -25,7 +25,9 @@
       traefik.http.routers.tg_ai_manager.rule: "Host(`{{ tg_ai_manager_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.tg_ai_manager.loadbalancer.server.port: "8000"
       traefik.http.routers.tg_ai_manager.middlewares: "tinyauth@docker,secure-headers@file"
-      tinyauth.apps.tg-ai-manager.path.allow: "^\\/api\\/rules\\/export$"
+      traefik.http.routers.tg_ai_manager_public.rule: "Host(`{{ tg_ai_manager_subdomain }}.{{ server_hostname }}`) && Path(`/api/rules/export`)"
+      traefik.http.routers.tg_ai_manager_public.service: "tg_ai_manager"
+      traefik.http.routers.tg_ai_manager_public.middlewares: "secure-headers@file"
       com.centurylinklabs.watchtower.enable: "true"
 
       homepage.group: "Services"
