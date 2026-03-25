@@ -2,7 +2,7 @@
 tinyauth_enabled: true
 
 tinyauth_data_directory: "{{ docker_home }}/tinyauth"
-tinyauth_docker_image: ghcr.io/steveiliop56/tinyauth:v4
+tinyauth_docker_image: ghcr.io/steveiliop56/tinyauth:v5
 tinyauth_subdomain: "auth"
 
 tinyauth_memory: 512m
