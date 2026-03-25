@@ -15,6 +15,5 @@ rules:
     forbid-implicit-octal: true
     forbid-explicit-octal: true
 
-# ignore: |
-#   .cache
-#   .github/workflows/*.yml
+ignore: |
+  .ansible/roles

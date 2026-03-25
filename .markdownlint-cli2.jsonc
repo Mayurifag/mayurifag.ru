@@ -10,5 +10,8 @@
   "globs": [
     "**/*.{md,markdown}"
   ],
-  "noBanner": true
+  "noBanner": true,
+  "ignores": [
+    ".ansible/roles/**"
+  ]
 }

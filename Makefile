@@ -30,3 +30,10 @@ bootstrap:
 .PHONY: sshconfig
 sshconfig:
 	ansible-playbook -i inventories/my-provision/inventory sshconfig.yml
+
+.PHONY: ci
+ci:
+	editorconfig-checker
+	ansible-lint
+	yamllint .
+	markdownlint-cli2 "**/*.md"

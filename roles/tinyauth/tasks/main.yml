@@ -27,6 +27,7 @@
       LDAP_BASE_DN: "{{ lldap_base_dn }}"
       LDAP_SEARCH_FILTER: (uid=%s)
       LDAP_INSECURE: "true"
+      TINYAUTH_AUTH_SESSIONEXPIRY: "31536000"
     restart_policy: unless-stopped
     memory: "{{ tinyauth_memory }}"
     networks:
