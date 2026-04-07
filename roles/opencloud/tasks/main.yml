@@ -57,6 +57,7 @@
       LOG_PRETTY: "true"
       FRONTEND_CHECK_FOR_UPDATES: "false"
       OC_SHARING_PUBLIC_SHARE_MUST_HAVE_PASSWORD: "false"
+      IDP_REFRESH_TOKEN_EXPIRATION: "30240000" # 350 days
       # For webdav sync of Obsidian Remotely Save performance
       OCDAV_ALLOW_PROPFIND_DEPTH_INFINITY: "true"
       STORAGE_SYSTEM_LOG_LEVEL: "error" # Prevent unnecessary warnings pollution of logs

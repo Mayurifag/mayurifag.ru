@@ -87,7 +87,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 
 <!-- markdownlint-enable line-length -->
 
-Refer to[POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
+Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 
 ## TODO
 
