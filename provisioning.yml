@@ -136,3 +136,8 @@
       tags:
         - tg_ai_manager
       when: (tg_ai_manager_enabled | default(False))
+
+    - role: glance
+      tags:
+        - glance
+      when: (glance_enabled | default(False))

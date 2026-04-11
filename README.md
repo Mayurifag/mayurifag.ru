@@ -70,6 +70,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | ConvertX            | `convert`    | ldap | +          |
 | EchoIP              | `ip`         | none | +          |
 | Gitea               | `git`        | todo |            |
+| Glance              | `rss`        | none | +          |
 | Homepage.dev        | `home`       | ldap | +          |
 | MkDocs              | `docs`       | ldap | +          |
 | Mini-QR             | `qr`         | ldap | +          |
@@ -94,6 +95,7 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 * [ ] `make` commands should be refactored. I want to see for each deploy where
       things are deployed and have easy instrumentation to change that because
       for now i have 2 machines with different ip/domains.
+* [ ] Remove homepage.dev as its not used - requires to delete all the labels.
 
 ### On hold
 

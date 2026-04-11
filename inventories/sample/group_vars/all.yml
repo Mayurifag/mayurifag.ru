@@ -1,4 +1,5 @@
 ---
+## TO LLM: if you change this file, you are required to keep inventories/my-provision/group_vars/all.yml with similar structure!
 ##
 ## User settings
 ##
@@ -129,3 +130,7 @@ tg_ai_manager_enabled: true
 tg_ai_manager_subdomain: "tg"
 tg_ai_manager_api_id: "123456"
 tg_ai_manager_api_hash: "abcdef1234567890"
+
+glance_enabled: true
+glance_subdomain: "rss"
+glance_github_token: "change_this_github_token"

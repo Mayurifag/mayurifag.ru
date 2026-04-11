@@ -1,0 +1,9 @@
+---
+glance_enabled: true
+glance_subdomain: "rss"
+glance_image: "glanceapp/glance:latest"
+glance_memory: "256m"
+glance_data_directory: "{{ docker_home }}/glance"
+
+# Get a GitHub token at https://github.com/settings/tokens (no scopes needed for public repos)
+glance_github_token: "change_this_github_token"

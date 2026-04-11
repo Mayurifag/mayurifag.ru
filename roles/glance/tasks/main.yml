@@ -1,0 +1,46 @@
+---
+- name: Remove Glance data directory for clean deployment
+  ansible.builtin.file:
+    path: "{{ glance_data_directory }}"
+    state: absent
+
+- name: Create Glance directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  with_items:
+    - "{{ glance_data_directory }}"
+    - "{{ glance_data_directory }}/config"
+
+- name: Create Glance configuration
+  ansible.builtin.template:
+    src: glance.yml.j2
+    dest: "{{ glance_data_directory }}/config/glance.yml"
+    mode: "0644"
+
+- name: Glance Docker Container
+  community.docker.docker_container:
+    name: glance
+    image: "{{ glance_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ glance_memory }}"
+    volumes:
+      - "{{ glance_data_directory }}/config:/app/config"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    env:
+      GITHUB_TOKEN: "{{ glance_github_token }}"
+    networks:
+      - name: "web"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.glance.rule: "Host(`{{ glance_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.glance.loadbalancer.server.port: "8080"
+      traefik.http.routers.glance.middlewares: "tinyauth@docker,secure-headers@file"
+      com.centurylinklabs.watchtower.enable: "true"
+      homepage.group: "Services"
+      homepage.name: "Glance"
+      homepage.icon: "mdi-newspaper-variant-outline"
+      homepage.href: "https://{{ glance_subdomain }}.{{ server_hostname }}"
