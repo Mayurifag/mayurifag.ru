@@ -8,6 +8,7 @@ theme:
   contrast-multiplier: 1.2
   positive-color: 135 94 66
   negative-color: 0 100 67
+  disable-picker: true
 
 pages:
   - name: Home
@@ -15,6 +16,7 @@ pages:
       - size: small
         widgets:
           - type: twitch-channels
+            cache: 5m
             channels:
               - Ka6an4ik_
               - fnjke00
@@ -23,51 +25,59 @@ pages:
               - JoinTheSystemm
             collapse-after: 5
 
-          - type: twitch-top-games
-            exclude:
-              - just-chatting
-              - pools-hot-tubs-and-beaches
-              - music
-              - art
-              - asmr
-
           - type: docker-containers
             format-container-names: true
 
       - size: full
         widgets:
           - type: rss
-            title: Xiaomi Today
+            title: Meduza
+            cache: 10m
             feeds:
-              - url: https://xiaomitoday.com/feed
-                title: Xiaomi Today
+              - url: https://meduza.io/rss/all
+                title: Meduza
             limit: 15
             collapse-after: 5
 
           - type: hacker-news
+            cache: 30m
             limit: 15
             collapse-after: 5
 
-          - type: reddit
-            subreddit: LETFs
-            style: vertical-list
-            show-thumbnails: true
-            limit: 10
+          - type: rss
+            title: Gizmochina
+            cache: 10m
+            feeds:
+              - url: https://gizmochina.com/category/news/feed
+                title: Gizmochina
+            limit: 15
             collapse-after: 5
 
-          - type: reddit
-            subreddit: wallstreetbets
-            style: vertical-list
-            show-thumbnails: true
-            limit: 10
-            collapse-after: 5
+          - type: group
+            widgets:
+              - type: reddit
+                subreddit: LETFs
+                cache: 30m
+                style: vertical-list
+                show-thumbnails: true
+                limit: 20
+                collapse-after: 10
 
-          - type: reddit
-            subreddit: selfhosted
-            style: vertical-list
-            show-thumbnails: true
-            limit: 10
-            collapse-after: 5
+              - type: reddit
+                subreddit: wallstreetbets
+                cache: 30m
+                style: vertical-list
+                show-thumbnails: true
+                limit: 20
+                collapse-after: 10
+
+              - type: reddit
+                subreddit: selfhosted
+                cache: 30m
+                style: vertical-list
+                show-thumbnails: true
+                limit: 20
+                collapse-after: 10
 
       - size: small
         widgets:
@@ -78,6 +88,7 @@ pages:
 
           - type: releases
             title: GitHub Releases
+            cache: 1h
             repositories:
               - insin/control-panel-for-twitter
             token: ${GITHUB_TOKEN}
@@ -85,6 +96,7 @@ pages:
             collapse-after: 5
 
           - type: markets
+            cache: 5m
             markets:
               - symbol: SPY
                 name: SPY
@@ -103,27 +115,35 @@ pages:
             sites:
               - title: OpenCloud
                 url: https://cloud.{{ server_hostname }}
+                check-url: http://opencloud:9200
                 icon: si:nextcloud
               - title: Gitea
                 url: https://git.{{ server_hostname }}
+                check-url: http://gitea:3000
                 icon: si:gitea
               - title: Navidrome
                 url: https://navidrome.{{ server_hostname }}
+                check-url: http://navidrome:4533
                 icon: si:navidrome
               - title: Portainer
                 url: https://portainer.{{ server_hostname }}
+                check-url: http://portainer:9000
                 icon: si:portainer
               - title: Docs
                 url: https://docs.{{ server_hostname }}
+                check-url: http://mkdocs:8000
                 icon: si:materialformkdocs
               - title: ConvertX
                 url: https://convert.{{ server_hostname }}
+                check-url: http://convertx:3000
                 icon: si:files
               - title: BentoPDF
                 url: https://pdf.{{ server_hostname }}
+                check-url: http://bentopdf:8080
                 icon: si:adobeacrobatreader
               - title: TG AI Manager
                 url: https://tg.{{ server_hostname }}
+                check-url: http://tg-ai-manager:8000
                 icon: si:telegram
 
           - type: calendar

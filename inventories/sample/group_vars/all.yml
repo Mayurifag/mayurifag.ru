@@ -70,6 +70,7 @@ proxy_http_port: "1081"
 mus_enabled: true
 mus_subdomain: "mus"
 mus_music_directory: "/home/{{ admin_username }}/music_folder/"
+mus_gemini_api_key: "change_this"
 
 navidrome_enabled: true
 navidrome_subdomain: "navidrome"

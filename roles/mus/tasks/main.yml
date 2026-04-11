@@ -12,6 +12,8 @@
     networks:
       - name: "web"
     memory: "{{ mus_memory }}"
+    env:
+      GEMINI_API_KEY: "{{ mus_gemini_api_key }}"
     labels:
       traefik.enable: "true"
       traefik.http.routers.mus.rule: "Host(`{{ mus_subdomain }}.{{ server_hostname }}`)"
