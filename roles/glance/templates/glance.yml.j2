@@ -15,6 +15,20 @@ pages:
     columns:
       - size: small
         widgets:
+          - type: markets
+            cache: 5m
+            markets:
+              - symbol: SPY
+                name: SPY
+              - symbol: BTC-USD
+                name: BTC
+              - symbol: QQQ
+                name: QQQ
+              - symbol: TQQQ
+                name: TQQQ
+              - symbol: INFQ
+                name: INFQ
+
           - type: twitch-channels
             cache: 5m
             channels:
@@ -25,8 +39,52 @@ pages:
               - JoinTheSystemm
             collapse-after: 5
 
-          - type: docker-containers
-            format-container-names: true
+          - type: custom-api
+            title: GitHub Notifications
+            cache: 1m
+            url: https://api.github.com/notifications?per_page=20
+            headers:
+              Authorization: Bearer ${GITHUB_NOTIFICATIONS_TOKEN}
+              Accept: application/vnd.github+json
+            template: |
+              {% raw %}{{ $notifications := .JSON.Array "" }}
+              {{ if eq (len $notifications) 0 }}
+                <div class="color-subdue">No unread notifications</div>
+              {{ else }}
+              <ul class="list list-gap-14 collapsible-container" data-collapse-after="6">
+              {{ range $notifications }}
+                {{ $url := concat (.String "repository.html_url") "/actions" }}
+                {{ if ne (.String "subject.url") "" }}
+                  {{
+                    $notification := newRequest (.String "subject.url")
+                      | withHeader "Authorization" "Bearer ${GITHUB_NOTIFICATIONS_TOKEN}"
+                      | getResponse
+                  }}
+                  {{ if eq $notification.Response.StatusCode 200 }}
+                    {{ $url = $notification.JSON.String "html_url" }}
+                  {{ else }}
+                    {{ $url = (.String "subject.url") | replaceMatches "repos/" "" | replaceMatches "api[.]" "" | replaceAll "pulls" "pull" }}
+                  {{ end }}
+                {{ end }}
+                <li>
+                  <a href="{{ $url }}" class="size-title-dynamic {{ if .Bool "unread" }}color-primary-if-not-visited{{ else }}negative-color{{ end }}" target="_blank" rel="noreferrer">{{ .String "subject.title" }}</a>
+                  <ul class="list-horizontal-text flex-nowrap">
+                    <li class="min-width-0" {{ .String "updated_at" | parseTime "rfc3339" | toRelativeTime }}></li>
+                    <li class="min-width-0"><a target="_blank" href="{{ $url }}">{{ .String "repository.full_name" }}</a></li>
+                  </ul>
+                </li>
+              {{ end }}
+              </ul>
+              {{ end }}{% endraw %}
+
+          - type: releases
+            title: GitHub Releases
+            cache: 1h
+            repositories:
+              - insin/control-panel-for-twitter
+            token: ${GITHUB_TOKEN}
+            limit: 10
+            collapse-after: 5
 
       - size: full
         widgets:
@@ -36,21 +94,16 @@ pages:
             feeds:
               - url: https://meduza.io/rss/all
                 title: Meduza
-            limit: 15
-            collapse-after: 5
-
-          - type: hacker-news
-            cache: 30m
-            limit: 15
+            limit: 20
             collapse-after: 5
 
           - type: rss
-            title: Gizmochina
+            title: Xiaomi Today
             cache: 10m
             feeds:
-              - url: https://gizmochina.com/category/news/feed
-                title: Gizmochina
-            limit: 15
+              - url: https://xiaomitoday.com/feed
+                title: Xiaomi Today
+            limit: 20
             collapse-after: 5
 
           - type: group
@@ -79,6 +132,11 @@ pages:
                 limit: 20
                 collapse-after: 10
 
+          - type: hacker-news
+            cache: 30m
+            limit: 20
+            collapse-after: 5
+
       - size: small
         widgets:
           - type: weather
@@ -86,65 +144,56 @@ pages:
             units: metric
             hour-format: 24h
 
-          - type: releases
-            title: GitHub Releases
-            cache: 1h
-            repositories:
-              - insin/control-panel-for-twitter
-            token: ${GITHUB_TOKEN}
-            limit: 10
-            collapse-after: 5
+          - type: custom-api
+            title: Air Quality
+            cache: 10m
+            url: https://api.waqi.info/feed/geo:41.6425;41.6417/?token=${WAQI_TOKEN}
+            template: |
+              {% raw %}{{ $aqi := printf "%03s" (.JSON.String "data.aqi") }}
+              {{ $aqiraw := .JSON.String "data.aqi" }}
+              {{ $updated := .JSON.String "data.time.iso" }}
+              {{ $humidity := .JSON.String "data.iaqi.h.v" }}
+              {{ $ozone := .JSON.String "data.iaqi.o3.v" }}
+              {{ $pm25 := .JSON.String "data.iaqi.pm25.v" }}
+              {{ $pressure := .JSON.String "data.iaqi.p.v" }}
 
-          - type: markets
-            cache: 5m
-            markets:
-              - symbol: SPY
-                name: SPY
-              - symbol: BTC-USD
-                name: BTC
-              - symbol: QQQ
-                name: QQQ
-              - symbol: TQQQ
-                name: TQQQ
-              - symbol: INFQ
-                name: INFQ
+              <div class="flex justify-between">
+                <div class="size-h5">
+                  {{ if le $aqi "050" }}
+                    <div class="color-positive">Good air quality</div>
+                  {{ else if le $aqi "100" }}
+                    <div class="color-primary">Moderate air quality</div>
+                  {{ else }}
+                    <div class="color-negative">Bad air quality</div>
+                  {{ end }}
+                </div>
+              </div>
 
-          - type: monitor
-            title: Services
-            cache: 1m
-            sites:
-              - title: OpenCloud
-                url: https://cloud.{{ server_hostname }}
-                check-url: http://opencloud:9200
-                icon: si:nextcloud
-              - title: Gitea
-                url: https://git.{{ server_hostname }}
-                check-url: http://gitea:3000
-                icon: si:gitea
-              - title: Navidrome
-                url: https://navidrome.{{ server_hostname }}
-                check-url: http://navidrome:4533
-                icon: si:navidrome
-              - title: Portainer
-                url: https://portainer.{{ server_hostname }}
-                check-url: http://portainer:9000
-                icon: si:portainer
-              - title: Docs
-                url: https://docs.{{ server_hostname }}
-                check-url: http://mkdocs:8000
-                icon: si:materialformkdocs
-              - title: ConvertX
-                url: https://convert.{{ server_hostname }}
-                check-url: http://convertx:3000
-                icon: si:files
-              - title: BentoPDF
-                url: https://pdf.{{ server_hostname }}
-                check-url: http://bentopdf:8080
-                icon: si:adobeacrobatreader
-              - title: TG AI Manager
-                url: https://tg.{{ server_hostname }}
-                check-url: http://tg-ai-manager:8000
-                icon: si:telegram
+              <div class="color-highlight size-h2">AQI: {{ $aqiraw }}</div>
+              <div style="border-bottom: 1px solid; margin-block: 10px;"></div>
+
+              <div class="margin-block-2">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                  <div>
+                    <div class="size-h3 color-highlight">{{ $humidity }}%</div>
+                    <div class="size-h6">HUMIDITY</div>
+                  </div>
+                  <div>
+                    <div class="size-h3 color-highlight">{{ $ozone }} μg/m³</div>
+                    <div class="size-h6">OZONE</div>
+                  </div>
+                  <div>
+                    <div class="size-h3 color-highlight">{{ $pm25 }} μg/m³</div>
+                    <div class="size-h6">PM2.5</div>
+                  </div>
+                  <div>
+                    <div class="size-h3 color-highlight">{{ $pressure }} hPa</div>
+                    <div class="size-h6">PRESSURE</div>
+                  </div>
+                </div>
+                <div class="size-h6" style="margin-top: 10px;">Last Updated at {{ slice $updated 11 16 }}</div>
+              </div>{% endraw %}
 
           - type: calendar
             first-day-of-week: monday
+

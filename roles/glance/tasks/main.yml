@@ -32,6 +32,8 @@
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     env:
       GITHUB_TOKEN: "{{ glance_github_token }}"
+      GITHUB_NOTIFICATIONS_TOKEN: "{{ glance_github_notifications_token }}"
+      WAQI_TOKEN: "{{ glance_waqi_token }}"
     networks:
       - name: "web"
     labels:

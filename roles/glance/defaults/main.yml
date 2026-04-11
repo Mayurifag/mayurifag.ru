@@ -7,3 +7,9 @@ glance_data_directory: "{{ docker_home }}/glance"
 
 # Get a GitHub token at https://github.com/settings/tokens (no scopes needed for public repos)
 glance_github_token: "change_this_github_token"
+
+# Get a GitHub token with notifications scope for github-notifications widget
+glance_github_notifications_token: "change_this_github_notifications_token"
+
+# Get a WAQI token at https://aqicn.org/data-platform/token/
+glance_waqi_token: "change_this_waqi_token"
