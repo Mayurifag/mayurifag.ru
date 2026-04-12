@@ -29,8 +29,3 @@
       traefik.http.routers.tg_ai_manager_public.service: "tg_ai_manager"
       traefik.http.routers.tg_ai_manager_public.middlewares: "secure-headers@file"
       com.centurylinklabs.watchtower.enable: "true"
-
-      homepage.group: "Services"
-      homepage.name: "TG AI Manager"
-      homepage.icon: "mdi-robot"
-      homepage.href: "https://{{ tg_ai_manager_subdomain }}.{{ server_hostname }}"

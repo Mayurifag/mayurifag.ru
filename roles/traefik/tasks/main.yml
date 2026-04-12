@@ -63,11 +63,6 @@
       traefik.http.routers.traefik.service: "api@internal"
       traefik.http.routers.traefik.middlewares: "crowdsec@file,tinyauth@docker,secure-headers@file"
 
-      homepage.group: "Infrastructure"
-      homepage.name: "Traefik"
-      homepage.icon: "traefik.svg"
-      homepage.href: "https://{{ traefik_subdomain }}.{{ server_hostname }}/dashboard/"
-
 - name: Ensure logrotate is installed
   ansible.builtin.apt:
     name: logrotate

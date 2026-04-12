@@ -34,8 +34,3 @@
       traefik.http.services.mkdocs.loadbalancer.server.port: "8000"
       traefik.http.routers.mkdocs.middlewares: "tinyauth@docker,secure-headers@file"
       com.centurylinklabs.watchtower.enable: "true"
-
-      homepage.group: "Static"
-      homepage.name: "MkDocs"
-      homepage.icon: "mdi-book-open-page-variant"
-      homepage.href: "https://{{ mkdocs_subdomain }}.{{ server_hostname }}"

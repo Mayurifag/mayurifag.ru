@@ -71,7 +71,6 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | EchoIP              | `ip`         | none | +          |
 | Gitea               | `git`        | todo |            |
 | Glance              | `rss`        | none | +          |
-| Homepage.dev        | `home`       | ldap | +          |
 | MkDocs              | `docs`       | ldap | +          |
 | Mini-QR             | `qr`         | ldap | +          |
 | mayurifag.github.io |              | ldap | +          |
@@ -95,7 +94,6 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 * [ ] `make` commands should be refactored. I want to see for each deploy where
       things are deployed and have easy instrumentation to change that because
       for now i have 2 machines with different ip/domains.
-* [ ] Remove homepage.dev as its not used - requires to delete all the labels.
 
 ### On hold
 
@@ -133,7 +131,6 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
   * [ ] <https://github.com/Luzifer/ots> seems fine
 * [ ] Watchtowerrr
   * [ ] use config.json for auth to dockerhub to prevent limits
-  * [ ] use metrics for homepage <https://gethomepage.dev/widgets/services/watchtower/>
 * [ ] VPS security
   * [ ] Kernel params to have less /var/log/syslog noise - add to crowdsec btw
   * [ ] <https://madaidans-insecurities.github.io/guides/linux-hardening.html>
@@ -141,11 +138,6 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
   * [ ] (not sure) <https://github.com/quay/clair>
   * [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
   * [ ] <https://github.com/imthenachoman/How-To-Secure-A-Linux-Server>
-* [ ] Homepage.dev ideas
-  * [ ] redesign
-  * [ ] Stocks SPY/QQQ - requires finnhub api key
-  * [ ] World clock? moscow time
-  * [ ] For crowdsec - link to <https://app.crowdsec.net/>
 * [ ] Status page for services
   * [ ] Has to be free and allow deploy from ansible via API
   * [ ] maybe just main website check and self service to report docker unhealth

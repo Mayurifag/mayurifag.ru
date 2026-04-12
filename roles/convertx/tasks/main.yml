@@ -17,8 +17,3 @@
       traefik.http.services.convertx.loadbalancer.server.port: "3000"
       traefik.http.routers.convertx.middlewares: "tinyauth@docker,secure-headers@file"
       com.centurylinklabs.watchtower.enable: "true"
-
-      homepage.group: "Services"
-      homepage.name: "ConvertX"
-      homepage.icon: "convertx.png"
-      homepage.href: "https://{{ convertx_subdomain }}.{{ server_hostname }}"

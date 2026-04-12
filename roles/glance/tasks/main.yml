@@ -42,7 +42,3 @@
       traefik.http.services.glance.loadbalancer.server.port: "8080"
       traefik.http.routers.glance.middlewares: "tinyauth@docker,secure-headers@file"
       com.centurylinklabs.watchtower.enable: "true"
-      homepage.group: "Services"
-      homepage.name: "Glance"
-      homepage.icon: "mdi-newspaper-variant-outline"
-      homepage.href: "https://{{ glance_subdomain }}.{{ server_hostname }}"

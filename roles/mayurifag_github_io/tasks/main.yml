@@ -15,8 +15,3 @@
       traefik.http.services.mayurifag_github_io.loadbalancer.server.port: "80"
       traefik.http.routers.mayurifag_github_io.middlewares: "secure-headers@file"
       com.centurylinklabs.watchtower.enable: "true"
-
-      homepage.group: "Static"
-      homepage.name: "mayurifag.github.io"
-      homepage.icon: "mdi-web-box"
-      homepage.href: "https://{{ server_hostname }}"

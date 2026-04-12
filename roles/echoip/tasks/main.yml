@@ -18,8 +18,3 @@
       traefik.http.services.echoip.loadbalancer.server.port: "8080"
       traefik.http.routers.echoip.middlewares: "secure-headers@file"
       com.centurylinklabs.watchtower.enable: "true"
-
-      homepage.group: "Networking"
-      homepage.name: "EchoIP"
-      homepage.icon: "mdi-ip-network-outline"
-      homepage.href: "https://{{ echoip_subdomain }}.{{ server_hostname }}"

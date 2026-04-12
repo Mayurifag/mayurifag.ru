@@ -15,8 +15,3 @@
       traefik.http.services.bentopdf.loadbalancer.server.port: "8080"
       traefik.http.routers.bentopdf.middlewares: "tinyauth@docker,secure-headers@file"
       com.centurylinklabs.watchtower.enable: "true"
-
-      homepage.group: "Services"
-      homepage.name: "BentoPDF"
-      homepage.icon: "bentopdf.svg"
-      homepage.href: "https://{{ bentopdf_subdomain }}.{{ server_hostname }}"

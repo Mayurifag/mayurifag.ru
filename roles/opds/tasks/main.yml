@@ -32,11 +32,6 @@
 
       com.centurylinklabs.watchtower.enable: "true"
 
-      homepage.group: "Services"
-      homepage.name: "OPDShelf"
-      homepage.icon: "mdi-book-open-variant"
-      homepage.href: "https://{{ opds_subdomain }}.{{ server_hostname }}"
-
 # Since I upload books on OpenCloud, I want them to be imported automatically which opds catalog cant do right now
 # I do restarts with sidecar container every hour to force rescan as a shitty workaround
 - name: OPDS Restarter Sidecar

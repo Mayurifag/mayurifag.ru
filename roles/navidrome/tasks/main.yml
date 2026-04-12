@@ -35,8 +35,3 @@
       traefik.http.services.navidrome.loadbalancer.server.port: "4533"
       traefik.http.routers.navidrome.middlewares: "secure-headers@file"
       com.centurylinklabs.watchtower.enable: "true"
-
-      homepage.group: "Services"
-      homepage.name: "Navidrome"
-      homepage.icon: "navidrome.svg"
-      homepage.href: "https://{{ navidrome_subdomain }}.{{ server_hostname }}"

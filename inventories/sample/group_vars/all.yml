@@ -86,9 +86,6 @@ portainer_subdomain: "portainer"
 traefik_enabled: true
 traefik_subdomain: "traefik"
 
-homepage_enabled: true
-homepage_subdomain: "home"
-
 gitea_enabled: true
 gitea_subdomain: "git"
 gitea_admin_password: "change_this"

@@ -58,9 +58,3 @@
       traefik.tcp.routers.threexui-reality.tls.passthrough: "true"
       traefik.tcp.routers.threexui-reality.service: "threexui-reality"
       traefik.tcp.services.threexui-reality.loadbalancer.server.port: "443"
-
-      homepage.group: "Networking"
-      homepage.name: "3x-ui"
-      homepage.description: "Also subscriptions on https://{{ threexui_panel_subdomain }}.{{ server_hostname }}/sub/"
-      homepage.icon: "marzban.png"
-      homepage.href: "https://{{ threexui_panel_subdomain }}.{{ server_hostname }}"

@@ -68,8 +68,3 @@
       traefik.http.services.portainer.loadbalancer.server.port: "9000"
       traefik.http.routers.portainer.middlewares: "secure-headers@file"
       com.centurylinklabs.watchtower.enable: "true"
-
-      homepage.group: "Infrastructure"
-      homepage.name: "Portainer"
-      homepage.icon: "portainer.svg"
-      homepage.href: "https://{{ portainer_subdomain }}.{{ server_hostname }}"

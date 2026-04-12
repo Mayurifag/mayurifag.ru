@@ -20,8 +20,3 @@
       traefik.http.services.mus.loadbalancer.server.port: "8000"
       traefik.http.routers.mus.middlewares: "secure-headers@file,tinyauth@docker"
       com.centurylinklabs.watchtower.enable: "true"
-
-      homepage.group: "Services"
-      homepage.name: "mus"
-      homepage.icon: "mdi-volume-high"
-      homepage.href: "https://{{ mus_subdomain }}.{{ server_hostname }}"

@@ -95,8 +95,3 @@
       traefik.http.middlewares.opencloud-dav.redirectregex.permanent: "true"
 
       traefik.http.routers.opencloud.middlewares: "secure-headers@file,opencloud-dav"
-
-      homepage.group: "Services"
-      homepage.name: "OpenCloud"
-      homepage.icon: "owncloud.png"
-      homepage.href: "https://{{ opencloud_subdomain }}.{{ server_hostname }}"
