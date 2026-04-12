@@ -13,23 +13,24 @@ theme:
 pages:
   - name: Home
     hide-desktop-navigation: true
+    head-widgets:
+      - type: markets
+        hide-header: true
+        cache: 5m
+        markets:
+          - symbol: SPY
+            name: SPY
+          - symbol: BTC-USD
+            name: BTC
+          - symbol: TQQQ
+            name: TQQQ
+          - symbol: INFQ
+            name: INFQ
+          - symbol: ^VIX
+            name: VIX
     columns:
       - size: small
         widgets:
-          - type: markets
-            cache: 5m
-            markets:
-              - symbol: SPY
-                name: SPY
-              - symbol: BTC-USD
-                name: BTC
-              - symbol: QQQ
-                name: QQQ
-              - symbol: TQQQ
-                name: TQQQ
-              - symbol: INFQ
-                name: INFQ
-
           - type: twitch-channels
             cache: 5m
             channels:
@@ -133,10 +134,17 @@ pages:
                 limit: 20
                 collapse-after: 10
 
-          - type: hacker-news
-            cache: 30m
-            limit: 20
-            collapse-after: 5
+          - type: group
+            widgets:
+              - type: hacker-news
+                cache: 30m
+                limit: 20
+                collapse-after: 5
+
+              - type: lobsters
+                cache: 30m
+                limit: 20
+                collapse-after: 5
 
       - size: small
         widgets:
@@ -154,8 +162,6 @@ pages:
               {{ $aqiraw := .JSON.String "data.aqi" }}
               {{ $updated := .JSON.String "data.time.iso" }}
               {{ $humidity := .JSON.String "data.iaqi.h.v" }}
-              {{ $ozone := .JSON.String "data.iaqi.o3.v" }}
-              {{ $pm25 := .JSON.String "data.iaqi.pm25.v" }}
               {{ $pressure := .JSON.String "data.iaqi.p.v" }}
 
               <div class="flex justify-between">
@@ -178,14 +184,6 @@ pages:
                   <div>
                     <div class="size-h3 color-highlight">{{ $humidity }}%</div>
                     <div class="size-h6">HUMIDITY</div>
-                  </div>
-                  <div>
-                    <div class="size-h3 color-highlight">{{ $ozone }} μg/m³</div>
-                    <div class="size-h6">OZONE</div>
-                  </div>
-                  <div>
-                    <div class="size-h3 color-highlight">{{ $pm25 }} μg/m³</div>
-                    <div class="size-h6">PM2.5</div>
                   </div>
                   <div>
                     <div class="size-h3 color-highlight">{{ $pressure }} hPa</div>
