@@ -23,3 +23,6 @@ secret
 /makefiles/private.mk
 
 /.ansible/
+
+# Playwright MCP temp files
+/.playwright-mcp/
