@@ -12,7 +12,6 @@ theme:
 
 pages:
   - name: Home
-    hide-desktop-navigation: true
     head-widgets:
       - type: markets
         hide-header: true
@@ -44,7 +43,7 @@ pages:
           - type: custom-api
             title: GitHub Notifications
             cache: 1m
-            url: https://api.github.com/notifications?per_page=20
+            url: https://api.github.com/notifications?per_page=30
             headers:
               Authorization: Bearer ${GITHUB_NOTIFICATIONS_TOKEN}
               Accept: application/vnd.github+json
@@ -84,6 +83,7 @@ pages:
             cache: 1h
             repositories:
               - insin/control-panel-for-twitter
+              - imputnet/helium
             token: ${GITHUB_TOKEN}
             limit: 10
             collapse-after: 5
@@ -96,16 +96,7 @@ pages:
             feeds:
               - url: https://meduza.io/rss/all
                 title: Meduza
-            limit: 20
-            collapse-after: 5
-
-          - type: rss
-            title: 4PDA
-            cache: 10m
-            feeds:
-              - url: https://4pda.to/feed/
-                title: 4PDA
-            limit: 20
+            limit: 30
             collapse-after: 5
 
           - type: group
@@ -115,7 +106,7 @@ pages:
                 cache: 30m
                 style: vertical-list
                 show-thumbnails: true
-                limit: 20
+                limit: 30
                 collapse-after: 10
 
               - type: reddit
@@ -123,7 +114,15 @@ pages:
                 cache: 30m
                 style: vertical-list
                 show-thumbnails: true
-                limit: 20
+                limit: 30
+                collapse-after: 10
+
+              - type: reddit
+                subreddit: TQQQ
+                cache: 30m
+                style: vertical-list
+                show-thumbnails: true
+                limit: 30
                 collapse-after: 10
 
               - type: reddit
@@ -131,26 +130,32 @@ pages:
                 cache: 30m
                 style: vertical-list
                 show-thumbnails: true
-                limit: 20
+                limit: 30
                 collapse-after: 10
 
-          - type: group
-            widgets:
-              - type: hacker-news
+              - type: reddit
+                subreddit: unpopularopinion
                 cache: 30m
-                limit: 20
-                collapse-after: 5
+                style: vertical-list
+                show-thumbnails: true
+                limit: 30
+                collapse-after: 10
 
-              - type: lobsters
+              - type: reddit
+                subreddit: stupidquestions
                 cache: 30m
-                limit: 20
-                collapse-after: 5
+                style: vertical-list
+                show-thumbnails: true
+                limit: 30
+                collapse-after: 10
 
           - type: videos
-            title: Polza NET
+            title: Games
             cache: 1h
             channels:
-              - UCt75WMud0RMUivGBNzvBPXQ
+              - UC4e_XPBiiIO4fo4_CucxQeg
+              - UClA-hZCGgTsNBJu-oJ-pwtg
+              - UCo81Fm38RT9FH1pzKrHrgjQ
             collapse-after: 5
 
       - size: small
@@ -203,3 +208,45 @@ pages:
           - type: calendar
             first-day-of-week: monday
 
+  - name: Tech
+    columns:
+      - size: full
+        widgets:
+          - type: videos
+            title: Videos
+            cache: 1h
+            channels:
+              - UCt75WMud0RMUivGBNzvBPXQ
+              - UCDF_NIAEkcAUvzxe1DUzaQA
+            collapse-after: 5
+
+          - type: split-column
+            max-columns: 2
+            widgets:
+              - type: rss
+                title: 4PDA
+                cache: 10m
+                feeds:
+                  - url: https://4pda.to/feed/
+                    title: 4PDA
+                limit: 30
+                collapse-after: 10
+
+              - type: rss
+                title: Gizmochina
+                cache: 10m
+                feeds:
+                  - url: https://www.gizmochina.com/feed/
+                    title: Gizmochina
+                limit: 30
+                collapse-after: 10
+
+              - type: hacker-news
+                cache: 30m
+                limit: 30
+                collapse-after: 10
+
+              - type: lobsters
+                cache: 30m
+                limit: 30
+                collapse-after: 10
