@@ -1,0 +1,6 @@
+---
+- name: Install Claude Code CLI for admin user
+  ansible.builtin.shell: |
+    curl -fsSL https://claude.ai/install.sh | bash
+  become: true
+  become_user: "{{ admin_username }}"

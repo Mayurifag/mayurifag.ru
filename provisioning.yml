@@ -136,3 +136,8 @@
       tags:
         - glance
       when: (glance_enabled | default(False))
+
+    - role: claude_code
+      tags:
+        - claude_code
+      when: (claude_code_enabled | default(False))

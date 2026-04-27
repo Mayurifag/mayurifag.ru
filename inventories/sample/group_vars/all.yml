@@ -133,3 +133,5 @@ glance_enabled: true
 glance_subdomain: "rss"
 glance_github_token: "change_this_github_token"
 glance_github_notifications_token: "change_this_github_notifications_token"
+
+claude_code_enabled: true

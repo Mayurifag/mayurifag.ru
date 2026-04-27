@@ -1,6 +1,7 @@
 # EXPORTS
 export EDITOR=vi
 export TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins/"
+export PATH="$HOME/.local/bin:$PATH"
 
 ###########
 # ALIASES #
@@ -55,6 +56,11 @@ alias cscli='docker exec crowdsec cscli'
 
 mkcd() { mkdir -p "$1" && cd "$1"; }
 backup() { cp "$1"{,.bak}; }
+
+unalias c 2>/dev/null
+c() {
+  IS_SANDBOX=1 claude --dangerously-skip-permissions "$@"
+}
 
 ###########
 # HISTORY #
