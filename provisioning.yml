@@ -107,6 +107,11 @@
         - convertx
       when: (convertx_enabled | default(False))
 
+    - role: snapotter
+      tags:
+        - snapotter
+      when: (snapotter_enabled | default(False))
+
     - role: echoip
       tags:
         - echoip

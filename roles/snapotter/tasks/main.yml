@@ -1,0 +1,39 @@
+---
+- name: Get admin user info
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ admin_username }}"
+
+- name: Create SnapOtter Directory
+  ansible.builtin.file:
+    path: "{{ snapotter_data_directory }}"
+    state: directory
+    owner: "{{ ansible_facts.getent_passwd[admin_username][1] }}"
+    group: "{{ ansible_facts.getent_passwd[admin_username][2] }}"
+    mode: "0755"
+
+- name: SnapOtter Docker Container
+  community.docker.docker_container:
+    name: snapotter
+    image: "{{ snapotter_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ snapotter_memory }}"
+    volumes:
+      - "{{ snapotter_data_directory }}:/data"
+    networks:
+      - name: "web"
+    env:
+      PUID: "{{ ansible_facts.getent_passwd[admin_username][1] }}"
+      PGID: "{{ ansible_facts.getent_passwd[admin_username][2] }}"
+      AUTH_ENABLED: "false"
+      TRUST_PROXY: "true"
+      APP_NAME: "{{ snapotter_app_name }}"
+      DEFAULT_THEME: "{{ snapotter_default_theme }}"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.snapotter.rule: "Host(`{{ snapotter_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.snapotter.loadbalancer.server.port: "1349"
+      traefik.http.routers.snapotter.middlewares: "tinyauth@docker,secure-headers@file"
+      com.centurylinklabs.watchtower.enable: "true"

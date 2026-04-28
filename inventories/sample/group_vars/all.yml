@@ -114,6 +114,9 @@ bentopdf_subdomain: "pdf"
 convertx_enabled: true
 convertx_subdomain: "convert"
 
+snapotter_enabled: true
+snapotter_subdomain: "images"
+
 echoip_enabled: true
 echoip_subdomain: "ip"
 

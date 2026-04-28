@@ -1,0 +1,42 @@
+- name: Tech
+  columns:
+    - size: full
+      widgets:
+        - type: videos
+          title: Videos
+          cache: 1h
+          channels:
+            - UCt75WMud0RMUivGBNzvBPXQ
+            - UCDF_NIAEkcAUvzxe1DUzaQA
+          collapse-after: 5
+
+        - type: split-column
+          max-columns: 2
+          widgets:
+            - type: rss
+              title: 4PDA
+              cache: 10m
+              feeds:
+                - url: https://4pda.to/feed/
+                  title: 4PDA
+              limit: 30
+              collapse-after: 10
+
+            - type: rss
+              title: Gizmochina
+              cache: 10m
+              feeds:
+                - url: https://www.gizmochina.com/feed/
+                  title: Gizmochina
+              limit: 30
+              collapse-after: 10
+
+            - type: hacker-news
+              cache: 30m
+              limit: 30
+              collapse-after: 10
+
+            - type: lobsters
+              cache: 30m
+              limit: 30
+              collapse-after: 10

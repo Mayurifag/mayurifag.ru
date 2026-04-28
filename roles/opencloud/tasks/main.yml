@@ -1,17 +1,17 @@
 ---
-# - name: Remove opencloud container
-#   community.docker.docker_container:
-#     name: opencloud
-#     state: absent
+- name: Remove opencloud container
+  community.docker.docker_container:
+    name: opencloud
+    state: absent
 
-# - name: Remove OpenCloud Config Directory if needed
-#   ansible.builtin.file:
-#     path: "{{ item }}"
-#     state: absent
-#   with_items:
-#     # - "{{ opencloud_data_directory }}"
-#     # - "{{ opencloud_files_directory }}"
-#     - "{{ opencloud_data_directory }}/var/nats"
+- name: Remove OpenCloud Config Directory if needed
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    # - "{{ opencloud_data_directory }}"
+    # - "{{ opencloud_files_directory }}"
+    - "{{ opencloud_data_directory }}/var/nats"
 
 - name: Create OpenCloud Directories
   ansible.builtin.file:
@@ -55,7 +55,14 @@
       PROXY_TLS: "false" # Traefik handles TLS
       OC_INSECURE: "true"
       OC_LOG_LEVEL: "{{ opencloud_log_level }}"
-      LOG_PRETTY: "true"
+      LOG_PRETTY: "false"
+      OC_CACHE_DISABLE_PERSISTENCE: "true"
+      # Disable Open Cloud Mesh (federation between OpenCloud servers).
+      # Not used here; service spams "missing or incomplete nats configuration"
+      # and "core access token not set" warnings. Upstream bug since ownCloud OCIS.
+      # Refs: https://github.com/owncloud/ocis/issues/8921
+      #       https://github.com/opencloud-eu/opencloud/issues/1591
+      OC_EXCLUDE_RUN_SERVICES: "ocm"
       FRONTEND_CHECK_FOR_UPDATES: "false"
       OC_SHARING_PUBLIC_SHARE_MUST_HAVE_PASSWORD: "false"
       IDP_REFRESH_TOKEN_EXPIRATION: "30240000" # 350 days
@@ -64,6 +71,9 @@
       STORAGE_SYSTEM_LOG_LEVEL: "error" # Prevent unnecessary warnings pollution of logs
 
       STORAGE_USERS_DRIVER: "posix"
+      # NATS-KV mandatory for posix collaborative mode (WATCH_FS=true).
+      # Memory store not supported: watcher + storage-users must share inode->UUID map.
+      # Docs: https://docs.opencloud.eu/docs/admin/configuration/storage/storage-posix
       STORAGE_USERS_ID_CACHE_STORE: "nats-js-kv"
       STORAGE_USERS_POSIX_WATCH_FS: "true"
       STORAGE_USERS_POSIX_ROOT: "/storage"

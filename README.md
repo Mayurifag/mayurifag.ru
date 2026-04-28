@@ -80,6 +80,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | OPDShelf            | `opds`       | ldap | +          |
 | OpenCloud           | `cloud`      | ldap |            |
 | Portainer           | `portainer`  | app  | +          |
+| SnapOtter           | `images`     | ldap | +          |
 | TG AI Manager       | `tg`         | ldap | +          |
 | Traefik / Crowdsec  | `traefik`    | ldap |            |
 | Tinyauth            | `auth`       | ldap | +          |

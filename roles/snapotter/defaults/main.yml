@@ -1,0 +1,9 @@
+---
+snapotter_enabled: true
+
+snapotter_subdomain: "images"
+snapotter_image: "snapotter/snapotter:latest"
+snapotter_memory: "1g"
+snapotter_data_directory: "{{ docker_home }}/snapotter"
+snapotter_app_name: "images"
+snapotter_default_theme: "dark"

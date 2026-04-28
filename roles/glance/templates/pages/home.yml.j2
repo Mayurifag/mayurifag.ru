@@ -1,0 +1,203 @@
+- name: Home
+  head-widgets:
+    - type: markets
+      hide-header: true
+      cache: 5m
+      markets:
+        - symbol: SPY
+          name: SPY
+        - symbol: BTC-USD
+          name: BTC
+        - symbol: TQQQ
+          name: TQQQ
+        - symbol: INFQ
+          name: INFQ
+        - symbol: ^VIX
+          name: VIX
+  columns:
+    - size: small
+      widgets:
+        - type: twitch-channels
+          cache: 5m
+          channels:
+            - Ka6an4ik_
+            - fnjke00
+            - LenaGol0vach
+            - SilverName
+            - JoinTheSystemm
+          collapse-after: 5
+
+        - type: custom-api
+          title: GitHub Notifications
+          cache: 1m
+          url: https://api.github.com/notifications?per_page=30
+          headers:
+            Authorization: Bearer ${GITHUB_NOTIFICATIONS_TOKEN}
+            Accept: application/vnd.github+json
+          template: |
+            {% raw %}{{ $notifications := .JSON.Array "" }}
+            {{ if eq (len $notifications) 0 }}
+              <div class="color-subdue">No unread notifications</div>
+            {{ else }}
+            <ul class="list list-gap-14 collapsible-container" data-collapse-after="6">
+            {{ range $notifications }}
+              {{ $url := concat (.String "repository.html_url") "/actions" }}
+              {{ if ne (.String "subject.url") "" }}
+                {{
+                  $notification := newRequest (.String "subject.url")
+                    | withHeader "Authorization" "Bearer ${GITHUB_NOTIFICATIONS_TOKEN}"
+                    | getResponse
+                }}
+                {{ if eq $notification.Response.StatusCode 200 }}
+                  {{ $url = $notification.JSON.String "html_url" }}
+                {{ else }}
+                  {{ $url = (.String "subject.url") | replaceMatches "repos/" "" | replaceMatches "api[.]" "" | replaceAll "pulls" "pull" }}
+                {{ end }}
+              {{ end }}
+              <li>
+                <a href="{{ $url }}" class="size-title-dynamic {{ if .Bool "unread" }}color-primary-if-not-visited{{ else }}negative-color{{ end }}" target="_blank" rel="noreferrer">{{ .String "subject.title" }}</a>
+                <ul class="list-horizontal-text flex-nowrap">
+                  <li class="min-width-0" {{ .String "updated_at" | parseTime "rfc3339" | toRelativeTime }}></li>
+                  <li class="min-width-0"><a target="_blank" href="{{ $url }}">{{ .String "repository.full_name" }}</a></li>
+                </ul>
+              </li>
+            {{ end }}
+            </ul>
+            {{ end }}{% endraw %}
+
+        - type: releases
+          title: GitHub Releases
+          cache: 1h
+          repositories:
+            - insin/control-panel-for-twitter
+            - imputnet/helium
+            - lwouis/alt-tab-macos
+            - portainer/portainer
+            - steveiliop56/tinyauth
+          token: ${GITHUB_TOKEN}
+          limit: 10
+          collapse-after: 5
+
+    - size: full
+      widgets:
+        - type: search
+          search-engine: https://www.google.com/search?q={QUERY}&gl=ru&hl=ru&pws=0
+          autofocus: true
+
+        - type: rss
+          title: Meduza
+          cache: 10m
+          feeds:
+            - url: https://meduza.io/rss/all
+              title: Meduza
+          limit: 30
+          collapse-after: 5
+
+        - type: group
+          widgets:
+            - type: reddit
+              subreddit: LETFs
+              cache: 30m
+              style: vertical-list
+              show-thumbnails: true
+              limit: 30
+              collapse-after: 10
+
+            - type: reddit
+              subreddit: wallstreetbets
+              cache: 30m
+              style: vertical-list
+              show-thumbnails: true
+              limit: 30
+              collapse-after: 10
+
+            - type: reddit
+              subreddit: TQQQ
+              cache: 30m
+              style: vertical-list
+              show-thumbnails: true
+              limit: 30
+              collapse-after: 10
+
+            - type: reddit
+              subreddit: selfhosted
+              cache: 30m
+              style: vertical-list
+              show-thumbnails: true
+              limit: 30
+              collapse-after: 10
+
+            - type: reddit
+              subreddit: unpopularopinion
+              cache: 30m
+              style: vertical-list
+              show-thumbnails: true
+              limit: 30
+              collapse-after: 10
+
+            - type: reddit
+              subreddit: stupidquestions
+              cache: 30m
+              style: vertical-list
+              show-thumbnails: true
+              limit: 30
+              collapse-after: 10
+
+        - type: videos
+          title: Games
+          cache: 1h
+          channels:
+            - UC4e_XPBiiIO4fo4_CucxQeg
+            - UClA-hZCGgTsNBJu-oJ-pwtg
+            - UCo81Fm38RT9FH1pzKrHrgjQ
+          collapse-after: 5
+
+    - size: small
+      widgets:
+        - type: weather
+          location: ${WEATHER_LOCATION}
+          units: metric
+          hour-format: 24h
+
+        - type: custom-api
+          title: Air Quality
+          cache: 10m
+          url: https://api.waqi.info/feed/geo:41.6425;41.6417/?token=${WAQI_TOKEN}
+          template: |
+            {% raw %}{{ $aqi := printf "%03s" (.JSON.String "data.aqi") }}
+            {{ $aqiraw := .JSON.String "data.aqi" }}
+            {{ $updated := .JSON.String "data.time.iso" }}
+            {{ $humidity := .JSON.String "data.iaqi.h.v" }}
+            {{ $pressure := .JSON.String "data.iaqi.p.v" }}
+
+            <div class="flex justify-between">
+              <div class="size-h5">
+                {{ if le $aqi "050" }}
+                  <div class="color-positive">Good air quality</div>
+                {{ else if le $aqi "100" }}
+                  <div class="color-primary">Moderate air quality</div>
+                {{ else }}
+                  <div class="color-negative">Bad air quality</div>
+                {{ end }}
+              </div>
+            </div>
+
+            <div class="color-highlight size-h2">AQI: {{ $aqiraw }}</div>
+            <div style="border-bottom: 1px solid; margin-block: 10px;"></div>
+
+            <div class="margin-block-2">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                  <div class="size-h3 color-highlight">{{ $humidity }}%</div>
+                  <div class="size-h6">HUMIDITY</div>
+                </div>
+                <div>
+                  <div class="size-h3 color-highlight">{{ $pressure }} hPa</div>
+                  <div class="size-h6">PRESSURE</div>
+                </div>
+              </div>
+              <div class="size-h6" style="margin-top: 10px;">Last Updated at {{ slice $updated 11 16 }}</div>
+            </div>{% endraw %}
+
+        - type: calendar
+          first-day-of-week: monday
