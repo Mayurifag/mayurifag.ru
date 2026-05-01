@@ -4,6 +4,15 @@
   gather_facts: no
   connection: local
   tasks:
+    - name: "TARGET SERVER"
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "  Inventory host : {{ inventory_hostname }}"
+          - "  server_hostname: {{ server_hostname }}"
+          - "  ansible_host   : {{ ansible_host }}"
+          - "================================================"
+
     - name: Remove host keys from known_hosts
       ansible.builtin.known_hosts:
         name: "{{ item }}"

@@ -95,6 +95,7 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 * [ ] `make` commands should be refactored. I want to see for each deploy where
       things are deployed and have easy instrumentation to change that because
       for now i have 2 machines with different ip/domains.
+* [ ] try <https://dockhand.pro/manual/>
 
 ### On hold
 

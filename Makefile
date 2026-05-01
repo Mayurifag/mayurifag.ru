@@ -1,3 +1,5 @@
+HOST ?= nnnnn
+INVENTORY = inventories/my-provision/inventory
 ARGS = $(filter-out $@,$(MAKECMDGOALS))
 
 %:
@@ -5,18 +7,22 @@ ARGS = $(filter-out $@,$(MAKECMDGOALS))
 
 .PHONY: deploy
 deploy:
-	ansible-playbook -i inventories/my-provision/inventory provisioning.yml --tags "$(ARGS)"
+	@echo "==> Target host: [$(HOST)]"
+	ansible-playbook -i $(INVENTORY) provisioning.yml --limit $(HOST) --tags "$(ARGS)"
 
 .PHONY: deploy-all
 deploy-all:
-	ansible-playbook -i inventories/my-provision/inventory provisioning.yml
+	@echo "==> Target host: [$(HOST)] (ALL roles)"
+	ansible-playbook -i $(INVENTORY) provisioning.yml --limit $(HOST)
 
 .PHONY: bootstrap
 bootstrap:
-	ansible-playbook -i inventories/my-provision/inventory clean_hosts.yml
-	@IP=$$(grep "ansible_host=" inventories/my-provision/inventory | head -n 1 | sed -e 's/.*ansible_host=\([^ ]*\).*/\1/'); \
+	@echo "==> Target host: [$(HOST)]"
+	ansible-playbook -i $(INVENTORY) clean_hosts.yml --limit $(HOST)
+	@IP=$$(ansible-inventory -i $(INVENTORY) --host $(HOST) | python3 -c "import json,sys; print(json.load(sys.stdin)['ansible_host'])"); \
+	HN=$$(ansible-inventory -i $(INVENTORY) --host $(HOST) | python3 -c "import json,sys; print(json.load(sys.stdin)['server_hostname'])"); \
 	echo "-----------------------------------------------------------------------"; \
-	echo "Cleanup complete."; \
+	echo "Cleanup complete for [$(HOST)] -> $$HN ($$IP)."; \
 	echo ""; \
 	echo "ACTION REQUIRED:"; \
 	echo "1. SSH into your server manually now: 'ssh root@$$IP'"; \
@@ -24,12 +30,17 @@ bootstrap:
 	echo "3. Make everything your provider required to do interactively - cant automate that with ansible"; \
 	echo "4. Exit the SSH session."; \
 	echo ""; \
-	echo "Then run 'make sshconfig'"; \
+	echo "Then run 'make sshconfig HOST=$(HOST)'"; \
 	echo "-----------------------------------------------------------------------"
 
 .PHONY: sshconfig
 sshconfig:
-	ansible-playbook -i inventories/my-provision/inventory sshconfig.yml
+	@echo "==> Target host: [$(HOST)]"
+	ansible-playbook -i $(INVENTORY) sshconfig.yml --limit $(HOST)
+
+.PHONY: hosts
+hosts:
+	@ansible-inventory -i $(INVENTORY) --list --yaml
 
 .PHONY: ci
 ci:

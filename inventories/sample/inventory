@@ -1,9 +1,13 @@
+# One line per VPS. Each host has its own ansible_host (IP), server_hostname, and server_ssh_port.
+# Pick which to deploy with: `make deploy HOST=<name>` (default = first host).
+# Add/remove/uncomment rows freely.
+
 [sample]
-server ansible_host=192.168.1.30 # change to ip
+prod1 ansible_host=192.168.1.30 server_hostname=mayurifag.local server_ssh_port=22
+prod2 ansible_host=192.168.1.31 server_hostname=example.com     server_ssh_port=22
+# staging ansible_host=10.0.0.5 server_hostname=staging.local server_ssh_port=2222
 
 [sample:vars]
-ansible_user=change_this # Admin user for provisioning
+ansible_user=change_this
 ansible_become_user=root
-server_hostname=mayurifag.local # Domain name for the server
-server_ssh_port=2222 # Custom SSH port
 ansible_port="{{ server_ssh_port }}"

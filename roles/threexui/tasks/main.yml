@@ -1,9 +1,8 @@
 ---
-# - name: Stop and remove 3x-ui container if it exists
-#   community.docker.docker_container:
-#     name: 3x-ui
-#     state: absent
-#     force_kill: yes
+- name: Stop 3x-ui container if it exists
+  community.docker.docker_container:
+    name: 3x-ui
+    state: stopped
 
 # - name: Remove 3x-ui Directories
 #   ansible.builtin.file:
@@ -47,7 +46,8 @@
       traefik.http.routers.threexui-panel.priority: "1"
 
       # Subscription on /sub/ path
-      traefik.http.routers.threexui-sub.rule: "Host(`{{ threexui_panel_subdomain }}.{{ server_hostname }}`) && PathPrefix(`/sub/`)"
+      traefik.http.routers.threexui-sub.rule: "Host(`{{ threexui_panel_subdomain }}.{{
+        server_hostname }}`) && PathPrefix(`/sub/`)"
       traefik.http.routers.threexui-sub.service: "threexui-subscription"
       traefik.http.services.threexui-subscription.loadbalancer.server.port: "2096"
       traefik.http.routers.threexui-sub.middlewares: "secure-headers@file"

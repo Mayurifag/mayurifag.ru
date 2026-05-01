@@ -3,6 +3,16 @@
   hosts: sample
   gather_facts: yes
   become: yes
+  pre_tasks:
+    - name: "TARGET SERVER"
+      ansible.builtin.debug:
+        msg:
+          - "================================================"
+          - "  Inventory host : {{ inventory_hostname }}"
+          - "  server_hostname: {{ server_hostname }}"
+          - "  ansible_host   : {{ ansible_host }}"
+          - "================================================"
+      tags: always
   roles:
     - role: server_preparations
       tags:
