@@ -4,12 +4,10 @@
     name: 3x-ui
     state: stopped
 
-# - name: Remove 3x-ui Directories
-#   ansible.builtin.file:
-#     path: "{{ item }}"
-#     state: absent
-#   with_items:
-#     - "{{ threexui_data_directory }}"
+- name: Remove dumped certs
+  ansible.builtin.file:
+    path: "{{ threexui_certs_dumped_directory }}"
+    state: absent
 
 - name: Create 3x-ui Directories
   ansible.builtin.file:
@@ -18,7 +16,29 @@
     mode: "0755"
   with_items:
     - "{{ threexui_data_directory }}/db"
-    - "{{ threexui_data_directory }}/cert"
+    - "{{ threexui_certs_dumped_directory }}"
+
+- name: Traefik Certs Dumper Sidecar
+  community.docker.docker_container:
+    name: traefik-certs-dumper
+    image: "{{ threexui_certs_dumper_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ threexui_certs_dumper_memory }}"
+    command: >-
+      file
+      --version 2
+      --watch
+      --source /acme.json
+      --dest /dump
+      --crt-ext=.crt
+      --key-ext=.key
+    volumes:
+      - "{{ traefik_data_directory }}/letsencrypt/acme.json:/acme.json:ro"
+      - "{{ threexui_certs_dumped_directory }}:/dump:rw"
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
 
 - name: 3x-ui Docker Container
   community.docker.docker_container:
@@ -28,7 +48,9 @@
     recreate: true
     volumes:
       - "{{ threexui_data_directory }}/db:/etc/x-ui:rw"
-      - "{{ threexui_data_directory }}/cert:/root/cert:rw"
+      - "{{ threexui_certs_dumped_directory }}:/root/cert:ro"
+    ports:
+      - "{{ threexui_hysteria2_port }}:{{ threexui_hysteria2_port }}/udp"
     env:
       XRAY_VMESS_AEAD_FORCED: "{{ threexui_vmess_aead_forced }}"
       XUI_ENABLE_FAIL2BAN: "{{ threexui_enable_fail2ban }}"

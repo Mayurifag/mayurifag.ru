@@ -22,45 +22,51 @@ Make sure that Personal space is generated. Things I have to restore:
 
 ## 3x-ui (Xray)
 
-Be absolutely sure the domain you picked SNI into is fine with that. Sometimes
-that just wont work, i.e. you cant use <live.vkvideo.ru> as SNI target now.
+Reality SNI target may stop working over time (e.g. `live.vkvideo.ru`
+is dead). Pick another if so.
 
-### 1. Default Credentials
+### 1. Login
 
-By default, the 3x-ui panel is deployed with insecure credentials.
+Default `admin` / `admin` at
+`https://{{ threexui_panel_subdomain }}.{{ server_hostname }}`.
 
-- **Username**: `admin`
-- **Password**: `admin`
+- Change credentials.
+- **Subscription -> Reverse Proxy URI:**
+  `https://{{ threexui_panel_subdomain }}.{{ server_hostname }}/sub/`.
 
-**Action Required**:
+### 2. VLESS Reality (TCP/443)
 
-- Log in to the panel (default URL: `https://3x.mayurifag.local`).
-- Go to **Panel Settings**.
-- **Authentication** -> Change the Username and Password immediately.
-- **Subscription** -> `Reverse Proxy URI` to `https://3x.mayurifag.local/sub/`
+**Inbounds -> Add Inbound**:
 
-### 2. VLESS Reality XTLS Setup
+- Protocol `vless`, Port `443`, Security `reality`.
+- Flow `xtls-rprx-vision`, Transmission `XHTTP`.
+- Target + SNI: `{{ threexui_reality_domain }}`.
+- Get new private key. Save.
 
-**Panel Configuration**:
+### 3. Hysteria 2 (UDP/`{{ threexui_hysteria2_port }}`)
 
-Navigate to **Inbounds** -> **Add Inbound**.
+Verify dumped certs:
 
-Configure the inbound with these specific settings:
+~~~bash
+docker exec 3x-ui ls /root/cert/
+~~~
 
-- **Protocol**: `vless`
-- **Listening Port**: `443`
-- **Security**: `reality`
-- Client -> Email: `username`; **Flow**: `xtls-rprx-vision`.
-- **Transmission**: `XHTTP`
-- **Target**: `learn.microsoft.com:443` (from `threexui_reality_domain`).
-- **SNI**: `learn.microsoft.com` (Must match `Dest` domain).
-- **Private Key**: Click **Get New Key**.
-- **Save**.
+Expect `{{ server_hostname }}.crt` + `.key`. If missing: check
+`docker logs traefik-certs-dumper` and `docker logs traefik | grep acme`.
 
-Then just use subscription with [Happ](https://www.happ.su/main/).
+**Inbounds -> Add Inbound**:
 
-There is also some
-[tuning](https://vc.ru/id206643/2149746-nastroika-3x-ui-bez-oshibok) available.
+- Protocol `hysteria2`, Port `{{ threexui_hysteria2_port }}`.
+- Obfs `salamander`, password = random 16+ chars.
+- Masquerade `proxy`, URL `https://{{ server_hostname }}`,
+  rewriteHost `true`.
+- Cert `/root/cert/{{ server_hostname }}.crt`,
+  key `/root/cert/{{ server_hostname }}.key`,
+  SNI `{{ server_hostname }}`.
+- Bandwidth: leave default. Don't crank Brutal.
+- Save.
+
+Subscribe in [Happ](https://www.happ.su/main/). Both inbounds in one sub.
 
 ## Gitea
 

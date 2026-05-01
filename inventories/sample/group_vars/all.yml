@@ -104,6 +104,7 @@ lldap_key_seed: "change_this_random_string_min_32_chars"
 
 threexui_enabled: true
 threexui_panel_subdomain: "3x"
+threexui_hysteria2_port: 36500
 
 opencloud_enabled: true
 opencloud_subdomain: "cloud"
