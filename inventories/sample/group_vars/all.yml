@@ -137,5 +137,15 @@ glance_enabled: true
 glance_subdomain: "rss"
 glance_github_token: "change_this_github_token"
 glance_github_notifications_token: "change_this_github_notifications_token"
+glance_finnhub_token: "change_this_finnhub_token"
+glance_location_name: "change_this"
+glance_twitch_channels:
+  - SilverName
+  - HoneyMad
+glance_tech_youtube_channels:
+  - UCBJycsmduvYEL83R_U4JriQ
+glance_games_youtube_channels: []
+glance_github_releases_repos: []
+glance_reddit_subreddits: []
 
 claude_code_enabled: true

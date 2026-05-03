@@ -3,6 +3,23 @@
   ansible.builtin.set_fact:
     glance_pages: "{{ query('fileglob', role_path ~ '/templates/pages/*.yml.j2') | map('basename') | map('regex_replace', '\\.yml\\.j2$', '') | sort }}"
 
+- name: Geocode Glance location to lat/lon
+  ansible.builtin.uri:
+    url: "https://geocoding-api.open-meteo.com/v1/search?name={{ glance_location_name | urlencode }}&count=1&format=json"
+    return_content: true
+  register: glance_geocode_result
+
+- name: Set Glance lat/lon facts from geocode result
+  ansible.builtin.set_fact:
+    glance_latitude: "{{ glance_geocode_result.json.results[0].latitude }}"
+    glance_longitude: "{{ glance_geocode_result.json.results[0].longitude }}"
+  when: glance_geocode_result.json.results | default([]) | length > 0
+
+- name: Fail if location could not be geocoded
+  ansible.builtin.fail:
+    msg: "Could not geocode glance_location_name='{{ glance_location_name }}'. Set a valid city name."
+  when: glance_geocode_result.json.results | default([]) | length == 0
+
 - name: Remove Glance data directory for clean deployment
   ansible.builtin.file:
     path: "{{ glance_data_directory }}"
@@ -45,8 +62,7 @@
     env:
       GITHUB_TOKEN: "{{ glance_github_token }}"
       GITHUB_NOTIFICATIONS_TOKEN: "{{ glance_github_notifications_token }}"
-      WAQI_TOKEN: "{{ glance_waqi_token }}"
-      WEATHER_LOCATION: "{{ glance_weather_location }}"
+      FINNHUB_TOKEN: "{{ glance_finnhub_token }}"
     networks:
       - name: "web"
     labels:

@@ -11,7 +11,21 @@ glance_github_token: "change_this_github_token"
 # Get a GitHub token with notifications scope for github-notifications widget
 glance_github_notifications_token: "change_this_github_notifications_token"
 
-# Get a WAQI token at https://aqicn.org/data-platform/token/
-glance_waqi_token: "change_this_waqi_token"
+# City name — coords resolved via Open-Meteo geocoding at deploy time. "City, Country" format works.
+glance_location_name: "Moscow, Russia"
 
-glance_weather_location: "Batumi, Georgia"
+# Get a free Finnhub token at https://finnhub.io/register (60 req/min free tier)
+glance_finnhub_token: "change_this_finnhub_token"
+
+glance_twitch_channels:
+  - SilverName
+  - HoneyMad
+
+# Tech YouTube channel IDs (default: Marques Brownlee / MKBHD)
+glance_tech_youtube_channels:
+  - UCBJycsmduvYEL83R_U4JriQ
+
+# Optional widget lists — set to [] to hide widget
+glance_games_youtube_channels: []
+glance_github_releases_repos: []
+glance_reddit_subreddits: []

@@ -12,19 +12,14 @@
           name: TQQQ
         - symbol: INFQ
           name: INFQ
-        - symbol: ^VIX
-          name: VIX
+        - symbol: GLD
+          name: Gold
   columns:
     - size: small
       widgets:
         - type: twitch-channels
           cache: 5m
-          channels:
-            - Ka6an4ik_
-            - fnjke00
-            - LenaGol0vach
-            - SilverName
-            - JoinTheSystemm
+          channels: {{ glance_twitch_channels | to_json }}
           collapse-after: 5
 
         - type: custom-api
@@ -65,19 +60,15 @@
             </ul>
             {{ end }}{% endraw %}
 
+{% if glance_github_releases_repos %}
         - type: releases
           title: GitHub Releases
           cache: 1h
-          repositories:
-            - AyuGram/AyuGramDesktop
-            - insin/control-panel-for-twitter
-            - imputnet/helium
-            - lwouis/alt-tab-macos
-            - portainer/portainer
-            - steveiliop56/tinyauth
+          repositories: {{ glance_github_releases_repos | to_json }}
           token: ${GITHUB_TOKEN}
           limit: 10
           collapse-after: 5
+{% endif %}
 
     - size: full
       widgets:
@@ -94,111 +85,293 @@
           limit: 30
           collapse-after: 5
 
+{% if glance_reddit_subreddits %}
         - type: group
           widgets:
+{% for sub in glance_reddit_subreddits %}
             - type: reddit
-              subreddit: LETFs
+              subreddit: {{ sub }}
               cache: 30m
               style: vertical-list
               show-thumbnails: true
               limit: 30
               collapse-after: 10
+{% endfor %}
+{% endif %}
 
-            - type: reddit
-              subreddit: wallstreetbets
-              cache: 30m
-              style: vertical-list
-              show-thumbnails: true
-              limit: 30
-              collapse-after: 10
-
-            - type: reddit
-              subreddit: TQQQ
-              cache: 30m
-              style: vertical-list
-              show-thumbnails: true
-              limit: 30
-              collapse-after: 10
-
-            - type: reddit
-              subreddit: selfhosted
-              cache: 30m
-              style: vertical-list
-              show-thumbnails: true
-              limit: 30
-              collapse-after: 10
-
-            - type: reddit
-              subreddit: unpopularopinion
-              cache: 30m
-              style: vertical-list
-              show-thumbnails: true
-              limit: 30
-              collapse-after: 10
-
-            - type: reddit
-              subreddit: stupidquestions
-              cache: 30m
-              style: vertical-list
-              show-thumbnails: true
-              limit: 30
-              collapse-after: 10
-
+{% if glance_games_youtube_channels %}
         - type: videos
           title: Games
           cache: 1h
-          channels:
-            - UC4e_XPBiiIO4fo4_CucxQeg
-            - UClA-hZCGgTsNBJu-oJ-pwtg
-            - UCo81Fm38RT9FH1pzKrHrgjQ
+          channels: {{ glance_games_youtube_channels | to_json }}
           collapse-after: 5
+{% endif %}
 
     - size: small
       widgets:
-        - type: weather
-          location: ${WEATHER_LOCATION}
-          units: metric
-          hour-format: 24h
-
         - type: custom-api
-          title: Air Quality
+          title: Weather & Air
           cache: 10m
-          url: https://api.waqi.info/feed/geo:41.6425;41.6417/?token=${WAQI_TOKEN}
+          url: https://api.open-meteo.com/v1/forecast?latitude={{ glance_latitude }}&longitude={{ glance_longitude }}&current=temperature_2m,apparent_temperature,weather_code,is_day&timezone=auto
+          subrequests:
+            air:
+              url: https://air-quality-api.open-meteo.com/v1/air-quality?latitude={{ glance_latitude }}&longitude={{ glance_longitude }}&current=european_aqi,uv_index,pm2_5,pm10,nitrogen_dioxide,ozone,sulphur_dioxide
           template: |
-            {% raw %}{{ $aqi := printf "%03s" (.JSON.String "data.aqi") }}
-            {{ $aqiraw := .JSON.String "data.aqi" }}
-            {{ $updated := .JSON.String "data.time.iso" }}
-            {{ $humidity := .JSON.String "data.iaqi.h.v" }}
-            {{ $pressure := .JSON.String "data.iaqi.p.v" }}
+            {% raw %}{{ $temp := .JSON.Float "current.temperature_2m" }}
+            {{ $feels := .JSON.Float "current.apparent_temperature" }}
+            {{ $code := .JSON.Int "current.weather_code" }}
+            {{ $isDay := .JSON.Int "current.is_day" }}
 
-            <div class="flex justify-between">
-              <div class="size-h5">
-                {{ if le $aqi "050" }}
-                  <div class="color-positive">Good air quality</div>
-                {{ else if le $aqi "100" }}
-                  <div class="color-primary">Moderate air quality</div>
-                {{ else }}
-                  <div class="color-negative">Bad air quality</div>
-                {{ end }}
+            {{ $icon := "❓" }}{{ $cond := "Unknown" }}
+            {{ if eq $code 0 }}
+              {{ if eq $isDay 1 }}{{ $icon = "☀️" }}{{ else }}{{ $icon = "🌙" }}{{ end }}{{ $cond = "Clear" }}
+            {{ else if eq $code 1 }}{{ $icon = "🌤️" }}{{ $cond = "Mainly clear" }}
+            {{ else if eq $code 2 }}{{ $icon = "⛅" }}{{ $cond = "Partly cloudy" }}
+            {{ else if eq $code 3 }}{{ $icon = "☁️" }}{{ $cond = "Overcast" }}
+            {{ else if le $code 48 }}{{ $icon = "🌫️" }}{{ $cond = "Fog" }}
+            {{ else if le $code 57 }}{{ $icon = "🌦️" }}{{ $cond = "Drizzle" }}
+            {{ else if le $code 65 }}{{ $icon = "🌧️" }}{{ $cond = "Rain" }}
+            {{ else if le $code 67 }}{{ $icon = "🌧️" }}{{ $cond = "Freezing rain" }}
+            {{ else if le $code 77 }}{{ $icon = "🌨️" }}{{ $cond = "Snow" }}
+            {{ else if le $code 82 }}{{ $icon = "🌧️" }}{{ $cond = "Showers" }}
+            {{ else if le $code 86 }}{{ $icon = "🌨️" }}{{ $cond = "Snow showers" }}
+            {{ else }}{{ $icon = "⛈️" }}{{ $cond = "Thunderstorm" }}{{ end }}
+
+            {{ $aqi := -1 }}{{ $uvi := -1 }}
+            {{ $pm25 := -1.0 }}{{ $pm10 := -1.0 }}{{ $no2 := -1.0 }}{{ $o3 := -1.0 }}{{ $so2 := -1.0 }}
+            {{ $air := .Subrequest "air" }}
+            {{ if eq $air.Response.StatusCode 200 }}
+              {{ $aqi = $air.JSON.Int "current.european_aqi" }}
+              {{ $uvi = $air.JSON.Int "current.uv_index" }}
+              {{ $pm25 = $air.JSON.Float "current.pm2_5" }}
+              {{ $pm10 = $air.JSON.Float "current.pm10" }}
+              {{ $no2 = $air.JSON.Float "current.nitrogen_dioxide" }}
+              {{ $o3 = $air.JSON.Float "current.ozone" }}
+              {{ $so2 = $air.JSON.Float "current.sulphur_dioxide" }}
+            {{ end }}
+
+            {{ $aqiColor := "#888" }}{{ $aqiLabel := "Unavailable" }}
+            {{ if ge $aqi 0 }}
+              {{ if le $aqi 20 }}{{ $aqiColor = "#00e676" }}{{ $aqiLabel = "Good" }}
+              {{ else if le $aqi 40 }}{{ $aqiColor = "#aeea00" }}{{ $aqiLabel = "Fair" }}
+              {{ else if le $aqi 60 }}{{ $aqiColor = "#ffea00" }}{{ $aqiLabel = "Moderate" }}
+              {{ else if le $aqi 80 }}{{ $aqiColor = "#ff9100" }}{{ $aqiLabel = "Poor" }}
+              {{ else if le $aqi 100 }}{{ $aqiColor = "#ff1744" }}{{ $aqiLabel = "Very Poor" }}
+              {{ else }}{{ $aqiColor = "#aa00ff" }}{{ $aqiLabel = "Extremely Poor" }}{{ end }}
+            {{ end }}
+
+            {{ $uvColor := "#888" }}{{ $uvLabel := "Unavailable" }}
+            {{ if ge $uvi 0 }}
+              {{ if le $uvi 2 }}{{ $uvColor = "#00e676" }}{{ $uvLabel = "Low" }}
+              {{ else if le $uvi 5 }}{{ $uvColor = "#ffea00" }}{{ $uvLabel = "Moderate" }}
+              {{ else if le $uvi 7 }}{{ $uvColor = "#ff9100" }}{{ $uvLabel = "High" }}
+              {{ else if le $uvi 10 }}{{ $uvColor = "#ff1744" }}{{ $uvLabel = "Very High" }}
+              {{ else }}{{ $uvColor = "#aa00ff" }}{{ $uvLabel = "Extreme" }}{{ end }}
+            {{ end }}
+
+            {{ $pm25Color := "#888" }}{{ $pm25Label := "Unavailable" }}
+            {{ if ge $pm25 0.0 }}
+              {{ if le $pm25 10.0 }}{{ $pm25Color = "#00e676" }}{{ $pm25Label = "Good" }}
+              {{ else if le $pm25 20.0 }}{{ $pm25Color = "#aeea00" }}{{ $pm25Label = "Fair" }}
+              {{ else if le $pm25 25.0 }}{{ $pm25Color = "#ffea00" }}{{ $pm25Label = "Moderate" }}
+              {{ else if le $pm25 50.0 }}{{ $pm25Color = "#ff9100" }}{{ $pm25Label = "Poor" }}
+              {{ else if le $pm25 75.0 }}{{ $pm25Color = "#ff1744" }}{{ $pm25Label = "Very Poor" }}
+              {{ else }}{{ $pm25Color = "#aa00ff" }}{{ $pm25Label = "Extremely Poor" }}{{ end }}
+            {{ end }}
+
+            {{ $pm10Color := "#888" }}{{ $pm10Label := "Unavailable" }}
+            {{ if ge $pm10 0.0 }}
+              {{ if le $pm10 20.0 }}{{ $pm10Color = "#00e676" }}{{ $pm10Label = "Good" }}
+              {{ else if le $pm10 40.0 }}{{ $pm10Color = "#aeea00" }}{{ $pm10Label = "Fair" }}
+              {{ else if le $pm10 50.0 }}{{ $pm10Color = "#ffea00" }}{{ $pm10Label = "Moderate" }}
+              {{ else if le $pm10 100.0 }}{{ $pm10Color = "#ff9100" }}{{ $pm10Label = "Poor" }}
+              {{ else if le $pm10 150.0 }}{{ $pm10Color = "#ff1744" }}{{ $pm10Label = "Very Poor" }}
+              {{ else }}{{ $pm10Color = "#aa00ff" }}{{ $pm10Label = "Extremely Poor" }}{{ end }}
+            {{ end }}
+
+            {{ $no2Color := "#888" }}{{ $no2Label := "Unavailable" }}
+            {{ if ge $no2 0.0 }}
+              {{ if le $no2 40.0 }}{{ $no2Color = "#00e676" }}{{ $no2Label = "Good" }}
+              {{ else if le $no2 90.0 }}{{ $no2Color = "#aeea00" }}{{ $no2Label = "Fair" }}
+              {{ else if le $no2 120.0 }}{{ $no2Color = "#ffea00" }}{{ $no2Label = "Moderate" }}
+              {{ else if le $no2 230.0 }}{{ $no2Color = "#ff9100" }}{{ $no2Label = "Poor" }}
+              {{ else if le $no2 340.0 }}{{ $no2Color = "#ff1744" }}{{ $no2Label = "Very Poor" }}
+              {{ else }}{{ $no2Color = "#aa00ff" }}{{ $no2Label = "Extremely Poor" }}{{ end }}
+            {{ end }}
+
+            {{ $o3Color := "#888" }}{{ $o3Label := "Unavailable" }}
+            {{ if ge $o3 0.0 }}
+              {{ if le $o3 50.0 }}{{ $o3Color = "#00e676" }}{{ $o3Label = "Good" }}
+              {{ else if le $o3 100.0 }}{{ $o3Color = "#aeea00" }}{{ $o3Label = "Fair" }}
+              {{ else if le $o3 130.0 }}{{ $o3Color = "#ffea00" }}{{ $o3Label = "Moderate" }}
+              {{ else if le $o3 240.0 }}{{ $o3Color = "#ff9100" }}{{ $o3Label = "Poor" }}
+              {{ else if le $o3 380.0 }}{{ $o3Color = "#ff1744" }}{{ $o3Label = "Very Poor" }}
+              {{ else }}{{ $o3Color = "#aa00ff" }}{{ $o3Label = "Extremely Poor" }}{{ end }}
+            {{ end }}
+
+            {{ $so2Color := "#888" }}{{ $so2Label := "Unavailable" }}
+            {{ if ge $so2 0.0 }}
+              {{ if le $so2 100.0 }}{{ $so2Color = "#00e676" }}{{ $so2Label = "Good" }}
+              {{ else if le $so2 200.0 }}{{ $so2Color = "#aeea00" }}{{ $so2Label = "Fair" }}
+              {{ else if le $so2 350.0 }}{{ $so2Color = "#ffea00" }}{{ $so2Label = "Moderate" }}
+              {{ else if le $so2 500.0 }}{{ $so2Color = "#ff9100" }}{{ $so2Label = "Poor" }}
+              {{ else if le $so2 750.0 }}{{ $so2Color = "#ff1744" }}{{ $so2Label = "Very Poor" }}
+              {{ else }}{{ $so2Color = "#aa00ff" }}{{ $so2Label = "Extremely Poor" }}{{ end }}
+            {{ end }}
+
+            <div class="flex items-center" style="gap: 1rem;">
+              <div style="font-size: 3.2em; line-height: 1;">{{ $icon }}</div>
+              <div style="flex: 1; min-width: 0;">
+                <div class="size-h1 color-highlight">{{ printf "%.0f" $temp }}°</div>
+                <div class="size-h6 color-subdue">Feels {{ printf "%.0f" $feels }}° · {{ $cond }}</div>
               </div>
             </div>
 
-            <div class="color-highlight size-h2">AQI: {{ $aqiraw }}</div>
-            <div style="border-bottom: 1px solid; margin-block: 10px;"></div>
+            <div class="margin-block-15" style="border-top: 1px solid; opacity: 0.15;"></div>
 
-            <div class="margin-block-2">
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div>
-                  <div class="size-h3 color-highlight">{{ $humidity }}%</div>
-                  <div class="size-h6">HUMIDITY</div>
-                </div>
-                <div>
-                  <div class="size-h3 color-highlight">{{ $pressure }} hPa</div>
-                  <div class="size-h6">PRESSURE</div>
-                </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
+              <div>
+                <div class="size-h2" style="color: {{ $aqiColor }}; cursor: help;" title="{{ $aqiLabel }}">{{ if ge $aqi 0 }}{{ $aqi }}{{ else }}-{{ end }}</div>
+                <div class="size-h6 color-subdue" style="cursor: help;" title="Air Quality Index (EU). 0–20 Good, 100+ Extremely Poor">AQI · {{ $aqiLabel }}</div>
               </div>
-              <div class="size-h6" style="margin-top: 10px;">Last Updated at {{ slice $updated 11 16 }}</div>
+              <div>
+                <div class="size-h2" style="color: {{ $uvColor }}; cursor: help;" title="{{ $uvLabel }}">{{ if ge $uvi 0 }}{{ $uvi }}{{ else }}-{{ end }}</div>
+                <div class="size-h6 color-subdue" style="cursor: help;" title="UV Index (WHO). 0–2 Low, 11+ Extreme">UV · {{ $uvLabel }}</div>
+              </div>
+            </div>
+
+            <div class="margin-block-15" style="border-top: 1px solid; opacity: 0.15;"></div>
+
+            <div style="display: flex; gap: 4px; text-align: center;">
+              <div style="flex: 1;">
+                <div class="size-h4" style="color: {{ $pm25Color }}; cursor: help;" title="{{ $pm25Label }}">{{ if ge $pm25 0.0 }}{{ printf "%.1f" $pm25 }}{{ else }}-{{ end }}</div>
+                <div class="size-h6 color-subdue" style="cursor: help;" title="Fine particles ≤2.5µm — combustion soot, lung-penetrating">PM2.5</div>
+              </div>
+              <div style="flex: 1;">
+                <div class="size-h4" style="color: {{ $pm10Color }}; cursor: help;" title="{{ $pm10Label }}">{{ if ge $pm10 0.0 }}{{ printf "%.1f" $pm10 }}{{ else }}-{{ end }}</div>
+                <div class="size-h6 color-subdue" style="cursor: help;" title="Coarse particles ≤10µm — dust, pollen, mold spores">PM10</div>
+              </div>
+              <div style="flex: 1;">
+                <div class="size-h4" style="color: {{ $no2Color }}; cursor: help;" title="{{ $no2Label }}">{{ if ge $no2 0.0 }}{{ printf "%.1f" $no2 }}{{ else }}-{{ end }}</div>
+                <div class="size-h6 color-subdue" style="cursor: help;" title="Nitrogen dioxide — vehicle exhaust, irritates lungs">NO₂</div>
+              </div>
+              <div style="flex: 1;">
+                <div class="size-h4" style="color: {{ $o3Color }}; cursor: help;" title="{{ $o3Label }}">{{ if ge $o3 0.0 }}{{ printf "%.1f" $o3 }}{{ else }}-{{ end }}</div>
+                <div class="size-h6 color-subdue" style="cursor: help;" title="Ground-level ozone — smog, harms breathing on hot days">O₃</div>
+              </div>
+              <div style="flex: 1;">
+                <div class="size-h4" style="color: {{ $so2Color }}; cursor: help;" title="{{ $so2Label }}">{{ if ge $so2 0.0 }}{{ printf "%.1f" $so2 }}{{ else }}-{{ end }}</div>
+                <div class="size-h6 color-subdue" style="cursor: help;" title="Sulfur dioxide — fossil fuel burning, asthma trigger">SO₂</div>
+              </div>
             </div>{% endraw %}
 
-        - type: calendar
-          first-day-of-week: monday
+        - type: custom-api
+          title: Fear & Greed
+          cache: 1h
+          url: https://production.dataviz.cnn.io/index/fearandgreed/graphdata
+          headers:
+            User-Agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            Origin: "https://edition.cnn.com"
+            Referer: "https://edition.cnn.com/"
+          subrequests:
+            crypto:
+              url: https://api.alternative.me/fng/?limit=1
+          template: |
+            {% raw %}{{ $stockOk := eq .Response.StatusCode 200 }}
+            {{ $stock := -1 }}{{ $stockLabel := "Unavailable" }}
+            {{ if $stockOk }}
+              {{ $stock = .JSON.Int "fear_and_greed.score" }}
+              {{ $stockLabel = .JSON.String "fear_and_greed.rating" }}
+            {{ end }}
+
+            {{ $crypto := -1 }}{{ $cryptoLabel := "Unavailable" }}
+            {{ if eq (.Subrequest "crypto").Response.StatusCode 200 }}
+              {{ $crypto = (.Subrequest "crypto").JSON.Int "data.0.value" }}
+              {{ $cryptoLabel = (.Subrequest "crypto").JSON.String "data.0.value_classification" }}
+            {{ end }}
+
+            {{ $stockColor := "#888" }}
+            {{ if ge $stock 0 }}
+              {{ if le $stock 25 }}{{ $stockColor = "#ff1744" }}
+              {{ else if le $stock 45 }}{{ $stockColor = "#ff9100" }}
+              {{ else if le $stock 55 }}{{ $stockColor = "#ffea00" }}
+              {{ else if le $stock 75 }}{{ $stockColor = "#aeea00" }}
+              {{ else }}{{ $stockColor = "#00e676" }}{{ end }}
+            {{ end }}
+
+            {{ $cryptoColor := "#888" }}
+            {{ if ge $crypto 0 }}
+              {{ if le $crypto 25 }}{{ $cryptoColor = "#ff1744" }}
+              {{ else if le $crypto 45 }}{{ $cryptoColor = "#ff9100" }}
+              {{ else if le $crypto 55 }}{{ $cryptoColor = "#ffea00" }}
+              {{ else if le $crypto 75 }}{{ $cryptoColor = "#aeea00" }}
+              {{ else }}{{ $cryptoColor = "#00e676" }}{{ end }}
+            {{ end }}
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
+              <div>
+                <div class="size-h1" style="color: {{ $stockColor }};">{{ if ge $stock 0 }}{{ $stock }}{{ else }}-{{ end }}</div>
+                <div class="size-h6 color-subdue" style="text-transform: capitalize;">Stocks · {{ $stockLabel }}</div>
+              </div>
+              <div>
+                <div class="size-h1" style="color: {{ $cryptoColor }};">{{ if ge $crypto 0 }}{{ $crypto }}{{ else }}-{{ end }}</div>
+                <div class="size-h6 color-subdue">Crypto · {{ $cryptoLabel }}</div>
+              </div>
+            </div>{% endraw %}
+
+        - type: custom-api
+          title: USD rates
+          cache: 1h
+          url: https://open.er-api.com/v6/latest/USD
+          template: |
+            {% raw %}{{ $gel := .JSON.Float "rates.GEL" }}
+            {{ $rub := .JSON.Float "rates.RUB" }}
+
+            <div style="display: flex; justify-content: space-around; align-items: baseline;">
+              <div><span class="color-subdue">GEL </span><span class="size-h4 color-highlight">{{ printf "%.2f" $gel }}</span></div>
+              <div><span class="color-subdue">RUB </span><span class="size-h4 color-highlight">{{ printf "%.2f" $rub }}</span></div>
+            </div>{% endraw %}
+
+        - type: custom-api
+          title: Earnings Next 3 Days
+          cache: 1h
+          template: |
+            {% raw %}{{ $r := newRequest "https://finnhub.io/api/v1/calendar/earnings"
+              | withParameter "from" (now | formatTime "DateOnly")
+              | withParameter "to" (offsetNow "72h" | formatTime "DateOnly")
+              | withHeader "X-Finnhub-Token" "${FINNHUB_TOKEN}"
+              | getResponse }}
+
+            {{ if ne $r.Response.StatusCode 200 }}
+              <div class="color-negative">Failed: {{ $r.Response.Status }}</div>
+            {{ else }}
+              {{ $entries := $r.JSON.Array "earningsCalendar" }}
+              {{ $n := len $entries }}
+              {{ if eq $n 0 }}
+                <div class="color-subdue">No earnings scheduled</div>
+              {{ else }}
+                <ul class="list list-gap-10">
+                {{ range $i, $_ := $entries }}
+                  {{ $e := index $entries (toInt (sub (toFloat $n) (add (toFloat $i) 1.0))) }}
+                  {{ $rev := $e.Float "revenueEstimate" }}
+                  {{ if gt $rev 5000000000.0 }}
+                    {{ $sym := $e.String "symbol" }}
+                    {{ $profile := newRequest (printf "https://finnhub.io/api/v1/stock/profile2?symbol=%s" $sym)
+                      | withHeader "X-Finnhub-Token" "${FINNHUB_TOKEN}"
+                      | getResponse }}
+                    {{ if eq $profile.Response.StatusCode 200 }}
+                      {{ $marketCap := $profile.JSON.Float "marketCapitalization" }}
+                      {{ if gt $marketCap 100000.0 }}
+                        {{ $name := $profile.JSON.String "name" | replaceMatches "[ ,]+(Inc\\.?|Corporation|Corp\\.?|Co\\.?|Company|Ltd\\.?|Limited|plc|PLC|S\\.A\\.?|SA|AG|N\\.V\\.?|NV|Holdings|Holding|Group)$" "" }}
+                        {{ $weekday := $e.String "date" | parseTime "DateOnly" | formatTime "Mon" }}
+                        <li>
+                          <div class="size-h5"><span class="color-highlight">{{ $sym }}</span>{{ if $name }} <span class="size-h6 color-subdue">{{ $name }}</span>{{ end }}</div>
+                          <div class="size-h6 color-subdue">{{ $weekday }} {{ $e.String "date" }}{{ if eq ($e.String "hour") "bmo" }} · pre-market{{ else if eq ($e.String "hour") "amc" }} · after-close{{ end }}</div>
+                        </li>
+                      {{ end }}
+                    {{ end }}
+                  {{ end }}
+                {{ end }}
+                </ul>
+              {{ end }}
+            {{ end }}{% endraw %}

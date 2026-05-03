@@ -92,7 +92,8 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 
 ## TODO
 
-* [ ] try <https://dockhand.pro/manual/>
+* [ ] try <https://dockhand.pro/manual/> for possible portainer alternative
+* [ ] try <https://github.com/stalwartlabs/stalwart> for email
 
 ### On hold
 

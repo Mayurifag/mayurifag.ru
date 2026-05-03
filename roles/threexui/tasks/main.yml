@@ -4,6 +4,11 @@
     name: 3x-ui
     state: stopped
 
+- name: Remove traefik-certs-dumper if it exists
+  community.docker.docker_container:
+    name: traefik-certs-dumper
+    state: absent
+
 - name: Remove dumped certs
   ansible.builtin.file:
     path: "{{ threexui_certs_dumped_directory }}"
@@ -27,12 +32,7 @@
     restart_policy: unless-stopped
     memory: "{{ threexui_certs_dumper_memory }}"
     command: >-
-      file
-      --version 2
-      --watch
-      --source /acme.json
-      --dest /dump
-      --crt-ext=.crt
+      file --version v3 --watch --source /acme.json --dest /dump --crt-ext=.crt
       --key-ext=.key
     volumes:
       - "{{ traefik_data_directory }}/letsencrypt/acme.json:/acme.json:ro"
@@ -80,3 +80,16 @@
       traefik.tcp.routers.threexui-reality.tls.passthrough: "true"
       traefik.tcp.routers.threexui-reality.service: "threexui-reality"
       traefik.tcp.services.threexui-reality.loadbalancer.server.port: "443"
+
+- name: 3x-ui Post-Install Info
+  ansible.builtin.debug:
+    msg:
+      - "Panel URL: https://{{ threexui_panel_subdomain }}.{{ server_hostname }}"
+      - "Default creds: admin / admin"
+      - "Subscription Reverse Proxy URI: https://{{ threexui_panel_subdomain }}.{{ server_hostname }}/sub/"
+      - "VLESS Reality | port 443/tcp | SNI/target {{ threexui_reality_domain }} | flow xtls-rprx-vision | XHTTP"
+      - "Hysteria2 | port {{ threexui_hysteria2_port }}/udp | SNI {{ server_hostname }}"
+      - "Hysteria2 cert: /root/cert/certs/{{ server_hostname }}.crt"
+      - "Hysteria2 key:  /root/cert/private/{{ server_hostname }}.key"
+      - "Hysteria2 masquerade URL: https://{{ server_hostname }}"
+      - "Verify certs: docker exec 3x-ui ls /root/cert/certs /root/cert/private"

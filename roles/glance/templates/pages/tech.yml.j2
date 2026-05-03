@@ -5,10 +5,7 @@
         - type: videos
           title: Videos
           cache: 1h
-          channels:
-            - UCt75WMud0RMUivGBNzvBPXQ
-            - UCDF_NIAEkcAUvzxe1DUzaQA
-            - UCBJycsmduvYEL83R_U4JriQ
+          channels: {{ glance_tech_youtube_channels | to_json }}
           collapse-after: 5
 
         - type: split-column

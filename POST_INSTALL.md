@@ -48,20 +48,23 @@ Default `admin` / `admin` at
 Verify dumped certs:
 
 ~~~bash
-docker exec 3x-ui ls /root/cert/
+docker exec 3x-ui ls /root/cert/certs /root/cert/private
 ~~~
 
-Expect `{{ server_hostname }}.crt` + `.key`. If missing: check
-`docker logs traefik-certs-dumper` and `docker logs traefik | grep acme`.
+Expect `{{ server_hostname }}.crt` in `certs/` and `.key` in `private/`. If
+missing: check `docker logs traefik-certs-dumper` and
+`docker logs traefik | grep acme`.
 
 **Inbounds -> Add Inbound**:
 
 - Protocol `hysteria2`, Port `{{ threexui_hysteria2_port }}`.
-- Obfs `salamander`, password = random 16+ chars.
+- Client -> Email -> set something
+- Stream Settings -> Final Mask -> UDP Masks -> `+` -> Type `salamander`,
+  password = random 16+ chars.
 - Masquerade `proxy`, URL `https://{{ server_hostname }}`,
   rewriteHost `true`.
-- Cert `/root/cert/{{ server_hostname }}.crt`,
-  key `/root/cert/{{ server_hostname }}.key`,
+- Cert `/root/cert/certs/{{ server_hostname }}.crt`,
+  key `/root/cert/private/{{ server_hostname }}.key`,
   SNI `{{ server_hostname }}`.
 - Bandwidth: leave default. Don't crank Brutal.
 - Save.
