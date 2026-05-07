@@ -1,0 +1,179 @@
+---
+# All A records here are non-proxied. Reasons:
+# - CF proxy only handles HTTP/HTTPS; Hysteria2 (UDP) is dropped at the edge.
+# - xray VLESS-Reality mimics target SNI; CF proxy replaces TLS cert and
+#   breaks the Reality handshake. Must hit the origin IP directly.
+# - Traefik issues its own LE wildcard via DNS-01, no CF cert needed.
+# To proxy a single subdomain later (free): add a specific record with
+# proxied=true; more-specific record beats the wildcard.
+
+- name: Lookup Cloudflare zone for {{ server_hostname }}
+  ansible.builtin.uri:
+    url: "https://api.cloudflare.com/client/v4/zones?name={{ server_hostname }}"
+    headers:
+      Authorization: "Bearer {{ traefik_environment_variables.CF_DNS_API_TOKEN }}"
+    return_content: true
+  register: cf_zone_lookup
+  check_mode: false
+
+- name: Set Cloudflare zone facts
+  ansible.builtin.set_fact:
+    cf_zone_id: "{{ (cf_zone_lookup.json.result | first).id }}"
+    cf_account_id: "{{ (cf_zone_lookup.json.result | first).account.id }}"
+
+- name: Manage A records (root + wildcard, DNS-only)
+  community.general.cloudflare_dns:
+    api_token: "{{ traefik_environment_variables.CF_DNS_API_TOKEN }}"
+    zone: "{{ server_hostname }}"
+    record: "{{ item }}"
+    type: A
+    value: "{{ ansible_host }}"
+    proxied: false
+    state: present
+    solo: true
+  loop:
+    - "{{ server_hostname }}"
+    - "*.{{ server_hostname }}"
+
+- name: Manage SPF TXT (CF Email Routing only; hard-fail everyone else)
+  community.general.cloudflare_dns:
+    api_token: "{{ traefik_environment_variables.CF_DNS_API_TOKEN }}"
+    zone: "{{ server_hostname }}"
+    record: "{{ server_hostname }}"
+    type: TXT
+    value: '"v=spf1 include:_spf.mx.cloudflare.net -all"'
+    state: present
+    solo: true
+
+- name: Read existing DMARC TXT (preserve CF Management rua UUID)
+  ansible.builtin.uri:
+    url: "https://api.cloudflare.com/client/v4/zones/{{ cf_zone_id }}/dns_records?type=TXT&name=_dmarc.{{ server_hostname }}"
+    headers:
+      Authorization: "Bearer {{ traefik_environment_variables.CF_DNS_API_TOKEN }}"
+    return_content: true
+  register: cf_dmarc_lookup
+  check_mode: false
+
+- name: Extract CF-managed DMARC rua mailto
+  ansible.builtin.set_fact:
+    cf_dmarc_rua: >-
+      {{ (cf_dmarc_lookup.json.result | length > 0)
+        | ternary(((cf_dmarc_lookup.json.result | first).content
+        | regex_search('rua=mailto:[^;\"]+@dmarc-reports.cloudflare.net')), '') }}
+
+- name: Build desired DMARC value (strict reject; preserves CF rua)
+  ansible.builtin.set_fact:
+    cf_dmarc_desired: '"v=DMARC1; p=reject; sp=reject; {{ cf_dmarc_rua }}; adkim=s; aspf=s; pct=100"'
+  when: cf_dmarc_rua | length > 0
+
+- name: Patch DMARC TXT (only when value differs; strip CF-added quotes for compare)
+  community.general.cloudflare_dns:
+    api_token: "{{ traefik_environment_variables.CF_DNS_API_TOKEN }}"
+    zone: "{{ server_hostname }}"
+    record: "_dmarc.{{ server_hostname }}"
+    type: TXT
+    value: "{{ cf_dmarc_desired }}"
+    state: present
+    solo: true
+  when:
+    - cf_dmarc_rua | length > 0
+    - (cf_dmarc_lookup.json.result | first).content
+      | replace('"', '') != cf_dmarc_desired | replace('"', '')
+
+- name: Aggregate post-install message (DMARC Management not enabled)
+  ansible.builtin.set_fact:
+    post_install_messages: >-
+      {{ (post_install_messages | default([])) +
+        ['[DNS] Enable DMARC Management once at https://dash.cloudflare.com/' ~ cf_account_id ~ '/' ~ server_hostname ~ '/email/dmarc-management — CF generates the rua UUID. Re-run dns tag after.'] }}
+  when: cf_dmarc_rua | length == 0
+
+- name: Read catch-all rule (probes Email Routing enabled state)
+  ansible.builtin.uri:
+    url: "https://api.cloudflare.com/client/v4/zones/{{ cf_zone_id }}/email/routing/rules/catch_all"
+    headers:
+      Authorization: "Bearer {{ traefik_environment_variables.CF_DNS_API_TOKEN }}"
+    return_content: true
+    status_code: [200, 404]
+  register: cf_catchall_lookup
+  check_mode: false
+
+- name: Enable Email Routing (only when not yet enabled)
+  ansible.builtin.uri:
+    url: "https://api.cloudflare.com/client/v4/zones/{{ cf_zone_id }}/email/routing/enable"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ traefik_environment_variables.CF_DNS_API_TOKEN }}"
+    body_format: json
+    body: {}
+    status_code: 200
+  when: cf_catchall_lookup.status == 404
+
+- name: List destination addresses
+  ansible.builtin.uri:
+    url: "https://api.cloudflare.com/client/v4/accounts/{{ cf_account_id }}/email/routing/addresses?per_page=100"
+    headers:
+      Authorization: "Bearer {{ traefik_environment_variables.CF_DNS_API_TOKEN }}"
+    return_content: true
+  register: cf_dest_list
+  check_mode: false
+
+- name: Filter existing destination for {{ admin_email }}
+  ansible.builtin.set_fact:
+    cf_dest_existing: >-
+      {{ cf_dest_list.json.result
+        | selectattr('email', 'equalto', admin_email)
+        | list }}
+
+- name: Add destination address (only when missing; sends verification email)
+  ansible.builtin.uri:
+    url: "https://api.cloudflare.com/client/v4/accounts/{{ cf_account_id }}/email/routing/addresses"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ traefik_environment_variables.CF_DNS_API_TOKEN }}"
+    body_format: json
+    body:
+      email: "{{ admin_email }}"
+    status_code: 200
+  when: cf_dest_existing | length == 0
+
+- name: Compute destination verification status
+  ansible.builtin.set_fact:
+    cf_dest_verified: >-
+      {{ cf_dest_existing | length > 0
+        and (cf_dest_existing | first).verified is not none }}
+
+- name: Compute desired vs current catch-all match
+  ansible.builtin.set_fact:
+    cf_catchall_matches: >-
+      {{ cf_catchall_lookup.status == 200
+        and (cf_catchall_lookup.json.result.enabled | default(false))
+        and (cf_catchall_lookup.json.result.matchers | default([])) == [{'type': 'all'}]
+        and (cf_catchall_lookup.json.result.actions | default([])) == [{'type': 'forward', 'value': [admin_email]}] }}
+
+- name: Configure catch-all rule (only when differs) -> {{ admin_email }}
+  ansible.builtin.uri:
+    url: "https://api.cloudflare.com/client/v4/zones/{{ cf_zone_id }}/email/routing/rules/catch_all"
+    method: PUT
+    headers:
+      Authorization: "Bearer {{ traefik_environment_variables.CF_DNS_API_TOKEN }}"
+    body_format: json
+    body:
+      enabled: true
+      name: "Forward catch-all to {{ admin_email }}"
+      matchers:
+        - type: all
+      actions:
+        - type: forward
+          value: ["{{ admin_email }}"]
+    status_code: 200
+  when:
+    - cf_dest_verified
+    - not cf_catchall_matches
+
+- name: Aggregate post-install message (unverified destination)
+  ansible.builtin.set_fact:
+    post_install_messages: >-
+      {{ (post_install_messages | default([])) +
+        ['[DNS] Click the verification link Cloudflare sent to ' ~ admin_email ~
+        '. Re-run `make deploy ' ~ inventory_hostname ~ ' dns` after verifying to enable catch-all forwarding.'] }}
+  when: not cf_dest_verified

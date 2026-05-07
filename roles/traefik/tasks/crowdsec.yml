@@ -222,11 +222,11 @@
       delay: 2
       changed_when: false
 
-- name: CrowdSec Post-Install Info
-  ansible.builtin.debug:
-    msg:
-      - "Enroll crowdsec: https://app.crowdsec.net/security-engines"
-      - "Instance name: {{ crowdsec_instance_name }}"
+- name: Aggregate post-install message (CrowdSec enrollment)
+  ansible.builtin.set_fact:
+    post_install_messages: >-
+      {{ (post_install_messages | default([])) +
+        ['[CrowdSec] Enroll at https://app.crowdsec.net/security-engines as ' ~ crowdsec_instance_name] }}
   when:
     - crowdsec_enroll_configured
     - not crowdsec_already_enrolled

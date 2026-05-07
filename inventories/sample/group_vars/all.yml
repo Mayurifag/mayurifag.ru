@@ -20,6 +20,12 @@ lldap_base_dn: "dc={{ server_hostname.split('.')[0] }},dc={{ server_hostname.spl
 lldap_observer_user_password: "change_this_observer_password"
 
 traefik_dns_provider: cloudflare
+# Create a token at https://dash.cloudflare.com/profile/api-tokens with these
+# scopes (used for LE DNS-01 challenge AND the `dns` tag of the traefik role):
+#   - Zone        : DNS                       : Edit       (LE DNS-01 + A/DMARC records)
+#   - Zone        : Email Routing Rules       : Edit       (catch-all rule)
+#   - Account     : Email Routing Addresses   : Edit       (add+verify destination)
+# Zone resources should be scoped to the specific zone(s) you deploy to.
 traefik_environment_variables:
   CF_DNS_API_TOKEN: "change_this"
 # requests a wildcard certificate for your domain, so there should be no reason to have to use the staging

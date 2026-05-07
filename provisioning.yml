@@ -146,3 +146,9 @@
       tags:
         - claude_code
       when: (claude_code_enabled | default(False))
+  post_tasks:
+    - name: Post-install cheatsheet
+      ansible.builtin.debug:
+        msg: "{{ post_install_messages }}"
+      when: (post_install_messages | default([])) | length > 0
+      tags: always
