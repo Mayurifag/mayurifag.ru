@@ -41,7 +41,7 @@
     zone: "{{ server_hostname }}"
     record: "{{ server_hostname }}"
     type: TXT
-    value: '"v=spf1 include:_spf.mx.cloudflare.net -all"'
+    value: "v=spf1 include:_spf.mx.cloudflare.net -all"
     state: present
     solo: true
 
@@ -63,7 +63,7 @@
 
 - name: Build desired DMARC value (strict reject; preserves CF rua)
   ansible.builtin.set_fact:
-    cf_dmarc_desired: '"v=DMARC1; p=reject; sp=reject; {{ cf_dmarc_rua }}; adkim=s; aspf=s; pct=100"'
+    cf_dmarc_desired: "v=DMARC1; p=reject; sp=reject; {{ cf_dmarc_rua }}; adkim=s; aspf=s; pct=100"
   when: cf_dmarc_rua | length > 0
 
 - name: Patch DMARC TXT (only when value differs; strip CF-added quotes for compare)
