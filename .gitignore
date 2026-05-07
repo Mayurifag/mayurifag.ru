@@ -16,8 +16,6 @@ Session.vim
 # IntelliJ
 /.idea/
 
-/inventories/my-provision
-
 secret
 
 /makefiles/private.mk
