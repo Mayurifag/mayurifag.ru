@@ -3,7 +3,7 @@
   ansible.posix.sysctl:
     name: "{{ item }}"
     state: absent
-    reload: yes
+    reload: no
   loop: "{{ sysctl_values_absent }}"
 
 # It might be done via /etc/sysctl.d/ansible file, that will be faster, but its
@@ -13,6 +13,6 @@
     name: "{{ item.key }}"
     value: "{{ item.value }}"
     sysctl_set: yes
-    reload: yes
+    reload: no
     state: present
   loop: "{{ sysctl_values }}"

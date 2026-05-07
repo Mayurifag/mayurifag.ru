@@ -69,5 +69,5 @@
       traefik.enable: "true"
       traefik.http.routers.glance.rule: "Host(`{{ glance_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.glance.loadbalancer.server.port: "8080"
-      traefik.http.routers.glance.middlewares: "tinyauth@docker,secure-headers@file"
+      traefik.http.routers.glance.middlewares: "tinyauth@docker"
       com.centurylinklabs.watchtower.enable: "true"

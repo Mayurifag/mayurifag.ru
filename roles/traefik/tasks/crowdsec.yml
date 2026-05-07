@@ -1,0 +1,232 @@
+---
+- name: Get admin user info
+  ansible.builtin.getent:
+    database: passwd
+    key: "{{ admin_username }}"
+
+- name: Create CrowdSec Directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  with_items:
+    - "{{ crowdsec_data_directory }}"
+    - "{{ crowdsec_config_directory }}"
+    - "{{ crowdsec_config_directory }}/parsers/s02-enrich"
+
+- name: Create acquisition config
+  ansible.builtin.template:
+    src: crowdsec/acquis.yaml.j2
+    dest: "{{ crowdsec_config_directory }}/acquis.yaml"
+    mode: "0644"
+  register: crowdsec_acquis_template
+
+- name: Create profiles config
+  ansible.builtin.template:
+    src: crowdsec/profiles.yaml.j2
+    dest: "{{ crowdsec_config_directory }}/profiles.yaml"
+    mode: "0644"
+  register: crowdsec_profiles_template
+
+- name: Detect deployer public IPv4
+  ansible.builtin.uri:
+    url: https://api.ipify.org
+    return_content: true
+    timeout: 5
+  delegate_to: localhost
+  become: false
+  run_once: true
+  register: deployer_ip_lookup
+  failed_when: false
+  when: crowdsec_auto_whitelist_deployer
+
+- name: Compute effective CrowdSec whitelist
+  ansible.builtin.set_fact:
+    crowdsec_effective_whitelist: >-
+      {{ crowdsec_whitelist_ips
+        + ([(deployer_ip_lookup.content | trim).split('.')[0:3] | join('.') ~ '.0/24']
+          if (crowdsec_auto_whitelist_deployer
+              and deployer_ip_lookup.status | default(0) == 200
+              and (deployer_ip_lookup.content | default('') | trim) | length > 0)
+          else []) }}
+
+- name: Deploy operator whitelist
+  ansible.builtin.template:
+    src: crowdsec/whitelists.yaml.j2
+    dest: "{{ crowdsec_config_directory }}/parsers/s02-enrich/whitelists.yaml"
+    mode: "0644"
+  register: crowdsec_whitelist_template
+
+- name: Ensure auth.log exists
+  ansible.builtin.file:
+    path: /var/log/auth.log
+    state: touch
+    mode: "0640"
+  changed_when: false
+
+- name: CrowdSec Docker Container
+  community.docker.docker_container:
+    name: crowdsec
+    image: "{{ crowdsec_image }}"
+    pull: true
+    recreate: "{{ crowdsec_acquis_template.changed or
+      crowdsec_profiles_template.changed or crowdsec_whitelist_template.changed
+      }}"
+    restart_policy: unless-stopped
+    networks:
+      - name: "web"
+    volumes:
+      - "{{ crowdsec_data_directory }}:/var/lib/crowdsec/data"
+      - "{{ crowdsec_config_directory }}:/etc/crowdsec"
+      - "/var/log/auth.log:/var/log/auth.log:ro"
+      - "{{ traefik_logs_directory }}:/var/log/traefik:ro"
+    env:
+      COLLECTIONS: "{{ crowdsec_collections | join(' ') }}"
+      GID: "{{ ansible_facts.getent_passwd[admin_username][2] }}"
+      UID: "{{ ansible_facts.getent_passwd[admin_username][1] }}"
+    healthcheck:
+      test: ["CMD", "cscli", "lapi", "status"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+- name: Wait for CrowdSec LAPI to be ready
+  ansible.builtin.command: docker exec crowdsec cscli lapi status
+  register: crowdsec_lapi_status
+  until: crowdsec_lapi_status.rc == 0
+  retries: 30
+  delay: 2
+  changed_when: false
+
+- name: List existing bouncers
+  ansible.builtin.command: docker exec crowdsec cscli bouncers list -o json
+  register: crowdsec_bouncers_list
+  changed_when: false
+
+- name: Check persisted bouncer key
+  ansible.builtin.stat:
+    path: "{{ crowdsec_data_directory }}/.bouncer_key"
+  register: bouncer_key_file
+
+- name: Provision bouncer (missing key file or stale LAPI record)
+  when: >-
+    not bouncer_key_file.stat.exists or 'traefik-bouncer' not in
+    (crowdsec_bouncers_list.stdout | from_json | map(attribute='name') | list)
+  block:
+    - name: Delete stale bouncer if present
+      ansible.builtin.command: docker exec crowdsec cscli bouncers delete traefik-bouncer
+      register: bouncer_delete
+      failed_when:
+        - bouncer_delete.rc != 0
+        - "'unable to find' not in bouncer_delete.stderr"
+        - "'does not exist' not in bouncer_delete.stderr"
+      changed_when: bouncer_delete.rc == 0
+
+    - name: Create Traefik Bouncer
+      ansible.builtin.command: docker exec crowdsec cscli bouncers add traefik-bouncer -o raw
+      register: bouncer_create_out
+
+    - name: Persist bouncer key
+      ansible.builtin.copy:
+        content: "{{ bouncer_create_out.stdout }}"
+        dest: "{{ crowdsec_data_directory }}/.bouncer_key"
+        mode: "0600"
+
+- name: Read persisted bouncer key
+  ansible.builtin.slurp:
+    src: "{{ crowdsec_data_directory }}/.bouncer_key"
+  register: bouncer_key_slurp
+
+- name: Configure CrowdSec Middleware for Traefik
+  ansible.builtin.template:
+    src: crowdsec/traefik_crowdsec.toml.j2
+    dest: "{{ traefik_dynamic_configs_directory }}/crowdsec.toml"
+    mode: "0644"
+  vars:
+    crowdsec_api_key: "{{ bouncer_key_slurp.content | b64decode | trim }}"
+
+- name: Schedule CrowdSec hub update, upgrade and reload
+  ansible.builtin.cron:
+    name: "CrowdSec hub update and upgrade"
+    minute: "0"
+    hour: "4"
+    job: >-
+      (docker exec crowdsec cscli hub update && docker exec crowdsec cscli hub
+      upgrade && docker restart crowdsec) >> /var/log/crowdsec-hub-upgrade.log
+      2>&1
+
+- name: Determine if console enrollment configured
+  ansible.builtin.set_fact:
+    crowdsec_enroll_configured: >-
+      {{ crowdsec_enroll_key is defined
+        and crowdsec_enroll_key != "change_me"
+        and crowdsec_enroll_key | length > 0 }}
+
+- name: Check enrollment marker
+  ansible.builtin.stat:
+    path: "{{ crowdsec_data_directory }}/.console_enrolled"
+  register: crowdsec_enroll_marker
+
+- name: Read enrollment marker
+  ansible.builtin.slurp:
+    src: "{{ crowdsec_data_directory }}/.console_enrolled"
+  register: crowdsec_enroll_marker_slurp
+  when: crowdsec_enroll_marker.stat.exists
+
+- name: Set already-enrolled flag
+  ansible.builtin.set_fact:
+    crowdsec_already_enrolled: >-
+      {{ crowdsec_enroll_marker.stat.exists
+        and (crowdsec_enroll_marker_slurp.content | default('') | b64decode | trim) == (crowdsec_enroll_key | default('') | trim) }}
+
+- name: Enroll CrowdSec in Console
+  when:
+    - crowdsec_enroll_configured
+    - not crowdsec_already_enrolled
+  block:
+    - name: Register CAPI credentials
+      ansible.builtin.command: docker exec crowdsec cscli capi register
+      register: capi_register
+      failed_when:
+        - capi_register.rc != 0
+        - "'already' not in (capi_register.stderr ~ capi_register.stdout)"
+      changed_when: capi_register.rc == 0
+
+    - name: Enroll using provided key
+      ansible.builtin.command:
+        argv: >-
+          {{ ['docker','exec','crowdsec','cscli','console','enroll','--name',
+          crowdsec_instance_name]
+            + ((['--tags'] * (crowdsec_enroll_tags | length)) | zip(crowdsec_enroll_tags) | map('list') | flatten | list)
+            + [crowdsec_enroll_key] }}
+      changed_when: true
+
+    - name: Persist enrollment marker
+      ansible.builtin.copy:
+        content: "{{ crowdsec_enroll_key }}"
+        dest: "{{ crowdsec_data_directory }}/.console_enrolled"
+        mode: "0600"
+
+    - name: Restart CrowdSec container after enrollment
+      community.docker.docker_container:
+        name: crowdsec
+        restart: yes
+        state: started
+
+    - name: Wait for CrowdSec LAPI to be ready (after restart)
+      ansible.builtin.command: docker exec crowdsec cscli lapi status
+      register: crowdsec_lapi_status_after_enroll
+      until: crowdsec_lapi_status_after_enroll.rc == 0
+      retries: 30
+      delay: 2
+      changed_when: false
+
+- name: CrowdSec Post-Install Info
+  ansible.builtin.debug:
+    msg:
+      - "Enroll crowdsec: https://app.crowdsec.net/security-engines"
+      - "Instance name: {{ crowdsec_instance_name }}"
+  when:
+    - crowdsec_enroll_configured
+    - not crowdsec_already_enrolled

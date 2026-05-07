@@ -2,3 +2,10 @@
 - name: Set system hostname
   ansible.builtin.hostname:
     name: "{{ server_hostname }}"
+
+- name: Sync /etc/hosts 127.0.1.1 entry with hostname
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.0\.1\.1\s+'
+    line: "127.0.1.1 {{ server_hostname }}"
+    state: present

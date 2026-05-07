@@ -3,11 +3,12 @@
 # Add/remove/uncomment rows freely.
 
 [sample]
-prod1 ansible_host=192.168.1.30 server_hostname=mayurifag.local server_ssh_port=22
-prod2 ansible_host=192.168.1.31 server_hostname=example.com     server_ssh_port=22
-# staging ansible_host=10.0.0.5 server_hostname=staging.local server_ssh_port=2222
+prod1 ansible_host=192.168.1.30 server_hostname=mayurifag.local
+prod2 ansible_host=192.168.1.31 server_hostname=example.com
+# staging ansible_host=10.0.0.5 server_hostname=staging.local server_ssh_port=322
 
 [sample:vars]
 ansible_user=change_this
 ansible_become_user=root
+server_ssh_port=22 # you might want to change this per prod btw
 ansible_port="{{ server_ssh_port }}"

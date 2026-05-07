@@ -70,19 +70,40 @@ HISTSIZE=5000 # Increase history size
 HISTFILESIZE=10000 # Increase history file size
 HISTCONTROL=ignoredups # Ignore duplicate commands in history
 
-###########
+##########
 # PROMPT #
-###########
+##########
 
-# Determine user color: Red if root, Yellow if standard user
-if [ "$EUID" -eq 0 ]; then
-  USER_COLOR="\[\033[38;5;196m\]" # Red
-else
-  USER_COLOR="\[\033[38;5;11m\]"  # Yellow (Original)
+# PS1 only matters in interactive shells. Skip otherwise so that scripts and
+# non-interactive ssh sessions don't trigger color-code setup.
+if [[ $- == *i* ]]; then
+  # ANSI color escapes wrapped in \[ \] so bash counts prompt width correctly.
+  # \033[0m  = reset all attributes
+  # \033[38;5;Nm = foreground color N from the 256-color palette
+  C_RESET='\[\033[0m\]'
+  C_WHITE='\[\033[38;5;15m\]'
+  C_CYAN='\[\033[38;5;6m\]'
+  C_RED='\[\033[38;5;196m\]'
+  C_YELLOW='\[\033[38;5;11m\]'
+
+  # Red username for root, yellow for normal users.
+  if [ "$EUID" -eq 0 ]; then
+    USER_COLOR="$C_RED"
+  else
+    USER_COLOR="$C_YELLOW"
+  fi
+
+  # Prompt layout:  user@host:[cwd]: $
+  PS1_USER="${USER_COLOR}\u${C_RESET}"
+  PS1_HOST="${C_WHITE}@\H:${C_RESET}"
+  PS1_CWD="${C_CYAN}[\w]:${C_RESET}"
+  PS1_TAIL="${C_WHITE} \\$ ${C_RESET}"
+
+  export PS1="${PS1_USER}${PS1_HOST}${PS1_CWD}${PS1_TAIL}"
+
+  unset C_RESET C_WHITE C_CYAN C_RED C_YELLOW
+  unset USER_COLOR PS1_USER PS1_HOST PS1_CWD PS1_TAIL
 fi
-
-# Set a more informative prompt
-export PS1="${USER_COLOR}\u\[$(tput sgr0)\]\[\033[38;5;15m\]@\H:\[$(tput sgr0)\]\[\033[38;5;6m\][\w]:\[$(tput sgr0)\]\[\033[38;5;15m\] \\$ \[$(tput sgr0)\]"
 
 ###########
 # OPTIONS #

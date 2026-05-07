@@ -13,5 +13,5 @@
       traefik.enable: "true"
       traefik.http.routers.bentopdf.rule: "Host(`{{ bentopdf_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.bentopdf.loadbalancer.server.port: "8080"
-      traefik.http.routers.bentopdf.middlewares: "tinyauth@docker,secure-headers@file"
+      traefik.http.routers.bentopdf.middlewares: "tinyauth@docker"
       com.centurylinklabs.watchtower.enable: "true"

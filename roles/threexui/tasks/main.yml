@@ -1,18 +1,18 @@
 ---
-- name: Stop 3x-ui container if it exists
-  community.docker.docker_container:
-    name: 3x-ui
-    state: stopped
+# - name: Stop 3x-ui container if it exists
+#   community.docker.docker_container:
+#     name: 3x-ui
+#     state: stopped
 
-- name: Remove traefik-certs-dumper if it exists
-  community.docker.docker_container:
-    name: traefik-certs-dumper
-    state: absent
+# - name: Remove traefik-certs-dumper if it exists
+#   community.docker.docker_container:
+#     name: 3x-traefik-certs-dumper
+#     state: absent
 
-- name: Remove dumped certs
-  ansible.builtin.file:
-    path: "{{ threexui_certs_dumped_directory }}"
-    state: absent
+# - name: Remove dumped certs
+#   ansible.builtin.file:
+#     path: "{{ threexui_certs_dumped_directory }}"
+#     state: absent
 
 - name: Create 3x-ui Directories
   ansible.builtin.file:
@@ -25,7 +25,7 @@
 
 - name: Traefik Certs Dumper Sidecar
   community.docker.docker_container:
-    name: traefik-certs-dumper
+    name: 3x-traefik-certs-dumper
     image: "{{ threexui_certs_dumper_image }}"
     pull: true
     recreate: true
@@ -64,7 +64,6 @@
       traefik.http.routers.threexui-panel.rule: "Host(`{{ threexui_panel_subdomain }}.{{ server_hostname }}`)"
       traefik.http.routers.threexui-panel.service: "threexui-panel"
       traefik.http.services.threexui-panel.loadbalancer.server.port: "2053"
-      traefik.http.routers.threexui-panel.middlewares: "secure-headers@file"
       traefik.http.routers.threexui-panel.priority: "1"
 
       # Subscription on /sub/ path
@@ -72,7 +71,6 @@
         server_hostname }}`) && PathPrefix(`/sub/`)"
       traefik.http.routers.threexui-sub.service: "threexui-subscription"
       traefik.http.services.threexui-subscription.loadbalancer.server.port: "2096"
-      traefik.http.routers.threexui-sub.middlewares: "secure-headers@file"
       traefik.http.routers.threexui-sub.priority: "10"
 
       # Reality TCP
@@ -86,9 +84,12 @@
     msg:
       - "Panel URL: https://{{ threexui_panel_subdomain }}.{{ server_hostname }}"
       - "Default creds: admin / admin"
-      - "Subscription Reverse Proxy URI: https://{{ threexui_panel_subdomain }}.{{ server_hostname }}/sub/"
-      - "VLESS Reality | port 443/tcp | SNI/target {{ threexui_reality_domain }} | flow xtls-rprx-vision | XHTTP"
-      - "Hysteria2 | port {{ threexui_hysteria2_port }}/udp | SNI {{ server_hostname }}"
+      - "Subscription Reverse Proxy URI: https://{{ threexui_panel_subdomain
+        }}.{{ server_hostname }}/sub/"
+      - "VLESS Reality | port 443/tcp | SNI/target {{ threexui_reality_domain }}
+        | flow xtls-rprx-vision | XHTTP"
+      - "Hysteria2 | port {{ threexui_hysteria2_port }}/udp | SNI {{
+        server_hostname }}"
       - "Hysteria2 cert: /root/cert/certs/{{ server_hostname }}.crt"
       - "Hysteria2 key:  /root/cert/private/{{ server_hostname }}.key"
       - "Hysteria2 masquerade URL: https://{{ server_hostname }}"

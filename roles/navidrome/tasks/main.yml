@@ -33,5 +33,4 @@
       traefik.enable: "true"
       traefik.http.routers.navidrome.rule: "Host(`{{ navidrome_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.navidrome.loadbalancer.server.port: "4533"
-      traefik.http.routers.navidrome.middlewares: "secure-headers@file"
       com.centurylinklabs.watchtower.enable: "true"

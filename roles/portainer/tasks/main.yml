@@ -66,5 +66,4 @@
       traefik.enable: "true"
       traefik.http.routers.portainer.rule: "Host(`{{ portainer_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.portainer.loadbalancer.server.port: "9000"
-      traefik.http.routers.portainer.middlewares: "secure-headers@file"
       com.centurylinklabs.watchtower.enable: "true"
