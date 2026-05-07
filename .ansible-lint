@@ -1,4 +1,6 @@
 ---
+exclude_paths:
+  - inventories/my-provision/
 skip_list:
   - "risky-file-permissions"
   - "var-naming[no-role-prefix]"

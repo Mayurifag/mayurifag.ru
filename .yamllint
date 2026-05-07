@@ -18,3 +18,4 @@ rules:
 ignore: |
   .ansible/roles
   .playwright-mcp/
+  inventories/my-provision/

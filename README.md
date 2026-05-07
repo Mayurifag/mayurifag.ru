@@ -101,7 +101,6 @@ Why proxied=false matters:
 ## TODO
 
 * [ ] Check if post_install_messages work and move POST_INSTALL.md there
-* [ ] git-crypt for secrets, move secrets onto git here
 * [ ] SSH tunnel/bastion
   * [ ] Cloudflare + tailscale ips only.
   * [ ] Is it compatible with ansible deployment then?
