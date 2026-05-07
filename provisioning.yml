@@ -14,7 +14,7 @@
           - "================================================"
       tags: always
   roles:
-    - role: server_preparations
+    - role: general
       tags:
         - general
 
@@ -28,7 +28,7 @@
         - swap
       when: (swap_enabled | default(False))
 
-    - role: home_folder
+    - role: home
       tags:
         - home
 
@@ -122,15 +122,10 @@
         - echoip
       when: (echoip_enabled | default(False))
 
-    - role: mini_qr
+    - role: qr
       tags:
         - qr
-      when: (mini_qr_enabled | default(False))
-
-    - role: opds
-      tags:
-        - opds
-      when: (opds_enabled | default(False))
+      when: (qr_enabled | default(False))
 
     - role: watchtower
       tags:

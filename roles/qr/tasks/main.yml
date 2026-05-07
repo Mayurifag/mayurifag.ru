@@ -2,11 +2,11 @@
 - name: Mini-QR Docker Container
   community.docker.docker_container:
     name: mini-qr
-    image: "{{ mini_qr_image }}"
+    image: "{{ qr_image }}"
     pull: true
     recreate: true
     restart_policy: unless-stopped
-    memory: "{{ mini_qr_memory }}"
+    memory: "{{ qr_memory }}"
     networks:
       - name: "web"
     env:
@@ -14,7 +14,7 @@
       VITE_DEFAULT_PRESET: "lyqht"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.mini-qr.rule: "Host(`{{ mini_qr_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.routers.mini-qr.rule: "Host(`{{ qr_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.mini-qr.loadbalancer.server.port: "8080"
       traefik.http.routers.mini-qr.middlewares: "tinyauth@docker"
       com.centurylinklabs.watchtower.enable: "true"

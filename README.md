@@ -77,7 +77,6 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | mus                 | `mus`        | ldap | +          |
 | Navidrome           | `navidrome`  | app  | +          |
 | lldap               | `ldap`       | ldap | +          |
-| OPDShelf            | `opds`       | ldap | +          |
 | OpenCloud           | `cloud`      | ldap |            |
 | Portainer           | `portainer`  | app  | +          |
 | SnapOtter           | `images`     | ldap | +          |
@@ -94,9 +93,7 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 
 * [ ] CrowdSec Post-Install Info - after all the deploying
 * [ ] git-crypt for secrets, move secrets onto git here
-* [ ] Rename all roles to match tags or vice versa.
 * [ ] DNS managed via cloudflare-dns module in ansible or smth.
-* [ ] remove opds
 * [ ] SSH tunnel/bastion
   * [ ] Cloudflare + tailscale ips only.
   * [ ] Is it compatible with ansible deployment then?

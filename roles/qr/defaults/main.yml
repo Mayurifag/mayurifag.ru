@@ -1,0 +1,7 @@
+---
+qr_enabled: true
+
+qr_subdomain: "qr"
+qr_image: "ghcr.io/lyqht/mini-qr:latest"
+
+qr_memory: "512m"

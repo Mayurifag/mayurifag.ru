@@ -73,10 +73,6 @@ navidrome_enabled: true
 navidrome_subdomain: "navidrome"
 navidrome_music_directory: "/home/{{ admin_username }}/music_folder/"
 
-opds_enabled: true
-opds_subdomain: "opds"
-opds_books_directory: "{{ files_home }}/Books"
-
 portainer_enabled: true
 portainer_subdomain: "portainer"
 
@@ -119,8 +115,8 @@ snapotter_subdomain: "images"
 echoip_enabled: true
 echoip_subdomain: "ip"
 
-mini_qr_enabled: true
-mini_qr_subdomain: "qr"
+qr_enabled: true
+qr_subdomain: "qr"
 
 mkdocs_enabled: true
 mkdocs_subdomain: "docs"
