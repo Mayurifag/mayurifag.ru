@@ -14,7 +14,6 @@
   community.docker.docker_container:
     name: tinyauth
     image: "{{ tinyauth_docker_image }}"
-    pull: true
     recreate: true
     volumes:
       - "{{ tinyauth_data_directory }}:/data"

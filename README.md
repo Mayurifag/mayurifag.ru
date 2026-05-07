@@ -111,7 +111,6 @@ Why proxied=false matters:
 * [ ] cheatsheet on ssh opening.
   * [ ] Output CPU/RAM/disk usage.
   * [ ] dumbfile size and aliases. Other useful aliases. What else?
-* [ ] suboptimal dumbfile checking
 
 ### On hold
 

@@ -8,10 +8,12 @@
     owner: root
     group: root
 
-# TODO: this goes TOO long, something suboptimal here
 - name: Check if dumbfile exists
   ansible.builtin.stat:
     path: /var/dumb/dumbfile
+    get_checksum: false
+    get_attributes: false
+    get_mime: false
   register: dumbfile_stat
 
 - name: Create dumbfile for 20% of free space

@@ -27,7 +27,6 @@
   community.docker.docker_container:
     name: 3x-traefik-certs-dumper
     image: "{{ threexui_certs_dumper_image }}"
-    pull: true
     recreate: true
     restart_policy: unless-stopped
     memory: "{{ threexui_certs_dumper_memory }}"
@@ -44,7 +43,6 @@
   community.docker.docker_container:
     name: 3x-ui
     image: "{{ threexui_docker_image }}"
-    pull: true
     recreate: true
     volumes:
       - "{{ threexui_data_directory }}/db:/etc/x-ui:rw"

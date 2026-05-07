@@ -1,18 +1,29 @@
 ---
-- name: Download Claude Code installer
-  ansible.builtin.get_url:
-    url: https://claude.ai/install.sh
-    dest: /tmp/claude-install.sh
-    mode: "0755"
-    force: true
+- name: Check if Claude Code is installed for admin user
+  ansible.builtin.stat:
+    path: "/home/{{ admin_username }}/.local/bin/claude"
+    get_checksum: false
+    get_attributes: false
+    get_mime: false
+  register: claude_bin
 
-- name: Install Claude Code CLI for admin user
-  ansible.builtin.command: /tmp/claude-install.sh
-  become: true
-  become_user: "{{ admin_username }}"
-  changed_when: true
+- name: Install Claude Code CLI
+  when: not claude_bin.stat.exists
+  block:
+    - name: Download Claude Code installer
+      ansible.builtin.get_url:
+        url: https://claude.ai/install.sh
+        dest: /tmp/claude-install.sh
+        mode: "0755"
+        force: true
 
-- name: Remove Claude Code installer
-  ansible.builtin.file:
-    path: /tmp/claude-install.sh
-    state: absent
+    - name: Install Claude Code CLI for admin user
+      ansible.builtin.command: /tmp/claude-install.sh
+      become: true
+      become_user: "{{ admin_username }}"
+      changed_when: true
+
+    - name: Remove Claude Code installer
+      ansible.builtin.file:
+        path: /tmp/claude-install.sh
+        state: absent

@@ -15,15 +15,6 @@
     group: root
     mode: "0644"
 
-- name: Kill running tmux server
-  ansible.builtin.command: tmux kill-server
-  failed_when: false
-
-- name: Remove .tmux directory for clean install
-  ansible.builtin.file:
-    path: "/home/{{ admin_username }}/.tmux"
-    state: absent
-
 - name: Ensure .tmux/plugins directory exists
   ansible.builtin.file:
     path: "/home/{{ admin_username }}/.tmux/plugins"
@@ -39,6 +30,7 @@
     version: master
     update: yes
   become: false
+  register: tpm_clone
 
 - name: Configure .tmux.conf
   ansible.builtin.template:
@@ -47,10 +39,12 @@
     owner: "{{ admin_username }}"
     group: "{{ admin_username }}"
     mode: "0644"
+  register: tmux_conf
 
 - name: Install Tmux Plugins
   ansible.builtin.command: "/home/{{ admin_username }}/.tmux/plugins/tpm/bin/install_plugins"
   become: false
+  when: tpm_clone.changed or tmux_conf.changed
 
 - name: Ensure .config/lazydocker directory exists for admin user
   ansible.builtin.file:
