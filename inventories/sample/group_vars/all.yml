@@ -59,9 +59,6 @@ mayurifag_github_io_enabled: true
 lazydocker_enabled: true
 docker_enabled: true
 
-crowdsec_enabled: true
-crowdsec_enroll_key: "change_me"
-
 proxy_enabled: true
 proxy_user: change_this
 proxy_user_password: change_this
@@ -85,6 +82,7 @@ portainer_subdomain: "portainer"
 
 traefik_enabled: true
 traefik_subdomain: "traefik"
+crowdsec_enroll_key: "change_me"
 
 gitea_enabled: true
 gitea_subdomain: "git"

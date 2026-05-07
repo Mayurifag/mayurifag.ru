@@ -13,15 +13,17 @@
     name: ru_RU.UTF-8
     state: present
 
+- name: Get current default locale
+  ansible.builtin.command: localectl status
+  register: localectl_status
+  changed_when: false
+
 - name: Set en_US.UTF-8 as default locale
   ansible.builtin.command: localectl set-locale LANG=en_US.UTF-8
+  when: "'LANG=en_US.UTF-8' not in localectl_status.stdout"
 
 - name: Ensure systemd-timesyncd service is running and enabled
   ansible.builtin.systemd:
     name: systemd-timesyncd
     state: started
     enabled: yes
-
-- name: Force time synchronization with systemd-timesyncd
-  ansible.builtin.command: timedatectl set-ntp true
-  changed_when: false

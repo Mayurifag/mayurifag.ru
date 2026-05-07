@@ -21,13 +21,13 @@
       traefik.http.routers.opds.rule: "Host(`{{ opds_subdomain }}.{{ server_hostname }}`)"
       traefik.http.routers.opds.service: "opds"
       traefik.http.services.opds.loadbalancer.server.port: "3000"
-      # traefik.http.routers.opds.middlewares: "secure-headers@file,opds-limit"
+      traefik.http.routers.opds.middlewares: "opds-limit"
       traefik.http.routers.opds.priority: "1"
 
       # Router 2: Admin Access (Protected /admin path)
       traefik.http.routers.opds-admin.rule: "Host(`{{ opds_subdomain }}.{{ server_hostname }}`) && PathPrefix(`/admin`)"
       traefik.http.routers.opds-admin.service: "opds"
-      traefik.http.routers.opds-admin.middlewares: "tinyauth@docker,secure-headers@file,opds-limit"
+      traefik.http.routers.opds-admin.middlewares: "tinyauth@docker,opds-limit"
       traefik.http.routers.opds-admin.priority: "100"
 
       com.centurylinklabs.watchtower.enable: "true"

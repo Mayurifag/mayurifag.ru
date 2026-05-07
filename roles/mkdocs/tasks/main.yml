@@ -32,5 +32,5 @@
       traefik.enable: "true"
       traefik.http.routers.mkdocs.rule: "Host(`{{ mkdocs_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.mkdocs.loadbalancer.server.port: "8000"
-      traefik.http.routers.mkdocs.middlewares: "tinyauth@docker,secure-headers@file"
+      traefik.http.routers.mkdocs.middlewares: "tinyauth@docker"
       com.centurylinklabs.watchtower.enable: "true"

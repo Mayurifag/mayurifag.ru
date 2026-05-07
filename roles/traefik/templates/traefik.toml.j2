@@ -1,18 +1,20 @@
 [entryPoints]
+  # HTTP entrypoint exists solely to redirect to HTTPS. Required for HSTS preload
+  # (browsers test http://apex/ → must redirect to https://apex/).
+  [entryPoints.web]
+    address = ":80"
+    [entryPoints.web.http.redirections.entryPoint]
+      to = "websecure"
+      scheme = "https"
+      permanent = true
+
   [entryPoints.websecure]
     address = ":443"
     [entryPoints.websecure.http3]
 
-    # Extended timeouts for OpenCloud/Nextcloud large file operations
-    [entryPoints.websecure.transport.respondingTimeouts]
-      readTimeout = "12h"
-      writeTimeout = "12h"
-      idleTimeout = "3m"
-
     [entryPoints.websecure.http]
-      middlewares = [ "crowdsec@file" ]
+      middlewares = [ "crowdsec@file", "secure-headers@file" ]
       [entryPoints.websecure.http.tls]
-        certResolver = "letsencrypt"
         options = "default"
 
 [providers]
@@ -40,10 +42,11 @@
       email = "{{ admin_email }}"
       storage = "/letsencrypt/acme.json"
       caserver = "{{ traefik_acme_server }}"
+      keyType = "EC256"
       [certificatesResolvers.letsencrypt.acme.dnsChallenge]
         provider = "{{ traefik_dns_provider }}"
         resolvers = ["1.1.1.1:53", "8.8.8.8:53"]
 
 [experimental.plugins.crowdsec-bouncer-traefik-plugin]
-  moduleName = "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
-  version = "v1.4.6"
+  moduleName = "{{ crowdsec_bouncer_plugin_module }}"
+  version = "{{ crowdsec_bouncer_plugin_version }}"

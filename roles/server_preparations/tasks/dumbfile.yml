@@ -4,9 +4,11 @@
   ansible.builtin.file:
     path: /var/dumb
     state: directory
-    mode: "0777"
+    mode: "0700"
+    owner: root
+    group: root
 
-# why this might take a lot of time?
+# TODO: this goes TOO long, something suboptimal here
 - name: Check if dumbfile exists
   ansible.builtin.stat:
     path: /var/dumb/dumbfile

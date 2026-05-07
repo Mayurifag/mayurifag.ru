@@ -1,4 +1,4 @@
-# Ansible playbook for provisioning mayurifag.ru
+# Ansible playbook for provisioning my servers
 
 [![Linters](https://github.com/Mayurifag/mayurifag.ru/actions/workflows/lint.yml/badge.svg)](https://github.com/Mayurifag/mayurifag.ru/actions/workflows/lint.yml)
 
@@ -92,8 +92,24 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 
 ## TODO
 
+* [ ] CrowdSec Post-Install Info - after all the deploying
+* [ ] git-crypt for secrets, move secrets onto git here
+* [ ] Rename all roles to match tags or vice versa.
+* [ ] DNS managed via cloudflare-dns module in ansible or smth.
+* [ ] remove opds
+* [ ] SSH tunnel/bastion
+  * [ ] Cloudflare + tailscale ips only.
+  * [ ] Is it compatible with ansible deployment then?
+  * [ ] 443 traffic might be gone through cloudflare proxy then
+  * [ ] Whitelist for cf/tailscale, more enforcing rules for spammers
+  * [ ] cf rules for spammers?
+  * [ ] proxies-cfg will work fine? ssh with proxies?
 * [ ] try <https://dockhand.pro/manual/> for possible portainer alternative
 * [ ] try <https://github.com/stalwartlabs/stalwart> for email
+* [ ] cheatsheet on ssh opening.
+  * [ ] Output CPU/RAM/disk usage.
+  * [ ] dumbfile size and aliases. Other useful aliases. What else?
+* [ ] suboptimal dumbfile checking
 
 ### On hold
 
@@ -118,12 +134,6 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 
 ### Thinking if I need it / probably wont do - ideas / notes
 
-* [ ] Crowdsec iptables firewall - remediation component.
-  * [ ] Crowdsec has to be inside traefik role - split tasks files though
-  * [ ] <https://www.crowdsec.net/blog/secure-docker-compose-stacks-with-crowdsec>
-  * [ ] see if there is solution to unban false positive and if not, add smth
-  * [ ] whitelist my vps ips so at least ssh proxy jump will work in worst case
-  * [ ] i need to remove generic rules and make configuration more permissive
 * [ ] Add simple secret sharing app
   * [ ] Hemmelig - too much things, analytics and so on
   * [ ] also maybe url shorten like <https://github.com/anhostfr/nah.pet>

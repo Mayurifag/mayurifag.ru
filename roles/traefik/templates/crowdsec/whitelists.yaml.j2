@@ -1,0 +1,18 @@
+name: mayurifag/admin-whitelist
+description: "Whitelist trusted operator IPs"
+whitelist:
+  reason: "operator IPs"
+{% set ips = crowdsec_effective_whitelist | reject('search', '/') | list %}
+{% set cidrs = crowdsec_effective_whitelist | select('search', '/') | list %}
+{% if ips %}
+  ip:
+{% for ip in ips %}
+    - "{{ ip }}"
+{% endfor %}
+{% endif %}
+{% if cidrs %}
+  cidr:
+{% for c in cidrs %}
+    - "{{ c }}"
+{% endfor %}
+{% endif %}

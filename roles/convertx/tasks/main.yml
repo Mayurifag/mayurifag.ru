@@ -15,5 +15,5 @@
       traefik.enable: "true"
       traefik.http.routers.convertx.rule: "Host(`{{ convertx_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.convertx.loadbalancer.server.port: "3000"
-      traefik.http.routers.convertx.middlewares: "tinyauth@docker,secure-headers@file"
+      traefik.http.routers.convertx.middlewares: "tinyauth@docker"
       com.centurylinklabs.watchtower.enable: "true"

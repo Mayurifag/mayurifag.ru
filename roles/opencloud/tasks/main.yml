@@ -59,7 +59,6 @@
       OC_CACHE_DISABLE_PERSISTENCE: "true"
       # Disable Open Cloud Mesh (federation between OpenCloud servers).
       # Not used here; service spams "missing or incomplete nats configuration"
-      # and "core access token not set" warnings. Upstream bug since ownCloud OCIS.
       # Refs: https://github.com/owncloud/ocis/issues/8921
       #       https://github.com/opencloud-eu/opencloud/issues/1591
       OC_EXCLUDE_RUN_SERVICES: "ocm"
@@ -107,4 +106,4 @@
       traefik.http.middlewares.opencloud-dav.redirectregex.replacement: "https://$1/remote.php/dav/"
       traefik.http.middlewares.opencloud-dav.redirectregex.permanent: "true"
 
-      traefik.http.routers.opencloud.middlewares: "secure-headers@file,opencloud-dav"
+      traefik.http.routers.opencloud.middlewares: "opencloud-dav"

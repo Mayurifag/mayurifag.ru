@@ -35,5 +35,5 @@
       traefik.enable: "true"
       traefik.http.routers.snapotter.rule: "Host(`{{ snapotter_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.snapotter.loadbalancer.server.port: "1349"
-      traefik.http.routers.snapotter.middlewares: "tinyauth@docker,secure-headers@file"
+      traefik.http.routers.snapotter.middlewares: "tinyauth@docker"
       com.centurylinklabs.watchtower.enable: "true"

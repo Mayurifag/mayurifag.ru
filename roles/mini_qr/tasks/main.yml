@@ -16,5 +16,5 @@
       traefik.enable: "true"
       traefik.http.routers.mini-qr.rule: "Host(`{{ mini_qr_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.mini-qr.loadbalancer.server.port: "8080"
-      traefik.http.routers.mini-qr.middlewares: "tinyauth@docker,secure-headers@file"
+      traefik.http.routers.mini-qr.middlewares: "tinyauth@docker"
       com.centurylinklabs.watchtower.enable: "true"

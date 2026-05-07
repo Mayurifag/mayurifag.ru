@@ -57,11 +57,6 @@
         - tinyauth
       when: (tinyauth_enabled | default(False))
 
-    - role: crowdsec
-      tags:
-        - crowdsec
-      when: (crowdsec_enabled | default(False))
-
     - role: mayurifag_github_io
       tags:
         - mayurifag_github_io
