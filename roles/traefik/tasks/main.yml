@@ -1,4 +1,8 @@
 ---
+- name: Cloudflare DNS + Email Routing
+  ansible.builtin.import_tasks: dns.yml
+  tags: dns
+
 - name: Traefik
   ansible.builtin.import_tasks: traefik_task.yml
 

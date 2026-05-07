@@ -89,11 +89,19 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 
 Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 
+## DNS
+
+~~~txt
+Why proxied=false matters:
+  - CF proxy only handles HTTP/HTTPS — Hysteria2 is UDP, dropped at proxy.
+  - xray VLESS-Reality mimics target SNI handshake. CF proxy replaces cert, breaks Reality. Must hit your IP directly.
+  - Traefik handles its own LE wildcard cert via DNS-01 → no CF cert needed.
+~~~
+
 ## TODO
 
-* [ ] CrowdSec Post-Install Info - after all the deploying
+* [ ] Check if post_install_messages work and move POST_INSTALL.md there
 * [ ] git-crypt for secrets, move secrets onto git here
-* [ ] DNS managed via cloudflare-dns module in ansible or smth.
 * [ ] SSH tunnel/bastion
   * [ ] Cloudflare + tailscale ips only.
   * [ ] Is it compatible with ansible deployment then?
@@ -101,8 +109,6 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
   * [ ] Whitelist for cf/tailscale, more enforcing rules for spammers
   * [ ] cf rules for spammers?
   * [ ] proxies-cfg will work fine? ssh with proxies?
-* [ ] try <https://dockhand.pro/manual/> for possible portainer alternative
-* [ ] try <https://github.com/stalwartlabs/stalwart> for email
 * [ ] cheatsheet on ssh opening.
   * [ ] Output CPU/RAM/disk usage.
   * [ ] dumbfile size and aliases. Other useful aliases. What else?
@@ -131,6 +137,8 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 
 ### Thinking if I need it / probably wont do - ideas / notes
 
+* [ ] try <https://dockhand.pro/manual/> for possible portainer alternative
+* [ ] try <https://github.com/stalwartlabs/stalwart> for email
 * [ ] Add simple secret sharing app
   * [ ] Hemmelig - too much things, analytics and so on
   * [ ] also maybe url shorten like <https://github.com/anhostfr/nah.pet>

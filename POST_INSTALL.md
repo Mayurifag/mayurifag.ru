@@ -3,11 +3,32 @@
 This document outlines the manual steps required to configure services after
 the Ansible deployment is complete.
 
-## CrowdSec
+## DNS / Email Routing
 
-If you provided a valid `crowdsec_enroll_key` in `group_vars`, the deployment
-should automatically enroll your instance to the
-[CrowdSec Console](https://app.crowdsec.net/).
+DNS is managed by the `traefik` role (subtag `dns`). It owns:
+
+- `A @` and `A *` (DNS-only, points at server IP)
+- `TXT @` SPF: `v=spf1 include:_spf.mx.cloudflare.net -all`
+  (CF Email Routing forwards only; everyone else hard-rejected)
+- `TXT _dmarc` (patched in place: enforces `p=reject; sp=reject` + strict
+  alignment, preserves CF-generated rua UUID)
+- Cloudflare Email Routing enable + catch-all `*@domain` -> `admin_email`
+
+Cloudflare auto-manages MX and DKIM records (the role never touches them).
+DMARC Management owns the rua UUID; the role only patches the policy fields
+around it. Posture: domain receives mail via CF Routing, sends nothing.
+
+Note: SPF task uses `solo: true` on `@` — any other apex TXT will be
+deleted. Place unrelated verifications (Google site, etc.) under
+different subdomains.
+
+### Required Cloudflare API token scopes
+
+Token at <https://dash.cloudflare.com/profile/api-tokens>:
+
+- Zone    : DNS                     : Edit (LE DNS-01 + A/DMARC records)
+- Zone    : Email Routing Rules     : Edit (catch-all rule)
+- Account : Email Routing Addresses : Edit (destination state)
 
 ## OpenCloud
 
