@@ -47,4 +47,4 @@ ci:
 	editorconfig-checker
 	ansible-lint
 	yamllint .
-	markdownlint-cli2 "**/*.md"
+	markdownlint-cli2 "**/*.{md,markdown}"

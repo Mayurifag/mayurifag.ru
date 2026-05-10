@@ -1,0 +1,31 @@
+---
+- name: Ensure apt keyring directory exists
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Add trzsz apt signing key
+  ansible.builtin.get_url:
+    url: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x7074ce75da7cc691c1ae1a7c7e51d1ad956055ca
+    dest: /etc/apt/keyrings/trzsz.asc
+    mode: "0644"
+
+- name: Add trzsz apt repository
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/etc/apt/keyrings/trzsz.asc] https://ppa.launchpadcontent.net/trzsz/ppa/ubuntu jammy main
+    filename: trzsz
+    state: present
+    update_cache: yes
+
+- name: Install tsshd
+  ansible.builtin.apt:
+    name: tsshd
+    state: present
+    force_apt_get: yes
+
+- name: Add tsshd post-install message
+  ansible.builtin.set_fact:
+    post_install_messages: >-
+      {{ (post_install_messages | default([])) +
+      ["tsshd: open UDP " ~ tsshd_udp_port ~ " on provider firewall; connect with `tssh --kcp --tsshd-port " ~ tsshd_udp_port ~ " <host>` or matching SSH config directives."] }}

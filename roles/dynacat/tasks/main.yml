@@ -1,0 +1,81 @@
+---
+- name: Discover Dynacat page templates
+  ansible.builtin.set_fact:
+    dynacat_pages: "{{ query('fileglob', role_path ~ '/templates/pages/*.yml.j2') | map('basename') | map('regex_replace', '\\.yml\\.j2$', '') | sort }}"
+
+- name: Geocode Dynacat location to lat/lon
+  ansible.builtin.uri:
+    url: "https://geocoding-api.open-meteo.com/v1/search?name={{ dynacat_location_name | urlencode }}&count=1&format=json"
+    return_content: true
+  register: dynacat_geocode_result
+
+- name: Set Dynacat lat/lon facts from geocode result
+  ansible.builtin.set_fact:
+    dynacat_latitude: "{{ dynacat_geocode_result.json.results[0].latitude }}"
+    dynacat_longitude: "{{ dynacat_geocode_result.json.results[0].longitude }}"
+  when: dynacat_geocode_result.json.results | default([]) | length > 0
+
+- name: Fail if location could not be geocoded
+  ansible.builtin.fail:
+    msg: "Could not geocode dynacat_location_name='{{ dynacat_location_name }}'. Set a valid city name."
+  when: dynacat_geocode_result.json.results | default([]) | length == 0
+
+- name: Remove old Glance container
+  community.docker.docker_container:
+    name: glance
+    state: absent
+
+- name: Remove Dynacat data directory for clean deployment
+  ansible.builtin.file:
+    path: "{{ dynacat_data_directory }}"
+    state: absent
+
+- name: Create Dynacat directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  with_items:
+    - "{{ dynacat_data_directory }}"
+    - "{{ dynacat_data_directory }}/config"
+    - "{{ dynacat_data_directory }}/config/pages"
+
+- name: Create Dynacat configuration
+  ansible.builtin.template:
+    src: dynacat.yml.j2
+    dest: "{{ dynacat_data_directory }}/config/dynacat.yml"
+    mode: "0644"
+
+- name: Create Dynacat page configurations
+  ansible.builtin.template:
+    src: "pages/{{ item }}.yml.j2"
+    dest: "{{ dynacat_data_directory }}/config/pages/{{ item }}.yml"
+    mode: "0644"
+  loop: "{{ dynacat_pages }}"
+
+- name: Dynacat Docker Container
+  community.docker.docker_container:
+    name: dynacat
+    image: "{{ dynacat_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ dynacat_memory }}"
+    sysctls:
+      net.ipv6.conf.all.disable_ipv6: "1"
+      net.ipv6.conf.default.disable_ipv6: "1"
+    volumes:
+      - "{{ dynacat_data_directory }}/config:/app/config"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    env:
+      GITHUB_TOKEN: "{{ dynacat_github_token }}"
+      GITHUB_NOTIFICATIONS_TOKEN: "{{ dynacat_github_notifications_token }}"
+      FINNHUB_TOKEN: "{{ dynacat_finnhub_token }}"
+    networks:
+      - name: "web"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.dynacat.rule: "Host(`{{ dynacat_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.dynacat.loadbalancer.server.port: "8080"
+      traefik.http.routers.dynacat.middlewares: "tinyauth@docker"
+      com.centurylinklabs.watchtower.enable: "true"
