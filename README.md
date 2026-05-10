@@ -2,21 +2,12 @@
 
 [![Linters](https://github.com/Mayurifag/mayurifag.ru/actions/workflows/lint.yml/badge.svg)](https://github.com/Mayurifag/mayurifag.ru/actions/workflows/lint.yml)
 
-## Requires
+## Requirements
 
-### VPS
-
-* DNS `A` records for your TLD and wildcard (`*`)
-* Debian 12+
-* Open ports on server provider' side
-
-### Mac/PC
-
-* Ansible `python3 -m pip install --user ansible`
-* (only MacOS) - passlib `python3 -m pip install --user passlib` (to use crypto
-  module from ansible)
-* Setup inventory (if key not added, be prepared to add ansible_ssh_pass and
-  that after general server setup)
+On VPS - Debian 12+.
+On VPS provider - opened ports
+On Cloudflare - token (DNS propagated during setup)
+On PC - just `ansible`. For MacOS also `passlib` because of some `crypto` module.
 
 ## Instructions
 
@@ -52,8 +43,8 @@ Host change_that
     HostName change.that
     User admin_user # Change user
     Port 2222 # change port
-    RequestTTY yes
-    RemoteCommand tmux attach -d || tmux new-session -s main
+    #!! UdpMode KCP
+    #!! TsshdPort 12345 # change this
 ~~~
 
 ## Applications List
@@ -101,16 +92,10 @@ Why proxied=false matters:
 ## TODO
 
 * [ ] Check if post_install_messages work and move POST_INSTALL.md there
-* [ ] SSH tunnel/bastion
-  * [ ] Cloudflare + tailscale ips only.
-  * [ ] Is it compatible with ansible deployment then?
-  * [ ] 443 traffic might be gone through cloudflare proxy then
-  * [ ] Whitelist for cf/tailscale, more enforcing rules for spammers
-  * [ ] cf rules for spammers?
-  * [ ] proxies-cfg will work fine? ssh with proxies?
 * [ ] cheatsheet on ssh opening.
   * [ ] Output CPU/RAM/disk usage.
   * [ ] dumbfile size and aliases. Other useful aliases. What else?
+* [ ] dysk instead of default du dh??
 
 ### On hold
 
@@ -126,8 +111,8 @@ Why proxied=false matters:
   * [ ] <https://github.com/we-promise/sure>
 * [ ] ufw
   * [ ] Waiting for <https://github.com/shinebayar-g/ufw-docker-automated>
-  * [ ] Problem for docker is that on server reboot or else address of docker
-        container is changing so rules have to be updated
+  * [ ] Problem for docker is that on server reboot or else address of docker container is changing so rules have to be
+        updated
   * [ ] Block everything. There are a lot of exceptions: ssh/web/dns/dhcp/ntp
   * [ ] open port if needed in each ansible role
   * [ ] IP Masquerading ?
@@ -155,7 +140,10 @@ Why proxied=false matters:
   * [ ] Has to be free and allow deploy from ansible via API
   * [ ] maybe just main website check and self service to report docker unhealth
   * [ ] <https://beszel.dev/>
-* [ ] tmux
-  * [ ] Reliably fix scrolling and other annoying things
-  * [ ] add dracula disk usage (used/total) or totally redesign it
-  * [ ] tmux with `nice` priority <https://x.com/SA5280/status/2001732941639282759>
+* [ ] SSH tunnel/bastion
+  * [ ] Cloudflare + tailscale ips only.
+  * [ ] Is it compatible with ansible deployment then?
+  * [ ] 443 traffic might be gone through cloudflare proxy then
+  * [ ] Whitelist for cf/tailscale, more enforcing rules for spammers
+  * [ ] cf rules for spammers?
+  * [ ] proxies-cfg will work fine? ssh with proxies?

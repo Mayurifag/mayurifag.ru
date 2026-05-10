@@ -15,37 +15,6 @@
     group: root
     mode: "0644"
 
-- name: Ensure .tmux/plugins directory exists
-  ansible.builtin.file:
-    path: "/home/{{ admin_username }}/.tmux/plugins"
-    state: directory
-    owner: "{{ admin_username }}"
-    group: "{{ admin_username }}"
-    mode: "0755"
-
-- name: Clone Tmux Plugin Manager (TPM)
-  ansible.builtin.git:
-    repo: https://github.com/tmux-plugins/tpm
-    dest: "/home/{{ admin_username }}/.tmux/plugins/tpm"
-    version: master
-    update: yes
-  become: false
-  register: tpm_clone
-
-- name: Configure .tmux.conf
-  ansible.builtin.template:
-    src: ".tmux.conf.j2"
-    dest: "/home/{{ admin_username }}/.tmux.conf"
-    owner: "{{ admin_username }}"
-    group: "{{ admin_username }}"
-    mode: "0644"
-  register: tmux_conf
-
-- name: Install Tmux Plugins
-  ansible.builtin.command: "/home/{{ admin_username }}/.tmux/plugins/tpm/bin/install_plugins"
-  become: false
-  when: tpm_clone.changed or tmux_conf.changed
-
 - name: Ensure .config/lazydocker directory exists for admin user
   ansible.builtin.file:
     path: "/home/{{ admin_username }}/.config/lazydocker"

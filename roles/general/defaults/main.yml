@@ -121,7 +121,6 @@ mayurifag_general_extra_packages:
   - nethogs
   - rsyslog
   - software-properties-common
-  - tmux
   - unattended-upgrades
   - unzip
   - wget

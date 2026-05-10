@@ -4,15 +4,6 @@
     name: opencloud
     state: absent
 
-- name: Remove OpenCloud Config Directory if needed
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    # - "{{ opencloud_data_directory }}"
-    # - "{{ opencloud_files_directory }}"
-    - "{{ opencloud_data_directory }}/var/nats"
-
 - name: Create OpenCloud Directories
   ansible.builtin.file:
     path: "{{ item }}"
@@ -23,7 +14,63 @@
   with_items:
     - "{{ opencloud_data_directory }}/config"
     - "{{ opencloud_data_directory }}/var"
+    - "{{ opencloud_nats_data_directory }}"
     - "{{ opencloud_files_directory }}"
+
+- name: Configure OpenCloud NATS
+  ansible.builtin.template:
+    src: nats.conf.j2
+    dest: "{{ opencloud_data_directory }}/nats.conf"
+    mode: "0644"
+
+- name: OpenCloud NATS Docker Container
+  community.docker.docker_container:
+    name: "{{ opencloud_nats_container_name }}"
+    image: "{{ opencloud_nats_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    command:
+      - -c
+      - /etc/nats/nats.conf
+    volumes:
+      - "{{ opencloud_data_directory }}/nats.conf:/etc/nats/nats.conf:ro"
+      - "{{ opencloud_nats_data_directory }}:/data"
+    networks:
+      - name: "web"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          wget -q -O - 'http://127.0.0.1:8222/healthz?js-enabled-only=true'
+          | grep -q ok
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+
+- name: Wait for OpenCloud NATS to be healthy
+  community.docker.docker_container_info:
+    name: "{{ opencloud_nats_container_name }}"
+  register: opencloud_nats_info
+  until: opencloud_nats_info.container.State.Health.Status == "healthy"
+  retries: 30
+  delay: 2
+  changed_when: false
+
+- name: Schedule OpenCloud NATS JetStream report
+  ansible.builtin.cron:
+    name: "OpenCloud NATS JetStream report"
+    minute: "17"
+    hour: "3"
+    job: >-
+      docker run --rm --network web {{ opencloud_nats_box_image }} sh -lc
+      'nats --server nats://{{ opencloud_nats_container_name }}:4222 stream
+      report && nats --server nats://{{ opencloud_nats_container_name }}:4222
+      consumer report main-queue || true'
+      >> /var/log/opencloud-nats-report.log 2>&1
 
 - name: Configure OpenCloud Traefik Transport (Timeouts)
   ansible.builtin.template:
@@ -57,12 +104,18 @@
       OC_LOG_LEVEL: "{{ opencloud_log_level }}"
       LOG_PRETTY: "false"
       OC_CACHE_DISABLE_PERSISTENCE: "true"
+      OC_CACHE_STORE_NODES: "{{ opencloud_nats_container_name }}:4222"
+      OC_EVENTS_ENDPOINT: "{{ opencloud_nats_container_name }}:4222"
+      OC_PERSISTENT_STORE_NODES: "{{ opencloud_nats_container_name }}:4222"
+      MICRO_REGISTRY: "nats-js-kv"
+      MICRO_REGISTRY_ADDRESS: "{{ opencloud_nats_container_name }}:4222"
       # Disable Open Cloud Mesh (federation between OpenCloud servers).
       # Not used here; service spams "missing or incomplete nats configuration"
       # Refs: https://github.com/owncloud/ocis/issues/8921
       #       https://github.com/opencloud-eu/opencloud/issues/1591
-      OC_EXCLUDE_RUN_SERVICES: "ocm"
+      OC_EXCLUDE_RUN_SERVICES: "ocm,nats"
       FRONTEND_CHECK_FOR_UPDATES: "false"
+      OC_DISABLE_VERSIONING: "{{ opencloud_disable_versioning }}"
       OC_SHARING_PUBLIC_SHARE_MUST_HAVE_PASSWORD: "false"
       IDP_REFRESH_TOKEN_EXPIRATION: "30240000" # 350 days
       # For webdav sync of Obsidian Remotely Save performance
@@ -70,14 +123,19 @@
       STORAGE_SYSTEM_LOG_LEVEL: "error" # Prevent unnecessary warnings pollution of logs
 
       STORAGE_USERS_DRIVER: "posix"
+      STORAGE_USERS_FILEMETADATA_CACHE_DISABLE_PERSISTENCE: "true"
       # NATS-KV mandatory for posix collaborative mode (WATCH_FS=true).
       # Memory store not supported: watcher + storage-users must share inode->UUID map.
       # Docs: https://docs.opencloud.eu/docs/admin/configuration/storage/storage-posix
       STORAGE_USERS_ID_CACHE_STORE: "nats-js-kv"
+      STORAGE_USERS_ID_CACHE_STORE_NODES: "{{ opencloud_nats_container_name }}:4222"
+      STORAGE_USERS_ID_CACHE_DISABLE_PERSISTENCE: "true"
+      STORAGE_USERS_POSIX_PROPAGATOR: "{{ opencloud_posix_propagator }}"
       STORAGE_USERS_POSIX_WATCH_FS: "true"
       STORAGE_USERS_POSIX_ROOT: "/storage"
       # Reduce inotify→NATS event rate to ease JetStream pressure (default: 1s)
-      STORAGE_USERS_POSIX_SCAN_DEBOUNCE_DELAY: "5s"
+      STORAGE_USERS_POSIX_SCAN_DEBOUNCE_DELAY: "{{ opencloud_posix_scan_debounce_delay }}"
+      STORAGE_USERS_POSIX_INOTIFY_STATS_FREQUENCY: "{{ opencloud_posix_inotify_stats_frequency }}"
 
       OC_LDAP_URI: "ldap://lldap:3890"
       OC_LDAP_BIND_DN: "uid=observer,ou=people,{{ lldap_base_dn }}"
@@ -91,6 +149,16 @@
       OC_LDAP_SERVER_WRITE_ENABLED: "false"
       GRAPH_LDAP_SERVER_UUID: "true"
       GRAPH_LDAP_SERVER_USE_PASSWORD_MODIFY_EXOP: "false"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          curl -fsS http://127.0.0.1:9200/status >/dev/null &&
+          curl -fsS http://127.0.0.1:9200/konnect/v1/jwks.json >/dev/null
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     networks:
       - name: "web"
     labels:

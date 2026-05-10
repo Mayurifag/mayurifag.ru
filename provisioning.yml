@@ -137,10 +137,10 @@
         - tg_ai_manager
       when: (tg_ai_manager_enabled | default(False))
 
-    - role: glance
+    - role: dynacat
       tags:
-        - glance
-      when: (glance_enabled | default(False))
+        - dynacat
+      when: (dynacat_enabled | default(False))
 
     - role: claude_code
       tags:

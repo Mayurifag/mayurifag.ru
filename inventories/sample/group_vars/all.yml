@@ -15,6 +15,7 @@ admin_authorized_keys: ""
 server_timezone: Etc/UTC
 swap_file_size_mb: "1024"
 swap_swappiness: "15"
+tsshd_udp_port: "12345"
 
 lldap_base_dn: "dc={{ server_hostname.split('.')[0] }},dc={{ server_hostname.split('.')[1] }}"
 lldap_observer_user_password: "change_this_observer_password"
@@ -133,19 +134,19 @@ tg_ai_manager_subdomain: "tg"
 tg_ai_manager_api_id: "123456"
 tg_ai_manager_api_hash: "abcdef1234567890"
 
-glance_enabled: true
-glance_subdomain: "rss"
-glance_github_token: "change_this_github_token"
-glance_github_notifications_token: "change_this_github_notifications_token"
-glance_finnhub_token: "change_this_finnhub_token"
-glance_location_name: "change_this"
-glance_twitch_channels:
+dynacat_enabled: true
+dynacat_subdomain: "rss"
+dynacat_github_token: "change_this_github_token"
+dynacat_github_notifications_token: "change_this_github_notifications_token"
+dynacat_finnhub_token: "change_this_finnhub_token"
+dynacat_location_name: "change_this"
+dynacat_twitch_channels:
   - SilverName
   - HoneyMad
-glance_tech_youtube_channels:
+dynacat_tech_youtube_channels:
   - UCBJycsmduvYEL83R_U4JriQ
-glance_games_youtube_channels: []
-glance_github_releases_repos: []
-glance_reddit_subreddits: []
+dynacat_games_youtube_channels: []
+dynacat_github_releases_repos: []
+dynacat_reddit_subreddits: []
 
 claude_code_enabled: true

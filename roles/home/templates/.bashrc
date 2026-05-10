@@ -1,6 +1,5 @@
 # EXPORTS
 export EDITOR=vi
-export TMUX_PLUGIN_MANAGER_PATH="$HOME/.tmux/plugins/"
 export PATH="$HOME/.local/bin:$PATH"
 
 ###########
@@ -26,27 +25,6 @@ alias shutdown='sudo shutdown now'
 alias update='sudo apt update && sudo apt upgrade -y'
 alias yabs='curl -sL https://yabs.sh | bash'
 alias systemctl='sudo systemctl'
-alias tldr-tmux='
-echo -e "\n--- TMUX Cheatsheet (CTRL+B is the prefix C-b) ---
-C-b m     - show tmux-menus
-C-b c     - new window
-C-b n/p   - next/previous window
-C-b |     - split pane vertically (custom key)
-C-b -     - split pane horizontally (custom key)
-C-b x     - kill pane
-C-b z     - toggle pane zoom
-C-b <arrow> - switch pane
-C-b d     - detach session
-C-b ?     - show keybindings
-C-b [     - scroll/copy mode (use mouse wheel or C-b [ and then arrow keys)
-C-b &     - kill current window
-
---- MOUSE COMMANDS ---
-Click and drag to select/copy text
-Scroll wheel to scroll output
-Click on window/pane to select it
-"'
-
 # CrowdSec
 alias cscli='docker exec crowdsec cscli'
 

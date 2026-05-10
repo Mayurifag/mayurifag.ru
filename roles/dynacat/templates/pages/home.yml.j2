@@ -19,7 +19,7 @@
       widgets:
         - type: twitch-channels
           cache: 5m
-          channels: {{ glance_twitch_channels | to_json }}
+          channels: {{ dynacat_twitch_channels | to_json }}
           collapse-after: 5
 
         - type: custom-api
@@ -60,11 +60,11 @@
             </ul>
             {{ end }}{% endraw %}
 
-{% if glance_github_releases_repos %}
+{% if dynacat_github_releases_repos %}
         - type: releases
           title: GitHub Releases
           cache: 1h
-          repositories: {{ glance_github_releases_repos | to_json }}
+          repositories: {{ dynacat_github_releases_repos | to_json }}
           token: ${GITHUB_TOKEN}
           limit: 10
           collapse-after: 5
@@ -85,10 +85,10 @@
           limit: 30
           collapse-after: 5
 
-{% if glance_reddit_subreddits %}
+{% if dynacat_reddit_subreddits %}
         - type: group
           widgets:
-{% for sub in glance_reddit_subreddits %}
+{% for sub in dynacat_reddit_subreddits %}
             - type: reddit
               subreddit: {{ sub }}
               cache: 30m
@@ -99,11 +99,11 @@
 {% endfor %}
 {% endif %}
 
-{% if glance_games_youtube_channels %}
+{% if dynacat_games_youtube_channels %}
         - type: videos
           title: Games
           cache: 1h
-          channels: {{ glance_games_youtube_channels | to_json }}
+          channels: {{ dynacat_games_youtube_channels | to_json }}
           collapse-after: 5
 {% endif %}
 
@@ -112,10 +112,10 @@
         - type: custom-api
           title: Weather & Air
           cache: 10m
-          url: https://api.open-meteo.com/v1/forecast?latitude={{ glance_latitude }}&longitude={{ glance_longitude }}&current=temperature_2m,apparent_temperature,weather_code,is_day&timezone=auto
+          url: https://api.open-meteo.com/v1/forecast?latitude={{ dynacat_latitude }}&longitude={{ dynacat_longitude }}&current=temperature_2m,apparent_temperature,weather_code,is_day&timezone=auto
           subrequests:
             air:
-              url: https://air-quality-api.open-meteo.com/v1/air-quality?latitude={{ glance_latitude }}&longitude={{ glance_longitude }}&current=european_aqi,uv_index,pm2_5,pm10,nitrogen_dioxide,ozone,sulphur_dioxide
+              url: https://air-quality-api.open-meteo.com/v1/air-quality?latitude={{ dynacat_latitude }}&longitude={{ dynacat_longitude }}&current=european_aqi,uv_index,pm2_5,pm10,nitrogen_dioxide,ozone,sulphur_dioxide
           template: |
             {% raw %}{{ $temp := .JSON.Float "current.temperature_2m" }}
             {{ $feels := .JSON.Float "current.apparent_temperature" }}
