@@ -16,11 +16,7 @@ On PC - just `ansible`. For MacOS also `passlib` because of some `crypto` module
 ~~~sh
 git clone https://github.com/Mayurifag/mayurifag.ru.git
 cd mayurifag.ru
-cp -rfp inventories/sample inventories/my-provision
-# Now you are required to change my-provision files.
-# or ln from some place like that:
-# ln -s /Volumes/exfat/OpenCloud/Personal/Software/dotfiles/my-provision/ inventories/my-provision
-# Dont forget you are required to generate ssh key and copy public into provision
+cp -rfp inventories/sample inventories/my-provision # and change it directly
 ansible-galaxy install -r requirements.yml
 ~~~
 
@@ -29,13 +25,13 @@ ansible-galaxy install -r requirements.yml
 #### TL;DR
 
 ~~~sh
-make boostrap # run once, its cleaning known_hosts and makes ssh configuration
-make deploy "traefik,mus" # or make deploy-all if you are sure
+make boostrap hostname # run once, its cleaning known_hosts and makes ssh configuration
+make deploy hostname "traefik,mus" # or make deploy-all if you are sure
 ~~~
 
 #### Optional steps
 
-* Make new ssh config section for convenience and using tmux by default
+* Make new ssh config section for convenience and using tssh' udp by default
 
 ~~~sh
 # ~/.ssh/config
@@ -79,15 +75,6 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 <!-- markdownlint-enable line-length -->
 
 Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
-
-## DNS
-
-~~~txt
-Why proxied=false matters:
-  - CF proxy only handles HTTP/HTTPS — Hysteria2 is UDP, dropped at proxy.
-  - xray VLESS-Reality mimics target SNI handshake. CF proxy replaces cert, breaks Reality. Must hit your IP directly.
-  - Traefik handles its own LE wildcard cert via DNS-01 → no CF cert needed.
-~~~
 
 ## TODO
 
@@ -147,3 +134,4 @@ Why proxied=false matters:
   * [ ] Whitelist for cf/tailscale, more enforcing rules for spammers
   * [ ] cf rules for spammers?
   * [ ] proxies-cfg will work fine? ssh with proxies?
+* [ ] Grimmory - for Kindle KOReader - sync progress and books download
