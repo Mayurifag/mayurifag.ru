@@ -35,7 +35,7 @@ make deploy hostname "traefik,mus" # or make deploy-all if you are sure
 
 ~~~sh
 # ~/.ssh/config
-Host change_that
+Host change_that_provider change_that_website.com
     HostName change.that
     User admin_user # Change user
     Port 2222 # change port
@@ -56,11 +56,11 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | BentoPDF            | `pdf`        | ldap | +          |
 | ConvertX            | `convert`    | ldap | +          |
 | EchoIP              | `ip`         | none | +          |
-| Gitea               | `git`        | todo |            |
-| Glance              | `rss`        | none | +          |
+| Gitea               | `git`        | app  |            |
+| Dynacat             | `rss`        | ldap | +          |
 | MkDocs              | `docs`       | ldap | +          |
 | Mini-QR             | `qr`         | ldap | +          |
-| mayurifag.github.io |              | ldap | +          |
+| mayurifag.github.io |              | none | +          |
 | mus                 | `mus`        | ldap | +          |
 | Navidrome           | `navidrome`  | app  | +          |
 | lldap               | `ldap`       | ldap | +          |

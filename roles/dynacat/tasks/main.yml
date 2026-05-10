@@ -20,11 +20,6 @@
     msg: "Could not geocode dynacat_location_name='{{ dynacat_location_name }}'. Set a valid city name."
   when: dynacat_geocode_result.json.results | default([]) | length == 0
 
-- name: Remove old Glance container
-  community.docker.docker_container:
-    name: glance
-    state: absent
-
 - name: Remove Dynacat data directory for clean deployment
   ansible.builtin.file:
     path: "{{ dynacat_data_directory }}"
