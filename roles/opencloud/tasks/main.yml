@@ -14,63 +14,30 @@
   with_items:
     - "{{ opencloud_data_directory }}/config"
     - "{{ opencloud_data_directory }}/var"
-    - "{{ opencloud_nats_data_directory }}"
     - "{{ opencloud_files_directory }}"
 
-- name: Configure OpenCloud NATS
+- name: Remove Old OpenCloud NATS Directory
+  ansible.builtin.file:
+    path: "{{ opencloud_data_directory }}/nats"
+    state: absent
+
+- name: Remove Old OpenCloud NATS Config
+  ansible.builtin.file:
+    path: "{{ opencloud_data_directory }}/nats.conf"
+    state: absent
+
+- name: Configure OpenCloud NATS Cleanup Script
   ansible.builtin.template:
-    src: nats.conf.j2
-    dest: "{{ opencloud_data_directory }}/nats.conf"
-    mode: "0644"
+    src: opencloud_nats_cleanup.sh.j2
+    dest: /usr/local/bin/opencloud-nats-cleanup
+    mode: "0755"
 
-- name: OpenCloud NATS Docker Container
-  community.docker.docker_container:
-    name: "{{ opencloud_nats_container_name }}"
-    image: "{{ opencloud_nats_image }}"
-    pull: true
-    recreate: true
-    restart_policy: unless-stopped
-    command:
-      - -c
-      - /etc/nats/nats.conf
-    volumes:
-      - "{{ opencloud_data_directory }}/nats.conf:/etc/nats/nats.conf:ro"
-      - "{{ opencloud_nats_data_directory }}:/data"
-    networks:
-      - name: "web"
-    healthcheck:
-      test:
-        - CMD-SHELL
-        - >-
-          wget -q -O - 'http://127.0.0.1:8222/healthz?js-enabled-only=true'
-          | grep -q ok
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
-    labels:
-      com.centurylinklabs.watchtower.enable: "true"
-
-- name: Wait for OpenCloud NATS to be healthy
-  community.docker.docker_container_info:
-    name: "{{ opencloud_nats_container_name }}"
-  register: opencloud_nats_info
-  until: opencloud_nats_info.container.State.Health.Status == "healthy"
-  retries: 30
-  delay: 2
-  changed_when: false
-
-- name: Schedule OpenCloud NATS JetStream report
+- name: Schedule OpenCloud NATS Cleanup
   ansible.builtin.cron:
-    name: "OpenCloud NATS JetStream report"
-    minute: "17"
-    hour: "3"
-    job: >-
-      docker run --rm --network web {{ opencloud_nats_box_image }} sh -lc
-      'nats --server nats://{{ opencloud_nats_container_name }}:4222 stream
-      report && nats --server nats://{{ opencloud_nats_container_name }}:4222
-      consumer report main-queue || true'
-      >> /var/log/opencloud-nats-report.log 2>&1
+    name: "OpenCloud NATS cleanup"
+    minute: "0"
+    hour: "7"
+    job: "/usr/local/bin/opencloud-nats-cleanup"
 
 - name: Configure OpenCloud Traefik Transport (Timeouts)
   ansible.builtin.template:
@@ -104,16 +71,12 @@
       OC_LOG_LEVEL: "{{ opencloud_log_level }}"
       LOG_PRETTY: "false"
       OC_CACHE_DISABLE_PERSISTENCE: "true"
-      OC_CACHE_STORE_NODES: "{{ opencloud_nats_container_name }}:4222"
-      OC_EVENTS_ENDPOINT: "{{ opencloud_nats_container_name }}:4222"
-      OC_PERSISTENT_STORE_NODES: "{{ opencloud_nats_container_name }}:4222"
       MICRO_REGISTRY: "nats-js-kv"
-      MICRO_REGISTRY_ADDRESS: "{{ opencloud_nats_container_name }}:4222"
       # Disable Open Cloud Mesh (federation between OpenCloud servers).
       # Not used here; service spams "missing or incomplete nats configuration"
       # Refs: https://github.com/owncloud/ocis/issues/8921
       #       https://github.com/opencloud-eu/opencloud/issues/1591
-      OC_EXCLUDE_RUN_SERVICES: "ocm,nats"
+      OC_EXCLUDE_RUN_SERVICES: "ocm"
       FRONTEND_CHECK_FOR_UPDATES: "false"
       OC_DISABLE_VERSIONING: "{{ opencloud_disable_versioning }}"
       OC_SHARING_PUBLIC_SHARE_MUST_HAVE_PASSWORD: "false"
@@ -128,7 +91,6 @@
       # Memory store not supported: watcher + storage-users must share inode->UUID map.
       # Docs: https://docs.opencloud.eu/docs/admin/configuration/storage/storage-posix
       STORAGE_USERS_ID_CACHE_STORE: "nats-js-kv"
-      STORAGE_USERS_ID_CACHE_STORE_NODES: "{{ opencloud_nats_container_name }}:4222"
       STORAGE_USERS_ID_CACHE_DISABLE_PERSISTENCE: "true"
       STORAGE_USERS_POSIX_PROPAGATOR: "{{ opencloud_posix_propagator }}"
       STORAGE_USERS_POSIX_WATCH_FS: "true"

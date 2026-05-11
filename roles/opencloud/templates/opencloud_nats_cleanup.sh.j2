@@ -1,0 +1,32 @@
+#!/bin/sh
+set -eu
+
+log() {
+  printf '%s %s\n' "$(date -Is)" "$*" >> "{{ opencloud_nats_cleanup_log_file }}"
+}
+
+if [ -n "$(find "{{ opencloud_files_directory }}" -path "{{ opencloud_files_directory }}changes" -prune -o -type f -mmin -5 -print -quit)" ]; then
+  log "skip: files changed in the last 5 minutes"
+  exit 0
+fi
+
+log "start"
+docker stop opencloud >/dev/null 2>&1 || true
+if [ -d "{{ opencloud_nats_data_directory }}" ]; then
+  find "{{ opencloud_nats_data_directory }}" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+fi
+docker start opencloud >/dev/null
+
+i=0
+while [ "$i" -lt 30 ]; do
+  if docker exec opencloud curl -fsS http://127.0.0.1:9200/status >/dev/null; then
+    log "done"
+    exit 0
+  fi
+  i=$((i + 1))
+  sleep 2
+done
+
+docker start opencloud >/dev/null 2>&1 || true
+log "failed: opencloud healthcheck timeout"
+exit 1
