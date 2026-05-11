@@ -21,11 +21,11 @@ dynacat_twitch_channels:
   - SilverName
   - HoneyMad
 
-# Tech YouTube channel IDs (default: Marques Brownlee / MKBHD)
+# Tech YouTube channel IDs
 dynacat_tech_youtube_channels:
   - UCBJycsmduvYEL83R_U4JriQ
+  - UC4e_XPBiiIO4fo4_CucxQeg
 
 # Optional widget lists — set to [] to hide widget
-dynacat_games_youtube_channels: []
 dynacat_github_releases_repos: []
 dynacat_reddit_subreddits: []

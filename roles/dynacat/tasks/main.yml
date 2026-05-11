@@ -34,6 +34,13 @@
     - "{{ dynacat_data_directory }}"
     - "{{ dynacat_data_directory }}/config"
     - "{{ dynacat_data_directory }}/config/pages"
+    - "{{ dynacat_data_directory }}/assets"
+
+- name: Copy Dynacat favicon
+  ansible.builtin.copy:
+    src: assets/favicon.svg
+    dest: "{{ dynacat_data_directory }}/assets/favicon.svg"
+    mode: "0644"
 
 - name: Create Dynacat configuration
   ansible.builtin.template:
@@ -61,6 +68,8 @@
       net.ipv6.conf.default.disable_ipv6: "1"
     volumes:
       - "{{ dynacat_data_directory }}/config:/app/config"
+      - "{{ dynacat_data_directory }}/assets:/app/assets"
+      - "/:/host:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     env:
       GITHUB_TOKEN: "{{ dynacat_github_token }}"
