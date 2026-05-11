@@ -3,7 +3,7 @@
           cache: 1h
           url: https://production.dataviz.cnn.io/index/fearandgreed/graphdata
           headers:
-            User-Agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            User-Agent: "{{ dynacat_browser_user_agent }}"
             Origin: "https://edition.cnn.com"
             Referer: "https://edition.cnn.com/"
           subrequests:
@@ -110,3 +110,14 @@
                 </ul>
               {{ end }}
             {{ end }}{% endraw %}
+
+        - type: rss
+          title: MarketWatch
+          cache: 1h
+          feeds:
+            - url: https://feeds.content.dowjones.io/public/rss/mw_topstories
+              title: MarketWatch
+              headers:
+                User-Agent: "{{ dynacat_browser_user_agent }}"
+          limit: 5
+          collapse-after: 5
