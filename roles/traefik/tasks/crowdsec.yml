@@ -69,9 +69,11 @@
     name: crowdsec
     image: "{{ crowdsec_image }}"
     pull: true
-    recreate: "{{ crowdsec_acquis_template.changed or
-      crowdsec_profiles_template.changed or crowdsec_whitelist_template.changed
-      }}"
+    recreate: >-
+      {{ crowdsec_acquis_template.changed or
+        crowdsec_profiles_template.changed or
+        crowdsec_whitelist_template.changed or
+        (traefik_logs_cleanup.changed | default(false)) }}
     restart_policy: unless-stopped
     networks:
       - name: "web"
@@ -109,18 +111,37 @@
     path: "{{ crowdsec_data_directory }}/.bouncer_key"
   register: bouncer_key_file
 
-- name: Provision bouncer (missing key file or stale LAPI record)
+- name: Compute Traefik bouncer state
+  ansible.builtin.set_fact:
+    traefik_bouncer_names: >-
+      {{ crowdsec_bouncers_list.stdout | from_json | map(attribute='name') |
+        select('match', '^traefik-bouncer(@.*)?$') | list }}
+
+- name: Provision Traefik bouncer
   when: >-
-    not bouncer_key_file.stat.exists or 'traefik-bouncer' not in
-    (crowdsec_bouncers_list.stdout | from_json | map(attribute='name') | list)
+    not bouncer_key_file.stat.exists or
+    'traefik-bouncer' not in traefik_bouncer_names or
+    (traefik_bouncer_names | difference(['traefik-bouncer']) | length) > 0
   block:
-    - name: Delete stale bouncer if present
-      ansible.builtin.command: docker exec crowdsec cscli bouncers delete traefik-bouncer
+    - name: Delete existing Traefik bouncers
+      ansible.builtin.command:
+        argv:
+          - docker
+          - exec
+          - crowdsec
+          - cscli
+          - bouncers
+          - delete
+          - "{{ item }}"
+      loop: "{{ traefik_bouncer_names }}"
+      loop_control:
+        label: "{{ item }}"
       register: bouncer_delete
       failed_when:
         - bouncer_delete.rc != 0
         - "'unable to find' not in bouncer_delete.stderr"
         - "'does not exist' not in bouncer_delete.stderr"
+        - "'not found' not in bouncer_delete.stderr"
       changed_when: bouncer_delete.rc == 0
 
     - name: Create Traefik Bouncer
@@ -143,6 +164,7 @@
     src: crowdsec/traefik_crowdsec.toml.j2
     dest: "{{ traefik_dynamic_configs_directory }}/crowdsec.toml"
     mode: "0644"
+  notify: Restart Traefik
   vars:
     crowdsec_api_key: "{{ bouncer_key_slurp.content | b64decode | trim }}"
 

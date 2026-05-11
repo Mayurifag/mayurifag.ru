@@ -1,0 +1,8 @@
+---
+- name: Restart Traefik
+  community.docker.docker_container:
+    name: traefik
+    restart: yes
+    state: started
+  tags:
+    - traefik

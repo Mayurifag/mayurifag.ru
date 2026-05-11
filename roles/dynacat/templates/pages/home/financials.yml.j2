@@ -110,14 +110,3 @@
                 </ul>
               {{ end }}
             {{ end }}{% endraw %}
-
-        - type: rss
-          title: MarketWatch
-          cache: 1h
-          feeds:
-            - url: https://feeds.content.dowjones.io/public/rss/mw_topstories
-              title: MarketWatch
-              headers:
-                User-Agent: "{{ dynacat_browser_user_agent }}"
-          limit: 5
-          collapse-after: 5
