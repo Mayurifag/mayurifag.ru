@@ -42,9 +42,17 @@ sshconfig:
 hosts:
 	@ansible-inventory -i $(INVENTORY) --list --yaml
 
+.PHONY: install-deps
+install-deps:
+	ansible-galaxy install -r requirements.yml
+	ansible-galaxy collection install -r collections/requirements.yml
+
 .PHONY: ci
 ci:
 	editorconfig-checker
+	ansible-playbook -i inventories/sample/inventory provisioning.yml --syntax-check
+	ansible-playbook -i inventories/sample/inventory clean_hosts.yml --syntax-check
+	ansible-playbook -i inventories/sample/inventory sshconfig.yml --syntax-check
 	ansible-lint
 	yamllint .
 	markdownlint-cli2 "**/*.{md,markdown}"
