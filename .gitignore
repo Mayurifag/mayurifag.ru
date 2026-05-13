@@ -3,6 +3,7 @@ site
 *.retry
 *.log
 .DS_Store
+__pycache__/
 # inventories and private files
 .cache
 */private/
