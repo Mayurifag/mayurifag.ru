@@ -13,6 +13,8 @@ threexui_enable_fail2ban: "false"
 
 threexui_hysteria2_port: 36500
 
+threexui_v6_egress_network_name: v6-egress
+
 threexui_certs_dumper_image: ldez/traefik-certs-dumper:v2.11.2
 threexui_certs_dumper_memory: 64m
 threexui_certs_dumped_directory: "{{ threexui_data_directory }}/dumped_certs"

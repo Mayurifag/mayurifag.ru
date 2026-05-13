@@ -39,6 +39,12 @@
     labels:
       com.centurylinklabs.watchtower.enable: "true"
 
+- name: Create 3x-ui IPv6 Egress Network
+  community.docker.docker_network:
+    name: "{{ threexui_v6_egress_network_name }}"
+    enable_ipv6: true
+    state: present
+
 - name: 3x-ui Docker Container
   community.docker.docker_container:
     name: 3x-ui
@@ -55,8 +61,10 @@
     restart_policy: unless-stopped
     networks:
       - name: "web"
+      - name: "{{ threexui_v6_egress_network_name }}"
     labels:
       traefik.enable: "true"
+      traefik.docker.network: "web"
 
       # Web Panel
       traefik.http.routers.threexui-panel.rule: "Host(`{{ threexui_panel_subdomain }}.{{ server_hostname }}`)"
