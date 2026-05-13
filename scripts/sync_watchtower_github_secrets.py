@@ -11,7 +11,6 @@ SERVICES = {
     "Mayurifag/mus": "mus",
     "Mayurifag/tg-ai-manager": "tg-ai-manager",
 }
-OLD_SECRETS = ("WATCHTOWER_URL", "WATCHTOWER_HTTP_API_TOKEN")
 
 
 def parse_args():
@@ -91,7 +90,7 @@ def watchtower_host(inventory, host):
         "name": host,
         "ssh_target": f"{ssh_user}@{ssh_host}" if ssh_user else ssh_host,
         "ssh_port": ssh_port,
-        "url": f"https://{watchtower_subdomain}.{server_hostname}/v1/update",
+        "base_url": f"https://{watchtower_subdomain}.{server_hostname}/v1/update",
         "token": watchtower_http_api_token,
     }
 
@@ -119,10 +118,6 @@ def watched_containers(host):
 
 def set_secret(repo, name, value):
     run(["gh", "secret", "set", name, "--repo", repo], input_text=value, quiet=True)
-
-
-def delete_secret(repo, name):
-    run(["gh", "secret", "delete", name, "--repo", repo], quiet=True, check=False)
 
 
 def main():
@@ -153,7 +148,13 @@ def main():
 
         for repo, container in SERVICES.items():
             if container in containers:
-                targets[repo].append(endpoint)
+                targets[repo].append(
+                    {
+                        # All app images are intentionally expected in GHCR, not Docker Hub.
+                        "url": f"{endpoint['base_url']}?image=ghcr.io/{repo.lower()}:latest",
+                        "token": endpoint["token"],
+                    }
+                )
                 found.append(container)
 
         print(f"{host}: {', '.join(found) if found else 'no configured services'}")
@@ -175,9 +176,6 @@ def main():
         print(f"Syncing {repo}: {len(endpoints)} endpoint(s)")
         set_secret(repo, "WATCHTOWER_URLS", urls_secret)
         set_secret(repo, "WATCHTOWER_TOKENS", tokens_secret)
-
-        for secret in OLD_SECRETS:
-            delete_secret(repo, secret)
 
     print("Done")
 
