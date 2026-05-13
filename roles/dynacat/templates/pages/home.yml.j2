@@ -1,23 +1,8 @@
 - name: Home
-  head-widgets:
-    - type: markets
-      hide-header: true
-      cache: 5m
-      update-interval: 5m
-      markets:
-        - symbol: ES=F
-          name: S&P 500
-        - symbol: NQ=F
-          name: QQQ
-        - symbol: BTC-USD
-          name: BTC
-        - symbol: INFQ
-          name: INFQ
-        - symbol: GC=F
-          name: Gold
   columns:
     - size: small
       widgets:
+{% include 'home/weather_air.yml.j2' %}
 {% include 'home/left.yml.j2' %}
 
     - size: full
@@ -26,5 +11,13 @@
 
     - size: small
       widgets:
-{% include 'home/weather_air.yml.j2' %}
+        - type: markets
+          hide-header: true
+          cache: 5m
+          update-interval: 5m
+          markets:
+{% for market in dynacat_markets %}
+            - symbol: {{ market.symbol | to_json }}
+              name: {{ market.name | to_json }}
+{% endfor %}
 {% include 'home/financials.yml.j2' %}

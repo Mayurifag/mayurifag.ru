@@ -143,6 +143,11 @@ dynacat_location_name: "change_this"
 dynacat_twitch_channels:
   - SilverName
   - HoneyMad
+dynacat_markets:
+  - symbol: "ES=F"
+    name: "S&P 500"
+  - symbol: "NQ=F"
+    name: "QQQ"
 dynacat_tech_youtube_channels:
   - UCBJycsmduvYEL83R_U4JriQ
 dynacat_github_releases_repos: []
