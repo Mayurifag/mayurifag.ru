@@ -1,6 +1,7 @@
         - type: custom-api
           title: Weather & Air
           cache: 10m
+          update-interval: 15m
           url: https://api.open-meteo.com/v1/forecast?latitude={{ dynacat_latitude }}&longitude={{ dynacat_longitude }}&current=temperature_2m,apparent_temperature,weather_code,is_day&timezone=auto
           subrequests:
             air:

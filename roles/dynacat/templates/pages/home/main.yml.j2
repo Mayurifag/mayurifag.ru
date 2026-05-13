@@ -5,6 +5,7 @@
         - type: rss
           title: Meduza
           cache: 10m
+          update-interval: 10m
           feeds:
             - url: https://meduza.io/rss/all
               title: Meduza
@@ -18,6 +19,7 @@
             - type: reddit
               subreddit: {{ sub }}
               cache: 30m
+              update-interval: 30m
               style: vertical-list
               show-thumbnails: true
               limit: 30

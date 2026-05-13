@@ -1,6 +1,7 @@
         - type: custom-api
           title: Fear & Greed
           cache: 1h
+          update-interval: 1h
           url: https://production.dataviz.cnn.io/index/fearandgreed/graphdata
           headers:
             User-Agent: "{{ dynacat_browser_user_agent }}"
@@ -55,6 +56,7 @@
         - type: custom-api
           title: USD rates
           cache: 1h
+          update-interval: 1h
           url: https://open.er-api.com/v6/latest/USD
           template: |
             {% raw %}{{ $gel := .JSON.Float "rates.GEL" }}
@@ -68,6 +70,7 @@
         - type: custom-api
           title: earnings
           cache: 30m
+          update-interval: 6h
           template: |
             {% raw %}{{ $r := newRequest "https://finnhub.io/api/v1/calendar/earnings"
               | withParameter "from" (now | formatTime "DateOnly")

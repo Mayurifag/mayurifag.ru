@@ -1,11 +1,13 @@
         - type: twitch-channels
           cache: 5m
+          update-interval: 5m
           channels: {{ dynacat_twitch_channels | to_json }}
           collapse-after: 5
 
         - type: custom-api
           title: GitHub Notifications
           cache: 1m
+          update-interval: 2m
           url: https://api.github.com/notifications?per_page=30
           headers:
             Authorization: Bearer ${GITHUB_NOTIFICATIONS_TOKEN}
@@ -45,6 +47,7 @@
         - type: releases
           title: GitHub Releases
           cache: 1h
+          update-interval: 3h
           repositories: {{ dynacat_github_releases_repos | to_json }}
           token: ${GITHUB_TOKEN}
           limit: 10

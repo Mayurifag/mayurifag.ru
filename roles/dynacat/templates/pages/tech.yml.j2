@@ -5,6 +5,7 @@
         - type: videos
           title: Tech
           cache: 1h
+          update-interval: 1h
           channels: {{ dynacat_tech_youtube_channels | to_json }}
           collapse-after: 5
 
@@ -14,6 +15,7 @@
             - type: rss
               title: 4PDA
               cache: 10m
+              update-interval: 15m
               feeds:
                 - url: https://4pda.to/feed/
                   title: 4PDA
@@ -23,6 +25,7 @@
             - type: rss
               title: Gizmochina
               cache: 10m
+              update-interval: 15m
               feeds:
                 - url: https://www.gizmochina.com/feed/
                   title: Gizmochina
@@ -31,10 +34,12 @@
 
             - type: hacker-news
               cache: 30m
+              update-interval: 30m
               limit: 30
               collapse-after: 10
 
             - type: lobsters
               cache: 30m
+              update-interval: 30m
               limit: 30
               collapse-after: 10
