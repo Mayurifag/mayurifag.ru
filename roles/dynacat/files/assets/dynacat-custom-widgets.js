@@ -353,9 +353,11 @@
       const state = item.querySelector("[data-exchange-state]");
       const detail = item.querySelector("[data-exchange-detail]");
 
-      item.classList.toggle("color-positive", status.isOpen);
       item.classList.toggle("color-subdue", !status.isOpen);
-      if (state) state.textContent = status.label;
+      if (state) {
+        state.textContent = status.label;
+        state.classList.toggle("color-positive", status.isOpen);
+      }
       if (detail && status.isOpen) {
         detail.innerHTML = `<span class="color-subdue">closes </span>${status.detail}`;
       } else if (detail) {
