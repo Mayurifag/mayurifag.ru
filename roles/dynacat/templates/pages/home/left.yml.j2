@@ -15,7 +15,7 @@
           template: |
             {% raw %}{{ $notifications := .JSON.Array "" }}
             {{ if eq (len $notifications) 0 }}
-              <div class="color-subdue">No unread notifications</div>
+              <div data-hide-widget></div>
             {{ else }}
             <ul class="list list-gap-14 collapsible-container" data-collapse-after="6">
             {{ range $notifications }}

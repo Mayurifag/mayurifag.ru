@@ -3,6 +3,11 @@ server:
   proxied: true
   assets-path: /app/assets
 
+document:
+  head: |
+    <style>.widget:has([data-hide-widget]) { display: none !important; }</style>
+    <script src="/assets/dynacat-custom-widgets.js" defer></script>
+
 branding:
   hide-footer: true
   hide-logo: true

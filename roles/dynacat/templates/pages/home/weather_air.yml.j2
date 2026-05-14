@@ -121,11 +121,11 @@
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
               <div>
-                <div class="size-h2" style="color: {{ $aqiColor }}; cursor: help;" title="{{ $aqiLabel }}">{{ if ge $aqi 0 }}{{ $aqi }}{{ else }}-{{ end }}</div>
+                <div class="size-h2" style="color: {{ $aqiColor }};">{{ if ge $aqi 0 }}{{ $aqi }}{{ else }}-{{ end }}</div>
                 <div class="size-h6 color-subdue" style="cursor: help;" title="Air Quality Index (EU). 0–20 Good, 100+ Extremely Poor">AQI · {{ $aqiLabel }}</div>
               </div>
               <div>
-                <div class="size-h2" style="color: {{ $uvColor }}; cursor: help;" title="{{ $uvLabel }}">{{ if ge $uvi 0 }}{{ $uvi }}{{ else }}-{{ end }}</div>
+                <div class="size-h2" style="color: {{ $uvColor }};">{{ if ge $uvi 0 }}{{ $uvi }}{{ else }}-{{ end }}</div>
                 <div class="size-h6 color-subdue" style="cursor: help;" title="UV Index (WHO). 0–2 Low, 11+ Extreme">UV · {{ $uvLabel }}</div>
               </div>
             </div>

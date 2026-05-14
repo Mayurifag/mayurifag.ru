@@ -99,7 +99,7 @@
                     {{ if eq $profile.Response.StatusCode 200 }}
                       {{ $marketCap := $profile.JSON.Float "marketCapitalization" }}
                       {{ if gt $marketCap 100000.0 }}
-                        {{ $name := $profile.JSON.String "name" | replaceMatches "[ ,]+(Inc\\.?|Corporation|Corp\\.?|Co\\.?|Company|Ltd\\.?|Limited|plc|PLC|S\\.A\\.?|SA|AG|N\\.V\\.?|NV|Holdings|Holding|Group)$" "" }}
+                        {{ $name := $profile.JSON.String "name" | replaceMatches "[ ,]+(Inc\\.?|Corporation|Corp\\.?|Co\\.?|Company|Ltd\\.?|Limited|plc|PLC|S\\.A\\.?|SA|AG|N\\.V\\.?|NV|Holdings|Holding|Group)$" "" | replaceMatches "[ ,&]+$" "" }}
                         {{ $weekday := $e.String "date" | parseTime "DateOnly" | formatTime "Mon" }}
                         <li>
                           <div class="size-h5"><span class="color-highlight">{{ $sym }}</span>{{ if $name }} <span class="size-h6 color-subdue">{{ $name }}</span>{{ end }}</div>
@@ -113,3 +113,21 @@
                 </ul>
               {{ end }}
             {{ end }}{% endraw %}
+
+        - type: custom-api
+          title: exchanges
+          cache: 24h
+          update-interval: 24h
+          template: |
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
+              <div data-exchange-clock="NASDAQ" class="color-subdue">
+                <div class="size-h6 color-subdue">NASDAQ</div>
+                <div class="size-h4" data-exchange-state>...</div>
+                <div class="size-h6" style="white-space: nowrap;" data-exchange-detail>loading</div>
+              </div>
+              <div data-exchange-clock="MOEX" class="color-subdue">
+                <div class="size-h6 color-subdue">MOEX</div>
+                <div class="size-h4" data-exchange-state>...</div>
+                <div class="size-h6" style="white-space: nowrap;" data-exchange-detail>loading</div>
+              </div>
+            </div>

@@ -48,11 +48,14 @@
     - "{{ dynacat_data_directory }}/config/pages"
     - "{{ dynacat_data_directory }}/assets"
 
-- name: Copy Dynacat favicon
+- name: Copy Dynacat assets
   ansible.builtin.copy:
-    src: assets/favicon.svg
-    dest: "{{ dynacat_data_directory }}/assets/favicon.svg"
+    src: "assets/{{ item }}"
+    dest: "{{ dynacat_data_directory }}/assets/{{ item }}"
     mode: "0644"
+  loop:
+    - favicon.svg
+    - dynacat-custom-widgets.js
 
 - name: Create Dynacat configuration
   ansible.builtin.template:
