@@ -9,6 +9,12 @@ filenames:
 labels:
   type: traefik
 ---
+source: docker
+container_name:
+  - gitea
+labels:
+  type: syslog
+---
 listen_addr: 0.0.0.0:7422
 appsec_config: crowdsecurity/virtual-patching
 name: traefikAppSec

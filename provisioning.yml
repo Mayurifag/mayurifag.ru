@@ -142,10 +142,6 @@
         - dynacat
       when: (dynacat_enabled | default(False))
 
-    - role: claude_code
-      tags:
-        - claude_code
-      when: (claude_code_enabled | default(False))
   post_tasks:
     - name: Post-install cheatsheet
       ansible.builtin.debug:

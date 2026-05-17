@@ -28,26 +28,22 @@
     mode: "0644"
   register: crowdsec_profiles_template
 
-- name: Detect deployer public IPv4
-  ansible.builtin.uri:
-    url: https://api.ipify.org
-    return_content: true
-    timeout: 5
-  delegate_to: localhost
+- name: Detect operator SSH client IPv4
+  ansible.builtin.command: sh -c 'printf "%s" "${SSH_CLIENT%% *}"'
   become: false
   run_once: true
-  register: deployer_ip_lookup
+  register: operator_ssh_client_ip
+  changed_when: false
   failed_when: false
-  when: crowdsec_auto_whitelist_deployer
+  when: crowdsec_whitelist_operator_ip
 
 - name: Compute effective CrowdSec whitelist
   ansible.builtin.set_fact:
     crowdsec_effective_whitelist: >-
       {{ crowdsec_whitelist_ips
-        + ([(deployer_ip_lookup.content | trim).split('.')[0:3] | join('.') ~ '.0/24']
-          if (crowdsec_auto_whitelist_deployer
-              and deployer_ip_lookup.status | default(0) == 200
-              and (deployer_ip_lookup.content | default('') | trim) | length > 0)
+        + ([operator_ssh_client_ip.stdout ~ '/32']
+          if (crowdsec_whitelist_operator_ip
+              and (operator_ssh_client_ip.stdout | default('')) is match('^([0-9]{1,3}\.){3}[0-9]{1,3}$'))
           else []) }}
 
 - name: Deploy operator whitelist
@@ -82,6 +78,9 @@
       - "{{ crowdsec_config_directory }}:/etc/crowdsec"
       - "/var/log/auth.log:/var/log/auth.log:ro"
       - "{{ traefik_logs_directory }}:/var/log/traefik:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    ports:
+      - "127.0.0.1:8080:8080"
     env:
       COLLECTIONS: "{{ crowdsec_collections | join(' ') }}"
       GID: "{{ ansible_facts.getent_passwd[admin_username][2] }}"
@@ -167,6 +166,102 @@
   notify: Restart Traefik
   vars:
     crowdsec_api_key: "{{ bouncer_key_slurp.content | b64decode | trim }}"
+
+- name: Add CrowdSec apt key
+  ansible.builtin.get_url:
+    url: https://packagecloud.io/crowdsec/crowdsec/gpgkey
+    dest: /etc/apt/keyrings/crowdsec.asc
+    mode: "0644"
+  when: crowdsec_firewall_sync_enabled
+
+- name: Add CrowdSec apt repository
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/etc/apt/keyrings/crowdsec.asc] https://packagecloud.io/crowdsec/crowdsec/any any main
+    filename: crowdsec_crowdsec
+    state: present
+    update_cache: true
+  when: crowdsec_firewall_sync_enabled
+
+- name: Install CrowdSec firewall bouncer
+  ansible.builtin.apt:
+    name: crowdsec-firewall-bouncer-iptables
+    state: present
+  when: crowdsec_firewall_sync_enabled
+
+- name: Check persisted firewall bouncer key
+  ansible.builtin.stat:
+    path: "{{ crowdsec_firewall_bouncer_key_path }}"
+  register: firewall_bouncer_key_file
+  when: crowdsec_firewall_sync_enabled
+
+- name: Compute firewall bouncer state
+  ansible.builtin.set_fact:
+    firewall_bouncer_names: >-
+      {{ crowdsec_bouncers_list.stdout | from_json | map(attribute='name') |
+        select('match', '^firewall-bouncer(@.*)?$') | list }}
+  when: crowdsec_firewall_sync_enabled
+
+- name: Provision firewall bouncer
+  when:
+    - crowdsec_firewall_sync_enabled
+    - >-
+      not firewall_bouncer_key_file.stat.exists or
+      'firewall-bouncer' not in firewall_bouncer_names or
+      (firewall_bouncer_names | difference(['firewall-bouncer']) | length) > 0
+  block:
+    - name: Delete existing firewall bouncers
+      ansible.builtin.command:
+        argv:
+          - docker
+          - exec
+          - crowdsec
+          - cscli
+          - bouncers
+          - delete
+          - "{{ item }}"
+      loop: "{{ firewall_bouncer_names }}"
+      loop_control:
+        label: "{{ item }}"
+      register: firewall_bouncer_delete
+      failed_when:
+        - firewall_bouncer_delete.rc != 0
+        - "'unable to find' not in firewall_bouncer_delete.stderr"
+        - "'does not exist' not in firewall_bouncer_delete.stderr"
+        - "'not found' not in firewall_bouncer_delete.stderr"
+      changed_when: firewall_bouncer_delete.rc == 0
+
+    - name: Create firewall bouncer key
+      ansible.builtin.command: docker exec crowdsec cscli bouncers add firewall-bouncer -o raw
+      register: firewall_bouncer_create_out
+
+    - name: Persist firewall bouncer key
+      ansible.builtin.copy:
+        content: "{{ firewall_bouncer_create_out.stdout }}"
+        dest: "{{ crowdsec_firewall_bouncer_key_path }}"
+        mode: "0600"
+
+- name: Read persisted firewall bouncer key
+  ansible.builtin.slurp:
+    src: "{{ crowdsec_firewall_bouncer_key_path }}"
+  register: firewall_bouncer_key_slurp
+  when: crowdsec_firewall_sync_enabled
+
+- name: Configure CrowdSec firewall bouncer
+  ansible.builtin.template:
+    src: crowdsec/crowdsec-firewall-bouncer.yaml.j2
+    dest: /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
+    mode: "0600"
+  register: firewall_bouncer_config
+  vars:
+    firewall_bouncer_api_key: "{{ firewall_bouncer_key_slurp.content | b64decode | trim }}"
+  when: crowdsec_firewall_sync_enabled
+
+- name: Enable CrowdSec firewall bouncer
+  ansible.builtin.systemd_service:
+    name: crowdsec-firewall-bouncer
+    enabled: true
+    state: "{{ 'restarted' if firewall_bouncer_config.changed else 'started' }}"
+  when: crowdsec_firewall_sync_enabled
 
 - name: Schedule CrowdSec hub update, upgrade and reload
   ansible.builtin.cron:

@@ -14,5 +14,8 @@ gitea_memory_limit: "1g"
 
 # Gitea configuration
 gitea_ssh_port: "222"
+gitea_ssh_log_level: "INFO"
+gitea_ssh_max_startups: "1:100:2"
+gitea_ssh_max_sessions: "1"
 gitea_disable_registration: "true"
 gitea_install_lock: "false"

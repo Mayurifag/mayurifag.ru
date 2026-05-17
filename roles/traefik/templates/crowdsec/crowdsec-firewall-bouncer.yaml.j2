@@ -1,0 +1,13 @@
+mode: iptables
+api_url: http://127.0.0.1:8080/
+api_key: {{ firewall_bouncer_api_key }}
+update_frequency: 10s
+daemonize: false
+log_mode: file
+log_dir: /var/log/
+log_level: info
+deny_action: DROP
+deny_log: false
+iptables_chains:
+  - INPUT
+  - DOCKER-USER

@@ -86,6 +86,7 @@ portainer_subdomain: "portainer"
 traefik_enabled: true
 traefik_subdomain: "traefik"
 crowdsec_enroll_key: "change_me"
+crowdsec_whitelist_operator_ip: true
 
 gitea_enabled: true
 gitea_subdomain: "git"
@@ -152,5 +153,3 @@ dynacat_tech_youtube_channels:
   - UCBJycsmduvYEL83R_U4JriQ
 dynacat_github_releases_repos: []
 dynacat_reddit_subreddits: []
-
-claude_code_enabled: true
