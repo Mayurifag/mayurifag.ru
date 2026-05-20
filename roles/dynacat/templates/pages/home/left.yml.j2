@@ -55,12 +55,7 @@
 {% endif %}
 
         - type: server-stats
-          update-interval: 3s
+          update-interval: 2s
           servers:
             - type: local
               name: "{{ server_hostname }}"
-              hide-mountpoints-by-default: true
-              mountpoints:
-                /host:
-                  name: "/"
-                  hide: false

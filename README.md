@@ -83,6 +83,7 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
   * [ ] Output CPU/RAM/disk usage.
   * [ ] dumbfile size and aliases. Other useful aliases. What else?
 * [ ] dysk instead of default du dh??
+* [ ] Extract dns into another role?
 
 ### On hold
 

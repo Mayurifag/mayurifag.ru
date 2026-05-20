@@ -1,7 +1,3 @@
-        - type: search
-          search-engine: https://www.google.com/search?q={QUERY}&gl=ru&hl=ru&pws=0
-          autofocus: true
-
         - type: rss
           title: Meduza
           cache: 10m
@@ -18,11 +14,14 @@
 {% for sub in dynacat_reddit_subreddits %}
             - type: reddit
               subreddit: {{ sub }}
+{% if not loop.first %}
+              lazy-load: true
+{% endif %}
               cache: 30m
               update-interval: 30m
               style: vertical-list
               show-thumbnails: true
-              limit: 30
+              limit: 15
               collapse-after: 10
 {% endfor %}
 {% endif %}

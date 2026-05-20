@@ -9,3 +9,13 @@ status, configs). Never mutate server state. For changes, edit ansible files in 
 `inventories/sample/group_vars/all.yml` and `inventories/my-provision/group_vars/all.yml` must stay structurally
 identical (same keys, order, comments). Only values differ: sample uses `change_this`/placeholders, my-provision holds
 real production values. When editing one, mirror the change in the other and dont forget to encrypt file back.
+
+## OpenCloud storage
+
+Keep `STORAGE_USERS_POSIX_WATCH_FS=true`: other services, including mus, write into the same files tree and OpenCloud
+must notice external filesystem changes.
+
+## Docker live restore
+
+`docker_daemon_options.live-restore=true` keeps containers running across Docker daemon restarts. After daemon option
+changes, containers with published ports may still need explicit relaunch/recreate for new networking behavior to apply.
