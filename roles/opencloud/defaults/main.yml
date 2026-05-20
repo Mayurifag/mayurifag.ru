@@ -13,6 +13,3 @@ opencloud_disable_versioning: "true"
 opencloud_posix_propagator: "async"
 opencloud_posix_scan_debounce_delay: "10s"
 opencloud_posix_inotify_stats_frequency: "15m"
-
-opencloud_nats_data_directory: "{{ opencloud_data_directory }}/var/nats"
-opencloud_nats_cleanup_log_file: "/var/log/opencloud-nats-cleanup.log"

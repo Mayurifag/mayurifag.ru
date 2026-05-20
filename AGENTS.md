@@ -15,6 +15,9 @@ real production values. When editing one, mirror the change in the other and don
 Keep `STORAGE_USERS_POSIX_WATCH_FS=true`: other services, including mus, write into the same files tree and OpenCloud
 must notice external filesystem changes.
 
+Do not delete `/var/lib/opencloud/nats` or disable NATS KV persistence for OpenCloud POSIX storage. The ID cache is
+required to resolve existing spaces after restarts.
+
 ## Docker live restore
 
 `docker_daemon_options.live-restore=true` keeps containers running across Docker daemon restarts. After daemon option

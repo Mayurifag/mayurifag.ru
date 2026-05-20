@@ -26,19 +26,6 @@
     path: "{{ opencloud_data_directory }}/nats.conf"
     state: absent
 
-- name: Configure OpenCloud NATS Cleanup Script
-  ansible.builtin.template:
-    src: opencloud_nats_cleanup.sh.j2
-    dest: /usr/local/bin/opencloud-nats-cleanup
-    mode: "0755"
-
-- name: Schedule OpenCloud NATS Cleanup
-  ansible.builtin.cron:
-    name: "OpenCloud NATS cleanup"
-    minute: "0"
-    hour: "7"
-    job: "/usr/local/bin/opencloud-nats-cleanup"
-
 - name: Configure OpenCloud Traefik Transport (Timeouts)
   ansible.builtin.template:
     src: traefik_opencloud.toml.j2
@@ -70,7 +57,6 @@
       OC_INSECURE: "true"
       OC_LOG_LEVEL: "{{ opencloud_log_level }}"
       LOG_PRETTY: "false"
-      OC_CACHE_DISABLE_PERSISTENCE: "true"
       MICRO_REGISTRY: "nats-js-kv"
       # Disable Open Cloud Mesh (federation between OpenCloud servers).
       # Not used here; service spams "missing or incomplete nats configuration"
@@ -84,12 +70,10 @@
       STORAGE_SYSTEM_LOG_LEVEL: "error" # Prevent unnecessary warnings pollution of logs
 
       STORAGE_USERS_DRIVER: "posix"
-      STORAGE_USERS_FILEMETADATA_CACHE_DISABLE_PERSISTENCE: "true"
       # NATS-KV mandatory for posix collaborative mode (WATCH_FS=true).
       # Memory store not supported: watcher + storage-users must share inode->UUID map.
       # Docs: https://docs.opencloud.eu/docs/admin/configuration/storage/storage-posix
       STORAGE_USERS_ID_CACHE_STORE: "nats-js-kv"
-      STORAGE_USERS_ID_CACHE_DISABLE_PERSISTENCE: "true"
       STORAGE_USERS_POSIX_PROPAGATOR: "{{ opencloud_posix_propagator }}"
       STORAGE_USERS_POSIX_WATCH_FS: "true"
       STORAGE_USERS_POSIX_ROOT: "/storage"
