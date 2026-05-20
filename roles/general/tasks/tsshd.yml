@@ -12,11 +12,25 @@
     mode: "0644"
 
 - name: Add trzsz apt repository
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/trzsz.asc] https://ppa.launchpadcontent.net/trzsz/ppa/ubuntu jammy main
-    filename: trzsz
+  ansible.builtin.deb822_repository:
+    name: trzsz
+    types:
+      - deb
+    uris:
+      - https://ppa.launchpadcontent.net/trzsz/ppa/ubuntu
+    suites:
+      - jammy
+    components:
+      - main
+    signed_by: /etc/apt/keyrings/trzsz.asc
     state: present
+    install_python_debian: true
+  register: trzsz_apt_repository
+
+- name: Update apt-cache after trzsz repository changes
+  ansible.builtin.apt:
     update_cache: yes
+  when: trzsz_apt_repository.changed
 
 - name: Install tsshd
   ansible.builtin.apt:

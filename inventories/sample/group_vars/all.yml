@@ -55,7 +55,7 @@ docker_users:
   - "{{ admin_username }}"
 
 docker_daemon_options:
-  live-restore: true
+  live-restore: false
   log-driver: "local"
   log-opts:
     max-size: "100m"

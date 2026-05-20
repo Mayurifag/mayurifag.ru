@@ -175,12 +175,28 @@
   when: crowdsec_firewall_sync_enabled
 
 - name: Add CrowdSec apt repository
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/crowdsec.asc] https://packagecloud.io/crowdsec/crowdsec/any any main
-    filename: crowdsec_crowdsec
+  ansible.builtin.deb822_repository:
+    name: crowdsec_crowdsec
+    types:
+      - deb
+    uris:
+      - https://packagecloud.io/crowdsec/crowdsec/any
+    suites:
+      - any
+    components:
+      - main
+    signed_by: /etc/apt/keyrings/crowdsec.asc
     state: present
-    update_cache: true
+    install_python_debian: true
+  register: crowdsec_apt_repository
   when: crowdsec_firewall_sync_enabled
+
+- name: Update apt-cache after CrowdSec repository changes
+  ansible.builtin.apt:
+    update_cache: true
+  when:
+    - crowdsec_firewall_sync_enabled
+    - crowdsec_apt_repository.changed
 
 - name: Install CrowdSec firewall bouncer
   ansible.builtin.apt:

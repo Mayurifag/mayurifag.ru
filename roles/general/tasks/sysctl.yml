@@ -1,18 +1,34 @@
 ---
 - name: Remove deprecated sysctl values
-  ansible.posix.sysctl:
-    name: "{{ item }}"
+  ansible.builtin.lineinfile:
+    path: /etc/sysctl.conf
+    regexp: '^\s*{{ item | regex_escape }}\s*='
     state: absent
-    reload: no
   loop: "{{ sysctl_values_absent }}"
+  register: sysctl_absent_values
 
-# It might be done via /etc/sysctl.d/ansible file, that will be faster, but its
-# not debuggable. Also I will see if something deprecated when go one by one.
-- name: Apply custom sysctl values
-  ansible.posix.sysctl:
-    name: "{{ item.key }}"
-    value: "{{ item.value }}"
-    sysctl_set: yes
-    reload: no
-    state: present
+- name: Remove managed sysctl values from sysctl.conf
+  ansible.builtin.lineinfile:
+    path: /etc/sysctl.conf
+    regexp: '^\s*{{ item.key | regex_escape }}\s*='
+    state: absent
   loop: "{{ sysctl_values }}"
+  register: sysctl_conf_values
+
+- name: Configure custom sysctl values
+  ansible.builtin.copy:
+    dest: /etc/sysctl.d/99-ansible-general.conf
+    mode: "0644"
+    content: |
+      {% for item in sysctl_values %}
+      {{ item.key }} = {{ item.value }}
+      {% endfor %}
+  register: sysctl_custom_values
+
+- name: Apply sysctl values
+  ansible.builtin.command:
+    argv:
+      - sysctl
+      - --system
+  changed_when: true
+  when: sysctl_absent_values.changed or sysctl_conf_values.changed or sysctl_custom_values.changed
