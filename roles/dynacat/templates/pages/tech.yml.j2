@@ -4,6 +4,7 @@
     - size: full
       widgets:
         - type: videos
+          hide-header: true
           title: Tech
           cache: 1h
           update-interval: 1h
@@ -11,9 +12,11 @@
           collapse-after: 5
 
         - type: split-column
+          hide-header: true
           max-columns: 2
           widgets:
             - type: rss
+              hide-header: true
               title: 4PDA
               cache: 10m
               update-interval: 15m
@@ -24,6 +27,7 @@
               collapse-after: 10
 
             - type: rss
+              hide-header: true
               title: Gizmochina
               cache: 10m
               update-interval: 15m
@@ -34,12 +38,14 @@
               collapse-after: 10
 
             - type: hacker-news
+              hide-header: true
               cache: 30m
               update-interval: 30m
               limit: 30
               collapse-after: 10
 
             - type: lobsters
+              hide-header: true
               cache: 30m
               update-interval: 30m
               limit: 30

@@ -1,10 +1,12 @@
         - type: twitch-channels
+          hide-header: true
           cache: 5m
           update-interval: 5m
           channels: {{ dynacat_twitch_channels | to_json }}
           collapse-after: 5
 
         - type: custom-api
+          hide-header: true
           title: GitHub Notifications
           cache: 1m
           update-interval: 2m
@@ -45,6 +47,7 @@
 
 {% if dynacat_github_releases_repos %}
         - type: releases
+          hide-header: true
           title: GitHub Releases
           cache: 1h
           update-interval: 3h
@@ -55,11 +58,14 @@
 {% endif %}
 
         - type: server-stats
-          update-interval: 2s
+          hide-header: true
+          update-interval: 3s
           servers:
             - type: local
-              name: "{{ server_hostname }}"
+              hide-15m-avg: true
               hide-swap: true
+              hide-system-info: true
+              hide-mountpoints-by-default: true
               mountpoints:
-                "/host/boot/efi":
-                  hide: true
+                "/":
+                  hide: false

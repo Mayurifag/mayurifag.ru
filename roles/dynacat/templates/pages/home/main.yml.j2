@@ -1,4 +1,5 @@
         - type: rss
+          hide-header: true
           title: Meduza
           cache: 10m
           update-interval: 10m
@@ -10,9 +11,11 @@
 
 {% if dynacat_reddit_subreddits %}
         - type: group
+          hide-header: true
           widgets:
 {% for sub in dynacat_reddit_subreddits %}
             - type: reddit
+              hide-header: true
               subreddit: {{ sub }}
               sort-by: top
 {% if not loop.first %}
