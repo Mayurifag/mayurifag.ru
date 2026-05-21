@@ -84,6 +84,7 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
   * [ ] dumbfile size and aliases. Other useful aliases. What else?
 * [ ] dysk instead of default du dh??
 * [ ] Extract dns into another role?
+* [ ] remove 3proxy and mkdocs
 
 ### On hold
 

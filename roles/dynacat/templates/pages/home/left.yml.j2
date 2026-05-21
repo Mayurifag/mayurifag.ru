@@ -59,3 +59,7 @@
           servers:
             - type: local
               name: "{{ server_hostname }}"
+              hide-swap: true
+              mountpoints:
+                "/host/boot/efi":
+                  hide: true
