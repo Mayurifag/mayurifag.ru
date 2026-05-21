@@ -14,6 +14,7 @@
 {% for sub in dynacat_reddit_subreddits %}
             - type: reddit
               subreddit: {{ sub }}
+              sort-by: top
 {% if not loop.first %}
               lazy-load: true
 {% endif %}
