@@ -26,11 +26,10 @@
     state: present
     install_python_debian: true
   register: trzsz_apt_repository
+  notify: Update apt-cache
 
-- name: Update apt-cache after trzsz repository changes
-  ansible.builtin.apt:
-    update_cache: yes
-  when: trzsz_apt_repository.changed
+- name: Flush trzsz repository handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Install tsshd
   ansible.builtin.apt:
