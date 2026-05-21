@@ -37,8 +37,8 @@ sysctl_values:
   # rp_filter=2 (loose mode): drop packets only if source unreachable via ANY
   # interface. Handles asymmetric routing (VPN, multi-homed) without disabling
   # spoof protection. Mode 0 was old workaround, 2 is the modern equivalent.
-  - { key: net.ipv4.conf.all.log_martians, value: 1 }
-  - { key: net.ipv4.conf.default.log_martians, value: 1 }
+  - { key: net.ipv4.conf.all.log_martians, value: 0 }
+  - { key: net.ipv4.conf.default.log_martians, value: 0 }
   - { key: net.ipv4.conf.all.rp_filter, value: 2 }
   - { key: net.ipv4.conf.default.rp_filter, value: 2 }
 
@@ -75,6 +75,10 @@ sysctl_values:
 
   # fix crowdsec container dns resolution
   - { key: net.ipv4.ip_forward, value: 1 }
+  - { key: net.ipv4.conf.all.forwarding, value: 1 }
+  - { key: net.ipv4.conf.default.forwarding, value: 1 }
+  - { key: net.ipv6.conf.all.forwarding, value: 1 }
+  - { key: net.ipv6.conf.default.forwarding, value: 1 }
 
   # Black-hole MTU detection. Recovers when path MTU shrinks (common with VPN/PPPoE
   # tunnels mid-route). Without it, large segments silently drop. Default 0 = off.
