@@ -68,5 +68,11 @@ crowdsec_collections:
   - crowdsecurity/appsec-generic-rules
   - crowdsecurity/appsec-virtual-patching
 
+crowdsec_scenarios:
+  - crowdsecurity/http-wordpress_wpconfig
+  - crowdsecurity/http-wordpress_user-enum
+  - crowdsecurity/http-bf-wordpress_bf
+  - crowdsecurity/http-bf-wordpress_bf_xmlrpc
+
 crowdsec_firewall_sync_enabled: true
 crowdsec_firewall_bouncer_key_path: "{{ crowdsec_data_directory }}/.firewall_bouncer_key"

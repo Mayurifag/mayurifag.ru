@@ -94,6 +94,7 @@
       - "127.0.0.1:8080:8080"
     env:
       COLLECTIONS: "{{ crowdsec_collections | join(' ') }}"
+      SCENARIOS: "{{ crowdsec_scenarios | join(' ') }}"
       GID: "{{ ansible_facts.getent_passwd[admin_username][2] }}"
       UID: "{{ ansible_facts.getent_passwd[admin_username][1] }}"
     healthcheck:
