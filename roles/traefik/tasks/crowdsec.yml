@@ -37,16 +37,27 @@
   failed_when: false
   when: crowdsec_whitelist_operator_ip
 
+- name: Compute inventory server whitelist
+  ansible.builtin.set_fact:
+    crowdsec_inventory_whitelist: >-
+      {{ groups['sample'] | default([])
+        | map('extract', hostvars, 'ansible_host')
+        | select('match', '^([0-9]{1,3}\.){3}[0-9]{1,3}$')
+        | map('regex_replace', '$', '/32')
+        | list }}
+  when: crowdsec_whitelist_inventory_hosts
+
 - name: Compute effective CrowdSec whitelist
   ansible.builtin.set_fact:
     crowdsec_effective_whitelist: >-
-      {{ crowdsec_whitelist_ips
+      {{ (crowdsec_whitelist_ips
+        + (crowdsec_inventory_whitelist | default([]))
         + ([operator_ssh_client_ip.stdout ~ '/32']
           if (crowdsec_whitelist_operator_ip
               and (operator_ssh_client_ip.stdout | default('')) is match('^([0-9]{1,3}\.){3}[0-9]{1,3}$'))
-          else []) }}
+          else [])) | unique | list }}
 
-- name: Deploy operator whitelist
+- name: Deploy CrowdSec whitelist
   ansible.builtin.template:
     src: crowdsec/whitelists.yaml.j2
     dest: "{{ crowdsec_config_directory }}/parsers/s02-enrich/whitelists.yaml"

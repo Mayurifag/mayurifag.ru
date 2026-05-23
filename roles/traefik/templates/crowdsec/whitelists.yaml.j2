@@ -1,7 +1,7 @@
 name: mayurifag/admin-whitelist
-description: "Whitelist trusted operator IPs"
+description: "Whitelist trusted IPs"
 whitelist:
-  reason: "operator IPs"
+  reason: "trusted IPs"
 {% set ips = crowdsec_effective_whitelist | reject('search', '/') | list %}
 {% set cidrs = crowdsec_effective_whitelist | select('search', '/') | list %}
 {% if ips %}

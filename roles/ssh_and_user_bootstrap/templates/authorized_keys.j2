@@ -1,1 +1,9 @@
 {{ admin_authorized_keys }}
+{% if ssh_server_peer_public_key | default('') | trim | length > 0 %}
+{% for host in groups['sample'] | default([]) | sort %}
+{% set peer_host = hostvars[host].ansible_host | default(host) | trim %}
+{% if host != inventory_hostname %}
+from="{{ peer_host }}",no-agent-forwarding,no-X11-forwarding {{ ssh_server_peer_public_key | trim }}
+{% endif %}
+{% endfor %}
+{% endif %}

@@ -55,6 +55,7 @@ crowdsec_enroll_tags:
 
 # Whitelist these IPs/CIDRs from CrowdSec decisions (lockout protection)
 crowdsec_whitelist_ips: []
+crowdsec_whitelist_inventory_hosts: true
 
 # Auto-detect the active SSH client IPv4 and whitelist its /32
 crowdsec_whitelist_operator_ip: true

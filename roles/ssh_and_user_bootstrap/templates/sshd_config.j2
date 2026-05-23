@@ -9,6 +9,10 @@ GSSAPIAuthentication no
 # Permit only admin_username and only via key
 PermitEmptyPasswords no
 MaxAuthTries 3
+LoginGraceTime 20
+MaxStartups 10:30:60
+PerSourceMaxStartups 2
+MaxSessions 2
 PubkeyAuthentication yes
 PasswordAuthentication no
 KbdInteractiveAuthentication no

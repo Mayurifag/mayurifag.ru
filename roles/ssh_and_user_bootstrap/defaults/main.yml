@@ -1,0 +1,2 @@
+---
+ssh_server_peer_key_path: "{{ inventory_dir }}/server_peer_ed25519"
