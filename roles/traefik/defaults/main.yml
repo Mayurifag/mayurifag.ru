@@ -44,8 +44,8 @@ crowdsec_image: crowdsecurity/crowdsec:v1.7.7
 crowdsec_bouncer_plugin_module: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
 crowdsec_bouncer_plugin_version: "v1.6.0"
 
-# Ban duration (1 week)
-crowdsec_ban_duration: "168h"
+# Ban duration (1 year)
+crowdsec_ban_duration: "8760h"
 
 # CrowdSec Console Enrollment
 crowdsec_enroll_key: "change_me"
