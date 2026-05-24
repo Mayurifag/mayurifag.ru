@@ -18,6 +18,7 @@
     - "{{ traefik_dynamic_configs_directory }}"
     - "{{ traefik_data_directory }}/letsencrypt"
     - "{{ traefik_logs_directory }}"
+    - "{{ traefik_plugins_storage_directory }}"
 
 - name: Ensure Traefik access log exists
   ansible.builtin.copy:
@@ -59,6 +60,7 @@
       - "{{ traefik_dynamic_configs_directory }}:/etc/traefik/dynamic_configs:ro"
       - "{{ traefik_data_directory }}/letsencrypt:/letsencrypt:rw"
       - "{{ traefik_logs_directory }}:/var/log/traefik:rw"
+      - "{{ traefik_plugins_storage_directory }}:/plugins-storage:rw"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro

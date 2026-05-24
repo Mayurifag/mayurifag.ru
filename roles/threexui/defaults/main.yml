@@ -2,7 +2,7 @@
 threexui_enabled: true
 
 threexui_data_directory: "{{ docker_home }}/3x-ui"
-threexui_docker_image: ghcr.io/mhsanaei/3x-ui:v3.0.1
+threexui_docker_image: ghcr.io/mhsanaei/3x-ui:v3.1.0
 
 threexui_panel_subdomain: "3x"
 

@@ -1,6 +1,7 @@
 ---
 sysctl_values_absent:
   - net.ipv4.tcp_tw_recycle
+  - net.ipv4.ipfrag_high_thresh
 
 sysctl_values:
   # 438 = log-level + keyboard + sync + remount-ro + reboot + RT-nice.

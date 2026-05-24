@@ -1,0 +1,33 @@
+---
+- name: Check transparent hugepage mode path
+  ansible.builtin.stat:
+    path: /sys/kernel/mm/transparent_hugepage/enabled
+  register: transparent_hugepage_enabled_path
+
+- name: Read transparent hugepage mode
+  ansible.builtin.slurp:
+    src: /sys/kernel/mm/transparent_hugepage/enabled
+  register: transparent_hugepage_enabled
+  when: transparent_hugepage_enabled_path.stat.exists
+
+- name: Configure transparent hugepage tmpfiles rule
+  ansible.builtin.copy:
+    dest: /etc/tmpfiles.d/transparent-hugepage.conf
+    content: |
+      w /sys/kernel/mm/transparent_hugepage/enabled - - - - madvise
+    mode: "0644"
+  register: transparent_hugepage_tmpfiles
+  when: transparent_hugepage_enabled_path.stat.exists
+
+- name: Apply transparent hugepage mode
+  ansible.builtin.command:
+    argv:
+      - systemd-tmpfiles
+      - --create
+      - /etc/tmpfiles.d/transparent-hugepage.conf
+  changed_when: true
+  when:
+    - transparent_hugepage_enabled_path.stat.exists
+    - >-
+      transparent_hugepage_tmpfiles.changed or
+      '[madvise]' not in (transparent_hugepage_enabled.content | b64decode)

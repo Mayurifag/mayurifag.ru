@@ -7,6 +7,20 @@
   loop: "{{ sysctl_values_absent }}"
   register: sysctl_absent_values
 
+- name: Check legacy sysctl.d config
+  ansible.builtin.stat:
+    path: /etc/sysctl.d/99-sysctl.conf
+  register: legacy_sysctl_config
+
+- name: Remove deprecated sysctl values from legacy sysctl.d config
+  ansible.builtin.lineinfile:
+    path: /etc/sysctl.d/99-sysctl.conf
+    regexp: '^\s*{{ item | regex_escape }}\s*='
+    state: absent
+  loop: "{{ sysctl_values_absent }}"
+  register: legacy_sysctl_absent_values
+  when: legacy_sysctl_config.stat.exists
+
 - name: Remove managed sysctl values from sysctl.conf
   ansible.builtin.lineinfile:
     path: /etc/sysctl.conf
@@ -31,4 +45,8 @@
       - sysctl
       - --system
   changed_when: true
-  when: sysctl_absent_values.changed or sysctl_conf_values.changed or sysctl_custom_values.changed
+  when: >-
+    sysctl_absent_values.changed or
+    (legacy_sysctl_absent_values.changed | default(false)) or
+    sysctl_conf_values.changed or
+    sysctl_custom_values.changed

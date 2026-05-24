@@ -18,6 +18,7 @@ traefik_acme_server: "https://acme-staging-v02.api.letsencrypt.org/directory" # 
 
 # specs
 traefik_memory: 1g
+traefik_plugins_storage_directory: "{{ traefik_data_directory }}/plugins-storage"
 
 ###
 ### Cloudflare DNS / Email Routing (managed by this role, tag: dns)

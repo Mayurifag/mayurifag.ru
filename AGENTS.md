@@ -22,3 +22,8 @@ required to resolve existing spaces after restarts.
 
 `docker_daemon_options.live-restore=true` keeps containers running across Docker daemon restarts. After daemon option
 changes, containers with published ports may still need explicit relaunch/recreate for new networking behavior to apply.
+
+## Traefik CrowdSec
+
+Keep the Traefik CrowdSec middleware as the real plugin and keep `/plugins-storage` persistent. Do not replace it with a
+permanent no-op fallback; only use no-op live config as a temporary emergency recovery step.

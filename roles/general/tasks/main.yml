@@ -6,7 +6,14 @@
   ansible.builtin.include_tasks: timezone_locales.yml
 
 - name: Include sysctl configuration tasks
-  ansible.builtin.include_tasks: sysctl.yml
+  ansible.builtin.import_tasks: sysctl.yml
+  tags:
+    - sysctl
+
+- name: Include transparent hugepage tasks
+  ansible.builtin.import_tasks: transparent_hugepage.yml
+  tags:
+    - transparent_hugepage
 
 - name: Include DNS configuration tasks
   ansible.builtin.include_tasks: dns.yml
