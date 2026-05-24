@@ -23,6 +23,11 @@ required to resolve existing spaces after restarts.
 `docker_daemon_options.live-restore=true` keeps containers running across Docker daemon restarts. After daemon option
 changes, containers with published ports may still need explicit relaunch/recreate for new networking behavior to apply.
 
+## SSH config
+
+`make sshconfig` is first-bootstrap only for hosts still on provider SSH. Never run it on a ready host; use the inventory
+SSH port and a narrowly scoped Ansible deploy for ready-host SSH changes.
+
 ## Traefik CrowdSec
 
 Keep the Traefik CrowdSec middleware as the real plugin and keep `/plugins-storage` persistent. Do not replace it with a
