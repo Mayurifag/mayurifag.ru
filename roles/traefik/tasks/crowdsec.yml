@@ -64,6 +64,20 @@
     mode: "0644"
   register: crowdsec_whitelist_template
 
+- name: Configure CrowdSec local config override
+  ansible.builtin.template:
+    src: crowdsec/config.yaml.local.j2
+    dest: "{{ crowdsec_config_directory }}/config.yaml.local"
+    mode: "0644"
+  register: crowdsec_config_local_template
+
+- name: Configure CrowdSec local API credentials override
+  ansible.builtin.template:
+    src: crowdsec/local_api_credentials.yaml.local.j2
+    dest: "{{ crowdsec_config_directory }}/local_api_credentials.yaml.local"
+    mode: "0600"
+  register: crowdsec_local_api_credentials_local_template
+
 - name: Ensure auth.log exists
   ansible.builtin.file:
     path: /var/log/auth.log
@@ -80,7 +94,8 @@
       {{ crowdsec_acquis_template.changed or
         crowdsec_profiles_template.changed or
         crowdsec_whitelist_template.changed or
-        (traefik_logs_cleanup.changed | default(false)) }}
+        crowdsec_config_local_template.changed or
+        crowdsec_local_api_credentials_local_template.changed }}
     restart_policy: unless-stopped
     networks:
       - name: "web"
@@ -175,7 +190,6 @@
     src: crowdsec/traefik_crowdsec.toml.j2
     dest: "{{ traefik_dynamic_configs_directory }}/crowdsec.toml"
     mode: "0644"
-  notify: Restart Traefik
   vars:
     crowdsec_api_key: "{{ bouncer_key_slurp.content | b64decode | trim }}"
 

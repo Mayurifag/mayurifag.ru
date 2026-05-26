@@ -3,8 +3,11 @@
   ansible.builtin.import_tasks: dns.yml
   tags: dns
 
-- name: Traefik
-  ansible.builtin.import_tasks: traefik_task.yml
+- name: Traefik prerequisites
+  ansible.builtin.import_tasks: traefik_prepare.yml
 
 - name: CrowdSec
   ansible.builtin.import_tasks: crowdsec.yml
+
+- name: Traefik
+  ansible.builtin.import_tasks: traefik_task.yml

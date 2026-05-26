@@ -19,6 +19,7 @@ traefik_acme_server: "https://acme-staging-v02.api.letsencrypt.org/directory" # 
 # specs
 traefik_memory: 1g
 traefik_plugins_storage_directory: "{{ traefik_data_directory }}/plugins-storage"
+traefik_crowdsec_startup_wait_seconds: 120
 
 ###
 ### Cloudflare DNS / Email Routing (managed by this role, tag: dns)
@@ -41,7 +42,7 @@ traefik_plugins_storage_directory: "{{ traefik_data_directory }}/plugins-storage
 crowdsec_data_directory: "{{ docker_home }}/crowdsec/data"
 crowdsec_config_directory: "{{ docker_home }}/crowdsec/config"
 
-crowdsec_image: crowdsecurity/crowdsec:v1.7.7
+crowdsec_image: crowdsecurity/crowdsec:v1.7.8
 crowdsec_bouncer_plugin_module: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
 crowdsec_bouncer_plugin_version: "v1.6.0"
 
@@ -77,3 +78,7 @@ crowdsec_scenarios:
 
 crowdsec_firewall_sync_enabled: true
 crowdsec_firewall_bouncer_key_path: "{{ crowdsec_data_directory }}/.firewall_bouncer_key"
+crowdsec_sqlite_use_wal: true
+crowdsec_sqlite_max_open_conns: 20
+crowdsec_decision_bulk_size: 2000
+crowdsec_local_api_client_url: "http://127.0.0.1:8080"

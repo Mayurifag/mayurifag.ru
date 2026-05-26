@@ -7,3 +7,14 @@ lldap_port: 17170
 
 lldap_image: lldap/lldap:latest
 lldap_memory: 512m
+lldap_reset_data: false
+
+lldap_ignored_user_attributes:
+  - gidnumber
+  - openclouduserenabled
+  - opencloudusertype
+  - text
+  - uidnumber
+  - uniquemember
+lldap_ignored_group_attributes:
+  - openclouduuid

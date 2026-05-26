@@ -1,0 +1,131 @@
+token_manager:
+  jwt_secret: change_this
+machine_auth_api_key: change_this
+system_user_api_key: change_this
+transfer_secret: change_this
+url_signing_secret: change_this
+system_user_id: 00000000-0000-4000-8000-000000000001
+admin_user_id: 00000000-0000-4000-8000-000000000002
+graph:
+  application:
+    id: 00000000-0000-4000-8000-000000000003
+  events:
+    tls_insecure: true
+  spaces:
+    insecure: true
+  identity:
+    ldap:
+      bind_password: change_this
+  service_account:
+    service_account_id: 00000000-0000-4000-8000-000000000004
+    service_account_secret: change_this
+idp:
+  ldap:
+    bind_password: change_this
+idm:
+  service_user_passwords:
+    admin_password: change_this
+    idm_password: change_this
+    reva_password: change_this
+    idp_password: change_this
+collaboration:
+  wopi:
+    secret: change_this
+  app:
+    insecure: true
+proxy:
+  oidc:
+    insecure: true
+  insecure_backends: true
+  service_account:
+    service_account_id: 00000000-0000-4000-8000-000000000004
+    service_account_secret: change_this
+frontend:
+  app_handler:
+    insecure: true
+  archiver:
+    insecure: true
+  service_account:
+    service_account_id: 00000000-0000-4000-8000-000000000004
+    service_account_secret: change_this
+  ocdav:
+    insecure: true
+auth_basic:
+  auth_providers:
+    ldap:
+      bind_password: change_this
+auth_bearer:
+  auth_providers:
+    oidc:
+      insecure: true
+users:
+  drivers:
+    ldap:
+      bind_password: change_this
+groups:
+  drivers:
+    ldap:
+      bind_password: change_this
+ocm:
+  service_account:
+    service_account_id: 00000000-0000-4000-8000-000000000004
+    service_account_secret: change_this
+thumbnails:
+  thumbnail:
+    transfer_secret: change_this
+    webdav_allow_insecure: true
+    cs3_allow_insecure: true
+search:
+  events:
+    tls_insecure: true
+  service_account:
+    service_account_id: 00000000-0000-4000-8000-000000000004
+    service_account_secret: change_this
+audit:
+  events:
+    tls_insecure: true
+settings:
+  service_account_ids:
+  - 00000000-0000-4000-8000-000000000004
+sharing:
+  events:
+    tls_insecure: true
+  service_account:
+    service_account_id: 00000000-0000-4000-8000-000000000004
+    service_account_secret: change_this
+storage_users:
+  events:
+    tls_insecure: true
+  mount_id: 00000000-0000-4000-8000-000000000005
+  service_account:
+    service_account_id: 00000000-0000-4000-8000-000000000004
+    service_account_secret: change_this
+notifications:
+  notifications:
+    events:
+      tls_insecure: true
+  service_account:
+    service_account_id: 00000000-0000-4000-8000-000000000004
+    service_account_secret: change_this
+nats:
+  nats:
+    tls_skip_verify_client_cert: true
+gateway:
+  storage_registry:
+    storage_users_mount_id: 00000000-0000-4000-8000-000000000005
+userlog:
+  service_account:
+    service_account_id: 00000000-0000-4000-8000-000000000004
+    service_account_secret: change_this
+auth_service:
+  service_account:
+    service_account_id: 00000000-0000-4000-8000-000000000004
+    service_account_secret: change_this
+clientlog:
+  service_account:
+    service_account_id: 00000000-0000-4000-8000-000000000004
+    service_account_secret: change_this
+activitylog:
+  service_account:
+    service_account_id: 00000000-0000-4000-8000-000000000004
+    service_account_secret: change_this

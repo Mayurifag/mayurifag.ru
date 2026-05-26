@@ -56,7 +56,6 @@
     ports:
       - "{{ threexui_hysteria2_port }}:{{ threexui_hysteria2_port }}/udp"
     env:
-      XRAY_VMESS_AEAD_FORCED: "{{ threexui_vmess_aead_forced }}"
       XUI_ENABLE_FAIL2BAN: "{{ threexui_enable_fail2ban }}"
     restart_policy: unless-stopped
     networks:

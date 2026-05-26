@@ -3,13 +3,7 @@ opencloud_enabled: true
 
 opencloud_subdomain: "cloud"
 
-opencloud_image: "opencloudeu/opencloud-rolling:6"
+opencloud_image: "opencloudeu/opencloud-rolling:7.0.0"
 
 opencloud_data_directory: "{{ docker_home }}/opencloud"
 opencloud_files_directory: "{{ files_home }}/"
-
-opencloud_log_level: "warn"
-opencloud_disable_versioning: "true"
-opencloud_posix_propagator: "async"
-opencloud_posix_scan_debounce_delay: "10s"
-opencloud_posix_inotify_stats_frequency: "0s"

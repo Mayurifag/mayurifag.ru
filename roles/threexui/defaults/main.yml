@@ -8,7 +8,6 @@ threexui_panel_subdomain: "3x"
 
 threexui_reality_domain: "learn.microsoft.com"
 
-threexui_vmess_aead_forced: "false"
 threexui_enable_fail2ban: "false"
 
 threexui_hysteria2_port: 36500

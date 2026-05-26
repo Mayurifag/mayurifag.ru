@@ -5,6 +5,7 @@
     state: absent
   with_items:
     - "{{ lldap_data_directory }}"
+  when: lldap_reset_data | bool
 
 - name: Create LLDAP Directories
   ansible.builtin.file:
@@ -33,6 +34,8 @@
       LLDAP_HTTP_URL: "https://{{ lldap_subdomain }}.{{ server_hostname }}"
       LLDAP_LDAP_PORT: "3890"
       LLDAP_HTTP_PORT: "17170"
+      LLDAP_IGNORED_USER_ATTRIBUTES: "{{ lldap_ignored_user_attributes | to_json }}"
+      LLDAP_IGNORED_GROUP_ATTRIBUTES: "{{ lldap_ignored_group_attributes | to_json }}"
     ports:
       - "127.0.0.1:{{ lldap_port }}:17170"
 
@@ -65,6 +68,8 @@
       LLDAP_HTTP_URL: "https://{{ lldap_subdomain }}.{{ server_hostname }}"
       LLDAP_LDAP_PORT: "3890"
       LLDAP_HTTP_PORT: "17170"
+      LLDAP_IGNORED_USER_ATTRIBUTES: "{{ lldap_ignored_user_attributes | to_json }}"
+      LLDAP_IGNORED_GROUP_ATTRIBUTES: "{{ lldap_ignored_group_attributes | to_json }}"
     # ports: []
     networks:
       - name: "web"

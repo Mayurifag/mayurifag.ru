@@ -1,9 +1,4 @@
 ---
-- name: Remove opencloud container
-  community.docker.docker_container:
-    name: opencloud
-    state: absent
-
 - name: Create OpenCloud Directories
   ansible.builtin.file:
     path: "{{ item }}"
@@ -32,18 +27,86 @@
     dest: "{{ traefik_dynamic_configs_directory }}/opencloud.toml"
     mode: "0644"
 
+- name: Check OpenCloud Config Against Image
+  block:
+    - name: Create OpenCloud Config Diff Directory
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: opencloud-config
+      register: opencloud_config_diff_directory
+
+    - name: Set OpenCloud Config Diff Directory Permissions
+      ansible.builtin.file:
+        path: "{{ opencloud_config_diff_directory.path }}"
+        state: directory
+        owner: "1000"
+        group: "1000"
+        mode: "0755"
+
+    - name: Copy OpenCloud Config For Diff
+      ansible.builtin.copy:
+        src: "{{ inventory_dir }}/files/opencloud.yaml"
+        dest: "{{ opencloud_config_diff_directory.path }}/opencloud.yaml"
+        owner: "1000"
+        group: "1000"
+        mode: "0600"
+
+    - name: Run OpenCloud Config Init Diff
+      ansible.builtin.command:
+        argv:
+          - docker
+          - run
+          - --rm
+          - --pull
+          - always
+          - --entrypoint
+          - opencloud
+          - -v
+          - "{{ opencloud_config_diff_directory.path }}:/etc/opencloud"
+          - "{{ opencloud_image }}"
+          - init
+          - --diff
+          - --insecure
+          - "true"
+      register: opencloud_config_init_diff
+      changed_when: false
+  always:
+    - name: Remove OpenCloud Config Diff Directory
+      ansible.builtin.file:
+        path: "{{ opencloud_config_diff_directory.path }}"
+        state: absent
+      when: opencloud_config_diff_directory is defined and opencloud_config_diff_directory.path is defined
+
+- name: Fail If OpenCloud Config Diff Exists
+  ansible.builtin.fail:
+    msg: |-
+      OpenCloud inventory config is not fully compliant with {{ opencloud_image }}.
+      Apply the full opencloud init --diff output to {{ inventory_dir }}/files/opencloud.yaml before deploying.
+      {{ opencloud_config_init_diff.stdout }}
+      {{ opencloud_config_init_diff.stderr }}
+  when: "'no changes, your config is up to date' not in opencloud_config_init_diff.stdout"
+
+- name: Remove opencloud container
+  community.docker.docker_container:
+    name: opencloud
+    state: absent
+
+- name: Configure OpenCloud Config
+  ansible.builtin.copy:
+    src: "{{ inventory_dir }}/files/opencloud.yaml"
+    dest: "{{ opencloud_data_directory }}/config/opencloud.yaml"
+    owner: "1000"
+    group: "1000"
+    mode: "0600"
+
 - name: OpenCloud Docker Container
   community.docker.docker_container:
     name: opencloud
     image: "{{ opencloud_image }}"
-    pull: true
+    pull: false
     recreate: true
     restart_policy: unless-stopped
-    entrypoint:
-      - /bin/sh
-    command:
-      - -c
-      - "opencloud init || true; opencloud server"
+    command: server
     volumes:
       - "{{ opencloud_data_directory }}/config:/etc/opencloud"
       - "{{ opencloud_data_directory }}/var:/var/lib/opencloud"
@@ -55,7 +118,7 @@
       PROXY_HTTPS_ADDR: ""
       PROXY_TLS: "false" # Traefik handles TLS
       OC_INSECURE: "true"
-      OC_LOG_LEVEL: "{{ opencloud_log_level }}"
+      OC_LOG_LEVEL: "warn"
       LOG_PRETTY: "false"
       MICRO_REGISTRY: "nats-js-kv"
       # Disable Open Cloud Mesh (federation between OpenCloud servers).
@@ -64,22 +127,27 @@
       #       https://github.com/opencloud-eu/opencloud/issues/1591
       OC_EXCLUDE_RUN_SERVICES: "ocm"
       FRONTEND_CHECK_FOR_UPDATES: "false"
-      OC_DISABLE_VERSIONING: "{{ opencloud_disable_versioning }}"
+      OC_DISABLE_VERSIONING: "true"
       OC_SHARING_PUBLIC_SHARE_MUST_HAVE_PASSWORD: "false"
-      IDP_REFRESH_TOKEN_EXPIRATION: "30240000" # 350 days
-      STORAGE_SYSTEM_LOG_LEVEL: "error" # Prevent unnecessary warnings pollution of logs
+      IDP_REFRESH_TOKEN_EXPIRATION: "30240000"
+      # Keep storage-system warnings visible; they can indicate metadata/NATS trouble.
+      STORAGE_SYSTEM_LOG_LEVEL: "warn"
 
       STORAGE_USERS_DRIVER: "posix"
       # NATS-KV mandatory for posix collaborative mode (WATCH_FS=true).
       # Memory store not supported: watcher + storage-users must share inode->UUID map.
+      # Do not delete the persisted NATS data; existing spaces depend on the ID cache.
       # Docs: https://docs.opencloud.eu/docs/admin/configuration/storage/storage-posix
       STORAGE_USERS_ID_CACHE_STORE: "nats-js-kv"
-      STORAGE_USERS_POSIX_PROPAGATOR: "{{ opencloud_posix_propagator }}"
+      # Async propagation writes /storage/changes/* under the watched root.
+      # If watcher churn/log spam returns, this is the first setting to revisit.
+      STORAGE_USERS_POSIX_PROPAGATOR: "async"
+      # Other services write directly into /storage, so OpenCloud must watch the filesystem.
       STORAGE_USERS_POSIX_WATCH_FS: "true"
       STORAGE_USERS_POSIX_ROOT: "/storage"
       # Reduce inotify→NATS event rate to ease JetStream pressure (default: 1s)
-      STORAGE_USERS_POSIX_SCAN_DEBOUNCE_DELAY: "{{ opencloud_posix_scan_debounce_delay }}"
-      STORAGE_USERS_POSIX_INOTIFY_STATS_FREQUENCY: "{{ opencloud_posix_inotify_stats_frequency }}"
+      STORAGE_USERS_POSIX_SCAN_DEBOUNCE_DELAY: "10s"
+      STORAGE_USERS_POSIX_INOTIFY_STATS_FREQUENCY: "0s"
 
       OC_LDAP_URI: "ldap://lldap:3890"
       OC_LDAP_BIND_DN: "uid=observer,ou=people,{{ lldap_base_dn }}"
@@ -93,16 +161,6 @@
       OC_LDAP_SERVER_WRITE_ENABLED: "false"
       GRAPH_LDAP_SERVER_UUID: "true"
       GRAPH_LDAP_SERVER_USE_PASSWORD_MODIFY_EXOP: "false"
-    healthcheck:
-      test:
-        - CMD-SHELL
-        - >-
-          curl -fsS http://127.0.0.1:9200/status >/dev/null &&
-          curl -fsS http://127.0.0.1:9200/konnect/v1/jwks.json >/dev/null
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
     networks:
       - name: "web"
     labels:

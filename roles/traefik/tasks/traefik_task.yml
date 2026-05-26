@@ -4,49 +4,6 @@
 #     name: traefik
 #     state: stopped
 
-- name: Remove Traefik logs
-  ansible.builtin.file:
-    path: "{{ traefik_logs_directory }}"
-    state: absent
-  register: traefik_logs_cleanup
-
-- name: Create Traefik Directories
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-  with_items:
-    - "{{ traefik_dynamic_configs_directory }}"
-    - "{{ traefik_data_directory }}/letsencrypt"
-    - "{{ traefik_logs_directory }}"
-    - "{{ traefik_plugins_storage_directory }}"
-
-- name: Ensure Traefik access log exists
-  ansible.builtin.copy:
-    dest: "{{ traefik_logs_directory }}/access.log"
-    content: ""
-    force: no
-    mode: "0644"
-
-- name: Create Traefik config.toml from template
-  ansible.builtin.template:
-    src: traefik.toml.j2
-    dest: "{{ traefik_data_directory }}/traefik.toml"
-  register: template_config
-
-- name: Create Traefik dynamic configuration files
-  ansible.builtin.template:
-    src: "{{ item.src }}"
-    dest: "{{ traefik_dynamic_configs_directory }}/{{ item.path |
-      regex_replace('\\.j2$', '') }}"
-    force: yes
-  loop: "{{ query('filetree', '../templates/dynamic_configs') }}"
-  when: item.state == 'file'
-
-- name: Create web network
-  community.docker.docker_network:
-    name: web
-    state: present
-
 - name: Traefik Docker Container
   community.docker.docker_container:
     name: traefik
@@ -65,11 +22,19 @@
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     env: "{{ traefik_environment_variables }}"
+    command:
+      - sh
+      - -c
+      - >-
+        i=0; until nc -z crowdsec 8080 && nc -z crowdsec 7422 ||
+        [ "$i" -ge {{ traefik_crowdsec_startup_wait_seconds }} ]; do
+        i=$((i + 1)); sleep 1; done;
+        exec traefik
     restart_policy: always
     networks:
       - name: "web"
     memory: "{{ traefik_memory }}"
-    recreate: "{{ template_config.changed or (traefik_logs_cleanup.changed | default(false)) }}"
+    recreate: "{{ template_config.changed | default(false) }}"
     stop_timeout: 30
     labels:
       traefik.enable: "true"
