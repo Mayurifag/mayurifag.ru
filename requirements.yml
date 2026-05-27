@@ -4,9 +4,3 @@
 
 - name: robertdebock.bootstrap
   version: 7.1.7
-
-- name: darkwizard242.lazydocker
-  version: 2.7.3
-
-- name: geerlingguy.swap
-  version: 2.0.0

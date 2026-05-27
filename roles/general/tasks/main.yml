@@ -9,6 +9,12 @@
   ansible.builtin.import_tasks: sysctl.yml
   tags:
     - sysctl
+    - swap
+
+- name: Include swap configuration tasks
+  ansible.builtin.import_tasks: swap.yml
+  tags:
+    - swap
 
 - name: Include transparent hugepage tasks
   ansible.builtin.import_tasks: transparent_hugepage.yml
@@ -20,6 +26,11 @@
 
 - name: Include package installation tasks
   ansible.builtin.include_tasks: packages.yml
+
+- name: Include lazydocker tasks
+  ansible.builtin.import_tasks: lazydocker.yml
+  tags:
+    - lazydocker
 
 - name: Include tsshd tasks
   ansible.builtin.include_tasks: tsshd.yml

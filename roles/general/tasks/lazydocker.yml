@@ -1,0 +1,35 @@
+---
+- name: Get latest lazydocker release
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/jesseduffield/lazydocker/releases/latest
+  register: lazydocker_latest_release
+  changed_when: false
+
+- name: Check lazydocker version
+  ansible.builtin.command:
+    argv:
+      - /usr/local/bin/lazydocker
+      - --version
+  register: lazydocker_installed_version
+  changed_when: false
+  failed_when: false
+
+- name: Install latest lazydocker
+  ansible.builtin.unarchive:
+    src: >-
+      {{
+        lazydocker_latest_release.json.assets
+        | selectattr('name', 'search', 'Linux_x86_64[.]tar[.]gz$')
+        | map(attribute='browser_download_url')
+        | first
+      }}
+    dest: /usr/local/bin
+    remote_src: true
+    extra_opts:
+      - lazydocker
+    owner: root
+    group: root
+    mode: "0755"
+  when: >-
+    (lazydocker_latest_release.json.tag_name | regex_replace('^v', ''))
+    not in lazydocker_installed_version.stdout

@@ -1,32 +1,24 @@
 ---
-- name: Remove deprecated sysctl values
-  ansible.builtin.lineinfile:
-    path: /etc/sysctl.conf
-    regexp: '^\s*{{ item | regex_escape }}\s*='
-    state: absent
-  loop: "{{ sysctl_values_absent }}"
-  register: sysctl_absent_values
+- name: Find unmanaged sysctl.d configs
+  ansible.builtin.find:
+    paths: /etc/sysctl.d
+    patterns: "*.conf"
+    file_type: any
+  register: sysctl_d_configs
 
-- name: Check legacy sysctl.d config
-  ansible.builtin.stat:
-    path: /etc/sysctl.d/99-sysctl.conf
-  register: legacy_sysctl_config
-
-- name: Remove deprecated sysctl values from legacy sysctl.d config
-  ansible.builtin.lineinfile:
-    path: /etc/sysctl.d/99-sysctl.conf
-    regexp: '^\s*{{ item | regex_escape }}\s*='
+- name: Remove unmanaged sysctl.d configs
+  ansible.builtin.file:
+    path: "{{ item.path }}"
     state: absent
-  loop: "{{ sysctl_values_absent }}"
-  register: legacy_sysctl_absent_values
-  when: legacy_sysctl_config.stat.exists
+  loop: "{{ sysctl_d_configs.files }}"
+  when: item.path != "/etc/sysctl.d/99-ansible-general.conf"
+  register: sysctl_d_removed_configs
 
-- name: Remove managed sysctl values from sysctl.conf
-  ansible.builtin.lineinfile:
-    path: /etc/sysctl.conf
-    regexp: '^\s*{{ item.key | regex_escape }}\s*='
-    state: absent
-  loop: "{{ sysctl_values }}"
+- name: Clear legacy sysctl.conf
+  ansible.builtin.copy:
+    dest: /etc/sysctl.conf
+    mode: "0644"
+    content: ""
   register: sysctl_conf_values
 
 - name: Configure custom sysctl values
@@ -46,7 +38,6 @@
       - --system
   changed_when: true
   when: >-
-    sysctl_absent_values.changed or
-    (legacy_sysctl_absent_values.changed | default(false)) or
+    sysctl_d_removed_configs.changed or
     sysctl_conf_values.changed or
     sysctl_custom_values.changed

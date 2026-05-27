@@ -1,0 +1,137 @@
+---
+- name: Check swap file
+  ansible.builtin.stat:
+    path: "{{ swap_file_path }}"
+  register: swap_file_stat
+
+- name: Disable managed swap before resizing
+  ansible.builtin.command:
+    argv:
+      - swapoff
+      - "{{ swap_file_path }}"
+  register: swap_file_resize_swapoff
+  changed_when: swap_file_resize_swapoff.rc == 0
+  failed_when: false
+  when:
+    - swap_enabled | default(false) | bool
+    - swap_file_stat.stat.exists
+    - (swap_file_stat.stat.size | int) != ((swap_file_size_mb | int) * 1024 * 1024)
+
+- name: Remove incorrectly sized swap file
+  ansible.builtin.file:
+    path: "{{ swap_file_path }}"
+    state: absent
+  when:
+    - swap_enabled | default(false) | bool
+    - swap_file_stat.stat.exists
+    - (swap_file_stat.stat.size | int) != ((swap_file_size_mb | int) * 1024 * 1024)
+
+- name: Create swap file
+  ansible.builtin.command:
+    argv:
+      - fallocate
+      - -l
+      - "{{ swap_file_size_mb | int }}M"
+      - "{{ swap_file_path }}"
+    creates: "{{ swap_file_path }}"
+  when: swap_enabled | default(false) | bool
+
+- name: Set swap file permissions
+  ansible.builtin.file:
+    path: "{{ swap_file_path }}"
+    owner: root
+    group: root
+    mode: "0600"
+  when: swap_enabled | default(false) | bool
+
+- name: Check swap file signature
+  ansible.builtin.command:
+    argv:
+      - blkid
+      - -o
+      - value
+      - -s
+      - TYPE
+      - "{{ swap_file_path }}"
+  register: swap_file_type
+  changed_when: false
+  failed_when: false
+  when: swap_enabled | default(false) | bool
+
+- name: Format swap file
+  ansible.builtin.command:
+    argv:
+      - mkswap
+      - "{{ swap_file_path }}"
+  changed_when: true
+  when:
+    - swap_enabled | default(false) | bool
+    - swap_file_type.stdout != "swap"
+
+- name: Check active swap files
+  ansible.builtin.command:
+    argv:
+      - swapon
+      - --show=NAME
+      - --noheadings
+  register: active_swap_files
+  changed_when: false
+
+- name: Disable unmanaged active swap
+  ansible.builtin.command:
+    argv:
+      - swapoff
+      - "{{ item }}"
+  loop: "{{ active_swap_files.stdout_lines }}"
+  changed_when: true
+  when:
+    - swap_enabled | default(false) | bool
+    - item != swap_file_path
+
+- name: Disable unmanaged swap in fstab
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: '^(?!{{ swap_file_path | regex_escape }}\s)([^#]\S+\s+\S+\s+swap\s+.*)$'
+    replace: '# \1'
+  when: swap_enabled | default(false) | bool
+
+- name: Configure swap in fstab
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    regexp: '^{{ swap_file_path | regex_escape }}\s+'
+    line: "{{ swap_file_path }} none swap sw 0 0"
+    state: present
+  when: swap_enabled | default(false) | bool
+
+- name: Enable swap file
+  ansible.builtin.command:
+    argv:
+      - swapon
+      - "{{ swap_file_path }}"
+  changed_when: true
+  when:
+    - swap_enabled | default(false) | bool
+    - swap_file_path not in active_swap_files.stdout_lines
+
+- name: Disable managed swap
+  ansible.builtin.command:
+    argv:
+      - swapoff
+      - "{{ swap_file_path }}"
+  changed_when: true
+  when:
+    - not (swap_enabled | default(false) | bool)
+    - swap_file_path in active_swap_files.stdout_lines
+
+- name: Remove managed swap from fstab
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    regexp: '^{{ swap_file_path | regex_escape }}\s+'
+    state: absent
+  when: not (swap_enabled | default(false) | bool)
+
+- name: Remove managed swap file
+  ansible.builtin.file:
+    path: "{{ swap_file_path }}"
+    state: absent
+  when: not (swap_enabled | default(false) | bool)

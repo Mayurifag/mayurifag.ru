@@ -18,16 +18,6 @@
       tags:
         - general
 
-    - role: swapoff
-      tags:
-        - swap
-      when: (swap_enabled | default(False))
-
-    - role: geerlingguy.swap
-      tags:
-        - swap
-      when: (swap_enabled | default(False))
-
     - role: home
       tags:
         - home
@@ -36,11 +26,6 @@
       tags:
         - docker
       when: (docker_enabled | default(False))
-
-    - role: darkwizard242.lazydocker
-      tags:
-        - lazydocker
-      when: (lazydocker_enabled | default(False))
 
     - role: traefik
       tags:
