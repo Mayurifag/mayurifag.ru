@@ -129,6 +129,8 @@
       FRONTEND_CHECK_FOR_UPDATES: "false"
       OC_DISABLE_VERSIONING: "true"
       OC_SHARING_PUBLIC_SHARE_MUST_HAVE_PASSWORD: "false"
+      IDP_ACCESS_TOKEN_EXPIRATION: "2592000"
+      IDP_ID_TOKEN_EXPIRATION: "2592000"
       IDP_REFRESH_TOKEN_EXPIRATION: "30240000"
       # Keep storage-system warnings visible; they can indicate metadata/NATS trouble.
       STORAGE_SYSTEM_LOG_LEVEL: "warn"
