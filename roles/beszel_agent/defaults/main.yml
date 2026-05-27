@@ -1,0 +1,11 @@
+---
+beszel_agent_enabled: false
+beszel_agent_image: "henrygd/beszel-agent:latest"
+beszel_agent_memory: "256m"
+beszel_agent_data_directory: "{{ docker_home }}/beszel-agent"
+beszel_agent_hub_url: ""
+beszel_agent_hub_user_email: "{{ admin_email }}"
+beszel_agent_hub_user_password: "{{ admin_userldappassword }}"
+beszel_agent_token: ""
+beszel_agent_disk_usage_cache: "3m"
+beszel_agent_system_name: "{{ inventory_hostname }}"

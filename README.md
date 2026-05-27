@@ -51,14 +51,13 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 
 | Name                | Subdomain    | Auth | Watchtower |
 | :------------------ | :----------- | ---- | ---------- |
-| 3proxy              |              | app  | +          |
 | 3x-ui               | `3x`         | app  |            |
 | BentoPDF            | `pdf`        | ldap | +          |
+| Beszel              | `beszel`     | app  | +          |
 | ConvertX            | `convert`    | ldap | +          |
 | EchoIP              | `ip`         | none | +          |
 | Gitea               | `git`        | app  |            |
 | Dynacat             | `rss`        | ldap | +          |
-| MkDocs              | `docs`       | ldap | +          |
 | Mini-QR             | `qr`         | ldap | +          |
 | mayurifag.github.io |              | none | +          |
 | mus                 | `mus`        | ldap | +          |
@@ -84,7 +83,6 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
   * [ ] dumbfile size and aliases. Other useful aliases. What else?
 * [ ] dysk instead of default du dh??
 * [ ] Extract dns into another role?
-* [ ] remove 3proxy and mkdocs
 
 ### On hold
 
@@ -125,10 +123,6 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
   * [ ] (not sure) <https://github.com/quay/clair>
   * [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
   * [ ] <https://github.com/imthenachoman/How-To-Secure-A-Linux-Server>
-* [ ] Status page for services
-  * [ ] Has to be free and allow deploy from ansible via API
-  * [ ] maybe just main website check and self service to report docker unhealth
-  * [ ] <https://beszel.dev/>
 * [ ] SSH tunnel/bastion
   * [ ] Cloudflare + tailscale ips only.
   * [ ] Is it compatible with ansible deployment then?

@@ -15,6 +15,12 @@
     memory: "{{ tg_ai_manager_memory }}"
     volumes:
       - "{{ tg_ai_manager_data_directory }}:/app_data"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/api/health || exit 1"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 5s
     env:
       TG_API_ID: "{{ tg_ai_manager_api_id }}"
       TG_API_HASH: "{{ tg_ai_manager_api_hash }}"

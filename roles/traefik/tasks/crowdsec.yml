@@ -114,7 +114,7 @@
       UID: "{{ ansible_facts.getent_passwd[admin_username][1] }}"
     healthcheck:
       test: ["CMD", "cscli", "lapi", "status"]
-      interval: 30s
+      interval: 5m
       timeout: 5s
       retries: 3
       start_period: 20s

@@ -1,0 +1,69 @@
+---
+- name: Validate Beszel Agent settings
+  ansible.builtin.assert:
+    that:
+      - beszel_agent_hub_url | length > 0
+      - beszel_agent_token | length > 0
+      - beszel_agent_token | length <= 64
+      - beszel_agent_hub_user_password | length >= 8
+
+- name: Authenticate to Beszel Hub for agent key
+  ansible.builtin.uri:
+    url: "{{ beszel_agent_hub_url }}/api/collections/users/auth-with-password"
+    method: POST
+    body_format: json
+    body:
+      identity: "{{ beszel_agent_hub_user_email }}"
+      password: "{{ beszel_agent_hub_user_password | string }}"
+    status_code: 200
+    return_content: true
+  register: beszel_agent_hub_auth
+  retries: 12
+  delay: 5
+  until: beszel_agent_hub_auth.status == 200
+  no_log: true
+
+- name: Read Beszel Hub public key
+  ansible.builtin.uri:
+    url: "{{ beszel_agent_hub_url }}/api/beszel/info"
+    method: GET
+    headers:
+      Authorization: "{{ beszel_agent_hub_auth.json.token }}"
+    status_code: 200
+    return_content: true
+  register: beszel_agent_hub_info
+  retries: 12
+  delay: 5
+  until: beszel_agent_hub_info.json.key | default('') | length > 0
+  no_log: true
+
+- name: Create Beszel Agent Directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  with_items:
+    - "{{ beszel_agent_data_directory }}"
+
+- name: Beszel Agent Docker Container
+  community.docker.docker_container:
+    name: beszel-agent
+    image: "{{ beszel_agent_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ beszel_agent_memory }}"
+    network_mode: host
+    volumes:
+      - "{{ beszel_agent_data_directory }}:/var/lib/beszel-agent"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    env:
+      DATA_DIR: "/var/lib/beszel-agent"
+      DISABLE_SSH: "true"
+      DISK_USAGE_CACHE: "{{ beszel_agent_disk_usage_cache }}"
+      HUB_URL: "{{ beszel_agent_hub_url }}"
+      KEY: "{{ beszel_agent_hub_info.json.key }}"
+      SYSTEM_NAME: "{{ beszel_agent_system_name }}"
+      TOKEN: "{{ beszel_agent_token }}"
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"

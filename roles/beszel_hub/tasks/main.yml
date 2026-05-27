@@ -1,0 +1,85 @@
+---
+- name: Validate Beszel Hub settings
+  ansible.builtin.assert:
+    that:
+      - beszel_agent_token | length > 0
+      - beszel_agent_token | length <= 64
+      - beszel_hub_user_password | length >= 8
+
+- name: Create Beszel Hub Directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  with_items:
+    - "{{ beszel_hub_data_directory }}"
+
+- name: Beszel Hub Docker Container
+  community.docker.docker_container:
+    name: beszel
+    image: "{{ beszel_hub_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ beszel_hub_memory }}"
+    volumes:
+      - "{{ beszel_hub_data_directory }}:/beszel_data"
+    ports:
+      - "127.0.0.1:8090:8090"
+    env:
+      APP_URL: "{{ beszel_hub_app_url }}"
+      USER_EMAIL: "{{ beszel_hub_user_email | string }}"
+      USER_PASSWORD: "{{ beszel_hub_user_password | string }}"
+    networks:
+      - name: "web"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.beszel.rule: "Host(`{{ beszel_hub_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.beszel.loadbalancer.server.port: "8090"
+      com.centurylinklabs.watchtower.enable: "true"
+
+- name: Wait for Beszel Hub to be ready
+  ansible.builtin.wait_for:
+    port: 8090
+    host: 127.0.0.1
+    delay: 3
+    timeout: 120
+
+- name: Authenticate to Beszel Hub
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:8090/api/collections/users/auth-with-password"
+    method: POST
+    body_format: json
+    body:
+      identity: "{{ beszel_hub_user_email }}"
+      password: "{{ beszel_hub_user_password | string }}"
+    status_code: 200
+    return_content: true
+  register: beszel_hub_auth
+  retries: 12
+  delay: 5
+  until: beszel_hub_auth.status == 200
+  no_log: true
+
+- name: Read Beszel permanent universal token
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:8090/api/beszel/universal-token?token={{ beszel_agent_token | urlencode }}"
+    method: GET
+    headers:
+      Authorization: "{{ beszel_hub_auth.json.token }}"
+    status_code: 200
+    return_content: true
+  register: beszel_hub_universal_token
+  changed_when: false
+  no_log: true
+
+- name: Enable Beszel permanent universal token
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:8090/api/beszel/universal-token?token={{ beszel_agent_token | urlencode }}&enable=1&permanent=1"
+    method: GET
+    headers:
+      Authorization: "{{ beszel_hub_auth.json.token }}"
+    status_code: 200
+    return_content: true
+  when: not (beszel_hub_universal_token.json.active | default(false)) or not (beszel_hub_universal_token.json.permanent | default(false))
+  no_log: true

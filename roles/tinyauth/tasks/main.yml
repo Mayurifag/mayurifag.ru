@@ -29,6 +29,12 @@
       TINYAUTH_AUTH_SESSIONEXPIRY: "31536000"
     restart_policy: unless-stopped
     memory: "{{ tinyauth_memory }}"
+    healthcheck:
+      test: ["CMD", "tinyauth", "healthcheck"]
+      interval: 5m
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     networks:
       - name: "web"
     labels:

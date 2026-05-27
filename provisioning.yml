@@ -47,16 +47,6 @@
         - mayurifag_github_io
       when: (mayurifag_github_io_enabled | default(False))
 
-    - role: mkdocs
-      tags:
-        - mkdocs
-      when: (mkdocs_enabled | default(False))
-
-    - role: proxy
-      tags:
-        - proxy
-      when: (proxy_enabled | default(False))
-
     - role: threexui
       tags:
         - threexui
@@ -66,6 +56,18 @@
       tags:
         - portainer
       when: (portainer_enabled | default(False))
+
+    - role: beszel_hub
+      tags:
+        - beszel
+        - beszel_hub
+      when: (beszel_hub_enabled | default(False) | bool)
+
+    - role: beszel_agent
+      tags:
+        - beszel
+        - beszel_agent
+      when: (beszel_agent_enabled | default(False) | bool)
 
     - role: mus
       tags:

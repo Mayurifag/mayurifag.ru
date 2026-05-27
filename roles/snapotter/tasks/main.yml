@@ -22,6 +22,14 @@
     memory: "{{ snapotter_memory }}"
     volumes:
       - "{{ snapotter_data_directory }}:/data"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -sf --max-time 5 http://localhost:1349/api/v1/health || exit 1
+      interval: 5m
+      timeout: 5s
+      retries: 3
+      start_period: 60s
     networks:
       - name: "web"
     env:

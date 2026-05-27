@@ -67,11 +67,6 @@ swap_enabled: true
 mayurifag_github_io_enabled: true
 docker_enabled: true
 
-proxy_enabled: true
-proxy_user: change_this
-proxy_user_password: change_this
-proxy_http_port: "1081"
-
 mus_enabled: true
 mus_subdomain: "mus"
 mus_music_directory: "/home/{{ admin_username }}/music_folder/"
@@ -83,6 +78,17 @@ navidrome_music_directory: "/home/{{ admin_username }}/music_folder/"
 
 portainer_enabled: true
 portainer_subdomain: "portainer"
+
+beszel_hub_inventory_host: prod1
+beszel_hub_enabled: "{{ inventory_hostname == beszel_hub_inventory_host }}"
+beszel_hub_subdomain: "beszel"
+beszel_hub_user_email: "{{ admin_email }}"
+beszel_hub_user_password: "{{ admin_userldappassword }}"
+beszel_agent_enabled: true
+beszel_agent_hub_url: >-
+  {{ 'http://127.0.0.1:8090' if inventory_hostname == beszel_hub_inventory_host else 'https://' ~ beszel_hub_subdomain ~ '.' ~ hostvars[beszel_hub_inventory_host].server_hostname }}
+beszel_agent_token: "change_this"
+beszel_agent_disk_usage_cache: "3m"
 
 traefik_enabled: true
 traefik_subdomain: "traefik"
@@ -126,10 +132,6 @@ echoip_subdomain: "ip"
 
 qr_enabled: true
 qr_subdomain: "qr"
-
-mkdocs_enabled: true
-mkdocs_subdomain: "docs"
-mkdocs_docs_directory: "{{ files_home }}/Notes"
 
 tg_ai_manager_enabled: true
 tg_ai_manager_subdomain: "tg"

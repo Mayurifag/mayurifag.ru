@@ -1,0 +1,10 @@
+---
+beszel_hub_enabled: false
+beszel_hub_subdomain: "beszel"
+beszel_hub_image: "henrygd/beszel:latest"
+beszel_hub_memory: "512m"
+beszel_hub_data_directory: "{{ docker_home }}/beszel"
+beszel_hub_app_url: "https://{{ beszel_hub_subdomain }}.{{ server_hostname }}"
+beszel_hub_user_email: "{{ admin_email }}"
+beszel_hub_user_password: "{{ admin_userldappassword }}"
+beszel_agent_token: ""
