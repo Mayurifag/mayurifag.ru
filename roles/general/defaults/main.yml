@@ -68,6 +68,9 @@ sysctl_values:
   - { key: fs.protected_hardlinks, value: 1 }
   - { key: fs.protected_symlinks, value: 1 }
   - { key: fs.file-max, value: 2097152 }
+  - { key: fs.inotify.max_user_watches, value: 1048576 }
+  - { key: fs.inotify.max_user_instances, value: 1024 }
+  - { key: fs.inotify.max_queued_events, value: 65536 }
 
   # ss optimizations
   - { key: net.ipv4.tcp_fastopen, value: 3 }
