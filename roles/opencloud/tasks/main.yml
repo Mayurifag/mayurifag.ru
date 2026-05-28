@@ -91,6 +91,13 @@
     name: opencloud
     state: absent
 
+- name: Reset OpenCloud State
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ opencloud_reset_state_paths }}"
+  when: opencloud_reset_state | bool
+
 - name: Configure OpenCloud Config
   ansible.builtin.copy:
     src: "{{ inventory_dir }}/files/opencloud.yaml"
@@ -138,17 +145,15 @@
       STORAGE_USERS_DRIVER: "posix"
       # NATS-KV mandatory for posix collaborative mode (WATCH_FS=true).
       # Memory store not supported: watcher + storage-users must share inode->UUID map.
-      # Do not delete the persisted NATS data; existing spaces depend on the ID cache.
+      # Only reset persisted NATS data deliberately with opencloud_reset_state.
       # Docs: https://docs.opencloud.eu/docs/admin/configuration/storage/storage-posix
       STORAGE_USERS_ID_CACHE_STORE: "nats-js-kv"
-      # Async propagation writes /storage/changes/* under the watched root.
-      # If watcher churn/log spam returns, this is the first setting to revisit.
-      STORAGE_USERS_POSIX_PROPAGATOR: "async"
+      STORAGE_USERS_POSIX_PROPAGATOR: "sync"
       # Other services write directly into /storage, so OpenCloud must watch the filesystem.
       STORAGE_USERS_POSIX_WATCH_FS: "true"
       STORAGE_USERS_POSIX_ROOT: "/storage"
       # Reduce inotify→NATS event rate to ease JetStream pressure (default: 1s)
-      STORAGE_USERS_POSIX_SCAN_DEBOUNCE_DELAY: "10s"
+      STORAGE_USERS_POSIX_SCAN_DEBOUNCE_DELAY: "5s"
       STORAGE_USERS_POSIX_INOTIFY_STATS_FREQUENCY: "0s"
 
       OC_LDAP_URI: "ldap://lldap:3890"

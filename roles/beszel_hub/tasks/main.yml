@@ -30,6 +30,13 @@
       APP_URL: "{{ beszel_hub_app_url }}"
       USER_EMAIL: "{{ beszel_hub_user_email | string }}"
       USER_PASSWORD: "{{ beszel_hub_user_password | string }}"
+    healthcheck:
+      test: ["CMD", "/beszel", "health", "--url", "http://localhost:8090"]
+      interval: 5m
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+      start_interval: 5s
     networks:
       - name: "web"
     labels:

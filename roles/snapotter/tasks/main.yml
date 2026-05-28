@@ -16,6 +16,7 @@
   community.docker.docker_container:
     name: snapotter
     image: "{{ snapotter_image }}"
+    state: started
     pull: true
     recreate: true
     restart_policy: unless-stopped
@@ -28,21 +29,31 @@
         - curl -sf --max-time 5 http://localhost:1349/api/v1/health || exit 1
       interval: 5m
       timeout: 5s
-      retries: 3
-      start_period: 60s
-      start_interval: 5s
+      retries: 180
+      start_period: 30s
+      start_interval: 2s
     networks:
       - name: "web"
     env:
-      PUID: "{{ ansible_facts.getent_passwd[admin_username][1] }}"
-      PGID: "{{ ansible_facts.getent_passwd[admin_username][2] }}"
       AUTH_ENABLED: "false"
       TRUST_PROXY: "true"
       APP_NAME: "{{ snapotter_app_name }}"
       DEFAULT_THEME: "{{ snapotter_default_theme }}"
     labels:
+      sablier.enable: "true"
+      sablier.group: snapotter
       traefik.enable: "true"
+      traefik.docker.allownonrunning: "true"
+      traefik.http.middlewares.snapotter-sablier.plugin.sablier.group: "snapotter"
+      traefik.http.middlewares.snapotter-sablier.plugin.sablier.sablierUrl: "http://sablier:10000"
+      traefik.http.middlewares.snapotter-sablier.plugin.sablier.sessionDuration: "1h"
+      traefik.http.middlewares.snapotter-sablier.plugin.sablier.dynamic.displayName: "images"
+      traefik.http.middlewares.snapotter-sablier.plugin.sablier.dynamic.refreshFrequency: "2s"
       traefik.http.routers.snapotter.rule: "Host(`{{ snapotter_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.snapotter.loadbalancer.server.port: "1349"
-      traefik.http.routers.snapotter.middlewares: "tinyauth@docker"
+      traefik.http.routers.snapotter.middlewares: "tinyauth@docker,snapotter-sablier@docker"
       com.centurylinklabs.watchtower.enable: "true"
+
+- name: Stop SnapOtter Docker Container
+  ansible.builtin.command: docker stop snapotter
+  changed_when: true

@@ -20,6 +20,24 @@
       && docker volume prune --force --filter "label!=keep"
   when: docker_bin.stat.exists
 
+- name: Check fstrim binary works
+  ansible.builtin.command: fstrim --version
+  changed_when: false
+
+- name: Check fstrim timer exists
+  ansible.builtin.stat:
+    path: /lib/systemd/system/fstrim.timer
+    get_checksum: false
+    get_attributes: false
+    get_mime: false
+  register: fstrim_timer
+
+- name: Require fstrim timer
+  ansible.builtin.assert:
+    that:
+      - fstrim_timer.stat.exists
+    fail_msg: fstrim.timer is missing
+
 - name: Create systemd-journald configuration directory
   ansible.builtin.file:
     path: /etc/systemd/journald.conf.d

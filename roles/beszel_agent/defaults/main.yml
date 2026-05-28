@@ -8,4 +8,5 @@ beszel_agent_hub_user_email: "{{ admin_email }}"
 beszel_agent_hub_user_password: "{{ admin_userldappassword }}"
 beszel_agent_token: ""
 beszel_agent_disk_usage_cache: "3m"
+beszel_agent_skip_gpu: true
 beszel_agent_system_name: "{{ inventory_hostname }}"

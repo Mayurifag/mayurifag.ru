@@ -6,6 +6,9 @@
 - name: Traefik prerequisites
   ansible.builtin.import_tasks: traefik_prepare.yml
 
+- name: Sablier
+  ansible.builtin.import_tasks: sablier.yml
+
 - name: CrowdSec
   ansible.builtin.import_tasks: crowdsec.yml
 

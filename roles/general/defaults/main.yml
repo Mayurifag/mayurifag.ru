@@ -145,6 +145,7 @@ mayurifag_general_extra_packages:
   - software-properties-common
   - unattended-upgrades
   - unzip
+  - util-linux
   - wget
   - whois
   - zip

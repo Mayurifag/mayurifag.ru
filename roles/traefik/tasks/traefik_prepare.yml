@@ -31,11 +31,6 @@
   loop: "{{ query('filetree', '../templates/dynamic_configs') }}"
   when: item.state == 'file'
 
-- name: Remove stale encoded characters config
-  ansible.builtin.file:
-    path: "{{ traefik_dynamic_configs_directory }}/encoded-characters.toml"
-    state: absent
-
 - name: Create web network
   community.docker.docker_network:
     name: web

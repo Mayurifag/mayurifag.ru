@@ -3,17 +3,39 @@
   community.docker.docker_container:
     name: convertx
     image: "{{ convertx_image }}"
+    state: started
     pull: true
     recreate: true
     restart_policy: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -sf --max-time 5 http://localhost:3000/ || exit 1
+      interval: 5m
+      timeout: 5s
+      retries: 60
+      start_period: 2s
+      start_interval: 2s
     networks:
       - name: "web"
     env:
       # BEWARE: its intended, we already use auth from tinyauth
       ALLOW_UNAUTHENTICATED: "true"
     labels:
+      sablier.enable: "true"
+      sablier.group: convertx
       traefik.enable: "true"
+      traefik.docker.allownonrunning: "true"
+      traefik.http.middlewares.convertx-sablier.plugin.sablier.group: "convertx"
+      traefik.http.middlewares.convertx-sablier.plugin.sablier.sablierUrl: "http://sablier:10000"
+      traefik.http.middlewares.convertx-sablier.plugin.sablier.sessionDuration: "1h"
+      traefik.http.middlewares.convertx-sablier.plugin.sablier.dynamic.displayName: "ConvertX"
+      traefik.http.middlewares.convertx-sablier.plugin.sablier.dynamic.refreshFrequency: "2s"
       traefik.http.routers.convertx.rule: "Host(`{{ convertx_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.convertx.loadbalancer.server.port: "3000"
-      traefik.http.routers.convertx.middlewares: "tinyauth@docker"
+      traefik.http.routers.convertx.middlewares: "tinyauth@docker,convertx-sablier@docker"
       com.centurylinklabs.watchtower.enable: "true"
+
+- name: Stop ConvertX Docker Container
+  ansible.builtin.command: docker stop convertx
+  changed_when: true

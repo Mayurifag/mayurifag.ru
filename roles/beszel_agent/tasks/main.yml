@@ -57,13 +57,22 @@
     volumes:
       - "{{ beszel_agent_data_directory }}:/var/lib/beszel-agent"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket:ro"
     env:
       DATA_DIR: "/var/lib/beszel-agent"
       DISABLE_SSH: "true"
       DISK_USAGE_CACHE: "{{ beszel_agent_disk_usage_cache }}"
       HUB_URL: "{{ beszel_agent_hub_url }}"
       KEY: "{{ beszel_agent_hub_info.json.key }}"
+      SKIP_GPU: "{{ beszel_agent_skip_gpu | string | lower }}"
       SYSTEM_NAME: "{{ beszel_agent_system_name }}"
       TOKEN: "{{ beszel_agent_token }}"
+    healthcheck:
+      test: ["CMD", "/agent", "health"]
+      interval: 5m
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+      start_interval: 5s
     labels:
       com.centurylinklabs.watchtower.enable: "true"

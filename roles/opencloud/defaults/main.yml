@@ -7,3 +7,11 @@ opencloud_image: "opencloudeu/opencloud-rolling:7.0.0"
 
 opencloud_data_directory: "{{ docker_home }}/opencloud"
 opencloud_files_directory: "{{ files_home }}/"
+
+opencloud_reset_state: false
+opencloud_reset_state_paths:
+  - "{{ opencloud_data_directory }}/var/nats"
+  - "{{ opencloud_data_directory }}/var/cache"
+  - "{{ opencloud_data_directory }}/var/search"
+  - "{{ opencloud_data_directory }}/var/thumbnails"
+  - "{{ opencloud_files_directory | regex_replace('/+$', '') }}/changes"

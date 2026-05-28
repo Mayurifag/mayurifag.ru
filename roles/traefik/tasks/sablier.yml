@@ -1,0 +1,19 @@
+---
+- name: Sablier Docker Container
+  community.docker.docker_container:
+    name: sablier
+    image: sablierapp/sablier:1.12.0
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: 128m
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    command:
+      - start
+      - --provider.name=docker
+      - --provider.docker.strategy=stop
+    networks:
+      - name: "web"
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
