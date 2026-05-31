@@ -3,8 +3,10 @@ mus_enabled: true
 
 mus_docker_image: ghcr.io/mayurifag/mus:latest
 mus_subdomain: "mus"
+mus_data_directory: "{{ docker_home }}/mus"
 mus_music_directory: "/home/{{ admin_username }}/music_folder/"
 
-mus_memory: 1g
+mus_memory: 256m
+mus_cpus: 1
 
 mus_gemini_api_key: ""

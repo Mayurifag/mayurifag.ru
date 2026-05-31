@@ -1,4 +1,10 @@
 ---
+- name: Create mus Data Directory
+  ansible.builtin.file:
+    path: "{{ mus_data_directory }}"
+    state: directory
+    mode: "0755"
+
 - name: Setup mus Docker Container
   community.docker.docker_container:
     name: mus
@@ -6,12 +12,14 @@
     pull: true
     recreate: true
     volumes:
+      - "{{ mus_data_directory }}:/app_data/.cache:rw"
       - "{{ mus_music_directory }}:/app_data/music:rw"
     restart_policy: unless-stopped
     # security_opts: ["apparmor:unconfined"]
     networks:
       - name: "web"
     memory: "{{ mus_memory }}"
+    cpus: "{{ mus_cpus }}"
     env:
       GEMINI_API_KEY: "{{ mus_gemini_api_key }}"
     labels:
