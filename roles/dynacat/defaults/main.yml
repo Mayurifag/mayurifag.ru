@@ -1,7 +1,7 @@
 ---
 dynacat_enabled: true
 dynacat_subdomain: "rss"
-dynacat_image: "ghcr.io/panonim/dynacat:beta-c3fae9c"
+dynacat_image: "ghcr.io/panonim/dynacat:2.3.1"
 dynacat_memory: "256m"
 dynacat_data_directory: "{{ docker_home }}/dynacat"
 

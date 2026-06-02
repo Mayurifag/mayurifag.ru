@@ -3,7 +3,7 @@ opencloud_enabled: true
 
 opencloud_subdomain: "cloud"
 
-opencloud_image: "opencloudeu/opencloud-rolling:7.0.0"
+opencloud_image: "opencloudeu/opencloud-rolling:7.1.0"
 
 opencloud_data_directory: "{{ docker_home }}/opencloud"
 opencloud_files_directory: "{{ files_home }}/"
