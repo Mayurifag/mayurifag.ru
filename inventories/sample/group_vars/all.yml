@@ -65,6 +65,7 @@ docker_daemon_options:
 
 swap_enabled: true
 mayurifag_github_io_enabled: true
+mise_enabled: true
 docker_enabled: true
 
 mus_enabled: true

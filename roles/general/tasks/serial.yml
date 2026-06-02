@@ -1,0 +1,35 @@
+---
+- name: Check tty1 console device
+  ansible.builtin.stat:
+    path: /dev/tty1
+  register: general_tty1
+
+- name: Detect primary serial console
+  ansible.builtin.command:
+    argv:
+      - awk
+      - "/^ttyS[0-9]+/ && $0 ~ /\\(.*p.*\\)/ { print $1; exit }"
+      - /proc/consoles
+  register: general_primary_serial_console
+  changed_when: false
+
+- name: Enable tty1 getty service
+  ansible.builtin.systemd_service:
+    name: getty@tty1.service
+    enabled: yes
+    state: started
+  when: general_tty1.stat.exists
+
+- name: Enable primary serial getty service
+  ansible.builtin.systemd_service:
+    name: "serial-getty@{{ general_primary_serial_console.stdout }}.service"
+    enabled: yes
+    state: started
+  when: general_primary_serial_console.stdout | length > 0
+
+- name: Disable unusable ttyS0 serial getty service
+  ansible.builtin.systemd_service:
+    name: serial-getty@ttyS0.service
+    enabled: no
+    state: stopped
+  when: general_primary_serial_console.stdout != 'ttyS0'

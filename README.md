@@ -77,12 +77,13 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 
 ## TODO
 
-* [ ] Check if post_install_messages work and move POST_INSTALL.md there
-* [ ] cheatsheet on ssh opening.
-  * [ ] Output CPU/RAM/disk usage.
-  * [ ] dumbfile size and aliases. Other useful aliases. What else?
-* [ ] dysk instead of default du dh??
-* [ ] Extract dns into another role?
+* [ ] Migrate to debian 13
+  * [ ] Upgrade everything
+  * [ ] OpenSSH: add `PerSourcePenalties`, stricter other options
+  * [ ] cheatsheet on ssh opening.
+    * [ ] Output CPU/RAM/disk usage.
+    * [ ] dumbfile size and aliases. Other useful aliases. What else?
+  * [ ] dysk instead of default du dh??
 
 ### On hold
 
@@ -108,7 +109,9 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 ### Thinking if I need it / probably wont do - ideas / notes
 
 * [ ] try <https://dockhand.pro/manual/> for possible portainer alternative
+  * [ ] For now i think no need until replaces watchtower API
 * [ ] try <https://github.com/stalwartlabs/stalwart> for email
+  * [ ] Extract dns into another role?
 * [ ] Add simple secret sharing app
   * [ ] Hemmelig - too much things, analytics and so on
   * [ ] also maybe url shorten like <https://github.com/anhostfr/nah.pet>

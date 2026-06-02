@@ -22,6 +22,11 @@
       tags:
         - home
 
+    - role: mise
+      tags:
+        - mise
+      when: (mise_enabled | default(False))
+
     - role: geerlingguy.docker
       tags:
         - docker

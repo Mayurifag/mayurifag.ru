@@ -1,0 +1,4 @@
+[tools]
+{% for tool in mise_tools %}
+{{ tool.name }} = {{ tool.version | to_json }}
+{% endfor %}

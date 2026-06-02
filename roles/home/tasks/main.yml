@@ -5,7 +5,8 @@
     dest: "/home/{{ admin_username }}/.bashrc"
     owner: "{{ admin_username }}"
     group: "{{ admin_username }}"
-    mode: "0644"
+    mode: "0600"
+  no_log: "{{ opencode_environment_variables | length > 0 }}"
 
 - name: Apply bash settings for root user
   ansible.builtin.template:
@@ -13,7 +14,8 @@
     dest: "/root/.bashrc"
     owner: root
     group: root
-    mode: "0644"
+    mode: "0600"
+  no_log: "{{ opencode_environment_variables | length > 0 }}"
 
 - name: Ensure .config/lazydocker directory exists for admin user
   ansible.builtin.file:

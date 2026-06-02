@@ -1,0 +1,107 @@
+---
+- name: Ensure apt keyring directory exists
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Add mise apt signing key
+  ansible.builtin.get_url:
+    url: https://mise.en.dev/gpg-key.pub
+    dest: /etc/apt/keyrings/mise-archive-keyring.asc
+    mode: "0644"
+
+- name: Add mise apt repository
+  ansible.builtin.deb822_repository:
+    name: mise
+    types:
+      - deb
+    uris:
+      - https://mise.en.dev/deb
+    suites:
+      - stable
+    components:
+      - main
+    signed_by: /etc/apt/keyrings/mise-archive-keyring.asc
+    state: present
+    install_python_debian: true
+  notify: Update apt-cache
+
+- name: Flush mise repository handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Install mise
+  ansible.builtin.apt:
+    name: mise
+    state: present
+
+- name: Ensure mise config directory exists
+  ansible.builtin.file:
+    path: /etc/mise
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Configure system mise tools
+  ansible.builtin.template:
+    src: config.toml.j2
+    dest: /etc/mise/config.toml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Remove obsolete mise profile script
+  ansible.builtin.file:
+    path: /etc/profile.d/mise.sh
+    state: absent
+
+- name: Remove legacy direct tool installs
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /opt/bun
+    - /usr/local/bin/bun
+    - /usr/local/bin/opencode
+    - /usr/local/bin/lazydocker
+
+- name: Install mise packages
+  ansible.builtin.command:
+    argv:
+      - mise
+      - install
+      - --yes
+      - --system
+  register: mise_install
+  changed_when: >-
+    'installed' in mise_install.stdout or
+    'installing' in mise_install.stdout or
+    'mise ' in mise_install.stdout
+
+- name: Ensure OpenCode config directories exist
+  ansible.builtin.file:
+    path: "{{ item.home }}/.config/opencode"
+    state: directory
+    owner: "{{ item.name }}"
+    group: "{{ item.group }}"
+    mode: "0700"
+  loop: "{{ mise_opencode_users }}"
+
+- name: Configure OpenCode
+  ansible.builtin.template:
+    src: opencode.json.j2
+    dest: "{{ item.home }}/.config/opencode/opencode.json"
+    owner: "{{ item.name }}"
+    group: "{{ item.group }}"
+    mode: "0600"
+  loop: "{{ mise_opencode_users }}"
+
+- name: Configure OpenCode server instructions
+  ansible.builtin.template:
+    src: AGENTS.md.j2
+    dest: "{{ item.home }}/AGENTS.md"
+    owner: "{{ item.name }}"
+    group: "{{ item.group }}"
+    mode: "0644"
+  loop: "{{ mise_opencode_users }}"

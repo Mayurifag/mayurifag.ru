@@ -22,10 +22,20 @@
     shell: /bin/bash
 
 - name: Set admin user password
-  ansible.builtin.command: 'echo "{{ admin_username }}:{{ admin_userpassword }}" | chpasswd'
+  ansible.builtin.command:
+    argv:
+      - chpasswd
+    stdin: "{{ admin_username }}:{{ admin_userpassword }}"
+  no_log: true
+  changed_when: true
 
 - name: Set root password
-  ansible.builtin.command: 'echo "root:{{ root_userpassword }}" | chpasswd'
+  ansible.builtin.command:
+    argv:
+      - chpasswd
+    stdin: "root:{{ root_userpassword }}"
+  no_log: true
+  changed_when: true
 
 - name: Create user .ssh directory
   ansible.builtin.file:

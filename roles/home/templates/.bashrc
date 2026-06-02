@@ -1,6 +1,12 @@
 # EXPORTS
 export EDITOR=vi
 export PATH="$HOME/.local/bin:$PATH"
+{% for name, value in opencode_environment_variables.items() %}
+export {{ name }}={{ value | quote }}
+{% endfor %}
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate bash)"
+fi
 
 ###########
 # ALIASES #
@@ -37,7 +43,10 @@ backup() { cp "$1"{,.bak}; }
 
 unalias c 2>/dev/null
 c() {
-  IS_SANDBOX=1 claude --dangerously-skip-permissions "$@"
+  opencode "$@"
+}
+a() {
+  opencode --agent fast --prompt "$*"
 }
 
 ###########
