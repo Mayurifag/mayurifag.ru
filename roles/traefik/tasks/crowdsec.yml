@@ -201,6 +201,13 @@
     mode: "0644"
   when: crowdsec_firewall_sync_enabled
 
+- name: Remove legacy CrowdSec apt source
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/crowdsec_crowdsec.list
+    state: absent
+  register: crowdsec_legacy_apt_repository
+  when: crowdsec_firewall_sync_enabled
+
 - name: Add CrowdSec apt repository
   ansible.builtin.deb822_repository:
     name: crowdsec_crowdsec
@@ -223,7 +230,7 @@
     update_cache: true
   when:
     - crowdsec_firewall_sync_enabled
-    - crowdsec_apt_repository.changed
+    - crowdsec_apt_repository.changed or crowdsec_legacy_apt_repository.changed
 
 - name: Install CrowdSec firewall bouncer
   ansible.builtin.apt:

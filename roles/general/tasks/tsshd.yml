@@ -11,6 +11,12 @@
     dest: /etc/apt/keyrings/trzsz.asc
     mode: "0644"
 
+- name: Remove legacy trzsz apt source
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/trzsz.list
+    state: absent
+  notify: Update apt-cache
+
 - name: Add trzsz apt repository
   ansible.builtin.deb822_repository:
     name: trzsz

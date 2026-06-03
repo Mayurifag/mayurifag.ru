@@ -12,3 +12,8 @@
 - name: Update apt-cache
   ansible.builtin.apt:
     update_cache: yes
+
+- name: Reload AppArmor
+  ansible.builtin.systemd:
+    name: apparmor
+    state: reloaded

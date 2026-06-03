@@ -59,3 +59,11 @@
     name: rsyslog
     state: started
     enabled: yes
+
+- name: Allow dhclient to execute true under AppArmor
+  ansible.builtin.copy:
+    dest: /etc/apparmor.d/local/usr.sbin.dhclient
+    content: |
+      /{,usr/}bin/true rix,
+    mode: "0644"
+  notify: Reload AppArmor
