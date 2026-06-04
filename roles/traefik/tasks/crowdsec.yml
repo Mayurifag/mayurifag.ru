@@ -306,10 +306,32 @@
     firewall_bouncer_api_key: "{{ firewall_bouncer_key_slurp.content | b64decode | trim }}"
   when: crowdsec_firewall_sync_enabled
 
+- name: Create CrowdSec firewall bouncer systemd drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/crowdsec-firewall-bouncer.service.d
+    state: directory
+    mode: "0755"
+  when: crowdsec_firewall_sync_enabled
+
+- name: Configure CrowdSec firewall bouncer startup ordering
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/crowdsec-firewall-bouncer.service.d/override.conf
+    content: |
+      [Unit]
+      After=docker.service
+      Requires=docker.service
+
+      [Service]
+      ExecStartPre=/bin/sh -c 'for i in $(seq 1 60); do curl -sS -o /dev/null http://127.0.0.1:8080/ && exit 0; sleep 2; done; exit 1'
+    mode: "0644"
+  register: firewall_bouncer_systemd_override
+  when: crowdsec_firewall_sync_enabled
+
 - name: Enable CrowdSec firewall bouncer
   ansible.builtin.systemd_service:
     name: crowdsec-firewall-bouncer
     enabled: true
+    daemon_reload: "{{ firewall_bouncer_systemd_override.changed }}"
     state: "{{ 'restarted' if firewall_bouncer_config.changed else 'started' }}"
   when: crowdsec_firewall_sync_enabled
 

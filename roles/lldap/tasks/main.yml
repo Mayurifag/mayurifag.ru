@@ -28,6 +28,7 @@
     env:
       LLDAP_JWT_SECRET: "{{ lldap_jwt_secret }}"
       LLDAP_KEY_SEED: "{{ lldap_key_seed }}"
+      LLDAP_KEY_FILE: ""
       LLDAP_LDAP_BASE_DN: "{{ lldap_base_dn }}"
       LLDAP_LDAP_USER_PASS: "{{ admin_userldappassword }}"
       LLDAP_LDAP_USER_EMAIL: "lldap_admin@{{ server_hostname }}"
@@ -62,6 +63,7 @@
     env:
       LLDAP_JWT_SECRET: "{{ lldap_jwt_secret }}"
       LLDAP_KEY_SEED: "{{ lldap_key_seed }}"
+      LLDAP_KEY_FILE: ""
       LLDAP_LDAP_BASE_DN: "{{ lldap_base_dn }}"
       LLDAP_LDAP_USER_PASS: "{{ admin_userldappassword }}"
       LLDAP_LDAP_USER_EMAIL: "lldap_admin@{{ server_hostname }}"
