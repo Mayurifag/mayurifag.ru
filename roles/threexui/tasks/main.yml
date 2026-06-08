@@ -71,6 +71,12 @@
       traefik.http.services.threexui-panel.loadbalancer.server.port: "2053"
       traefik.http.routers.threexui-panel.priority: "1"
 
+      # Noisy dashboard polling endpoints
+      traefik.http.routers.threexui-panel-polling.rule: "Host(`{{ threexui_panel_subdomain }}.{{ server_hostname }}`) && ({{ threexui_panel_polling_accesslog_excluded_ips | map('regex_replace', '^(.*)$', 'ClientIP(`\\1`)') | join(' || ') }}) && (Path(`/panel/api/server/status`) || Path(`/panel/api/inbounds/list`) || Path(`/panel/api/clients/onlines`) || Path(`/panel/api/clients/lastOnline`))"
+      traefik.http.routers.threexui-panel-polling.service: "threexui-panel"
+      traefik.http.routers.threexui-panel-polling.priority: "20"
+      traefik.http.routers.threexui-panel-polling.observability.accesslogs: "false"
+
       # Subscription on /sub/ path
       traefik.http.routers.threexui-sub.rule: "Host(`{{ threexui_panel_subdomain }}.{{
         server_hostname }}`) && PathPrefix(`/sub/`)"
