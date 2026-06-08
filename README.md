@@ -56,7 +56,6 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | Beszel              | `beszel`     | app  | +          |
 | ConvertX            | `convert`    | ldap | +          |
 | EchoIP              | `ip`         | none | +          |
-| Gitea               | `git`        | app  |            |
 | Dynacat             | `rss`        | ldap | +          |
 | Mini-QR             | `qr`         | ldap | +          |
 | mayurifag.github.io |              | none | +          |

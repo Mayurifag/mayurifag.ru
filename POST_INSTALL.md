@@ -91,10 +91,3 @@ missing: check `docker logs traefik-certs-dumper` and
 - Save.
 
 Subscribe in [Happ](https://www.happ.su/main/). Both inbounds in one sub.
-
-## Gitea
-
-Requires setup after installation:
-
-- Create admin user
-- Add SSH and GPG keys

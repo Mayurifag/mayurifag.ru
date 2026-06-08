@@ -4,6 +4,23 @@
 status, configs). Never mutate server state. For changes, edit ansible files in repo and deploy via
 `make deploy <role>`. You maybe need to override `RemoteCommand=none`.
 
+## Delete requests
+
+Deleting a service/role/app is destructive. Before editing or mutating servers, present a concrete plan and wait for
+explicit user approval.
+
+Approved deletion plan must cover:
+
+- Remove all repo references: playbooks, roles, defaults, inventory vars, templates, docs, scripts, tests.
+- Preserve inventory parity between sample and my-provision files.
+- Run repo validation, usually `make ci`.
+- Clean leftovers on both production hosts, `nnnnn` and `mayurifag`: stop/remove containers, remove service data dirs,
+  remove service Docker images, and remove deployed config references.
+- Deploy affected roles after config/template removals, for example `make deploy HOST=nnnnn <role>` and
+  `make deploy HOST=mayurifag <role>`.
+- Verify both hosts have no service containers, images, data dirs, or deployed config references left.
+- Never delete unrelated shared/persistent data unless the user explicitly names it in the approved plan.
+
 ## Inventory parity
 
 `inventories/sample/group_vars/all.yml` and `inventories/my-provision/group_vars/all.yml` must stay structurally

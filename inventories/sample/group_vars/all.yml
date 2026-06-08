@@ -96,10 +96,6 @@ traefik_subdomain: "traefik"
 crowdsec_enroll_key: "change_me"
 crowdsec_whitelist_operator_ip: true
 
-gitea_enabled: true
-gitea_subdomain: "git"
-gitea_admin_password: "change_this"
-
 watchtower_enabled: true
 watchtower_subdomain: "watchtower"
 watchtower_http_api_token: change_this

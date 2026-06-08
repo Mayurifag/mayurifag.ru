@@ -94,11 +94,6 @@
         - opencloud
       when: (opencloud_enabled | default(False))
 
-    - role: gitea
-      tags:
-        - gitea
-      when: (gitea_enabled | default(False))
-
     - role: bentopdf
       tags:
         - bentopdf
