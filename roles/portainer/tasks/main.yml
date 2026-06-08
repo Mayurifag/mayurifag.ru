@@ -1,11 +1,4 @@
 ---
-- name: Remove Portainer Directories
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    - "{{ portainer_data_directory }}"
-
 - name: Create Portainer Directories
   ansible.builtin.file:
     path: "{{ item }}"
