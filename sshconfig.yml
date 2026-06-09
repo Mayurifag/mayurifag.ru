@@ -49,6 +49,10 @@
     - name: Gather facts now that Python is guaranteed to be installed
       ansible.builtin.setup:
 
-    - name: Run SSH and User setup
+    - name: Run User setup
       ansible.builtin.include_role:
-        name: ssh_and_user_bootstrap
+        name: users
+
+    - name: Run SSH setup
+      ansible.builtin.include_role:
+        name: ssh

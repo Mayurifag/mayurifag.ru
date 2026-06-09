@@ -18,6 +18,10 @@
       tags:
         - general
 
+    - role: ssh
+      tags:
+        - ssh
+
     - role: debian13
       tags:
         - never

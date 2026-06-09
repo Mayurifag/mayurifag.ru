@@ -1,0 +1,38 @@
+---
+- name: Make sure we have a 'wheel' group
+  ansible.builtin.group:
+    name: wheel
+    state: present
+
+- name: Allow 'wheel' group to have passwordless sudo
+  ansible.builtin.lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%wheel"
+    line: "%wheel ALL=(ALL) NOPASSWD: ALL"
+    validate: "visudo -cf %s"
+
+- name: Add admin user with wheel group
+  ansible.builtin.user:
+    name: "{{ admin_username }}"
+    groups: wheel
+    append: yes
+    state: present
+    createhome: yes
+    shell: /bin/bash
+
+- name: Set admin user password
+  ansible.builtin.command:
+    argv:
+      - chpasswd
+    stdin: "{{ admin_username }}:{{ admin_userpassword }}"
+  no_log: true
+  changed_when: true
+
+- name: Set root password
+  ansible.builtin.command:
+    argv:
+      - chpasswd
+    stdin: "root:{{ root_userpassword }}"
+  no_log: true
+  changed_when: true

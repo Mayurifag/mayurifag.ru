@@ -2,7 +2,7 @@
 - name: Sablier Docker Container
   community.docker.docker_container:
     name: sablier
-    image: sablierapp/sablier:1.12.0
+    image: sablierapp/sablier:1.13.0
     pull: true
     recreate: true
     restart_policy: unless-stopped

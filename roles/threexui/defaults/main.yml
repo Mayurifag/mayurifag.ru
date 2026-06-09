@@ -2,7 +2,7 @@
 threexui_enabled: true
 
 threexui_data_directory: "{{ docker_home }}/3x-ui"
-threexui_docker_image: ghcr.io/mhsanaei/3x-ui:v3.1.0
+threexui_docker_image: ghcr.io/mhsanaei/3x-ui:v3.2.8
 
 threexui_panel_subdomain: "3x"
 threexui_panel_polling_accesslog_excluded_ips: "{{ groups['all'] | map('extract', hostvars, 'ansible_host') | list }}"

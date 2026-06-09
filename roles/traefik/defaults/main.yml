@@ -1,7 +1,7 @@
 ---
 traefik_enabled: true
 
-traefik_docker_image: traefik:v3.7.1
+traefik_docker_image: traefik:v3.7.4
 traefik_log_level: "INFO"
 traefik_subdomain: "traefik"
 

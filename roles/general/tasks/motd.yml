@@ -1,0 +1,43 @@
+---
+- name: Ensure update-motd directory exists
+  ansible.builtin.file:
+    path: /etc/update-motd.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install MOTD renderer dependencies
+  ansible.builtin.apt:
+    name: gum
+    state: present
+
+- name: Configure system status MOTD
+  ansible.builtin.template:
+    src: update-motd.d/20-system-status.j2
+    dest: /etc/update-motd.d/20-system-status
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Check default uname MOTD script
+  ansible.builtin.stat:
+    path: /etc/update-motd.d/10-uname
+    get_checksum: false
+    get_attributes: false
+    get_mime: false
+  register: motd_uname_script
+
+- name: Disable default uname MOTD script
+  ansible.builtin.file:
+    path: /etc/update-motd.d/10-uname
+    mode: "0644"
+  when: motd_uname_script.stat.exists
+
+- name: Clear static MOTD boilerplate
+  ansible.builtin.copy:
+    dest: /etc/motd
+    content: ""
+    owner: root
+    group: root
+    mode: "0644"

@@ -12,6 +12,7 @@
   ],
   "noBanner": true,
   "ignores": [
-    ".ansible/roles/**"
+    ".ansible/roles/**",
+    "**/node_modules/**"
   ]
 }

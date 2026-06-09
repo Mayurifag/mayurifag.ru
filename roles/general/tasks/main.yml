@@ -36,8 +36,21 @@
 - name: Include maintenance tasks
   ansible.builtin.include_tasks: maintenance.yml
 
+- name: Include MOTD tasks
+  ansible.builtin.include_tasks:
+    file: motd.yml
+    apply:
+      tags: motd
+  tags:
+    - motd
+
 - name: Include dumbfile tasks
-  ansible.builtin.include_tasks: dumbfile.yml
+  ansible.builtin.include_tasks:
+    file: dumbfile.yml
+    apply:
+      tags: dumbfile
+  tags:
+    - dumbfile
 
 - name: Include reboot tasks
   ansible.builtin.include_tasks: reboot.yml

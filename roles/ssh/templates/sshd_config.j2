@@ -9,9 +9,13 @@ GSSAPIAuthentication no
 # Permit only admin_username and only via key
 PermitEmptyPasswords no
 MaxAuthTries 3
-LoginGraceTime 20
-MaxStartups 15:30:75
+LoginGraceTime 10
+MaxStartups 10:30:30
 PerSourceMaxStartups 5
+PerSourcePenalties authfail:30s noauth:10s grace-exceeded:1m refuseconnection:1m max:1h min:10s
+{% if ssh_penalty_exempt_list | default([]) | length > 0 %}
+PerSourcePenaltyExemptList {{ ssh_penalty_exempt_list | join(',') }}
+{% endif %}
 PubkeyAuthentication yes
 PasswordAuthentication no
 KbdInteractiveAuthentication no

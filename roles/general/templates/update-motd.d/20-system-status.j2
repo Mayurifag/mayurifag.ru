@@ -1,0 +1,64 @@
+#!/bin/sh
+
+DUMB_FILE=/var/dumb/dumbfile
+
+tmp=$(mktemp)
+cpu_tmp=$(mktemp)
+ram_tmp=$(mktemp)
+trap 'rm -f "$tmp" "$cpu_tmp" "$ram_tmp"' EXIT INT HUP TERM
+
+cols=$(tput cols 2>/dev/null || printf 100)
+[ "$cols" -lt 76 ] && cols=76
+width=$cols
+content_width=$((width - 8))
+col_width=$(((content_width - 4) / 2))
+
+pair() {
+  printf "%-${col_width}.${col_width}s    %-${col_width}.${col_width}s\n" "$1" "$2"
+}
+
+updates=$(apt list --upgradable 2>/dev/null | awk 'NR > 1 {count++} END {print count + 0}')
+host=$(hostname -f 2>/dev/null || hostname)
+os_name=$(awk -F= '/^PRETTY_NAME=/ {gsub(/"/, "", $2); print $2}' /etc/os-release 2>/dev/null)
+kernel=$(uname -r)
+uptime_text=$(uptime -p 2>/dev/null | sed 's/^up //')
+load_text=$(cut -d' ' -f1-3 /proc/loadavg)
+cpu_cores=$(nproc 2>/dev/null || printf '?')
+cpu_model=$(awk -F': ' '/model name/ {print $2; exit}' /proc/cpuinfo 2>/dev/null | sed 's/ CPU//; s/ Processor//')
+[ -n "$cpu_model" ] || cpu_model="CPU"
+memory=$(free -h | awk '/^Mem:/ {printf "%s / %s used, %s free", $3, $2, $7}')
+root_disk=$(df -h / | awk 'NR == 2 {printf "%s / %s used, %s free", $3, $2, $4}')
+
+if [ -f "$DUMB_FILE" ]; then
+  dumbfile="$(ls -lh "$DUMB_FILE" | awk '{print $5}') at $DUMB_FILE"
+else
+  dumbfile="missing at $DUMB_FILE"
+fi
+
+{
+  gum style --foreground 45 --bold "$host"
+  printf "\n"
+  pair "SYSTEM" "RESOURCES"
+  pair "OS       $os_name" "Load     $load_text"
+  pair "Kernel   $kernel" "CPU      $cpu_cores x $cpu_model"
+  pair "Uptime   $uptime_text" "RAM      $memory"
+  pair "Updates  $updates packages" "Root     $root_disk"
+  printf "%-${content_width}.${content_width}s\n" "Dumbfile $dumbfile"
+  printf "\n"
+} > "$tmp"
+
+ps -eo pid,comm,pcpu --sort=-pcpu | awk 'NR > 1 && NR <= 6 {printf "%s (%s) %s%%\n", $2, $1, $3}' > "$cpu_tmp"
+ps -eo pid,comm,pmem,rss --sort=-rss | awk 'NR > 1 && NR <= 6 {printf "%s (%s) %s%% / %.0fM\n", $2, $1, $3, $4 / 1024}' > "$ram_tmp"
+
+{
+  pair "TOP CPU" "TOP RAM"
+  paste "$cpu_tmp" "$ram_tmp" | awk -F '\t' -v col="$col_width" '{printf "%-*.*s    %-*.*s\n", col, col, $1, col, col, $2}'
+} >> "$tmp"
+
+gum style \
+  --border rounded \
+  --border-foreground 63 \
+  --foreground 252 \
+  --padding "1 2" \
+  --width "$width" \
+  "$(cat "$tmp")"

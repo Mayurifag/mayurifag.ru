@@ -140,14 +140,27 @@
 
 - name: Compute Traefik bouncer state
   ansible.builtin.set_fact:
+    traefik_bouncer_records: >-
+      {{ crowdsec_bouncers_list.stdout | from_json |
+        selectattr('name', 'equalto', 'traefik-bouncer') | list }}
     traefik_bouncer_names: >-
       {{ crowdsec_bouncers_list.stdout | from_json | map(attribute='name') |
         select('match', '^traefik-bouncer(@.*)?$') | list }}
 
+- name: Select active Traefik bouncer record
+  ansible.builtin.set_fact:
+    traefik_bouncer_current: "{{ traefik_bouncer_records | first | default({}) }}"
+
+- name: Compute active Traefik bouncer status
+  ansible.builtin.set_fact:
+    traefik_bouncer_healthy: >-
+      {{ (traefik_bouncer_records | length) == 1
+        and not (traefik_bouncer_current.revoked | default(true) | bool)
+        and (traefik_bouncer_current.last_pull | default('', true) | length) > 0 }}
+
 - name: Provision Traefik bouncer
   when: >-
-    not bouncer_key_file.stat.exists or
-    'traefik-bouncer' not in traefik_bouncer_names or
+    not bouncer_key_file.stat.exists or not traefik_bouncer_healthy or
     (traefik_bouncer_names | difference(['traefik-bouncer']) | length) > 0
   block:
     - name: Delete existing Traefik bouncers
@@ -191,6 +204,7 @@
     src: crowdsec/traefik_crowdsec.toml.j2
     dest: "{{ traefik_dynamic_configs_directory }}/crowdsec.toml"
     mode: "0644"
+  register: crowdsec_traefik_middleware_config
   vars:
     crowdsec_api_key: "{{ bouncer_key_slurp.content | b64decode | trim }}"
 

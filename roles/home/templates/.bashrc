@@ -17,9 +17,14 @@ alias apt='sudo apt'
 alias aptclean='sudo apt autoremove && sudo apt clean && sudo apt autoclean'
 alias ctop='docker run --rm -it --name=ctop --volume /var/run/docker.sock:/var/run/docker.sock:ro quay.io/vektorlab/ctop:latest'
 alias disksize='df -h --total | grep -v tmpfs'
+alias dlogs='docker logs --tail=200 -f'
+alias dps='docker ps --format "table {{ '{{' }}.Names{{ '}}' }}\t{{ '{{' }}.Status{{ '}}' }}\t{{ '{{' }}.Ports{{ '}}' }}"'
+alias dstats='docker stats --no-stream'
+alias failed='sudo systemctl --failed --no-pager'
 alias dusize='sudo ncdu /'
 alias grep='grep --color=auto'
 alias install='sudo apt install'
+alias journal='sudo journalctl -xeu'
 alias lzd='lazydocker'
 alias lips='echo "Local IP: $(hostname -I | cut -d" " -f1)"; echo "Public IP: $(curl -s ifconfig.me)"'
 alias ls='ls -AlhF --color=auto --group-directories-first'
@@ -31,6 +36,8 @@ alias shutdown='sudo shutdown now'
 alias update='sudo apt update && sudo apt upgrade -y'
 alias yabs='curl -sL https://yabs.sh | bash'
 alias systemctl='sudo systemctl'
+alias ch='cheatsheet'
+alias status='cheatsheet'
 # CrowdSec
 alias cscli='docker exec crowdsec cscli'
 
@@ -40,6 +47,16 @@ alias cscli='docker exec crowdsec cscli'
 
 mkcd() { mkdir -p "$1" && cd "$1"; }
 backup() { cp "$1"{,.bak}; }
+
+cheatsheet() {
+  if [ -x /etc/update-motd.d/20-system-status ]; then
+    /etc/update-motd.d/20-system-status
+  else
+    uptime
+    free -h
+    df -h --total | grep -v tmpfs
+  fi
+}
 
 unalias c 2>/dev/null
 c() {
@@ -111,6 +128,16 @@ DUMB_FILE="/var/dumb/dumbfile"
 # Helper to print stats (KISS)
 _dumb_info() {
   echo "Free space: $(df -h "${DUMB_FILE%/*}" | awk 'NR==2 {print $4}')"
+}
+
+dumbinfo() {
+  if [ -f "$DUMB_FILE" ]; then
+    ls -lh "$DUMB_FILE"
+  else
+    echo "File '$DUMB_FILE' does not exist."
+  fi
+
+  _dumb_info
 }
 
 createdumb() {

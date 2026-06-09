@@ -1,7 +1,7 @@
 ---
 name: default_ip_remediation
 filters:
-  - "Alert.Remediation == true && Alert.GetScope() == 'Ip'"
+  - "(Alert.Remediation == true || Alert.GetScenario() startsWith 'crowdsecurity/vpatch-') && Alert.GetScope() == 'Ip'"
 decisions:
   - type: ban
     duration: {{ crowdsec_ban_duration }}

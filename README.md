@@ -77,12 +77,11 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 ## TODO
 
 * [ ] Migrate to debian 13
-  * [ ] Upgrade everything
-  * [ ] OpenSSH: add `PerSourcePenalties`, stricter other options
   * [ ] cheatsheet on ssh opening.
     * [ ] Output CPU/RAM/disk usage.
     * [ ] dumbfile size and aliases. Other useful aliases. What else?
-  * [ ] dysk instead of default du dh??
+* [ ] ufw + agents rules about it
+* [ ] Move adding a service md to skills
 
 ### On hold
 

@@ -34,7 +34,9 @@
     networks:
       - name: "web"
     memory: "{{ traefik_memory }}"
-    recreate: "{{ template_config.changed | default(false) }}"
+    recreate: >-
+      {{ template_config.changed | default(false) or
+        crowdsec_traefik_middleware_config.changed | default(false) }}
     stop_timeout: 30
     labels:
       traefik.enable: "true"

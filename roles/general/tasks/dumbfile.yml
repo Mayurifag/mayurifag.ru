@@ -4,9 +4,9 @@
   ansible.builtin.file:
     path: /var/dumb
     state: directory
-    mode: "0700"
-    owner: root
-    group: root
+    mode: "0755"
+    owner: "{{ admin_username }}"
+    group: "{{ admin_username }}"
 
 - name: Check if dumbfile exists
   ansible.builtin.stat:
@@ -25,3 +25,11 @@
   args:
     executable: /bin/bash
   when: not dumbfile_stat.stat.exists
+
+- name: Ensure dumbfile can be removed by admin user
+  ansible.builtin.file:
+    path: /var/dumb/dumbfile
+    state: file
+    owner: "{{ admin_username }}"
+    group: "{{ admin_username }}"
+    mode: "0644"
