@@ -5,13 +5,14 @@ description: Use ONLY for /full-upgrade or full Docker service/container upgrade
 
 # Full Upgrade
 
-A request to fully upgrade Docker containers across servers is high-risk. Do not mutate servers before an explicit approved plan.
+A request to fully upgrade Docker containers across servers is high-risk. Do not mutate servers before an explicit approved plan. If scope is empty - upgrade everything everywhere.
 
 Discovery phase:
 
 - Inspect every production host read-only over SSH: running containers, images, compose/Ansible source, pinned tags, Watchtower labels, healthchecks, restart counts, current versions, resource usage, recent logs, kernel/OS/package versions, and non-container software managed by Ansible.
 - Distinguish auto-updated components from components that are not auto-updated. Produce a per-host list with service/component name, current version/tag/digest, latest upstream stable version/tag/digest, owning role, update mechanism, and risk notes.
 - A full Docker/service upgrade means checking every configured image tag/version and every configured plugin/extension/package/software version in the repo, then updating Ansible defaults/tasks/templates to newer upstream stable versions when they exist. This includes Traefik plugins such as the CrowdSec bouncer plugin, app-specific plugins/extensions, downloaded binaries, apt packages pinned by repo configuration, kernel/OS upgrade paths, and other non-Watchtower-managed software. Do not treat "current digest for the existing tag" as enough.
+- Treat every pin in both `requirements.yml` and `collections/requirements.yml` as mandatory upgrade scope, not just runtime service pins.
 - It is normal for some roles/services to be deployed only on specific hosts. Use each host's effective inventory variables and runtime state to decide whether a service is expected there; do not mark a role missing on one host as anomalous just because it exists elsewhere in the repo.
 - Do not include already-current images in the upgrade-candidate list. Mention them only if they have risk notes, health anomalies, or explain why no action is needed for a user-visible question.
 - Use subagents per server when useful. Each subagent must inspect only its assigned server and return findings, unknowns, and proposed service order.
