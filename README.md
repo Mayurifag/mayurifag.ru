@@ -26,7 +26,7 @@ ansible-galaxy install -r requirements.yml
 #### TL;DR
 
 ~~~sh
-make boostrap hostname # run once, its cleaning known_hosts and makes ssh configuration
+make bootstrap HOST=hostname # run once, its cleaning known_hosts and makes ssh configuration
 make deploy hostname "traefik,mus" # or make deploy-all if you are sure
 ~~~
 
@@ -73,13 +73,13 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 
 <!-- markdownlint-enable line-length -->
 
-Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info. 
+Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 
 Notes:
 
-- `ufw` also allows ssh tcp port
-- `traefik` is not autoupdated because they add breaking changes on patch versions
-- `opencloud` is not autoupdated because requires running migration scripts
+* `ufw` also allows ssh tcp port
+* `traefik` is not autoupdated because they add breaking changes on patch versions
+* `opencloud` is not autoupdated because requires running migration scripts
 
 ### On hold
 
@@ -110,7 +110,7 @@ Notes:
   * [ ] <https://madaidans-insecurities.github.io/guides/linux-hardening.html>
   * [ ] (wait for update) <https://github.com/docker/docker-bench-security>
   * [ ] (not sure) <https://github.com/quay/clair>
-  * [ ] Make connection to docker through proxy fluencelabs/docker-socket-proxy
+  * [ ] Make connection to docker through [proxy](https://github.com/wollomatic/socket-proxy)
   * [ ] <https://github.com/imthenachoman/How-To-Secure-A-Linux-Server>
 * [ ] SSH tunnel/bastion
   * [ ] Cloudflare + tailscale ips only.
@@ -120,6 +120,7 @@ Notes:
   * [ ] cf rules for spammers?
   * [ ] proxies-cfg will work fine? ssh with proxies?
 * [ ] Grimmory - for Kindle KOReader - sync progress and books download
+* [ ] Grafana/Prometheus stack
 * [ ] Track finances selfhosted
   * [ ] Has to support auto import crypto, ibkr, russian brokers, banks, georgian banks - no way today
   * [ ] Save data to opencloud

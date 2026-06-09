@@ -40,6 +40,7 @@
     status_code: [200, 409]
   register: portainer_admin_init
   changed_when: portainer_admin_init.status == 200
+  no_log: true
 
 - name: Portainer Docker Container - production without exposed ports
   community.docker.docker_container:

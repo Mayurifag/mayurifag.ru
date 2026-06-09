@@ -44,6 +44,7 @@
       traefik.http.routers.beszel.rule: "Host(`{{ beszel_hub_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.beszel.loadbalancer.server.port: "8090"
       com.centurylinklabs.watchtower.enable: "true"
+  no_log: true
 
 - name: Wait for Beszel Hub to be ready
   ansible.builtin.wait_for:

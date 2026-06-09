@@ -44,6 +44,7 @@
       traefik.http.services.traefik.loadbalancer.server.port: "8080"
       traefik.http.routers.traefik.service: "api@internal"
       traefik.http.routers.traefik.middlewares: "tinyauth@docker"
+  no_log: true
 
 - name: Ensure logrotate is installed
   ansible.builtin.apt:

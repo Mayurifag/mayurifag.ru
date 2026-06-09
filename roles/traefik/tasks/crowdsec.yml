@@ -77,6 +77,7 @@
     dest: "{{ crowdsec_config_directory }}/local_api_credentials.yaml.local"
     mode: "0600"
   register: crowdsec_local_api_credentials_local_template
+  no_log: true
 
 - name: Ensure auth.log exists
   ansible.builtin.file:
@@ -187,17 +188,20 @@
     - name: Create Traefik Bouncer
       ansible.builtin.command: docker exec crowdsec cscli bouncers add traefik-bouncer -o raw
       register: bouncer_create_out
+      no_log: true
 
     - name: Persist bouncer key
       ansible.builtin.copy:
         content: "{{ bouncer_create_out.stdout }}"
         dest: "{{ crowdsec_data_directory }}/.bouncer_key"
         mode: "0600"
+      no_log: true
 
 - name: Read persisted bouncer key
   ansible.builtin.slurp:
     src: "{{ crowdsec_data_directory }}/.bouncer_key"
   register: bouncer_key_slurp
+  no_log: true
 
 - name: Configure CrowdSec Middleware for Traefik
   ansible.builtin.template:
@@ -207,6 +211,7 @@
   register: crowdsec_traefik_middleware_config
   vars:
     crowdsec_api_key: "{{ bouncer_key_slurp.content | b64decode | trim }}"
+  no_log: true
 
 - name: Add CrowdSec apt key
   ansible.builtin.get_url:
@@ -297,18 +302,21 @@
     - name: Create firewall bouncer key
       ansible.builtin.command: docker exec crowdsec cscli bouncers add firewall-bouncer -o raw
       register: firewall_bouncer_create_out
+      no_log: true
 
     - name: Persist firewall bouncer key
       ansible.builtin.copy:
         content: "{{ firewall_bouncer_create_out.stdout }}"
         dest: "{{ crowdsec_firewall_bouncer_key_path }}"
         mode: "0600"
+      no_log: true
 
 - name: Read persisted firewall bouncer key
   ansible.builtin.slurp:
     src: "{{ crowdsec_firewall_bouncer_key_path }}"
   register: firewall_bouncer_key_slurp
   when: crowdsec_firewall_sync_enabled
+  no_log: true
 
 - name: Configure CrowdSec firewall bouncer
   ansible.builtin.template:
@@ -319,6 +327,7 @@
   vars:
     firewall_bouncer_api_key: "{{ firewall_bouncer_key_slurp.content | b64decode | trim }}"
   when: crowdsec_firewall_sync_enabled
+  no_log: true
 
 - name: Create CrowdSec firewall bouncer systemd drop-in directory
   ansible.builtin.file:

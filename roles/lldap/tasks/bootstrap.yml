@@ -8,10 +8,12 @@
       username: "admin"
       password: "{{ admin_userldappassword }}"
   register: lldap_auth_response
+  no_log: true
 
 - name: Set LLDAP Token
   ansible.builtin.set_fact:
     lldap_token: "{{ lldap_auth_response.json.token }}"
+  no_log: true
 
 - name: Get existing groups
   ansible.builtin.uri:
@@ -23,6 +25,7 @@
     body:
       query: "{ groups { id displayName } }"
   register: lldap_groups
+  no_log: true
 
 - name: Debug existing groups
   ansible.builtin.debug:
@@ -40,6 +43,7 @@
       variables:
         name: "{{ item }}"
   loop: "{{ ['lldap_strict_readonly', 'lldap_admin'] | difference(lldap_groups.json.data.groups | map(attribute='displayName') | list) }}"
+  no_log: true
 
 - name: Get existing users
   ansible.builtin.uri:
@@ -51,6 +55,7 @@
     body:
       query: "{ users { id } }"
   register: lldap_users
+  no_log: true
 
 - name: Debug existing users
   ansible.builtin.debug:
@@ -74,6 +79,7 @@
   register: create_observer_user
   changed_when: true
   failed_when: create_observer_user.status != 200 or 'errors' in create_observer_user.json
+  no_log: true
 
 - name: Set Observer User Password
   ansible.builtin.command:
@@ -111,6 +117,7 @@
   register: create_admin_user
   changed_when: true
   failed_when: create_admin_user.status != 200 or 'errors' in create_admin_user.json
+  no_log: true
 
 - name: Set Admin User Password
   ansible.builtin.command:
@@ -140,6 +147,7 @@
     body:
       query: "{ users { id groups { displayName } } }"
   register: lldap_users_details
+  no_log: true
 
 - name: Verify Admin User Exists
   ansible.builtin.assert:
@@ -157,6 +165,7 @@
     body:
       query: "{ groups { id displayName } }"
   register: lldap_groups_refresh
+  no_log: true
 
 - name: Add Observer to lldap_strict_readonly
   ansible.builtin.uri:
@@ -176,6 +185,7 @@
   when:
     - "'observer' in lldap_users_details.json.data.users | map(attribute='id') | list"
     - "'lldap_strict_readonly' not in observer_user_obj.groups | map(attribute='displayName') | list"
+  no_log: true
 
 - name: Add Admin to lldap_admin
   ansible.builtin.uri:
@@ -195,3 +205,4 @@
   when:
     - "admin_username in lldap_users_details.json.data.users | map(attribute='id') | list"
     - "'lldap_admin' not in admin_user_obj.groups | map(attribute='displayName') | list"
+  no_log: true

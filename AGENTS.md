@@ -7,6 +7,9 @@ unless intentionally public. Public exceptions require a matching UFW allow rule
 current baseline public ports are SSH, Traefik `80/tcp`, `443/tcp`, `443/udp`,
 and 3x-ui Hysteria2 UDP.
 
+Add `no_log: true` to Ansible tasks that include API tokens, passwords, bearer
+tokens, private keys, or generated secrets in module arguments.
+
 `debug on <name>` = read-only ssh inspection on host reachable via `ssh <name>`. Run diagnostic commands only (logs, status, configs). Never mutate server state. For changes, edit ansible files in repo and deploy via `make deploy <role>`. You maybe need to override `RemoteCommand=none`.
 
 Do not expose real SSH host aliases in instructions, skills, docs, or examples. Use placeholders like `<host>` or `<production-host>`; discover concrete aliases from inventory only when executing commands.

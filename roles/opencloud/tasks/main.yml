@@ -184,3 +184,4 @@
       traefik.http.middlewares.opencloud-dav.redirectregex.permanent: "true"
 
       traefik.http.routers.opencloud.middlewares: "opencloud-dav"
+  no_log: true

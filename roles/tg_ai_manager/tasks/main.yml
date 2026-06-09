@@ -35,3 +35,4 @@
       traefik.http.routers.tg_ai_manager_public.rule: "Host(`{{ tg_ai_manager_subdomain }}.{{ server_hostname }}`) && Path(`/api/rules/export`)"
       traefik.http.routers.tg_ai_manager_public.service: "tg_ai_manager"
       com.centurylinklabs.watchtower.enable: "true"
+  no_log: true

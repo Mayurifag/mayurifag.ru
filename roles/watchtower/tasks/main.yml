@@ -25,3 +25,4 @@
       traefik.http.routers.watchtower.rule: "Host(`{{ watchtower_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.watchtower.loadbalancer.server.port: "8080"
       com.centurylinklabs.watchtower.enable: "true"
+  no_log: true

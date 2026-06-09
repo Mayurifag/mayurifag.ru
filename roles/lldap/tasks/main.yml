@@ -39,6 +39,7 @@
       LLDAP_IGNORED_GROUP_ATTRIBUTES: "{{ lldap_ignored_group_attributes | to_json }}"
     ports:
       - "127.0.0.1:{{ lldap_port }}:17170"
+  no_log: true
 
 - name: Wait for LLDAP container to be healthy
   community.docker.docker_container_info:
@@ -93,3 +94,4 @@
       traefik.enable: "true"
       traefik.http.routers.lldap.rule: "Host(`{{ lldap_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.lldap.loadbalancer.server.port: "17170"
+  no_log: true

@@ -97,3 +97,4 @@
       traefik.http.services.dynacat.loadbalancer.server.port: "8080"
       traefik.http.routers.dynacat.middlewares: "tinyauth@docker"
       com.centurylinklabs.watchtower.enable: "true"
+  no_log: true

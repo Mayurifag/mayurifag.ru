@@ -28,3 +28,4 @@
       traefik.http.services.mus.loadbalancer.server.port: "8000"
       traefik.http.routers.mus.middlewares: "tinyauth@docker"
       com.centurylinklabs.watchtower.enable: "true"
+  no_log: true

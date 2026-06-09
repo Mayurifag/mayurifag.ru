@@ -15,6 +15,7 @@
     return_content: true
   register: cf_zone_lookup
   check_mode: false
+  no_log: true
 
 - name: Set Cloudflare zone facts
   ansible.builtin.set_fact:
@@ -34,6 +35,7 @@
   loop:
     - "{{ server_hostname }}"
     - "*.{{ server_hostname }}"
+  no_log: true
 
 - name: Manage SPF TXT (CF Email Routing only; hard-fail everyone else)
   community.general.cloudflare_dns:
@@ -44,6 +46,7 @@
     value: "v=spf1 include:_spf.mx.cloudflare.net -all"
     state: present
     solo: true
+  no_log: true
 
 - name: Read existing DMARC TXT (preserve CF Management rua UUID)
   ansible.builtin.uri:
@@ -53,6 +56,7 @@
     return_content: true
   register: cf_dmarc_lookup
   check_mode: false
+  no_log: true
 
 - name: Extract CF-managed DMARC rua mailto
   ansible.builtin.set_fact:
@@ -79,6 +83,7 @@
     - cf_dmarc_rua | length > 0
     - (cf_dmarc_lookup.json.result | first).content
       | replace('"', '') != cf_dmarc_desired | replace('"', '')
+  no_log: true
 
 - name: Aggregate post-install message (DMARC Management not enabled)
   ansible.builtin.set_fact:
@@ -96,6 +101,7 @@
     status_code: [200, 404]
   register: cf_catchall_lookup
   check_mode: false
+  no_log: true
 
 - name: Enable Email Routing (only when not yet enabled)
   ansible.builtin.uri:
@@ -107,6 +113,7 @@
     body: {}
     status_code: 200
   when: cf_catchall_lookup.status == 404
+  no_log: true
 
 - name: List destination addresses
   ansible.builtin.uri:
@@ -116,6 +123,7 @@
     return_content: true
   register: cf_dest_list
   check_mode: false
+  no_log: true
 
 - name: Filter existing destination for {{ admin_email }}
   ansible.builtin.set_fact:
@@ -135,6 +143,7 @@
       email: "{{ admin_email }}"
     status_code: 200
   when: cf_dest_existing | length == 0
+  no_log: true
 
 - name: Compute destination verification status
   ansible.builtin.set_fact:
@@ -169,6 +178,7 @@
   when:
     - cf_dest_verified
     - not cf_catchall_matches
+  no_log: true
 
 - name: Aggregate post-install message (unverified destination)
   ansible.builtin.set_fact:

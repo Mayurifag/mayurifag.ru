@@ -76,3 +76,4 @@
       start_interval: 5s
     labels:
       com.centurylinklabs.watchtower.enable: "true"
+  no_log: true

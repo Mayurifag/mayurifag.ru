@@ -4,10 +4,6 @@
   middlewares = ["www-strip"]
   service = "noop@internal"
   [http.routers.www-redirect.tls]
-    certResolver = "letsencrypt"
-    [[http.routers.www-redirect.tls.domains]]
-      main = "{{ server_hostname }}"
-      sans = ["*.{{ server_hostname }}"]
 
 [http.middlewares.www-strip.redirectregex]
   regex = "^https?://www\\.(.+)"
