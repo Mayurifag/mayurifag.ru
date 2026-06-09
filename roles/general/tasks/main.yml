@@ -27,6 +27,9 @@
 - name: Include package installation tasks
   ansible.builtin.include_tasks: packages.yml
 
+- name: Include ufw.yml
+  ansible.builtin.include_tasks: ufw.yml
+
 - name: Include tsshd tasks
   ansible.builtin.include_tasks: tsshd.yml
 

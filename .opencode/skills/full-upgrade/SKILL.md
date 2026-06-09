@@ -40,6 +40,7 @@ Execution after approval:
 
 - Edit Ansible/inventory/templates in repo; do not live-edit containers or deployed configs except for read-only diagnosis.
 - Run repo validation, usually `make ci`, before deployment unless the approved plan explicitly narrows validation.
+- Include host OS package upgrades in the rollout. Deploy the `general` role or otherwise run the repo-managed apt package upgrade path for each target host so all upgradable apt packages are upgraded as part of the full upgrade, then verify no reboot or service restart is pending.
 - Deploy one service/role on one host at a time, starting with the smaller/lower-risk host.
 - After each service deploy, verify container health/status, restart count, image version/digest, exposed ports, HTTP/TCP probes where applicable, dependent services, recent logs, Docker events, CPU, memory, disk, network, and host load.
 - Watch for anomalies before continuing: crash loops, healthcheck failures, migration errors, auth failures, elevated 4xx/5xx, log spam, resource spikes, missing volumes, permission errors, or changed startup warnings.

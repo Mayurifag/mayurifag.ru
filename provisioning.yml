@@ -14,13 +14,13 @@
           - "================================================"
       tags: always
   roles:
-    - role: general
-      tags:
-        - general
-
     - role: ssh
       tags:
         - ssh
+
+    - role: general
+      tags:
+        - general
 
     - role: debian13
       tags:

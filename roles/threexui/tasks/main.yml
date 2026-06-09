@@ -45,6 +45,14 @@
     enable_ipv6: true
     state: present
 
+- name: Allow 3x-ui Hysteria2 UDP through UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ threexui_hysteria2_port }}"
+    proto: udp
+    comment: "3x-ui Hysteria2"
+  when: general_ufw_enabled | default(true) | bool
+
 - name: 3x-ui Docker Container
   community.docker.docker_container:
     name: 3x-ui
@@ -62,6 +70,7 @@
       - name: "web"
       - name: "{{ threexui_v6_egress_network_name }}"
     labels:
+      com.centurylinklabs.watchtower.enable: "true"
       traefik.enable: "true"
       traefik.docker.network: "web"
 

@@ -1,0 +1,43 @@
+---
+- name: Validate SSH port before enabling UFW
+  ansible.builtin.assert:
+    that:
+      - (ansible_port | default(server_ssh_port)) is defined
+      - (ansible_port | default(server_ssh_port) | int) > 0
+      - (ansible_port | default(server_ssh_port) | int) <= 65535
+    fail_msg: "Refusing to enable UFW without a valid ansible_port/server_ssh_port."
+  when: general_ufw_enabled | bool
+
+- name: Allow SSH before enabling UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ ansible_port | default(server_ssh_port) }}"
+    proto: tcp
+    comment: "Ansible SSH"
+  when: general_ufw_enabled | bool
+
+- name: Allow required public web ports before enabling UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ item.port }}"
+    proto: "{{ item.proto }}"
+    comment: "{{ item.comment }}"
+  loop: "{{ general_ufw_public_ports }}"
+  when: general_ufw_enabled | bool
+
+- name: Set UFW incoming policy
+  community.general.ufw:
+    default: deny
+    direction: incoming
+  when: general_ufw_enabled | bool
+
+- name: Set UFW outgoing policy
+  community.general.ufw:
+    default: allow
+    direction: outgoing
+  when: general_ufw_enabled | bool
+
+- name: Enable UFW
+  community.general.ufw:
+    state: enabled
+  when: general_ufw_enabled | bool

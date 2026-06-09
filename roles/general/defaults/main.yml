@@ -145,8 +145,15 @@ mayurifag_general_extra_packages:
   - software-properties-common
   - unattended-upgrades
   - unzip
+  - ufw
   - util-linux
   - wget
   - whois
   - zip
   - jq
+
+general_ufw_enabled: true
+general_ufw_public_ports:
+  - { port: "80", proto: tcp, comment: "HTTP / Traefik" }
+  - { port: "443", proto: tcp, comment: "HTTPS / Traefik" }
+  - { port: "443", proto: udp, comment: "HTTP/3 / Traefik" }

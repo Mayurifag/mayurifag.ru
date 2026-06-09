@@ -5,7 +5,8 @@
 ## Requirements
 
 On VPS - Debian 12+.
-On VPS provider - opened ports
+On VPS provider - opened ports: SSH (`server_ssh_port`), `80/tcp`, `443/tcp`,
+`443/udp`, and role-specific public ports such as 3x-ui Hysteria2 UDP.
 On Cloudflare - token (DNS propagated during setup)
 On PC - just `ansible`. For MacOS also `passlib` because of some `crypto` module.
 
@@ -49,63 +50,50 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 
 <!-- markdownlint-disable line-length -->
 
-| Name                | Subdomain    | Auth | Watchtower |
-| :------------------ | :----------- | ---- | ---------- |
-| 3x-ui               | `3x`         | app  |            |
-| BentoPDF            | `pdf`        | ldap | +          |
-| Beszel              | `beszel`     | app  | +          |
-| ConvertX            | `convert`    | ldap | +          |
-| EchoIP              | `ip`         | none | +          |
-| Dynacat             | `rss`        | ldap | +          |
-| Mini-QR             | `qr`         | ldap | +          |
-| mayurifag.github.io |              | none | +          |
-| mus                 | `mus`        | ldap | +          |
-| Navidrome           | `navidrome`  | app  | +          |
-| lldap               | `ldap`       | ldap | +          |
-| OpenCloud           | `cloud`      | ldap |            |
-| Portainer           | `portainer`  | app  | +          |
-| SnapOtter           | `images`     | ldap | +          |
-| TG AI Manager       | `tg`         | ldap | +          |
-| Traefik / Crowdsec  | `traefik`    | ldap |            |
-| Tinyauth            | `auth`       | ldap | +          |
-| Watchtower HTTP API | `watchtower` | app  | +          |
+| Name                | Subdomain    | Auth | Watchtower | UFW ports                              |
+| :------------------ | :----------- | ---- | ---------- | -------------------------------------- |
+| 3x-ui               | `3x`         | app  | +          | `36500/udp` (hysteria2)                |
+| BentoPDF            | `pdf`        | ldap | +          |                                        |
+| Beszel              | `beszel`     | app  | +          |                                        |
+| ConvertX            | `convert`    | ldap | +          |                                        |
+| EchoIP              | `ip`         | none | +          |                                        |
+| Dynacat             | `rss`        | ldap | +          |                                        |
+| Mini-QR             | `qr`         | ldap | +          |                                        |
+| mayurifag.github.io |              | none | +          |                                        |
+| mus                 | `mus`        | ldap | +          |                                        |
+| Navidrome           | `navidrome`  | app  | +          |                                        |
+| lldap               | `ldap`       | ldap | +          |                                        |
+| OpenCloud           | `cloud`      | ldap |            |                                        |
+| Portainer           | `portainer`  | app  | +          |                                        |
+| SnapOtter           | `images`     | ldap | +          |                                        |
+| TG AI Manager       | `tg`         | ldap | +          |                                        |
+| Traefik / Crowdsec  | `traefik`    | ldap |            | `80/tcp`, `443/tcp`, `443/udp` (http3) |
+| Tinyauth            | `auth`       | ldap | +          |                                        |
+| Watchtower HTTP API | `watchtower` | app  | +          |                                        |
 
 <!-- markdownlint-enable line-length -->
 
-Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
+Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info. 
 
-## TODO
+Notes:
 
-* [ ] Migrate to debian 13
-  * [ ] cheatsheet on ssh opening.
-    * [ ] Output CPU/RAM/disk usage.
-    * [ ] dumbfile size and aliases. Other useful aliases. What else?
-* [ ] ufw + agents rules about it
-* [ ] Move adding a service md to skills
+- `ufw` also allows ssh tcp port
+- `traefik` is not autoupdated because they add breaking changes on patch versions
+- `opencloud` is not autoupdated because requires running migration scripts
 
 ### On hold
 
-* [ ] <https://github.com/pranshuparmar/witr> - wait debian repos to include it
+* [ ] <https://github.com/pranshuparmar/witr> - wait debian 14 update
 * [ ] Bandwhich - will require downloading binary to root - wait for deb repo
 * [ ] When Tinyauth will be an OIDC provider
   * [ ] make it work for opencloud
   * [ ] Portainer - setup automatic LDAP
 * [ ] zerobyte - webapp for restic backups - wait until developed stable version
-* [ ] Track finances selfhosted
-  * [ ] Has to support auto import crypto, ibkr, russian brokers, banks, georgian banks - no way today
-  * [ ] Save data to opencloud
-  * [ ] <https://github.com/we-promise/sure>
-* [ ] ufw
-  * [ ] Waiting for <https://github.com/shinebayar-g/ufw-docker-automated>
-  * [ ] Problem for docker is that on server reboot or else address of docker container is changing so rules have to be
-        updated
-  * [ ] Block everything. There are a lot of exceptions: ssh/web/dns/dhcp/ntp
-  * [ ] open port if needed in each ansible role
-  * [ ] IP Masquerading ?
-  * [ ] research <https://github.com/capnspacehook/whalewall> (not updated though)
 
 ### Thinking if I need it / probably wont do - ideas / notes
 
+* [ ] motd ideas
+  * [ ] maybe also show taken ports?
 * [ ] try <https://dockhand.pro/manual/> for possible portainer alternative
   * [ ] For now i think no need until replaces watchtower API
 * [ ] try <https://github.com/stalwartlabs/stalwart> for email
@@ -132,3 +120,15 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
   * [ ] cf rules for spammers?
   * [ ] proxies-cfg will work fine? ssh with proxies?
 * [ ] Grimmory - for Kindle KOReader - sync progress and books download
+* [ ] Track finances selfhosted
+  * [ ] Has to support auto import crypto, ibkr, russian brokers, banks, georgian banks - no way today
+  * [ ] Save data to opencloud
+  * [ ] <https://github.com/we-promise/sure>
+* [ ] ufw-docker integration
+  * [ ] Maybe use <https://github.com/shinebayar-g/ufw-docker-automated>
+  * [ ] Problem for docker is that on server reboot or else address of docker container is changing so rules have to be
+        updated
+  * [ ] Block everything. There are a lot of exceptions: ssh/web/dns/dhcp/ntp
+  * [ ] open port if needed in each ansible role
+  * [ ] IP Masquerading ?
+  * [ ] research <https://github.com/capnspacehook/whalewall> (not updated though)

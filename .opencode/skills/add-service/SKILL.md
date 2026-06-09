@@ -17,6 +17,8 @@ Required repo changes:
 - Exposed HTTP services must join Docker network `web` for Traefik.
 - Add Traefik labels: `traefik.enable`, router host rule, service port, and middlewares.
 - Use `secure-headers@file` for web services; add `tinyauth@docker` for private services.
+- Docker-published ports must bind to loopback as `127.0.0.1:host:container` unless intentionally public.
+- Intentionally public ports must add a matching `community.general.ufw` allow rule in the service role.
 - Add `com.centurylinklabs.watchtower.enable: "true"` only for low-risk/stateless or simple-update services.
 - Update both inventory group vars with identical keys/order/comments when new global vars are needed.
 - Update `README.md` application list.
