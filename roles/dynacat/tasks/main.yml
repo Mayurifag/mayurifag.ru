@@ -89,6 +89,8 @@
       GITHUB_TOKEN: "{{ dynacat_github_token }}"
       GITHUB_NOTIFICATIONS_TOKEN: "{{ dynacat_github_notifications_token }}"
       FINNHUB_TOKEN: "{{ dynacat_finnhub_token }}"
+      WEATHER_LATITUDE: "{{ dynacat_latitude | string }}"
+      WEATHER_LONGITUDE: "{{ dynacat_longitude | string }}"
     networks:
       - name: "web"
     labels:
