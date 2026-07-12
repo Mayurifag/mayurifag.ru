@@ -97,9 +97,9 @@
                   {{ $rev := $e.Float "revenueEstimate" }}
                   {{ $sym := $e.String "symbol" }}
                   {{ $date := $e.String "date" }}
-                  {{ $year := $e.Int "year" }}
-                  {{ $dateYear := $date | parseTime "DateOnly" | formatTime "2006" | toInt }}
-                  {{ $reportKey := printf "%s|%s|%s|%d|%d" $sym $date ($e.String "hour") ($e.Int "quarter") $year }}
+                  {{ $year := $e.String "year" }}
+                  {{ $dateYear := $date | parseTime "DateOnly" | formatTime "2006" }}
+                  {{ $reportKey := printf "%s|%s|%s|%d|%s" $sym $date ($e.String "hour") ($e.Int "quarter") $year }}
                   {{ $candidateReports := append $seenReports $reportKey }}
                   {{ $isNewReport := eq (len ($candidateReports | uniq)) (add (toFloat (len ($seenReports | uniq))) 1.0 | toInt) }}
                   {{ if and (lt $shown 10) (gt $rev 5000000000.0) (le $year $dateYear) $isNewReport }}
