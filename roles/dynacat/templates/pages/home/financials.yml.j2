@@ -87,6 +87,7 @@
               {{ $entries := $r.JSON.Array "earningsCalendar" }}
               {{ $n := len $entries }}
               {{ $shown := 0 }}
+              {{ $seenReports := list }}
               {{ if eq $n 0 }}
                 <div class="color-subdue">No earnings scheduled</div>
               {{ else }}
@@ -94,8 +95,15 @@
                 {{ range $i, $_ := $entries }}
                   {{ $e := index $entries (toInt (sub (toFloat $n) (add (toFloat $i) 1.0))) }}
                   {{ $rev := $e.Float "revenueEstimate" }}
-                  {{ if and (lt $shown 10) (gt $rev 5000000000.0) }}
-                    {{ $sym := $e.String "symbol" }}
+                  {{ $sym := $e.String "symbol" }}
+                  {{ $date := $e.String "date" }}
+                  {{ $year := $e.Int "year" }}
+                  {{ $dateYear := $date | parseTime "DateOnly" | formatTime "2006" | toInt }}
+                  {{ $reportKey := printf "%s|%s|%s|%d|%d" $sym $date ($e.String "hour") ($e.Int "quarter") $year }}
+                  {{ $candidateReports := append $seenReports $reportKey }}
+                  {{ $isNewReport := eq (len ($candidateReports | uniq)) (add (toFloat (len ($seenReports | uniq))) 1.0 | toInt) }}
+                  {{ if and (lt $shown 10) (gt $rev 5000000000.0) (le $year $dateYear) $isNewReport }}
+                    {{ $seenReports = $candidateReports }}
                     {{ $profile := newRequest (printf "https://finnhub.io/api/v1/stock/profile2?symbol=%s" $sym)
                       | withHeader "X-Finnhub-Token" "${FINNHUB_TOKEN}"
                       | getResponse }}
