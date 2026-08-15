@@ -98,6 +98,11 @@
         - opencloud
       when: (opencloud_enabled | default(False))
 
+    - role: mailflow
+      tags:
+        - mailflow
+      when: (mailflow_enabled | default(False))
+
     - role: bentopdf
       tags:
         - bentopdf

@@ -1,0 +1,9 @@
+---
+mailflow_enabled: false
+mailflow_subdomain: "mail"
+mailflow_version: "2.9.0"
+mailflow_memory: "768m"
+mailflow_data_directory: "{{ docker_home }}/mailflow"
+mailflow_session_secret: ""
+mailflow_db_password: ""
+mailflow_encryption_key: ""

@@ -1,0 +1,160 @@
+---
+- name: Create Mailflow directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "0"
+    group: "0"
+    mode: "0700"
+  loop:
+    - "{{ mailflow_data_directory }}"
+    - "{{ mailflow_data_directory }}/postgres"
+    - "{{ mailflow_data_directory }}/redis"
+
+- name: Create Mailflow Docker network
+  community.docker.docker_network:
+    name: mailflow
+    state: present
+
+- name: Start Mailflow PostgreSQL
+  community.docker.docker_container:
+    name: mailflow-postgres
+    image: postgres:16.14-alpine3.24
+    state: healthy
+    healthy_wait_timeout: 120
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "512m"
+    cpus: "0.5"
+    user: "0:0"
+    env:
+      POSTGRES_DB: "mailflow"
+      POSTGRES_USER: "mailflow"
+      POSTGRES_PASSWORD: "{{ mailflow_db_password | string }}"
+    volumes:
+      - "{{ mailflow_data_directory }}/postgres:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mailflow -d mailflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - name: mailflow
+        aliases:
+          - postgres
+  no_log: true
+
+- name: Start Mailflow Redis
+  community.docker.docker_container:
+    name: mailflow-redis
+    image: redis:7.4.10-alpine
+    state: healthy
+    healthy_wait_timeout: 120
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "128m"
+    cpus: "0.1"
+    user: "0:0"
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - "{{ mailflow_data_directory }}/redis:/data"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    networks:
+      - name: mailflow
+        aliases:
+          - redis
+
+- name: Start Mailflow backend
+  community.docker.docker_container:
+    name: mailflow-backend
+    image: "ghcr.io/maathimself/mailflow-backend:{{ mailflow_version }}"
+    state: healthy
+    healthy_wait_timeout: 120
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ mailflow_memory }}"
+    cpus: "1.0"
+    env:
+      NODE_ENV: "production"
+      SESSION_SECRET: "{{ mailflow_session_secret | string }}"
+      APP_URL: "https://{{ mailflow_subdomain }}.{{ server_hostname }}"
+      FRONTEND_URL: "https://{{ mailflow_subdomain }}.{{ server_hostname }}"
+      DB_PASSWORD: "{{ mailflow_db_password | string }}"
+      ENCRYPTION_KEY: "{{ mailflow_encryption_key | string }}"
+      UPDATE_CHECK_DISABLED: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - name: mailflow
+        aliases:
+          - backend
+  no_log: true
+
+- name: Read Mailflow backend network details
+  community.docker.docker_container_info:
+    name: mailflow-backend
+  register: mailflow_backend_info
+  changed_when: false
+  no_log: true
+
+- name: Read Mailflow registration status
+  ansible.builtin.uri:
+    url: "http://{{ mailflow_backend_info.container.NetworkSettings.Networks.mailflow.IPAddress }}:3000/api/auth/registration-status"
+    method: GET
+    status_code: 200
+  register: mailflow_registration_status
+  changed_when: false
+
+- name: Bootstrap Mailflow administrator
+  ansible.builtin.uri:
+    url: "http://{{ mailflow_backend_info.container.NetworkSettings.Networks.mailflow.IPAddress }}:3000/api/auth/register"
+    method: POST
+    body_format: json
+    headers:
+      X-Requested-With: XMLHttpRequest
+    body:
+      username: "{{ admin_username }}"
+      password: "{{ admin_userldappassword | string }}"
+    status_code: 200
+  when: mailflow_registration_status.json.open | bool
+  changed_when: true
+  no_log: true
+
+- name: Start Mailflow frontend
+  community.docker.docker_container:
+    name: mailflow-frontend
+    image: "ghcr.io/maathimself/mailflow-frontend:{{ mailflow_version }}"
+    state: healthy
+    healthy_wait_timeout: 120
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "256m"
+    cpus: "0.25"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO/dev/null http://127.0.0.1:80/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    networks:
+      - name: mailflow
+      - name: web
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "web"
+      traefik.http.routers.mailflow.rule: "Host(`{{ mailflow_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.mailflow.loadbalancer.server.port: "80"

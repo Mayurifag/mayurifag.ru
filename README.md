@@ -63,6 +63,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | mus                 | `mus`        | ldap | +          |                                        |
 | Navidrome           | `navidrome`  | app  | +          |                                        |
 | lldap               | `ldap`       | ldap | +          |                                        |
+| MailFlow            | `mail`       | app  |            |                                        |
 | OpenCloud           | `cloud`      | ldap |            |                                        |
 | Portainer           | `portainer`  | app  | +          |                                        |
 | SnapOtter           | `images`     | ldap | +          |                                        |

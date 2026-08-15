@@ -2,7 +2,7 @@
 - name: Create mayurifag github io Docker Container
   community.docker.docker_container:
     name: mayurifag_github_io
-    image: mayurifag/mayurifag.github.io:latest
+    image: ghcr.io/mayurifag/mayurifag.github.io:latest
     pull: true
     recreate: true
     restart_policy: unless-stopped

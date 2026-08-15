@@ -13,6 +13,7 @@
   "noBanner": true,
   "ignores": [
     ".ansible/roles/**",
+    ".opencode/browser-mcp-profile/**",
     "**/node_modules/**"
   ]
 }

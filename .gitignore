@@ -25,3 +25,4 @@ secret
 
 # Playwright MCP temp files
 /.playwright-mcp/
+/.opencode/browser-mcp-profile/
