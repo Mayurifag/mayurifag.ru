@@ -58,6 +58,7 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | ConvertX            | `convert`    | ldap | +          |                                        |
 | EchoIP              | `ip`         | none | +          |                                        |
 | Dynacat             | `rss`        | ldap | +          |                                        |
+| Excalidraw          | `draw`       | none |            |                                        |
 | Mini-QR             | `qr`         | ldap | +          |                                        |
 | mayurifag.github.io |              | none | +          |                                        |
 | mus                 | `mus`        | ldap | +          |                                        |

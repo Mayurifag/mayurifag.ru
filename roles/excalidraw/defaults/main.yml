@@ -1,0 +1,9 @@
+---
+excalidraw_enabled: true
+
+excalidraw_subdomain: "draw"
+excalidraw_image: "excalidraw/excalidraw:latest"
+excalidraw_room_image: "excalidraw/excalidraw-room:latest"
+
+excalidraw_memory: "256m"
+excalidraw_room_memory: "128m"

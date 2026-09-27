@@ -1,0 +1,58 @@
+---
+- name: Excalidraw collaboration relay Docker container
+  community.docker.docker_container:
+    name: excalidraw-room
+    image: "{{ excalidraw_room_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ excalidraw_room_memory }}"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:80/ >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    env:
+      NODE_ENV: "production"
+      CORS_ORIGIN: "https://{{ excalidraw_subdomain }}.{{ server_hostname }}"
+    networks:
+      - name: "web"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.excalidraw-room.rule: "Host(`{{ excalidraw_subdomain }}.{{ server_hostname }}`) && PathPrefix(`/socket.io`)"
+      traefik.http.routers.excalidraw-room.priority: "100"
+      traefik.http.services.excalidraw-room.loadbalancer.server.port: "80"
+
+- name: Excalidraw Docker container
+  community.docker.docker_container:
+    name: excalidraw
+    image: "{{ excalidraw_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ excalidraw_memory }}"
+    entrypoint:
+      - /bin/sh
+      - -c
+    command:
+      - >-
+        echo "Replacing WebSocket URL with: ${VITE_APP_WS_SERVER_URL}" &&
+        find /usr/share/nginx/html/assets -type f -name "*.js" -exec
+        sed -i "s|https://oss-collab\.excalidraw\.com|${VITE_APP_WS_SERVER_URL}|g" {} + &&
+        exec nginx -g "daemon off;"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:80/ >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    env:
+      NODE_ENV: "production"
+      VITE_APP_WS_SERVER_URL: "https://{{ excalidraw_subdomain }}.{{ server_hostname }}"
+    networks:
+      - name: "web"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.excalidraw.rule: "Host(`{{ excalidraw_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.excalidraw.loadbalancer.server.port: "80"

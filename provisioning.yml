@@ -123,6 +123,11 @@
         - echoip
       when: (echoip_enabled | default(False))
 
+    - role: excalidraw
+      tags:
+        - excalidraw
+      when: (excalidraw_enabled | default(False))
+
     - role: qr
       tags:
         - qr
