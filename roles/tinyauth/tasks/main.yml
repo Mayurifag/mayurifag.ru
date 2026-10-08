@@ -1,23 +1,59 @@
 ---
-# - name: Remove tinyauth directory
-#   ansible.builtin.file:
-#     path: "{{ tinyauth_data_directory }}"
-#     state: absent
-
 - name: Create tinyauth directory
   ansible.builtin.file:
     path: "{{ tinyauth_data_directory }}"
     state: directory
     mode: "0755"
 
-- name: Tinyauth Docker Container
-  community.docker.docker_container:
-    name: tinyauth
-    image: "{{ tinyauth_docker_image }}"
-    recreate: true
-    volumes:
-      - "{{ tinyauth_data_directory }}:/data"
-    env:
+- name: Validate Tinyauth OIDC clients
+  ansible.builtin.assert:
+    that:
+      - item.key is match('^[A-Za-z0-9]+$')
+      - item.value.client_id | length > 0
+      - item.value.redirect_uri | length > 0
+      - "'change_this' not in item.value.client_id"
+      - "'change_this' not in item.value.redirect_uri"
+    fail_msg: "Tinyauth OIDC clients require an alphanumeric name, client ID, and trusted redirect URI."
+  loop: "{{ tinyauth_oidc_clients | default({}) | dict2items }}"
+  when: item.value.enabled | bool
+  no_log: true
+
+- name: Generate Tinyauth OIDC client secrets
+  ansible.builtin.command:
+    argv:
+      - openssl
+      - rand
+      - -base64
+      - -out
+      - "{{ tinyauth_data_directory }}/{{ item.key }}-oidc-client-secret"
+      - "32"
+    creates: "{{ tinyauth_data_directory }}/{{ item.key }}-oidc-client-secret"
+  loop: "{{ tinyauth_oidc_clients | default({}) | dict2items }}"
+  when: item.value.enabled | bool
+  no_log: true
+
+- name: Secure Tinyauth OIDC client secrets
+  ansible.builtin.file:
+    path: "{{ tinyauth_data_directory }}/{{ item.key }}-oidc-client-secret"
+    mode: "0600"
+  loop: "{{ tinyauth_oidc_clients | default({}) | dict2items }}"
+  when: item.value.enabled | bool
+
+- name: Validate Tinyauth Google OAuth settings
+  ansible.builtin.assert:
+    that:
+      - tinyauth_google_client_id | length > 0
+      - tinyauth_google_client_secret | length > 0
+      - tinyauth_google_whitelist | length > 0
+      - "'change_this' not in tinyauth_google_client_id"
+      - "'change_this' not in tinyauth_google_client_secret"
+    fail_msg: "Tinyauth Google OAuth requires client credentials and at least one whitelisted email."
+  when: tinyauth_google_enabled | bool
+  no_log: true
+
+- name: Build Tinyauth environment
+  ansible.builtin.set_fact:
+    tinyauth_environment:
       TINYAUTH_APPURL: "https://{{ tinyauth_subdomain }}.{{ server_hostname }}"
       TINYAUTH_ANALYTICS_ENABLED: "false"
       TINYAUTH_LDAP_ADDRESS: ldap://lldap:3890
@@ -27,6 +63,44 @@
       TINYAUTH_LDAP_SEARCHFILTER: (uid=%s)
       TINYAUTH_LDAP_INSECURE: "true"
       TINYAUTH_AUTH_SESSIONEXPIRY: "31536000"
+      TINYAUTH_AUTH_TRUSTEDPROXIES: "172.18.0.0/16"
+  no_log: true
+
+- name: Add Tinyauth Google OAuth settings
+  ansible.builtin.set_fact:
+    tinyauth_environment: >-
+      {{ tinyauth_environment | combine({
+        'TINYAUTH_OAUTH_PROVIDERS_GOOGLE_CLIENTID': tinyauth_google_client_id,
+        'TINYAUTH_OAUTH_PROVIDERS_GOOGLE_CLIENTSECRET': tinyauth_google_client_secret,
+        'TINYAUTH_OAUTH_WHITELIST': tinyauth_google_whitelist | join(',')
+      }) }}
+  when: tinyauth_google_enabled | bool
+  no_log: true
+
+- name: Add Tinyauth OIDC clients
+  ansible.builtin.set_fact:
+    tinyauth_environment: >-
+      {{ tinyauth_environment | combine({
+        'TINYAUTH_OIDC_PRIVATEKEYPATH': '/data/oidc-private-key.pem',
+        'TINYAUTH_OIDC_PUBLICKEYPATH': '/data/oidc-public-key.pem',
+        'TINYAUTH_OIDC_CLIENTS_' ~ (item.key | upper) ~ '_CLIENTID': item.value.client_id,
+        'TINYAUTH_OIDC_CLIENTS_' ~ (item.key | upper) ~ '_CLIENTSECRETFILE': '/data/' ~ item.key ~ '-oidc-client-secret',
+        'TINYAUTH_OIDC_CLIENTS_' ~ (item.key | upper) ~ '_TRUSTEDREDIRECTURIS': item.value.redirect_uri,
+        'TINYAUTH_OIDC_CLIENTS_' ~ (item.key | upper) ~ '_NAME': item.key | capitalize
+      }) }}
+  loop: "{{ tinyauth_oidc_clients | default({}) | dict2items }}"
+  when: item.value.enabled | bool
+  no_log: true
+
+- name: Tinyauth Docker Container
+  community.docker.docker_container:
+    name: tinyauth
+    image: "{{ tinyauth_docker_image }}"
+    pull: true
+    recreate: true
+    volumes:
+      - "{{ tinyauth_data_directory }}:/data"
+    env: "{{ tinyauth_environment }}"
     restart_policy: unless-stopped
     memory: "{{ tinyauth_memory }}"
     healthcheck:

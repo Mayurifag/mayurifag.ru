@@ -56,6 +56,11 @@
         - tinyauth
       when: (tinyauth_enabled | default(False))
 
+    - role: netbird
+      tags:
+        - netbird
+      when: (netbird_enabled | default(False))
+
     - role: mayurifag_github_io
       tags:
         - mayurifag_github_io
@@ -154,3 +159,14 @@
         msg: "{{ post_install_messages }}"
       when: (post_install_messages | default([])) | length > 0
       tags: always
+
+- name: Homelab Beszel agent
+  hosts: homelab
+  gather_facts: yes
+  become: no
+  roles:
+    - role: beszel_agent
+      tags:
+        - beszel
+        - beszel_agent
+      when: (beszel_agent_enabled | default(False) | bool)

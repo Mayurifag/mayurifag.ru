@@ -30,6 +30,28 @@ Token at <https://dash.cloudflare.com/profile/api-tokens>:
 - Zone    : Email Routing Rules     : Edit (catch-all rule)
 - Account : Email Routing Addresses : Edit (destination state)
 
+## NetBird with Tinyauth
+
+NetBird's embedded identity provider remains the issuer for its dashboard and
+clients. Tinyauth is an external login option; creating a Tinyauth OIDC client
+alone does not register it with NetBird. Additional apps can use another entry
+in `tinyauth_oidc_clients`; Google sign-in remains configured once in Tinyauth.
+
+1. Deploy `traefik`, `tinyauth`, and `netbird` on the target host. Finish
+   NetBird's initial owner setup through its dashboard if needed.
+2. In NetBird, open **Settings → Identity Providers → Add Identity Provider**.
+   Choose **Generic OIDC**. Use name `Tinyauth`, client ID from
+   `tinyauth_oidc_clients.netbird.client_id`, issuer
+   `https://{{ tinyauth_subdomain }}.{{ server_hostname }}`, and client secret
+   stored on the host at
+   `{{ tinyauth_data_directory }}/netbird-oidc-client-secret`.
+3. Copy the exact callback URL shown by NetBird into
+   `tinyauth_oidc_clients.netbird.redirect_uri` in production inventory. For
+   `nnnnn.cfd`, it is `https://netbird.nnnnn.cfd/oauth2/callback`.
+4. `netbird_local_auth_disabled: true` removes email login. With one external
+   provider, NetBird redirects directly to Tinyauth. Ensure a Tinyauth user has
+   **Owner** access before applying this to an existing NetBird installation.
+
 ## OpenCloud
 
 Make sure that Personal space is generated. Things I have to restore:

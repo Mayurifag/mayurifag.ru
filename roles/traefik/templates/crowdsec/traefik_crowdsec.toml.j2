@@ -7,6 +7,8 @@
   httpTimeoutSeconds = 10
   crowdsecMode = "stream"
   crowdsecAppsecEnabled = true
+  # NetBird ConnectStream has no finite body; inspect headers without buffering it.
+  crowdsecAppsecUnreadableBodyBlock = false
   crowdsecAppsecHost = "crowdsec:7422"
   crowdsecAppsecFailureBlock = false
   crowdsecAppsecUnreachableBlock = false

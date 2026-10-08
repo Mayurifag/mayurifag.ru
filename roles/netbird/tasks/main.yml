@@ -1,0 +1,157 @@
+---
+- name: Create NetBird data directory
+  ansible.builtin.file:
+    path: "{{ netbird_data_directory }}"
+    state: directory
+    mode: "0750"
+
+- name: Check NetBird secret file
+  ansible.builtin.stat:
+    path: "{{ netbird_data_directory }}/secrets.yml"
+  register: netbird_secret_file
+
+- name: Generate NetBird auth secret
+  ansible.builtin.command: openssl rand -hex 32
+  register: netbird_generated_auth_secret
+  changed_when: true
+  when:
+    - not netbird_secret_file.stat.exists
+  no_log: true
+
+- name: Generate NetBird store encryption key
+  ansible.builtin.command: openssl rand -base64 32
+  register: netbird_generated_store_encryption_key
+  changed_when: true
+  when:
+    - not netbird_secret_file.stat.exists
+  no_log: true
+
+- name: Persist NetBird secrets
+  ansible.builtin.copy:
+    dest: "{{ netbird_data_directory }}/secrets.yml"
+    mode: "0600"
+    content: |
+      auth_secret: {{ netbird_generated_auth_secret.stdout | to_json }}
+      store_encryption_key: {{ netbird_generated_store_encryption_key.stdout | to_json }}
+  when: not netbird_secret_file.stat.exists
+  no_log: true
+
+- name: Read NetBird secrets
+  ansible.builtin.slurp:
+    src: "{{ netbird_data_directory }}/secrets.yml"
+  register: netbird_secret_file_content
+  no_log: true
+
+- name: Set NetBird runtime secrets
+  ansible.builtin.set_fact:
+    netbird_runtime_auth_secret: >-
+      {{ (netbird_secret_file_content.content | b64decode | from_yaml).auth_secret }}
+    netbird_runtime_store_encryption_key: >-
+      {{ (netbird_secret_file_content.content | b64decode | from_yaml).store_encryption_key }}
+  no_log: true
+
+- name: Validate NetBird runtime secrets
+  ansible.builtin.assert:
+    that:
+      - netbird_runtime_auth_secret | length >= 32
+      - netbird_runtime_store_encryption_key | length >= 32
+    fail_msg: "Persisted NetBird secrets are missing or invalid."
+  no_log: true
+
+- name: Configure NetBird server
+  ansible.builtin.template:
+    src: config.yaml.j2
+    dest: "{{ netbird_data_directory }}/config.yaml"
+    mode: "0600"
+  no_log: true
+
+- name: Allow NetBird STUN traffic
+  community.general.ufw:
+    rule: allow
+    port: "{{ netbird_stun_port }}"
+    proto: udp
+    comment: "NetBird STUN"
+  when: general_ufw_enabled | default(true) | bool
+
+- name: NetBird Server Docker Container
+  community.docker.docker_container:
+    name: netbird-server
+    image: "{{ netbird_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ netbird_memory }}"
+    command:
+      - --config
+      - /etc/netbird/config.yaml
+    ports:
+      - "{{ netbird_stun_port }}:{{ netbird_stun_port }}/udp"
+    volumes:
+      - "{{ netbird_data_directory }}:/var/lib/netbird"
+      - "{{ netbird_data_directory }}/config.yaml:/etc/netbird/config.yaml:ro"
+    networks:
+      - name: "web"
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "web"
+      traefik.http.routers.netbird-grpc.rule: >-
+        Host(`{{ netbird_subdomain }}.{{ server_hostname }}`) &&
+        (PathPrefix(`/signalexchange.SignalExchange/`) ||
+        PathPrefix(`/management.ManagementService/`) ||
+        PathPrefix(`/management.ProxyService/`))
+      traefik.http.routers.netbird-grpc.entrypoints: "websecure"
+      traefik.http.routers.netbird-grpc.tls: "true"
+      traefik.http.routers.netbird-grpc.priority: "100"
+      traefik.http.routers.netbird-grpc.service: "netbird-server-h2c"
+      traefik.http.routers.netbird-backend.rule: >-
+        Host(`{{ netbird_subdomain }}.{{ server_hostname }}`) &&
+        (PathPrefix(`/relay`) || PathPrefix(`/ws-proxy/`) ||
+        PathPrefix(`/api`) || PathPrefix(`/oauth2`))
+      traefik.http.routers.netbird-backend.entrypoints: "websecure"
+      traefik.http.routers.netbird-backend.tls: "true"
+      traefik.http.routers.netbird-backend.priority: "100"
+      traefik.http.routers.netbird-backend.service: "netbird-server"
+      traefik.http.services.netbird-server.loadbalancer.server.port: "80"
+      traefik.http.services.netbird-server-h2c.loadbalancer.server.port: "80"
+      traefik.http.services.netbird-server-h2c.loadbalancer.server.scheme: "h2c"
+  no_log: true
+
+- name: NetBird Dashboard Docker Container
+  community.docker.docker_container:
+    name: netbird-dashboard
+    image: "{{ netbird_dashboard_image }}"
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ netbird_dashboard_memory }}"
+    env:
+      NETBIRD_MGMT_API_ENDPOINT: "https://{{ netbird_subdomain }}.{{ server_hostname }}"
+      NETBIRD_MGMT_GRPC_API_ENDPOINT: "https://{{ netbird_subdomain }}.{{ server_hostname }}"
+      AUTH_AUDIENCE: "netbird-dashboard"
+      AUTH_CLIENT_ID: "netbird-dashboard"
+      AUTH_CLIENT_SECRET: ""
+      AUTH_AUTHORITY: "https://{{ netbird_subdomain }}.{{ server_hostname }}/oauth2"
+      USE_AUTH0: "false"
+      AUTH_SUPPORTED_SCOPES: "openid profile email groups"
+      AUTH_REDIRECT_URI: "/nb-auth"
+      AUTH_SILENT_REDIRECT_URI: "/nb-silent-auth"
+      LETSENCRYPT_DOMAIN: "none"
+    networks:
+      - name: "web"
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "web"
+      traefik.http.routers.netbird-dashboard.rule: "Host(`{{ netbird_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.routers.netbird-dashboard.entrypoints: "websecure"
+      traefik.http.routers.netbird-dashboard.tls: "true"
+      traefik.http.routers.netbird-dashboard.priority: "1"
+      traefik.http.routers.netbird-dashboard.service: "netbird-dashboard"
+      traefik.http.services.netbird-dashboard.loadbalancer.server.port: "80"
+
+- name: Add NetBird post-install messages
+  ansible.builtin.set_fact:
+    post_install_messages: >-
+      {{ (post_install_messages | default([])) + [
+        'NetBird dashboard: https://' ~ netbird_subdomain ~ '.' ~ server_hostname,
+        'NetBird STUN: UDP ' ~ (netbird_stun_port | string)
+      ] + (['NetBird Tinyauth connector: see POST_INSTALL.md (NetBird); use the exact callback shown in NetBird'] if (tinyauth_oidc_clients.netbird.enabled | default(false) | bool) else []) }}

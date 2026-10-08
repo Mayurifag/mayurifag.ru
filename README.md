@@ -65,12 +65,13 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 | Navidrome           | `navidrome`  | app  | +          |                                        |
 | lldap               | `ldap`       | ldap | +          |                                        |
 | MailFlow            | `mail`       | app  |            |                                        |
+| NetBird             | `netbird`    | OIDC |            | `3478/udp` (STUN)                      |
 | OpenCloud           | `cloud`      | ldap |            |                                        |
 | Portainer           | `portainer`  | app  | +          |                                        |
 | SnapOtter           | `images`     | ldap | +          |                                        |
 | TG AI Manager       | `tg`         | ldap | +          |                                        |
 | Traefik / Crowdsec  | `traefik`    | ldap |            | `80/tcp`, `443/tcp`, `443/udp` (http3) |
-| Tinyauth            | `auth`       | ldap | +          |                                        |
+| Tinyauth            | `auth`       | OIDC | +          |                                        |
 | Watchtower HTTP API | `watchtower` | app  | +          |                                        |
 
 <!-- markdownlint-enable line-length -->
@@ -82,6 +83,16 @@ Notes:
 * `ufw` also allows ssh tcp port
 * `traefik` is not autoupdated because they add breaking changes on patch versions
 * `opencloud` is not autoupdated because requires running migration scripts
+
+### TODO
+
+* [ ] Move proxmox folder here.
+  * [ ] Have a HOMELAB.md file. Also maybe split provisioning? think about it.
+  * [ ] Wildcard DNS *.home.mayurifag.ru or something
+  * [ ] Reverse proxy for homelab?
+  * [ ] Move all settings
+  * [ ] Automatical netbird setup or something
+  * [ ] What roles might be reused? Which docker roles are applicable fine?
 
 ### On hold
 

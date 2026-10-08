@@ -1,0 +1,12 @@
+---
+netbird_enabled: false
+
+netbird_image: "netbirdio/netbird-server:0.80.0"
+netbird_dashboard_image: "netbirdio/dashboard:v2.94.0"
+netbird_subdomain: "netbird"
+netbird_data_directory: "{{ docker_home }}/netbird"
+netbird_memory: 1g
+netbird_dashboard_memory: 256m
+netbird_stun_port: 3478
+netbird_log_level: "info"
+netbird_local_auth_disabled: true

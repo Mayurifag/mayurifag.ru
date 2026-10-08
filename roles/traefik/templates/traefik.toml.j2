@@ -12,6 +12,10 @@
     address = ":443"
     [entryPoints.websecure.http3]
 
+    # NetBird gRPC streams exceed the 60s default; keep a finite shared deadline.
+    [entryPoints.websecure.transport.respondingTimeouts]
+      readTimeout = "24h"
+
     [entryPoints.websecure.http]
       middlewares = [ "crowdsec@file", "secure-headers@file" ]
       [entryPoints.websecure.http.tls]

@@ -102,6 +102,19 @@ watchtower_http_api_token: change_this
 
 tinyauth_enabled: true
 tinyauth_subdomain: "auth"
+tinyauth_google_enabled: false
+tinyauth_google_client_id: "change_this_google_client_id"
+tinyauth_google_client_secret: "change_this_google_client_secret"
+tinyauth_google_whitelist:
+  - "change_this@example.com"
+tinyauth_oidc_clients:
+  netbird:
+    enabled: false
+    client_id: "change_this_netbird_oidc_client_id"
+    redirect_uri: "change_this_netbird_oidc_redirect_uri"
+
+netbird_enabled: false
+netbird_subdomain: "netbird"
 
 lldap_enabled: true
 lldap_subdomain: "ldap"

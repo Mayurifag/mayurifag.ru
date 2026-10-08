@@ -1,0 +1,138 @@
+---
+- name: Validate native Beszel Agent platform
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.system == "Linux"
+      - ansible_facts.architecture == "x86_64"
+    fail_msg: "Native Beszel Agent defaults target Linux amd64 with glibc."
+
+- name: Ensure native Beszel Agent user
+  ansible.builtin.user:
+    name: beszel
+    system: true
+    home: /nonexistent
+    shell: /usr/sbin/nologin
+    create_home: false
+    groups:
+      - systemd-journal
+    append: true
+
+- name: Create native Beszel Agent directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - path: "{{ beszel_agent_native_install_directory }}"
+      owner: root
+      group: root
+      mode: "0755"
+    - path: "{{ beszel_agent_native_config_directory }}"
+      owner: root
+      group: beszel
+      mode: "0750"
+    - path: "{{ beszel_agent_native_archive_path | dirname }}"
+      owner: root
+      group: root
+      mode: "0755"
+
+- name: Download native Beszel Agent archive
+  ansible.builtin.get_url:
+    url: "{{ beszel_agent_native_archive_url }}"
+    dest: "{{ beszel_agent_native_archive_path }}"
+    checksum: "{{ beszel_agent_native_archive_checksum }}"
+    owner: root
+    group: root
+    mode: "0644"
+  register: beszel_agent_native_archive
+
+- name: Check native Beszel Agent binary
+  ansible.builtin.stat:
+    path: "{{ beszel_agent_native_install_directory }}/beszel-agent"
+  register: beszel_agent_native_binary
+
+- name: Extract native Beszel Agent binary
+  ansible.builtin.unarchive:
+    src: "{{ beszel_agent_native_archive_path }}"
+    dest: "{{ beszel_agent_native_install_directory }}"
+    remote_src: true
+    include:
+      - beszel-agent
+  when: beszel_agent_native_archive.changed or not beszel_agent_native_binary.stat.exists
+  register: beszel_agent_native_extract
+
+- name: Set native Beszel Agent binary permissions
+  ansible.builtin.file:
+    path: "{{ beszel_agent_native_install_directory }}/beszel-agent"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Configure native Beszel Agent credentials
+  ansible.builtin.copy:
+    dest: "{{ beszel_agent_native_config_directory }}/agent.env"
+    content: |
+      LISTEN={{ beszel_agent_native_listen }}
+      KEY="{{ beszel_agent_hub_info.json.key }}"
+      TOKEN={{ beszel_agent_token }}
+      HUB_URL={{ beszel_agent_hub_url }}
+      SYSTEM_NAME={{ beszel_agent_system_name }}
+      DISABLE_SSH=true
+      DISK_USAGE_CACHE={{ beszel_agent_disk_usage_cache }}
+      SKIP_GPU={{ beszel_agent_skip_gpu | string | lower }}
+    owner: root
+    group: beszel
+    mode: "0640"
+  register: beszel_agent_native_config
+  no_log: true
+
+- name: Configure native Beszel Agent service
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/beszel-agent.service
+    content: |
+      [Unit]
+      Description=Beszel Agent Service
+      Wants=network-online.target
+      After=network-online.target
+
+      [Service]
+      EnvironmentFile={{ beszel_agent_native_config_directory }}/agent.env
+      ExecStart={{ beszel_agent_native_install_directory }}/beszel-agent
+      User=beszel
+      SupplementaryGroups=systemd-journal
+      Restart=on-failure
+      RestartSec=5
+      StateDirectory=beszel-agent
+      KeyringMode=private
+      LockPersonality=yes
+      NoNewPrivileges=yes
+      ProtectClock=yes
+      ProtectHome=read-only
+      ProtectHostname=yes
+      ProtectKernelLogs=yes
+      ProtectSystem=strict
+      RemoveIPC=yes
+      RestrictSUIDSGID=true
+
+      [Install]
+      WantedBy=multi-user.target
+    owner: root
+    group: root
+    mode: "0644"
+  register: beszel_agent_native_service
+
+- name: Start native Beszel Agent
+  ansible.builtin.systemd_service:
+    name: beszel-agent
+    daemon_reload: >-
+      {{ beszel_agent_native_service.changed or
+        beszel_agent_native_archive.changed or
+        beszel_agent_native_extract.changed }}
+    enabled: true
+    state: >-
+      {{ 'restarted' if (beszel_agent_native_service.changed or
+        beszel_agent_native_config.changed or
+        beszel_agent_native_archive.changed or
+        beszel_agent_native_extract.changed) else 'started' }}

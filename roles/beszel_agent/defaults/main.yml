@@ -1,12 +1,20 @@
 ---
 beszel_agent_enabled: false
+beszel_agent_mode: docker
 beszel_agent_image: "henrygd/beszel-agent:latest"
 beszel_agent_memory: "256m"
 beszel_agent_data_directory: "{{ docker_home }}/beszel-agent"
-beszel_agent_hub_url: ""
 beszel_agent_hub_user_email: "{{ admin_email }}"
 beszel_agent_hub_user_password: "{{ admin_userldappassword }}"
-beszel_agent_token: ""
 beszel_agent_disk_usage_cache: "3m"
 beszel_agent_skip_gpu: true
 beszel_agent_system_name: "{{ inventory_hostname }}"
+
+beszel_agent_native_version: "0.21.0"
+beszel_agent_native_archive_url: "https://github.com/henrygd/beszel/releases/download/v{{ beszel_agent_native_version }}/beszel-agent_linux_amd64_glibc.tar.gz"
+beszel_agent_native_archive_checksum: >-
+  sha256:43265e3d241cd496c756936150c31de24eb307193ce347aca65ad41cfab7b1be
+beszel_agent_native_archive_path: "/var/cache/beszel-agent/beszel-agent.tar.gz"
+beszel_agent_native_install_directory: "/opt/beszel-agent"
+beszel_agent_native_config_directory: "/etc/beszel-agent"
+beszel_agent_native_listen: "45876"

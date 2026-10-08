@@ -1,7 +1,7 @@
 ---
 traefik_enabled: true
 
-traefik_docker_image: traefik:v3.7.4
+traefik_docker_image: traefik:v3.7.14
 traefik_log_level: "INFO"
 traefik_subdomain: "traefik"
 
@@ -42,9 +42,9 @@ traefik_crowdsec_startup_wait_seconds: 120
 crowdsec_data_directory: "{{ docker_home }}/crowdsec/data"
 crowdsec_config_directory: "{{ docker_home }}/crowdsec/config"
 
-crowdsec_image: crowdsecurity/crowdsec:v1.7.8
+crowdsec_image: crowdsecurity/crowdsec:v1.8.1
 crowdsec_bouncer_plugin_module: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
-crowdsec_bouncer_plugin_version: "v1.6.0"
+crowdsec_bouncer_plugin_version: "v1.7.1"
 
 # Ban duration (1 year)
 crowdsec_ban_duration: "8760h"

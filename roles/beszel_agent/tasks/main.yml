@@ -6,6 +6,7 @@
       - beszel_agent_token | length > 0
       - beszel_agent_token | length <= 64
       - beszel_agent_hub_user_password | length >= 8
+      - beszel_agent_mode in ['docker', 'native']
 
 - name: Authenticate to Beszel Hub for agent key
   ansible.builtin.uri:
@@ -44,6 +45,7 @@
     mode: "0755"
   with_items:
     - "{{ beszel_agent_data_directory }}"
+  when: beszel_agent_mode == 'docker'
 
 - name: Beszel Agent Docker Container
   community.docker.docker_container:
@@ -77,3 +79,8 @@
     labels:
       com.centurylinklabs.watchtower.enable: "true"
   no_log: true
+  when: beszel_agent_mode == 'docker'
+
+- name: Install native Beszel Agent
+  ansible.builtin.include_tasks: native.yml
+  when: beszel_agent_mode == 'native'

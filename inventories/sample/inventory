@@ -12,3 +12,5 @@ ansible_user=change_this
 ansible_become_user=root
 server_ssh_port=22 # you might want to change this per prod btw
 ansible_port="{{ server_ssh_port }}"
+
+[homelab]
