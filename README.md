@@ -105,6 +105,7 @@ Notes:
 
 ### Thinking if I need it / probably wont do - ideas / notes
 
+* [ ] Crowdsec - for several countries or specific shit first text into telegram to ban or not with a reason. Opencloud issue with PROPFIND perhaps needed to be whitelisted idk
 * [ ] motd ideas
   * [ ] maybe also show taken ports?
 * [ ] try <https://dockhand.pro/manual/> for possible portainer alternative
