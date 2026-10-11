@@ -1,0 +1,30 @@
+---
+- name: Manage private NetBird HTTPS access
+  ansible.builtin.import_tasks: netbird.yml
+
+- name: Create homelab console automation directory
+  ansible.builtin.file:
+    path: /opt/homelab
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Install shared Home Assistant console transport
+  ansible.builtin.copy:
+    src: ha_console.py
+    dest: /opt/homelab/ha_console.py
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Configure and validate Home Assistant trusted proxy through its serial console
+  ansible.builtin.script:
+    cmd: >-
+      {{ (role_path ~ '/files/configure_ha_proxy.py') | quote }}
+      {{ homelab_access_ha_vm | quote }} {{ homelab_access_ha_proxy | quote }} {{ homelab_access_ha_address | quote }}
+    executable: python3
+  environment:
+    PYTHONPATH: /opt/homelab
+  register: homelab_access_ha_result
+  changed_when: homelab_access_ha_result.rc == 0 and (homelab_access_ha_result.stdout | from_json).changed

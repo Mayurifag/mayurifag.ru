@@ -1,0 +1,11 @@
+---
+ansible_user: immich
+ansible_become: true
+ansible_port: 22
+ansible_ssh_common_args: >-
+  -o RemoteCommand=none
+  -o StrictHostKeyChecking=yes
+  -o UserKnownHostsFile={{ inventory_dir }}/files/homelab_known_hosts
+  -o ProxyCommand="ssh -o RemoteCommand=none -o BatchMode=yes root@<host> nc %h %p"
+immich_enabled: true
+immich_database_password: change_this

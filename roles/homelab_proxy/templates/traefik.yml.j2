@@ -1,0 +1,40 @@
+entryPoints:
+{% for name, address in [('lan', homelab_proxy_lan_address), ('vpn', homelab_proxy_vpn_address)] %}
+  {{ name }}:
+    address: "{{ address }}:443"
+    transport:
+      respondingTimeouts:
+        readTimeout: 600s
+        idleTimeout: 600s
+    http:
+      middlewares:
+        - private-clients@file
+      tls:
+        certResolver: letsencrypt
+        domains:
+          - main: "{{ homelab_proxy_domain }}"
+            sans:
+              - "*.{{ homelab_proxy_domain }}"
+{% endfor %}
+providers:
+  file:
+    directory: "{{ homelab_proxy_directory }}/dynamic"
+    watch: true
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: "{{ homelab_proxy_acme_email }}"
+      storage: /var/lib/traefik-home/acme.json
+      caServer: "{{ homelab_proxy_acme_server }}"
+      keyType: EC256
+      dnsChallenge:
+        provider: cloudflare
+        propagation: {{ homelab_proxy_dns_propagation | to_json }}
+        resolvers:
+          - "1.1.1.1:53"
+          - "8.8.8.8:53"
+log:
+  level: INFO
+accessLog: {}
+global:
+  sendAnonymousUsage: false

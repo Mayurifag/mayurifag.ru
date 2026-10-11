@@ -1,0 +1,34 @@
+---
+- name: Install Python for Ansible if missing
+  ansible.builtin.raw: command -v python3 >/dev/null || apk add --no-cache python3
+  register: home_assistant_python
+  changed_when: "'Installing python3' in home_assistant_python.stdout"
+
+- name: Read the SSH app Supervisor token
+  ansible.builtin.command: printenv SUPERVISOR_TOKEN
+  register: home_assistant_supervisor_token
+  changed_when: false
+  no_log: true
+
+- name: Read SSH app configuration
+  ansible.builtin.uri:
+    url: http://supervisor/addons/self/info
+    use_proxy: false
+    headers:
+      Authorization: "Bearer {{ home_assistant_supervisor_token.stdout }}"
+  register: home_assistant_ssh_app
+  no_log: true
+
+- name: Keep Python installed after SSH app restarts
+  ansible.builtin.uri:
+    url: http://supervisor/addons/self/options
+    use_proxy: false
+    method: POST
+    headers:
+      Authorization: "Bearer {{ home_assistant_supervisor_token.stdout }}"
+    body_format: json
+    body:
+      options: "{{ home_assistant_ssh_app.json.data.options | combine({'apks': (home_assistant_ssh_app.json.data.options.apks + ['python3']) | unique | list}) }}"
+  when: "'python3' not in home_assistant_ssh_app.json.data.options.apks"
+  changed_when: true
+  no_log: true

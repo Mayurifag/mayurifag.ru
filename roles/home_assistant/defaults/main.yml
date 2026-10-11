@@ -1,0 +1,4 @@
+---
+home_assistant_enabled: false
+home_assistant_config_directory: /config
+home_assistant_config_source: "{{ playbook_dir }}/homelab/home-assistant"

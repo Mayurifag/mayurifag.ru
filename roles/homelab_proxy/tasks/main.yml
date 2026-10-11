@@ -1,0 +1,46 @@
+---
+- name: Validate private homelab proxy settings
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.system == 'Linux'
+      - ansible_facts.architecture == 'x86_64'
+      - homelab_proxy_acme_email != 'change_this@gmail.com'
+      - homelab_proxy_dns_api_token | length > 20
+      - homelab_proxy_domain == 'home.' ~ homelab_proxy_zone
+  no_log: true
+
+- name: Install and configure the private proxy
+  ansible.builtin.import_tasks: install.yml
+
+- name: Configure private HTTPS firewall access
+  ansible.builtin.import_tasks: firewall.yml
+
+- name: Point homelab wildcard DNS at the private VPN address
+  community.general.cloudflare_dns:
+    zone: "{{ homelab_proxy_zone }}"
+    record: "*.home"
+    type: A
+    value: "{{ homelab_proxy_vpn_address }}"
+    proxied: false
+    api_token: "{{ homelab_proxy_dns_api_token }}"
+    state: present
+  delegate_to: localhost
+  become: false
+  no_log: true
+
+- name: Verify all homelab HTTPS endpoints from the authorized client
+  ansible.builtin.uri:
+    url: "{{ item }}"
+    use_proxy: false
+    validate_certs: true
+    status_code: 200
+  loop:
+    - "https://proxmox.{{ homelab_proxy_domain }}/"
+    - "https://ha.{{ homelab_proxy_domain }}/manifest.json"
+    - "https://immich.{{ homelab_proxy_domain }}/api/server/ping"
+  delegate_to: localhost
+  become: false
+  register: homelab_proxy_https_health
+  until: homelab_proxy_https_health.status == 200
+  retries: 36
+  delay: 5

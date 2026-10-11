@@ -1,6 +1,8 @@
 ---
 exclude_paths:
   - inventories/my-provision/
+  # Home Assistant !include tags are not Ansible YAML; yamllint still checks these files.
+  - homelab/home-assistant/
 skip_list:
   - "risky-file-permissions"
   - "var-naming[no-role-prefix]"

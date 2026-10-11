@@ -1,0 +1,104 @@
+---
+- name: Read existing NetBird administration token
+  ansible.builtin.slurp:
+    src: "{{ homelab_access_netbird_pat_path }}"
+  delegate_to: "{{ homelab_access_netbird_host }}"
+  become: true
+  register: homelab_access_pat
+  no_log: true
+
+- name: Read NetBird access configuration
+  ansible.builtin.uri:
+    url: "{{ homelab_access_netbird_url }}/api/{{ item }}"
+    headers:
+      Authorization: "Token {{ homelab_access_pat.content | b64decode | trim }}"
+    return_content: true
+  loop:
+    - groups
+    - peers
+    - policies
+  delegate_to: localhost
+  become: false
+  register: homelab_access_api
+  no_log: true
+
+- name: Select named NetBird groups and managed policy
+  ansible.builtin.set_fact:
+    homelab_access_sources: >-
+      {{ homelab_access_api.results[0].json | selectattr('name', 'equalto', homelab_access_source_group) | list }}
+    homelab_access_destinations: >-
+      {{ homelab_access_api.results[0].json | selectattr('name', 'equalto', homelab_access_destination_group) | list }}
+    homelab_access_peers: >-
+      {{ homelab_access_api.results[1].json | selectattr('ip', 'equalto', homelab_access_peer_address) | list }}
+    homelab_access_policies: >-
+      {{ homelab_access_api.results[2].json | selectattr('name', 'equalto', homelab_access_policy_name) | list }}
+
+- name: Require unambiguous private access groups
+  ansible.builtin.assert:
+    that:
+      - homelab_access_sources | length == 1
+      - homelab_access_destinations | length == 1
+      - homelab_access_peers | length == 1
+      - homelab_access_policies | length <= 1
+      - homelab_access_destinations[0].peers | map(attribute='id') | list == [homelab_access_peers[0].id]
+    fail_msg: "HTTPS destination group must contain only the expected Proxmox peer."
+
+- name: Define narrowly scoped HTTPS policy
+  ansible.builtin.set_fact:
+    homelab_access_policy:
+      name: "{{ homelab_access_policy_name }}"
+      description: Private homelab HTTPS on the Proxmox routing peer
+      enabled: true
+      source_posture_checks: []
+      rules:
+        - name: homelab-https
+          description: Authorized administrators to private Traefik
+          enabled: true
+          action: accept
+          bidirectional: false
+          protocol: tcp
+          port_ranges:
+            - start: 443
+              end: 443
+          sources:
+            - "{{ homelab_access_sources[0].id }}"
+          destinations:
+            - "{{ homelab_access_destinations[0].id }}"
+    homelab_access_current_policy: "{{ homelab_access_policies[0] if homelab_access_policies else {} }}"
+
+- name: Select current HTTPS rule
+  ansible.builtin.set_fact:
+    homelab_access_current_rule: "{{ (homelab_access_current_policy.rules | default([]) | first) | default({}) }}"
+
+- name: Normalize current HTTPS rule
+  ansible.builtin.set_fact:
+    homelab_access_normalized_rule:
+      name: "{{ homelab_access_current_rule.name | default('') }}"
+      description: "{{ homelab_access_current_rule.description | default('') }}"
+      enabled: "{{ homelab_access_current_rule.enabled | default(false) }}"
+      action: "{{ homelab_access_current_rule.action | default('') }}"
+      bidirectional: "{{ homelab_access_current_rule.bidirectional | default(true) }}"
+      protocol: "{{ homelab_access_current_rule.protocol | default('') }}"
+      port_ranges: "{{ homelab_access_current_rule.port_ranges | default([], true) }}"
+      sources: "{{ homelab_access_current_rule.sources | default([], true) | map(attribute='id') | list }}"
+      destinations: "{{ homelab_access_current_rule.destinations | default([], true) | map(attribute='id') | list }}"
+
+- name: Manage private homelab HTTPS policy
+  ansible.builtin.uri:
+    url: "{{ homelab_access_netbird_url }}/api/policies{{ '/' ~ homelab_access_current_policy.id if homelab_access_current_policy.id is defined else '' }}"
+    method: "{{ 'PUT' if homelab_access_current_policy.id is defined else 'POST' }}"
+    headers:
+      Authorization: "Token {{ homelab_access_pat.content | b64decode | trim }}"
+    body_format: json
+    body: "{{ homelab_access_policy }}"
+    status_code: 200
+  when: >-
+    homelab_access_normalized_rule != homelab_access_policy.rules[0] or
+    homelab_access_current_policy.rules | default([]) | length != 1 or
+    homelab_access_current_policy.description | default('') != homelab_access_policy.description or
+    not (homelab_access_current_policy.enabled | default(false)) or
+    homelab_access_current_policy.source_posture_checks | default([], true) | length != 0
+  delegate_to: localhost
+  become: false
+  changed_when: true
+  no_log: true

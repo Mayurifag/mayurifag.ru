@@ -78,6 +78,12 @@ This list changed a lot through years, I'm trying to remove things I do not use.
 
 Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 
+## Homelab
+
+Proxmox, Home Assistant, Immich, private DNS, and HTTPS are documented in
+[HOMELAB.md](./HOMELAB.md). `homelab.yml` separates the Proxmox host and photo
+guest from VPS provisioning. Deploy with explicit inventory hosts and tags.
+
 Notes:
 
 * `ufw` also allows ssh tcp port
@@ -86,13 +92,8 @@ Notes:
 
 ### TODO
 
-* [ ] Move proxmox folder here.
-  * [ ] Have a HOMELAB.md file. Also maybe split provisioning? think about it.
-  * [ ] Wildcard DNS *.home.mayurifag.ru or something
-  * [ ] Reverse proxy for homelab?
-  * [ ] Move all settings
-  * [ ] Automatical netbird setup or something
-  * [ ] What roles might be reused? Which docker roles are applicable fine?
+* [ ] Homelab follow-ups: backup/restore tests, NetBird enrollment/DNS automation,
+      bare-metal network bootstrap, and off-host backups. See [HOMELAB.md](./HOMELAB.md).
 
 ### On hold
 

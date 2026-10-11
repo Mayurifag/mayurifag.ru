@@ -1,0 +1,103 @@
+---
+- name: Verify Proxmox installation
+  ansible.builtin.stat:
+    path: /usr/sbin/qm
+  register: homelab_host_qm
+
+- name: Require an existing Proxmox host
+  ansible.builtin.assert:
+    that:
+      - homelab_host_qm.stat.exists
+      - ansible_facts.distribution == 'Debian'
+
+- name: Install homelab host packages
+  ansible.builtin.apt:
+    name:
+      - dnsmasq-base
+      - tlp
+      - netcat-openbsd
+    state: present
+
+- name: Create laptop power configuration directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - /etc/systemd/logind.conf.d
+    - /etc/tlp.d
+    - /etc/dnsmasq.d
+
+- name: Keep the laptop awake with its lid closed
+  ansible.builtin.copy:
+    src: no-sleep.conf
+    dest: /etc/systemd/logind.conf.d/99-proxmox-no-sleep.conf
+    mode: "0644"
+  notify: Reload homelab logind
+
+- name: Mask sleep targets
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    masked: true
+  loop:
+    - sleep.target
+    - suspend.target
+    - hibernate.target
+    - hybrid-sleep.target
+
+- name: Configure laptop CPU power policy
+  ansible.builtin.copy:
+    src: cpu-power.conf
+    dest: /etc/tlp.d/99-cpu.conf
+    mode: "0644"
+  notify: Restart homelab TLP
+
+- name: Enable laptop power management
+  ansible.builtin.systemd_service:
+    name: tlp
+    enabled: true
+    state: started
+
+- name: Configure guest DHCP and DNS
+  ansible.builtin.template:
+    src: dnsmasq.conf.j2
+    dest: /etc/dnsmasq.d/home-assistant.conf
+    mode: "0644"
+    validate: /usr/sbin/dnsmasq --test --conf-file=%s
+  notify: Restart homelab dnsmasq
+
+- name: Configure guest DHCP and DNS service
+  ansible.builtin.copy:
+    src: home-assistant-dnsmasq.service
+    dest: /etc/systemd/system/home-assistant-dnsmasq.service
+    mode: "0644"
+  notify: Restart homelab dnsmasq
+
+- name: Enable guest DHCP and DNS
+  ansible.builtin.systemd_service:
+    name: home-assistant-dnsmasq
+    daemon_reload: true
+    enabled: true
+    state: started
+
+- name: Read existing VM configurations
+  ansible.builtin.command: "qm config {{ item.id | quote }}"
+  changed_when: false
+  loop: "{{ homelab_host_vms }}"
+  loop_control:
+    label: "{{ item.id }} {{ item.name }}"
+  register: homelab_host_vm_configs
+
+- name: Set existing VM resources and automatic startup
+  ansible.builtin.command: >-
+    qm set {{ item.item.id | quote }} --name {{ item.item.name | quote }}
+    --cores {{ item.item.cores | quote }} --memory {{ item.item.memory | quote }} --onboot 1
+  loop: "{{ homelab_host_vm_configs.results }}"
+  loop_control:
+    label: "{{ item.item.id }} {{ item.item.name }}"
+  when: >-
+    ('name: ' ~ item.item.name) not in item.stdout_lines or
+    ('cores: ' ~ item.item.cores) not in item.stdout_lines or
+    ('memory: ' ~ item.item.memory) not in item.stdout_lines or
+    'onboot: 1' not in item.stdout_lines
+  changed_when: true

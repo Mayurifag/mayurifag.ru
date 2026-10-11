@@ -1,0 +1,41 @@
+http:
+  middlewares:
+    private-clients:
+      ipAllowList:
+        sourceRange: {{ homelab_proxy_allowed_networks | to_json }}
+  routers:
+    proxmox:
+      rule: "Host(`proxmox.{{ homelab_proxy_domain }}`)"
+      service: proxmox
+      entryPoints: [lan, vpn]
+    home-assistant:
+      rule: "Host(`ha.{{ homelab_proxy_domain }}`)"
+      service: home-assistant
+      entryPoints: [lan, vpn]
+    immich:
+      rule: "Host(`immich.{{ homelab_proxy_domain }}`)"
+      service: immich
+      entryPoints: [lan, vpn]
+  services:
+    proxmox:
+      loadBalancer:
+        serversTransport: proxmox
+        servers:
+          - url: https://127.0.0.1:8006
+    home-assistant:
+      loadBalancer:
+        servers:
+          - url: "{{ homelab_proxy_ha_url }}"
+    immich:
+      loadBalancer:
+        servers:
+          - url: "{{ homelab_proxy_immich_url }}"
+  serversTransports:
+    proxmox:
+      serverName: "{{ homelab_proxy_proxmox_server_name }}"
+      rootCAs:
+        - "{{ homelab_proxy_directory }}/proxmox-ca.pem"
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12

@@ -1,0 +1,13 @@
+interface={{ homelab_host_bridge }}
+bind-interfaces
+listen-address={{ homelab_host_gateway }}
+no-resolv
+no-hosts
+server=1.1.1.1
+dhcp-range={{ homelab_host_ha_address }},{{ homelab_host_ha_address }},255.255.255.0,12h
+dhcp-option=3,{{ homelab_host_gateway }}
+dhcp-option=6,{{ homelab_host_gateway }}
+dhcp-authoritative
+dhcp-host={{ homelab_host_ha_mac }},{{ homelab_host_ha_address }}
+log-dhcp
+log-facility=/var/log/dnsmasq-home-assistant.log

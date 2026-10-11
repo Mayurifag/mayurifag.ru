@@ -1,0 +1,15 @@
+---
+homelab_host_enabled: false
+homelab_host_bridge: vmbr0
+homelab_host_gateway: 10.10.10.1
+homelab_host_ha_address: 10.10.10.20
+homelab_host_ha_mac: "BC:24:11:13:4D:39"
+homelab_host_vms:
+  - id: 100
+    name: home-assistant
+    cores: 2
+    memory: 4096
+  - id: 101
+    name: immich
+    cores: 2
+    memory: 4096

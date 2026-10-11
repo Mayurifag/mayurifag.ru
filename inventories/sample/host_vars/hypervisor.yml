@@ -1,0 +1,14 @@
+---
+beszel_agent_mode: native
+ansible_ssh_transfer_method: piped
+homelab_access_enabled: false
+homelab_access_netbird_host: "<control-host>"
+homelab_access_netbird_url: https://netbird.example.com
+homelab_host_enabled: true
+homelab_proxy_enabled: true
+homelab_proxy_lan_address: "192.168.1.10"
+homelab_proxy_vpn_address: "100.64.0.10"
+homelab_proxy_proxmox_server_name: hypervisor.home.arpa
+homelab_proxy_allowed_networks:
+  - "192.168.1.0/24"
+  - "100.64.0.0/10"

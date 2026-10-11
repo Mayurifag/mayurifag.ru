@@ -1,0 +1,12 @@
+---
+homelab_access_enabled: false
+homelab_access_netbird_host: "<control-host>"
+homelab_access_netbird_url: https://netbird.example.com
+homelab_access_netbird_pat_path: "{{ hostvars[homelab_access_netbird_host].docker_home }}/netbird/initial-admin-pat"
+homelab_access_source_group: remote-admins
+homelab_access_destination_group: proxmox-routing
+homelab_access_peer_address: "100.113.201.147"
+homelab_access_policy_name: Homelab HTTPS
+homelab_access_ha_vm: 100
+homelab_access_ha_proxy: "10.10.10.1"
+homelab_access_ha_address: "10.10.10.20"

@@ -1,0 +1,16 @@
+---
+- name: Reload homelab logind
+  ansible.builtin.systemd_service:
+    name: systemd-logind
+    state: reloaded
+
+- name: Restart homelab TLP
+  ansible.builtin.systemd_service:
+    name: tlp
+    state: restarted
+
+- name: Restart homelab dnsmasq
+  ansible.builtin.systemd_service:
+    name: home-assistant-dnsmasq
+    daemon_reload: true
+    state: restarted

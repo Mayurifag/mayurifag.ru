@@ -1,0 +1,119 @@
+---
+- name: Require the existing Immich library mount
+  ansible.builtin.assert:
+    that:
+      - immich_library_mount in (ansible_facts.mounts | map(attribute='mount') | list)
+    fail_msg: "Mount the existing photo disk before deploying Immich; do not write the library to the OS disk."
+
+- name: Require the existing Immich database
+  ansible.builtin.stat:
+    path: "{{ immich_database_directory }}/PG_VERSION"
+  register: immich_database_version
+
+- name: Validate Immich adoption settings
+  ansible.builtin.assert:
+    that:
+      - immich_database_version.stat.exists
+      - immich_database_password != 'change_this'
+      - immich_database_password | length >= 20
+    fail_msg: "Restore the existing Immich database before deployment."
+  no_log: true
+
+- name: Install Docker module and private HTTP firewall dependencies
+  ansible.builtin.apt:
+    name:
+      - python3-requests
+      - ufw
+    state: present
+
+- name: Create Immich configuration directory
+  ansible.builtin.file:
+    path: "{{ immich_data_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Configure Immich environment
+  ansible.builtin.template:
+    src: immich.env.j2
+    dest: "{{ immich_data_directory }}/.env"
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true
+
+- name: Allow the Proxmox proxy to reach private guest HTTP
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    from_ip: "{{ immich_proxy_address }}"
+    to_ip: "{{ immich_bind_address }}"
+    to_port: "80"
+    comment: Immich private Proxmox proxy
+
+- name: Keep the existing Immich network
+  community.docker.docker_network:
+    name: immich_default
+
+- name: Manage existing Immich database
+  community.docker.docker_container:
+    name: immich_postgres
+    image: "{{ immich_database_image }}"
+    pull: true
+    restart_policy: unless-stopped
+    memory: "{{ immich_database_memory }}"
+    shm_size: 128m
+    env:
+      POSTGRES_PASSWORD: "{{ immich_database_password }}"
+      POSTGRES_USER: "{{ immich_database_username }}"
+      POSTGRES_DB: "{{ immich_database_name }}"
+      POSTGRES_INITDB_ARGS: --data-checksums
+    volumes:
+      - "{{ immich_database_directory }}:/var/lib/postgresql/data"
+    networks:
+      - name: immich_default
+        aliases:
+          - database
+  no_log: true
+
+- name: Manage existing Immich Redis
+  community.docker.docker_container:
+    name: immich_redis
+    image: "{{ immich_redis_image }}"
+    pull: true
+    restart_policy: unless-stopped
+    memory: "{{ immich_redis_memory }}"
+    networks:
+      - name: immich_default
+        aliases:
+          - redis
+
+- name: Manage existing Immich server
+  community.docker.docker_container:
+    name: immich_server
+    image: "{{ immich_image }}"
+    pull: true
+    restart_policy: unless-stopped
+    memory: "{{ immich_memory }}"
+    env_file: "{{ immich_data_directory }}/.env"
+    volumes:
+      - "{{ immich_upload_directory }}:/data"
+      - /etc/localtime:/etc/localtime:ro
+    # Intentional private HTTP listener for the separate Proxmox proxy.
+    ports:
+      - "{{ immich_bind_address }}:80:2283"
+    networks:
+      - name: immich_default
+        aliases:
+          - immich-server
+  no_log: true
+
+- name: Wait for Immich HTTP API
+  ansible.builtin.uri:
+    url: "http://{{ immich_bind_address }}/api/server/ping"
+    return_content: true
+  register: immich_health
+  until: immich_health.status == 200 and immich_health.json.res == 'pong'
+  retries: 30
+  delay: 5

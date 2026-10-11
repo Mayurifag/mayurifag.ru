@@ -1,0 +1,22 @@
+---
+homelab_proxy_enabled: false
+homelab_proxy_version: "3.7.14"
+homelab_proxy_directory: /opt/traefik-home
+homelab_proxy_domain: home.mayurifag.ru
+homelab_proxy_zone: mayurifag.ru
+homelab_proxy_lan_address: "192.168.69.139"
+homelab_proxy_vpn_address: "100.113.201.147"
+homelab_proxy_lan_interface: wlp2s0
+homelab_proxy_allowed_networks:
+  - "192.168.69.0/24"
+  - "100.113.0.0/16"
+  - "127.0.0.1/32"
+homelab_proxy_acme_email: "{{ admin_email }}"
+homelab_proxy_dns_api_token: "{{ traefik_environment_variables.CF_DNS_API_TOKEN }}"
+homelab_proxy_acme_server: https://acme-v02.api.letsencrypt.org/directory
+homelab_proxy_dns_propagation:
+  delayBeforeChecks: 0s
+  disableChecks: false
+homelab_proxy_proxmox_server_name: pve.home.arpa
+homelab_proxy_ha_url: http://10.10.10.20:80
+homelab_proxy_immich_url: http://10.10.10.30:80

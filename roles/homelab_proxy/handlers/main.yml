@@ -1,0 +1,6 @@
+---
+- name: Restart homelab proxy
+  ansible.builtin.systemd_service:
+    name: traefik-home
+    daemon_reload: true
+    state: restarted

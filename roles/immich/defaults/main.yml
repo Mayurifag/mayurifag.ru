@@ -1,0 +1,18 @@
+---
+immich_enabled: false
+immich_image: ghcr.io/immich-app/immich-server:v3.2.4
+immich_database_image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23
+immich_redis_image: docker.io/valkey/valkey:9@sha256:70739f85ad2ee01a726a965584a0f94895f01b0c60b3cc8b0aeef11eaa6888cf
+immich_memory: 2g
+immich_database_memory: 1g
+immich_redis_memory: 128m
+immich_data_directory: /opt/immich
+immich_library_mount: /srv/immich
+immich_upload_directory: "{{ immich_library_mount }}/library"
+immich_database_directory: /var/lib/immich/postgres
+immich_bind_address: 10.10.10.30
+immich_proxy_address: 10.10.10.1
+immich_database_password: change_this
+immich_database_username: postgres
+immich_database_name: immich
+immich_timezone: Etc/UTC

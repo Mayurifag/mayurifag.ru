@@ -1,0 +1,35 @@
+---
+- name: Reboot the Proxmox laptop and wait for private administration
+  ansible.builtin.reboot:
+    reboot_timeout: 600
+    connect_timeout: 10
+    post_reboot_delay: 30
+    test_command: systemctl is-active pve-cluster netbird traefik-home home-assistant-dnsmasq
+
+- name: Verify guest automatic startup
+  ansible.builtin.command: "qm status {{ item.id | quote }}"
+  loop: "{{ homelab_host_vms }}"
+  loop_control:
+    label: "{{ item.id }} {{ item.name }}"
+  register: homelab_host_reboot_guest
+  changed_when: false
+  until: "homelab_host_reboot_guest.stdout == 'status: running'"
+  retries: 30
+  delay: 5
+
+- name: Verify trusted HTTPS after reboot
+  ansible.builtin.uri:
+    url: "{{ item }}"
+    validate_certs: true
+    use_proxy: false
+    status_code: 200
+  loop:
+    - "https://proxmox.{{ homelab_proxy_domain }}/"
+    - "https://ha.{{ homelab_proxy_domain }}/manifest.json"
+    - "https://immich.{{ homelab_proxy_domain }}/api/server/ping"
+  delegate_to: localhost
+  become: false
+  register: homelab_host_reboot_https
+  until: homelab_host_reboot_https.status == 200
+  retries: 36
+  delay: 5

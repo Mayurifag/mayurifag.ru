@@ -23,6 +23,7 @@ Load these files only when relevant:
 - OpenCloud config, POSIX storage, NATS state -> `./airules/opencloud.md`
 - Docker daemon options, live restore -> `./airules/docker.md`
 - Traefik CrowdSec plugin and Traefik startup warnings -> `./airules/traefik.md`
+- Homelab, Proxmox, Home Assistant, Immich, private DNS/TLS -> `./HOMELAB.md`
 
 If several areas apply, load all matching files. Do not preemptively load unrelated rule files.
 

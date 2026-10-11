@@ -1,0 +1,112 @@
+---
+- name: Prepare Python in the SSH app
+  ansible.builtin.import_tasks: ssh.yml
+
+- name: Read declared configuration tree
+  ansible.builtin.set_fact:
+    home_assistant_tree: "{{ query('community.general.filetree', home_assistant_config_source) | rejectattr('path', 'search', '(^|/)\\.') | list }}"
+
+- name: Require configuration.yaml and reject source symlinks
+  ansible.builtin.assert:
+    that:
+      - home_assistant_tree | selectattr('path', 'equalto', 'configuration.yaml') | selectattr('state', 'equalto', 'file') | list | length == 1
+      - home_assistant_tree | selectattr('state', 'equalto', 'link') | list | length == 0
+
+- name: Create declared configuration directories
+  ansible.builtin.file:
+    path: "{{ home_assistant_config_directory }}/{{ item.path }}"
+    state: directory
+    mode: "0755"
+    follow: false
+  loop: "{{ home_assistant_tree | selectattr('state', 'equalto', 'directory') | list }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: Inspect existing YAML files
+  ansible.builtin.stat:
+    path: "{{ home_assistant_config_directory }}/{{ item.path }}"
+    follow: false
+  loop: "{{ home_assistant_tree | selectattr('state', 'equalto', 'file') | selectattr('path', 'search', '\\.(yaml|yml)$') | list }}"
+  loop_control:
+    label: "{{ item.path }}"
+  register: home_assistant_existing
+
+- name: Reject non-file YAML targets
+  ansible.builtin.assert:
+    that:
+      - not item.stat.exists or item.stat.isreg
+  loop: "{{ home_assistant_existing.results }}"
+  loop_control:
+    label: "{{ item.item.path }}"
+  no_log: true
+
+- name: Deploy and validate YAML
+  block:
+    - name: Copy declared YAML with backups
+      ansible.builtin.copy:
+        src: "{{ item.item.src }}"
+        dest: "{{ home_assistant_config_directory }}/{{ item.item.path }}"
+        mode: "{{ '0600' if item.item.path | basename == 'secrets.yaml' else item.stat.mode | default('0600') }}"
+        backup: true
+        follow: false
+      loop: "{{ home_assistant_existing.results }}"
+      loop_control:
+        label: "{{ item.item.path }}"
+      register: home_assistant_deployment
+      no_log: true
+
+    - name: Apply changed Home Assistant configuration
+      # Validation and restart must run inside the transaction so rescue can roll back failures.
+      when: home_assistant_deployment.changed # noqa no-handler
+      block:
+        - name: Check Home Assistant configuration
+          ansible.builtin.command: ha core check
+          changed_when: false
+
+        - name: Restart Home Assistant for changed YAML
+          ansible.builtin.command: ha core restart
+          changed_when: true
+          register: home_assistant_restart
+
+        - name: Wait for Home Assistant HTTP
+          ansible.builtin.uri:
+            url: "http://{{ ansible_host }}:80/manifest.json"
+            use_proxy: false
+            status_code: 200
+          register: home_assistant_health
+          until: home_assistant_health.status == 200
+          retries: 60
+          delay: 2
+  rescue:
+    - name: Restore previous YAML files
+      ansible.builtin.copy:
+        src: "{{ item.backup_file }}"
+        dest: "{{ item.dest }}"
+        remote_src: true
+        mode: preserve
+      loop: "{{ home_assistant_deployment.results | default([]) | selectattr('backup_file', 'defined') | list }}"
+      no_log: true
+
+    - name: Remove YAML files created by the failed deployment
+      ansible.builtin.file:
+        path: "{{ home_assistant_config_directory }}/{{ item.item.item.path }}"
+        state: absent
+      loop: "{{ home_assistant_deployment.results | default([]) }}"
+      when: item.changed and not item.item.stat.exists
+      no_log: true
+
+    - name: Restart Home Assistant after rollback
+      ansible.builtin.command: ha core restart
+      changed_when: true
+      when: home_assistant_restart is defined and not (home_assistant_restart.skipped | default(false))
+
+    - name: Report failed YAML deployment
+      ansible.builtin.fail:
+        msg: "Home Assistant YAML deployment failed; previous files were restored."
+
+- name: Remove YAML backups after successful deployment
+  ansible.builtin.file:
+    path: "{{ item.backup_file }}"
+    state: absent
+  loop: "{{ home_assistant_deployment.results | selectattr('backup_file', 'defined') | list }}"
+  no_log: true

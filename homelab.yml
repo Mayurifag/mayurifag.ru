@@ -1,0 +1,48 @@
+---
+- name: Proxmox homelab
+  hosts: homelab
+  gather_facts: yes
+  become: no
+  roles:
+    - role: homelab_access
+      tags: homelab_access
+      when: homelab_access_enabled | default(false) | bool
+    - role: homelab_host
+      tags: homelab_host
+      when: homelab_host_enabled | default(false) | bool
+    - role: homelab_proxy
+      tags: homelab_proxy
+      when: homelab_proxy_enabled | default(false) | bool
+    - role: beszel_agent
+      tags:
+        - beszel
+        - beszel_agent
+      when: beszel_agent_enabled | default(false) | bool
+  tasks:
+    - name: Reboot and verify the homelab
+      ansible.builtin.include_role:
+        name: homelab_host
+        tasks_from: reboot
+        apply:
+          tags: homelab_reboot
+      tags:
+        - never
+        - homelab_reboot
+
+- name: Homelab Immich guest
+  hosts: homelab_immich
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: immich
+      tags: immich
+      when: immich_enabled | default(false) | bool
+
+- name: Home Assistant SSH app
+  hosts: homelab_home_assistant
+  gather_facts: no
+  become: no
+  roles:
+    - role: home_assistant
+      tags: home_assistant
+      when: home_assistant_enabled | default(false) | bool

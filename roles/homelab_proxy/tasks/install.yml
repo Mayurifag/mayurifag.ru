@@ -1,0 +1,94 @@
+---
+- name: Create native proxy user
+  ansible.builtin.user:
+    name: traefik-home
+    system: true
+    home: /nonexistent
+    shell: /usr/sbin/nologin
+    create_home: false
+
+- name: Create native proxy directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: traefik-home
+    mode: "0750"
+  loop:
+    - "{{ homelab_proxy_directory }}"
+    - "{{ homelab_proxy_directory }}/dynamic"
+
+- name: Download pinned native Traefik archive
+  ansible.builtin.get_url:
+    url: "https://github.com/traefik/traefik/releases/download/v{{ homelab_proxy_version }}/traefik_v{{ homelab_proxy_version }}_linux_amd64.tar.gz"
+    dest: "{{ homelab_proxy_directory }}/traefik.tar.gz"
+    checksum: "sha256:https://github.com/traefik/traefik/releases/download/v{{ homelab_proxy_version }}/traefik_v{{ homelab_proxy_version }}_checksums.txt"
+    mode: "0644"
+
+- name: Extract native proxy binary
+  ansible.builtin.unarchive:
+    src: "{{ homelab_proxy_directory }}/traefik.tar.gz"
+    dest: "{{ homelab_proxy_directory }}"
+    remote_src: true
+    include:
+      - traefik
+    owner: root
+    group: traefik-home
+    mode: "0750"
+  notify: Restart homelab proxy
+
+- name: Trust the existing Proxmox certificate authority
+  ansible.builtin.copy:
+    src: /etc/pve/pve-root-ca.pem
+    dest: "{{ homelab_proxy_directory }}/proxmox-ca.pem"
+    remote_src: true
+    mode: "0644"
+  notify: Restart homelab proxy
+
+- name: Store DNS challenge credentials
+  ansible.builtin.copy:
+    dest: "{{ homelab_proxy_directory }}/cloudflare-token"
+    content: "{{ homelab_proxy_dns_api_token }}"
+    owner: root
+    group: traefik-home
+    mode: "0640"
+  no_log: true
+  notify: Restart homelab proxy
+
+- name: Configure native proxy
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "{{ homelab_proxy_directory }}/{{ item }}"
+    owner: root
+    group: traefik-home
+    mode: "0640"
+  loop:
+    - traefik.yml
+    - dynamic/services.yml
+  notify: Restart homelab proxy
+
+- name: Configure native proxy service
+  ansible.builtin.template:
+    src: traefik-home.service.j2
+    dest: /etc/systemd/system/traefik-home.service
+    mode: "0644"
+  notify: Restart homelab proxy
+
+- name: Enable native proxy
+  ansible.builtin.systemd_service:
+    name: traefik-home
+    daemon_reload: true
+    enabled: true
+    state: started
+
+- name: Apply proxy configuration before switching LAN HTTPS
+  ansible.builtin.meta: flush_handlers
+
+- name: Wait for private HTTPS listeners
+  ansible.builtin.wait_for:
+    host: "{{ item }}"
+    port: 443
+    timeout: 30
+  loop:
+    - "{{ homelab_proxy_lan_address }}"
+    - "{{ homelab_proxy_vpn_address }}"
