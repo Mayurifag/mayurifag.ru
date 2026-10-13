@@ -128,6 +128,9 @@ threexui_hysteria2_port: 36500
 opencloud_enabled: true
 opencloud_subdomain: "cloud"
 
+docmost_enabled: false
+docmost_subdomain: "doc"
+
 mailflow_enabled: "{{ inventory_hostname == 'prod1' }}"
 mailflow_session_secret: "change_this_random_string_min_32_chars"
 mailflow_db_password: "change_this_database_password"

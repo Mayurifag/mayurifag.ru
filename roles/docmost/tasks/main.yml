@@ -1,0 +1,196 @@
+---
+- name: Create Docmost data directory
+  ansible.builtin.file:
+    path: "{{ docmost_data_directory }}"
+    state: directory
+    owner: "0"
+    group: "0"
+    mode: "0700"
+
+- name: Create Docmost database directories
+  ansible.builtin.file:
+    path: "{{ docmost_data_directory }}/{{ item }}"
+    state: directory
+    owner: "0"
+    group: "0"
+    # PostgreSQL 18 drops privileges before accessing its versioned PGDATA.
+    mode: "0755"
+  loop:
+    - postgres
+    - redis
+
+- name: Create Docmost storage directory
+  ansible.builtin.file:
+    path: "{{ docmost_data_directory }}/storage"
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: "0700"
+
+- name: Generate persistent Docmost secrets
+  ansible.builtin.command:
+    argv:
+      - openssl
+      - rand
+      - -hex
+      - -out
+      - "{{ docmost_data_directory }}/{{ item }}"
+      - "32"
+    creates: "{{ docmost_data_directory }}/{{ item }}"
+  loop:
+    - app-secret
+    - db-password
+  no_log: true
+
+- name: Secure Docmost secrets
+  ansible.builtin.file:
+    path: "{{ docmost_data_directory }}/{{ item }}"
+    owner: "0"
+    group: "0"
+    mode: "0600"
+  loop:
+    - app-secret
+    - db-password
+
+- name: Read Docmost application secret
+  ansible.builtin.slurp:
+    src: "{{ docmost_data_directory }}/app-secret"
+  register: docmost_app_secret_file
+  no_log: true
+
+- name: Read Docmost database password
+  ansible.builtin.slurp:
+    src: "{{ docmost_data_directory }}/db-password"
+  register: docmost_db_password_file
+  no_log: true
+
+- name: Create Docmost Docker network
+  community.docker.docker_network:
+    name: docmost
+    state: present
+
+- name: Start Docmost PostgreSQL
+  community.docker.docker_container:
+    name: docmost-postgres
+    image: "{{ docmost_postgres_image }}"
+    state: healthy
+    healthy_wait_timeout: 120
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ docmost_postgres_memory }}"
+    env:
+      POSTGRES_DB: "docmost"
+      POSTGRES_USER: "docmost"
+      POSTGRES_PASSWORD: "{{ docmost_db_password_file.content | b64decode | trim }}"
+    volumes:
+      - "{{ docmost_data_directory }}/postgres:/var/lib/postgresql"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docmost -d docmost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - name: docmost
+        aliases:
+          - db
+  no_log: true
+
+- name: Start Docmost Redis
+  community.docker.docker_container:
+    name: docmost-redis
+    image: "{{ docmost_redis_image }}"
+    state: healthy
+    healthy_wait_timeout: 120
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ docmost_redis_memory }}"
+    command: redis-server --appendonly yes --maxmemory-policy noeviction
+    volumes:
+      - "{{ docmost_data_directory }}/redis:/data"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    networks:
+      - name: docmost
+        aliases:
+          - redis
+
+- name: Start Docmost
+  community.docker.docker_container:
+    name: docmost
+    image: "{{ docmost_image }}"
+    state: healthy
+    healthy_wait_timeout: 180
+    pull: true
+    recreate: true
+    restart_policy: unless-stopped
+    memory: "{{ docmost_memory }}"
+    env:
+      APP_URL: "https://{{ docmost_subdomain }}.{{ server_hostname }}"
+      APP_SECRET: "{{ docmost_app_secret_file.content | b64decode | trim }}"
+      DATABASE_URL: "postgresql://docmost:{{ docmost_db_password_file.content | b64decode | trim }}@db:5432/docmost"
+      REDIS_URL: "redis://redis:6379"
+      STORAGE_DRIVER: "local"
+      DISABLE_TELEMETRY: "true"
+    ports:
+      - "127.0.0.1:{{ docmost_local_port }}:3000"
+    volumes:
+      - "{{ docmost_data_directory }}/storage:/app/data/storage"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:3000/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    networks:
+      - name: docmost
+      - name: web
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "web"
+      traefik.http.routers.docmost.rule: "Host(`{{ docmost_subdomain }}.{{ server_hostname }}`)"
+      traefik.http.services.docmost.loadbalancer.server.port: "3000"
+  no_log: true
+
+- name: Check Docmost workspace setup
+  community.docker.docker_container_exec:
+    container: docmost-postgres
+    argv:
+      - psql
+      - -U
+      - docmost
+      - -d
+      - docmost
+      - -tAc
+      - SELECT count(*) FROM workspaces
+  register: docmost_workspace_count
+  changed_when: false
+
+- name: Bootstrap Docmost workspace owner
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ docmost_local_port }}/api/auth/setup"
+    method: POST
+    body_format: json
+    body:
+      name: "{{ admin_username }}"
+      email: "{{ docmost_admin_email }}"
+      password: "{{ docmost_admin_password }}"
+      workspaceName: "{{ docmost_workspace_name }}"
+    status_code: 200
+  when: docmost_workspace_count.stdout | trim == '0'
+  changed_when: true
+  no_log: true
+
+- name: Add Docmost post-install message
+  ansible.builtin.set_fact:
+    post_install_messages: >-
+      {{ (post_install_messages | default([])) + [
+        'Docmost: https://' ~ docmost_subdomain ~ '.' ~ server_hostname,
+        'Docmost owner uses admin_email and admin_userldappassword; Codex MCP setup: POST_INSTALL.md'
+      ] }}

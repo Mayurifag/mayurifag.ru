@@ -1,0 +1,14 @@
+---
+docmost_enabled: false
+docmost_subdomain: "doc"
+docmost_image: "docmost/docmost:0.96.0"
+docmost_memory: "768m"
+docmost_data_directory: "{{ docker_home }}/docmost"
+docmost_postgres_image: "postgres:18-alpine"
+docmost_postgres_memory: "256m"
+docmost_redis_image: "redis:8-alpine"
+docmost_redis_memory: "128m"
+docmost_local_port: 3080
+docmost_workspace_name: "Documentation"
+docmost_admin_email: "{{ admin_email }}"
+docmost_admin_password: "{{ admin_userldappassword }}"

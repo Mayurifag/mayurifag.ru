@@ -52,6 +52,51 @@ in `tinyauth_oidc_clients`; Google sign-in remains configured once in Tinyauth.
    provider, NetBird redirects directly to Tinyauth. Ensure a Tinyauth user has
    **Owner** access before applying this to an existing NetBird installation.
 
+## Docmost and OpenAI Codex
+
+Docmost Community Edition runs at <https://doc.nnnnn.cfd>. Sign in directly
+with `admin_email` and `admin_userldappassword`. Tinyauth is not used for Docmost.
+Ansible creates the workspace owner only when the database has no workspace.
+
+To share a page anonymously, open the page, click **Share / globe**, and enable
+public sharing. Send the generated public link, not the private workspace URL.
+Test it in a private browser window. Unpublished pages still require Docmost
+authentication. Disable **Include subpages** unless child pages should be public.
+
+The [official MCP server](https://docmost.com/docs/user-guide/mcp) requires a
+Business or Enterprise license. For Community Edition, use
+[@wisflux/docmost-local-mcp](https://github.com/wisflux/docmost-local-mcp).
+It supports searching, reading, creating, and editing pages through Docmost's
+internal API. It runs locally with Node.js 18+ and uses interactive Docmost login.
+
+The local MCP server connects directly over HTTPS. No SSH tunnel is needed;
+Docmost's own authentication and permissions apply.
+
+Add this server to your managed Codex configuration, then apply it:
+
+~~~toml
+[mcp_servers.docmost]
+command = "npx"
+args = ["-y", "@wisflux/docmost-local-mcp@0.9.2", "--base-url=https://doc.nnnnn.cfd"]
+startup_timeout_sec = 60
+tool_timeout_sec = 180
+~~~
+
+For unmanaged Codex installations, the equivalent CLI command is:
+
+~~~sh
+codex mcp add docmost -- npx -y @wisflux/docmost-local-mcp@0.9.2 \
+  --base-url=https://doc.nnnnn.cfd
+~~~
+
+Restart Codex. The first tool call opens a local sign-in window; use your
+Docmost email and password. Ask: "List my Docmost spaces" or "Create a page
+in General from these notes." No OpenAI API key is needed for this MCP bridge.
+
+Back up PostgreSQL with `pg_dump`, plus `{{ docmost_data_directory }}/storage`,
+`app-secret`, and `db-password`. Docmost, PostgreSQL, and Redis are not
+Watchtower-managed; redeploy the `docmost` tag for upgrades after taking backups.
+
 ## OpenCloud
 
 Make sure that Personal space is generated. Things I have to restore:

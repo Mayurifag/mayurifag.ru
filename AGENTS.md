@@ -10,6 +10,15 @@ and 3x-ui Hysteria2 UDP.
 Add `no_log: true` to Ansible tasks that include API tokens, passwords, bearer
 tokens, private keys, or generated secrets in module arguments.
 
+After provisioning an app with its own login, save its credentials in the user's
+KeePassXC database. Follow `~/airules/passwords.md`; look up the app's exact URL
+first to avoid duplicate entries.
+
+Use Tinyauth for private apps without native authentication. Apps with proper
+native login should use their own authentication by default; do not add a second
+login gate unless explicitly requested. Preserve public share links and API/MCP
+access while verifying that private content still requires authentication.
+
 `debug on <name>` = read-only ssh inspection on host reachable via `ssh <name>`. Run diagnostic commands only (logs, status, configs). Never mutate server state. For changes, edit ansible files in repo and deploy via `make deploy <role>`. You maybe need to override `RemoteCommand=none`.
 
 Do not expose real SSH host aliases in instructions, skills, docs, or examples. Use placeholders like `<host>` or `<production-host>`; discover concrete aliases from inventory only when executing commands.

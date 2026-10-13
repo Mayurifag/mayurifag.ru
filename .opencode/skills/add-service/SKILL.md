@@ -16,7 +16,7 @@ Required repo changes most likely will be:
 - Use `community.docker.docker_container` with `pull: true`, `recreate: true`, `restart_policy: unless-stopped`, volumes, memory, and labels.
 - Exposed HTTP services must join Docker network `web` for Traefik.
 - Add Traefik labels: `traefik.enable`, router host rule, service port, and middlewares.
-- Add `tinyauth@docker` for private services without proper ldap configuration.
+- Add `tinyauth@docker` only for private services without proper native authentication. For apps with native login, rely on the app's authentication unless an extra gate is explicitly requested. Preserve public share links and API/MCP access; verify private content requires authentication.
 - Docker-published ports must bind to loopback as `127.0.0.1:host:container` unless intentionally public.
 - Intentionally public ports must add a matching `community.general.ufw` allow rule in the service role.
 - Add `com.centurylinklabs.watchtower.enable: "true"` only for low-risk/stateless or simple-update services.

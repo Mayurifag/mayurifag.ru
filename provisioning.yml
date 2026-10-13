@@ -108,6 +108,11 @@
         - mailflow
       when: (mailflow_enabled | default(False))
 
+    - role: docmost
+      tags:
+        - docmost
+      when: (docmost_enabled | default(False) | bool)
+
     - role: bentopdf
       tags:
         - bentopdf
