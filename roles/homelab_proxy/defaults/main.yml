@@ -20,3 +20,6 @@ homelab_proxy_dns_propagation:
 homelab_proxy_proxmox_server_name: pve.home.arpa
 homelab_proxy_ha_url: http://10.10.10.20:80
 homelab_proxy_immich_url: http://10.10.10.30:80
+homelab_proxy_qwen_url: ""
+homelab_proxy_homekit_enabled: false
+homelab_proxy_homekit_lan_network: "192.168.69.0/24"

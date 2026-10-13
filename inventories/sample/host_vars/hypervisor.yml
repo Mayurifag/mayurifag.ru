@@ -1,11 +1,20 @@
 ---
 beszel_agent_mode: native
 ansible_ssh_transfer_method: piped
+ansible_ssh_common_args: >-
+  -o RemoteCommand=none
+  -o StrictHostKeyChecking=yes
+  -o UserKnownHostsFile={{ inventory_dir }}/files/homelab_known_hosts
+  -o ProxyCommand="netbird ssh --no-browser root@100.64.0.10 nc 127.0.0.1 22"
 homelab_access_enabled: false
 homelab_access_netbird_host: "<control-host>"
 homelab_access_netbird_url: https://netbird.example.com
+homelab_access_qwen_peer_address: "100.64.0.20"
+homelab_proxy_qwen_url: "http://100.64.0.20:3000"
 homelab_host_enabled: true
 homelab_proxy_enabled: true
+homelab_proxy_homekit_enabled: true
+homelab_proxy_homekit_lan_network: "192.168.1.0/24"
 homelab_proxy_lan_address: "192.168.1.10"
 homelab_proxy_vpn_address: "100.64.0.10"
 homelab_proxy_proxmox_server_name: hypervisor.home.arpa

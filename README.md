@@ -93,6 +93,7 @@ Notes:
 
 ### TODO
 
+* [ ] **High priority:** Deploy SearXNG and configure it as web search for the local AI agent.
 * [ ] Homelab follow-ups: backup/restore tests, NetBird enrollment/DNS automation,
       bare-metal network bootstrap, and off-host backups. See [HOMELAB.md](./HOMELAB.md).
 

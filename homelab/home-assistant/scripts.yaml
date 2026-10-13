@@ -1,2 +1,73 @@
 ---
-{}
+spalnia_antikomarinka:
+  mode: queued
+  sequence:
+    - if: "{{ enabled | default(true) }}"
+      then:
+        - action: switch.turn_on
+          target:
+            entity_id: switch.rozetka_spalnia
+        - action: time.set_value
+          continue_on_error: true
+          target:
+            entity_id: time.rozetka_spalnia_taimer
+          data:
+            time: "08:00:00"
+        - wait_template: >-
+            {{ is_state('switch.rozetka_spalnia', 'on')
+                and '07:59:55' <= states('time.rozetka_spalnia_taimer') <= '08:00:00' }}
+          timeout: "00:00:05"
+        - if: "{{ not wait.completed }}"
+          then:
+            - action: switch.turn_off
+              target:
+                entity_id: switch.rozetka_spalnia
+            - stop: Failed to arm the bedroom plug countdown; switched the plug off.
+              error: true
+      else:
+        - action: switch.turn_off
+          target:
+            entity_id: switch.rozetka_spalnia
+        - action: time.set_value
+          target:
+            entity_id: time.rozetka_spalnia_taimer
+          data:
+            time: "00:00:00"
+  alias: Спальня антикомаринка
+  description: ''
+kabinet_antikomarinka:
+  mode: queued
+  sequence:
+    - if: "{{ enabled | default(true) }}"
+      then:
+        - action: switch.turn_on
+          target:
+            entity_id: switch.kabinet_rozetka
+        - action: time.set_value
+          continue_on_error: true
+          target:
+            entity_id: time.kabinet_rozetka_taimer
+          data:
+            time: "08:00:00"
+        - wait_template: >-
+            {{ is_state('switch.kabinet_rozetka', 'on')
+                and '07:59:55' <= states('time.kabinet_rozetka_taimer') <= '08:00:00' }}
+          timeout: "00:00:05"
+        - if: "{{ not wait.completed }}"
+          then:
+            - action: switch.turn_off
+              target:
+                entity_id: switch.kabinet_rozetka
+            - stop: Failed to arm the cabinet plug countdown; switched the plug off.
+              error: true
+      else:
+        - action: switch.turn_off
+          target:
+            entity_id: switch.kabinet_rozetka
+        - action: time.set_value
+          target:
+            entity_id: time.kabinet_rozetka_taimer
+          data:
+            time: "00:00:00"
+  alias: Кабинет антикомаринка
+  description: ''

@@ -1,0 +1,96 @@
+---
+- name: Select the Qwen peer and managed access objects
+  ansible.builtin.set_fact:
+    homelab_access_qwen_peers: "{{ homelab_access_api.results[1].json | selectattr('ip', 'equalto', homelab_access_qwen_peer_address) | list }}"
+    homelab_access_qwen_groups: "{{ homelab_access_api.results[0].json | selectattr('name', 'equalto', 'qwen-serving') | list }}"
+    homelab_access_qwen_policies: "{{ homelab_access_api.results[2].json | selectattr('name', 'equalto', 'Qwen Backend') | list }}"
+
+- name: Require unambiguous Qwen access objects
+  ansible.builtin.assert:
+    that:
+      - homelab_access_qwen_peers | length == 1
+      - homelab_access_qwen_groups | length <= 1
+      - homelab_access_qwen_policies | length <= 1
+      - homelab_access_qwen_peers[0].id != homelab_access_peers[0].id
+
+- name: Manage the single-peer Qwen destination group
+  ansible.builtin.uri:
+    url: "{{ homelab_access_netbird_url }}/api/groups{{ '/' ~ homelab_access_qwen_groups[0].id if homelab_access_qwen_groups else '' }}"
+    method: "{{ 'PUT' if homelab_access_qwen_groups else 'POST' }}"
+    headers:
+      Authorization: "Token {{ homelab_access_pat.content | b64decode | trim }}"
+    body_format: json
+    body:
+      name: qwen-serving
+      peers:
+        - "{{ homelab_access_qwen_peers[0].id }}"
+    status_code: 200
+  when: >-
+    not homelab_access_qwen_groups or
+    homelab_access_qwen_groups[0].peers | map(attribute='id') | list != [homelab_access_qwen_peers[0].id]
+  delegate_to: localhost
+  become: false
+  register: homelab_access_qwen_group_result
+  changed_when: true
+  no_log: true
+
+- name: Define the proxy-only Qwen policy
+  ansible.builtin.set_fact:
+    homelab_access_qwen_group: "{{ homelab_access_qwen_group_result.json | default(homelab_access_qwen_groups[0] if homelab_access_qwen_groups else {}) }}"
+    homelab_access_qwen_current: "{{ homelab_access_qwen_policies[0] if homelab_access_qwen_policies else {} }}"
+
+- name: Define the Qwen backend rule
+  ansible.builtin.set_fact:
+    homelab_access_qwen_policy:
+      name: Qwen Backend
+      description: Private HTTPS proxy to the Strix Halo chat backend only
+      enabled: true
+      source_posture_checks: []
+      rules:
+        - name: qwen-backend
+          description: Proxmox proxy to Open WebUI
+          enabled: true
+          action: accept
+          bidirectional: false
+          protocol: tcp
+          port_ranges:
+            - start: 3000
+              end: 3000
+          sources:
+            - "{{ homelab_access_destinations[0].id }}"
+          destinations:
+            - "{{ homelab_access_qwen_group.id }}"
+    homelab_access_qwen_current_rule: "{{ (homelab_access_qwen_current.rules | default([]) | first) | default({}) }}"
+
+- name: Normalize the current Qwen backend rule
+  ansible.builtin.set_fact:
+    homelab_access_qwen_normalized_rule:
+      name: "{{ homelab_access_qwen_current_rule.name | default('') }}"
+      description: "{{ homelab_access_qwen_current_rule.description | default('') }}"
+      enabled: "{{ homelab_access_qwen_current_rule.enabled | default(false) }}"
+      action: "{{ homelab_access_qwen_current_rule.action | default('') }}"
+      bidirectional: "{{ homelab_access_qwen_current_rule.bidirectional | default(true) }}"
+      protocol: "{{ homelab_access_qwen_current_rule.protocol | default('') }}"
+      port_ranges: "{{ homelab_access_qwen_current_rule.port_ranges | default([], true) }}"
+      sources: "{{ homelab_access_qwen_current_rule.sources | default([], true) | map(attribute='id') | list }}"
+      destinations: "{{ homelab_access_qwen_current_rule.destinations | default([], true) | map(attribute='id') | list }}"
+
+- name: Manage the proxy-only Qwen backend policy
+  ansible.builtin.uri:
+    url: "{{ homelab_access_netbird_url }}/api/policies{{ '/' ~ homelab_access_qwen_current.id if homelab_access_qwen_current.id is defined else '' }}"
+    method: "{{ 'PUT' if homelab_access_qwen_current.id is defined else 'POST' }}"
+    headers:
+      Authorization: "Token {{ homelab_access_pat.content | b64decode | trim }}"
+    body_format: json
+    body: "{{ homelab_access_qwen_policy }}"
+    status_code: 200
+  when: >-
+    homelab_access_qwen_normalized_rule != homelab_access_qwen_policy.rules[0] or
+    homelab_access_qwen_current.rules | default([]) | length != 1 or
+    homelab_access_qwen_current.description | default('') != homelab_access_qwen_policy.description or
+    not (homelab_access_qwen_current.enabled | default(false)) or
+    homelab_access_qwen_current.source_posture_checks | default([], true) | length != 0
+  delegate_to: localhost
+  become: false
+  changed_when: true
+  no_log: true

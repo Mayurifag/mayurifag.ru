@@ -7,5 +7,5 @@ ansible_ssh_common_args: >-
   -o RemoteCommand=none
   -o StrictHostKeyChecking=yes
   -o UserKnownHostsFile={{ inventory_dir }}/files/homelab_known_hosts
-  -o ProxyCommand="ssh -o RemoteCommand=none -o BatchMode=yes root@<host> nc %h %p"
+  -o ProxyCommand="netbird ssh --no-browser root@100.64.0.10 nc %h %p"
 home_assistant_enabled: true

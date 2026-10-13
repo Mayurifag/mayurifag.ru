@@ -8,3 +8,46 @@ frontend:
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+
+template:
+  - switch:
+      - name: Спальня антикомаринка
+        default_entity_id: switch.spalnia_antikomarinka
+        unique_id: spalnia_antikomarinka
+        state: >-
+          {{ is_state('switch.rozetka_spalnia', 'on')
+              and states('time.rozetka_spalnia_taimer') not in ['00:00:00', 'unknown', 'unavailable'] }}
+        availability: >-
+          {{ states('switch.rozetka_spalnia') in ['on', 'off']
+              and states('time.rozetka_spalnia_taimer') not in ['unknown', 'unavailable'] }}
+        turn_on:
+          - action: script.spalnia_antikomarinka
+        turn_off:
+          - action: script.spalnia_antikomarinka
+            data:
+              enabled: false
+      - name: Кабинет антикомаринка
+        default_entity_id: switch.kabinet_antikomarinka
+        unique_id: kabinet_antikomarinka
+        state: >-
+          {{ is_state('switch.kabinet_rozetka', 'on')
+              and states('time.kabinet_rozetka_taimer') not in ['00:00:00', 'unknown', 'unavailable'] }}
+        availability: >-
+          {{ states('switch.kabinet_rozetka') in ['on', 'off']
+              and states('time.kabinet_rozetka_taimer') not in ['unknown', 'unavailable'] }}
+        turn_on:
+          - action: script.kabinet_antikomarinka
+        turn_off:
+          - action: script.kabinet_antikomarinka
+            data:
+              enabled: false
+
+homekit:
+  name: Home Assistant Bridge
+  port: 21063
+  advertise_ip:
+    - 192.168.69.139
+  filter:
+    include_entities:
+      - switch.spalnia_antikomarinka
+      - switch.kabinet_antikomarinka

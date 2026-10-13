@@ -1,0 +1,70 @@
+---
+- name: Install HomeKit discovery relay
+  ansible.builtin.apt:
+    name:
+      - avahi-daemon
+      - avahi-utils
+    state: present
+
+- name: Configure HomeKit-only discovery between Wi-Fi and guests
+  ansible.builtin.template:
+    src: avahi-daemon.conf.j2
+    dest: /etc/avahi/avahi-daemon.conf
+    mode: "0644"
+  notify: Restart homelab HomeKit discovery
+
+- name: Allow private HomeKit discovery through the node firewall
+  ansible.builtin.blockinfile:
+    path: "/etc/pve/nodes/{{ ansible_facts.hostname }}/host.fw"
+    insertafter: '^\[RULES\]$'
+    marker: '# {mark} ANSIBLE HOMELAB HOMEKIT'
+    block: |
+      IN ACCEPT -i {{ homelab_proxy_lan_interface }} -source {{ homelab_proxy_homekit_lan_network }} -p udp -dport 5353
+      IN ACCEPT -i {{ homelab_host_bridge }} -source 10.10.10.0/24 -p udp -dport 5353
+    unsafe_writes: true
+
+- name: Validate HomeKit firewall configuration
+  ansible.builtin.command: pve-firewall compile
+  changed_when: false
+
+- name: Forward LAN HomeKit connections to Home Assistant
+  ansible.builtin.iptables:
+    table: nat
+    chain: PREROUTING
+    in_interface: "{{ homelab_proxy_lan_interface }}"
+    source: "{{ homelab_proxy_homekit_lan_network }}"
+    destination: "{{ homelab_proxy_lan_address }}"
+    protocol: tcp
+    destination_port: "21063"
+    jump: DNAT
+    to_destination: "{{ homelab_proxy_ha_url | urlsplit('hostname') }}:21063"
+
+- name: Allow forwarded LAN HomeKit connections
+  ansible.builtin.iptables:
+    chain: FORWARD
+    in_interface: "{{ homelab_proxy_lan_interface }}"
+    out_interface: "{{ homelab_host_bridge }}"
+    source: "{{ homelab_proxy_homekit_lan_network }}"
+    destination: "{{ homelab_proxy_ha_url | urlsplit('hostname') }}"
+    protocol: tcp
+    destination_port: "21063"
+    ctstate: NEW,ESTABLISHED,RELATED
+    jump: ACCEPT
+
+- name: Keep HomeKit forwarding after network restarts
+  ansible.builtin.blockinfile:
+    path: /etc/network/interfaces
+    insertafter: '^iface {{ homelab_host_bridge }} inet static$'
+    marker: '# {mark} ANSIBLE HOMELAB HOMEKIT'
+    block: |
+          post-up /usr/sbin/iptables -t nat -A PREROUTING -i {{ homelab_proxy_lan_interface }} -s {{ homelab_proxy_homekit_lan_network }} -d {{ homelab_proxy_lan_address }} -p tcp --dport 21063 -j DNAT --to-destination {{ homelab_proxy_ha_url | urlsplit('hostname') }}:21063
+          post-up /usr/sbin/iptables -A FORWARD -i {{ homelab_proxy_lan_interface }} -o {{ homelab_host_bridge }} -s {{ homelab_proxy_homekit_lan_network }} -d {{ homelab_proxy_ha_url | urlsplit('hostname') }} -p tcp --dport 21063 -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT
+          post-down /usr/sbin/iptables -D FORWARD -i {{ homelab_proxy_lan_interface }} -o {{ homelab_host_bridge }} -s {{ homelab_proxy_homekit_lan_network }} -d {{ homelab_proxy_ha_url | urlsplit('hostname') }} -p tcp --dport 21063 -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT || true
+          post-down /usr/sbin/iptables -t nat -D PREROUTING -i {{ homelab_proxy_lan_interface }} -s {{ homelab_proxy_homekit_lan_network }} -d {{ homelab_proxy_lan_address }} -p tcp --dport 21063 -j DNAT --to-destination {{ homelab_proxy_ha_url | urlsplit('hostname') }}:21063 || true
+    backup: true
+
+- name: Enable HomeKit discovery relay
+  ansible.builtin.systemd_service:
+    name: avahi-daemon
+    enabled: true
+    state: started

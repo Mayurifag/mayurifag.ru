@@ -4,3 +4,8 @@
     name: traefik-home
     daemon_reload: true
     state: restarted
+
+- name: Restart homelab HomeKit discovery
+  ansible.builtin.systemd_service:
+    name: avahi-daemon
+    state: restarted

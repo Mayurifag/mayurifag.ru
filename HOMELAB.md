@@ -8,10 +8,12 @@ Guests use `vmbr0`, `10.10.10.0/24`, and routed NAT through Wi-Fi. Gateway/DNS: 
 - [Proxmox](https://proxmox.home.mayurifag.ru): host HTTPS on `8006`.
 - [Home Assistant](https://ha.home.mayurifag.ru): `10.10.10.20:80`.
 - [Immich](https://immich.home.mayurifag.ru): `10.10.10.30:80`; machine learning disabled.
+- [Qwen](https://qwen.home.mayurifag.ru): Open WebUI on the Strix Halo NetBird peer; start it with `qwen`.
 
 Native Traefik handles HTTPS on Proxmox. Wildcard DNS points to its NetBird address.
 Clients need NetBird and membership in `remote-admins`. LAN-only access needs a local DNS override.
 Certificates use Cloudflare DNS-01; no WAN forwarding is needed.
+Start Qwen before deploying `homelab_proxy` when its route is enabled.
 
 ## Deployment
 
@@ -28,11 +30,20 @@ make deploy immich HOST='<photo-guest>'
 ~~~
 
 - `homelab_access`: NetBird HTTPS policy and Home Assistant trusted proxy.
+- `homelab_netbird`: only NetBird policies, including proxy-only Qwen backend access on TCP 3000.
 - `homelab_host`: laptop power policy, DHCP/DNS, existing VM resources and startup.
 - `homelab_proxy`: Traefik, private firewall access, DNS and TLS.
 - `home_assistant`: YAML from `homelab/home-assistant/`; validates before restart and rolls back failures.
 - `immich`: requires the existing database/library; recreates containers only when needed. Do not also use Compose.
 - Reboot: `make deploy homelab_reboot HOST='<host>'`. Create/restore VMs through Proxmox.
+
+## Apple Home
+
+- HomeKit Bridge exports only the two Antikomarinka scenario switches from `homelab/home-assistant/configuration.yaml`; raw plugs and technical controls stay in Home Assistant.
+- `make deploy homelab_homekit HOST='<host>'` configures LAN-only TCP `21063` forwarding and an Avahi `_hap._tcp` reflector between Wi-Fi and `vmbr0`.
+- Reserve the Proxmox Wi-Fi address in router DHCP. HomeKit `advertise_ip` must match `homelab_proxy_lan_address`.
+- Pair through Apple Home using the QR code in Home Assistant notifications. Do not add a second UI-created bridge.
+- Antikomarinka scenario switches use each plug's native eight-hour countdown, not a volatile script delay. Their state follows the plug and countdown after Home Assistant restarts.
 
 ## Data and configuration
 

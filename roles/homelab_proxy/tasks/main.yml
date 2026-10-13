@@ -15,6 +15,11 @@
 - name: Configure private HTTPS firewall access
   ansible.builtin.import_tasks: firewall.yml
 
+- name: Configure LAN access to HomeKit
+  ansible.builtin.import_tasks: homekit.yml
+  when: homelab_proxy_homekit_enabled | bool
+  tags: homelab_homekit
+
 - name: Point homelab wildcard DNS at the private VPN address
   community.general.cloudflare_dns:
     zone: "{{ homelab_proxy_zone }}"
@@ -34,10 +39,11 @@
     use_proxy: false
     validate_certs: true
     status_code: 200
-  loop:
-    - "https://proxmox.{{ homelab_proxy_domain }}/"
-    - "https://ha.{{ homelab_proxy_domain }}/manifest.json"
-    - "https://immich.{{ homelab_proxy_domain }}/api/server/ping"
+  loop: >-
+    {{ ['https://proxmox.' ~ homelab_proxy_domain ~ '/',
+        'https://ha.' ~ homelab_proxy_domain ~ '/manifest.json',
+        'https://immich.' ~ homelab_proxy_domain ~ '/api/server/ping'] +
+        (['https://qwen.' ~ homelab_proxy_domain ~ '/health'] if homelab_proxy_qwen_url else []) }}
   delegate_to: localhost
   become: false
   register: homelab_proxy_https_health

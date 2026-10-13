@@ -1,0 +1,14 @@
+[server]
+use-ipv4=yes
+use-ipv6=no
+allow-interfaces={{ homelab_proxy_lan_interface }},{{ homelab_host_bridge }}
+
+[wide-area]
+enable-wide-area=no
+
+[publish]
+disable-publishing=yes
+
+[reflector]
+enable-reflector=yes
+reflect-filters=_hap._tcp.local

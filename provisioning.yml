@@ -13,6 +13,15 @@
           - "  ansible_host   : {{ ansible_host }}"
           - "================================================"
       tags: always
+
+    - name: Enroll local workstation into NetBird
+      ansible.builtin.import_role:
+        name: netbird
+        tasks_from: enroll
+      tags:
+        - never
+        - netbird_enroll
+      when: (netbird_enabled | default(False))
   roles:
     - role: ssh
       tags:

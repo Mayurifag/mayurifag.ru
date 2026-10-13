@@ -1,0 +1,85 @@
+---
+- name: Read existing NetBird administration token for workstation enrollment
+  ansible.builtin.slurp:
+    src: "{{ netbird_data_directory }}/initial-admin-pat"
+  register: netbird_enrollment_pat
+  no_log: true
+
+- name: Enroll local workstation into the administrator account
+  ansible.builtin.command:
+    argv:
+      - python3
+      - -c
+      - |
+        import json
+        import os
+        import subprocess
+        import sys
+        import urllib.request
+
+        token = sys.stdin.read().strip()
+        base = sys.argv[1] + '/api/'
+
+        def api(path, body=None, method=None):
+            request = urllib.request.Request(
+                base + path,
+                data=json.dumps(body).encode() if body is not None else None,
+                headers={
+                    'Authorization': 'Token ' + token,
+                    'Content-Type': 'application/json',
+                },
+                method=method,
+            )
+            with urllib.request.urlopen(request, timeout=20) as response:
+                return json.load(response)
+
+        def run(*args, **kwargs):
+            return subprocess.check_output(
+                ['netbird', *args], text=True, timeout=60, **kwargs
+            ).strip()
+
+        groups = [group for group in api('groups')
+                  if group['name'] == 'remote-admins']
+        assert len(groups) == 1, 'Expected exactly one remote-admins group'
+        group_id = groups[0]['id']
+        profiles = run('profile', 'list').splitlines()[1:]
+        assert not any(line.split()[0] == 'homelab' for line in profiles), \
+            'A homelab profile already exists; leave it unchanged'
+        run('profile', 'add', 'homelab')
+        setup = api('setup-keys', {
+            'name': 'workstation-enrollment', 'type': 'one-off',
+            'expires_in': 86400, 'usage_limit': 1,
+            'auto_groups': [group_id], 'ephemeral': False,
+        })
+        try:
+            # Keep the setup key out of disk files and process arguments.
+            descriptor = os.memfd_create('netbird-setup-key')
+            try:
+                os.write(descriptor, setup['key'].encode())
+                run('up', '--profile', 'homelab', '--management-url', sys.argv[1],
+                    '--setup-key-file', f'/proc/self/fd/{descriptor}',
+                    pass_fds=(descriptor,))
+            finally:
+                os.close(descriptor)
+            current_ip = run('status', '--ipv4').split('/')[0]
+            current = [peer for peer in api('peers') if peer['ip'] == current_ip]
+            assert len(current) == 1, 'Workstation not in expected account'
+            assert any(group['id'] == group_id for group in current[0]['groups']), \
+                'Workstation not in remote-admins'
+            print('Enrolled in remote-admins: ' + current_ip)
+        finally:
+            api('setup-keys/' + setup['id'],
+                {'revoked': True, 'auto_groups': [group_id]}, 'PUT')
+      - "https://{{ netbird_subdomain }}.{{ server_hostname }}"
+    stdin: "{{ netbird_enrollment_pat.content | b64decode | trim }}"
+  delegate_to: localhost
+  become: false
+  vars:
+    ansible_pipelining: true
+  register: netbird_enrollment
+  changed_when: "'Enrolled in remote-admins:' in netbird_enrollment.stdout"
+  no_log: true
+
+- name: Report workstation enrollment
+  ansible.builtin.debug:
+    msg: "{{ netbird_enrollment.stdout }}"

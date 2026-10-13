@@ -16,6 +16,12 @@ http:
       rule: "Host(`immich.{{ homelab_proxy_domain }}`)"
       service: immich
       entryPoints: [lan, vpn]
+{% if homelab_proxy_qwen_url %}
+    qwen:
+      rule: "Host(`qwen.{{ homelab_proxy_domain }}`)"
+      service: qwen
+      entryPoints: [lan, vpn]
+{% endif %}
   services:
     proxmox:
       loadBalancer:
@@ -30,6 +36,12 @@ http:
       loadBalancer:
         servers:
           - url: "{{ homelab_proxy_immich_url }}"
+{% if homelab_proxy_qwen_url %}
+    qwen:
+      loadBalancer:
+        servers:
+          - url: "{{ homelab_proxy_qwen_url }}"
+{% endif %}
   serversTransports:
     proxmox:
       serverName: "{{ homelab_proxy_proxmox_server_name }}"
