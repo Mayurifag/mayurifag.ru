@@ -32,6 +32,13 @@ make deploy hostname "traefik,mus" # or make deploy-all if you are sure
 
 #### Optional steps
 
+* Enroll this workstation in NetBird's `remote-admins` group from a host with
+  NetBird enabled:
+
+~~~sh
+make deploy netbird_enroll HOST='<netbird-host>'
+~~~
+
 * Make new ssh config section for convenience and using tssh' udp by default
 
 ~~~sh
@@ -81,9 +88,10 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 
 ## Homelab
 
-Proxmox, Home Assistant, Immich, private DNS, and HTTPS are documented in
-[HOMELAB.md](./HOMELAB.md). `homelab.yml` separates the Proxmox host and photo
-guest from VPS provisioning. Deploy with explicit inventory hosts and tags.
+Proxmox, Home Assistant, Immich, HomeKit, Qwen, private DNS, and HTTPS are
+documented in [HOMELAB.md](./HOMELAB.md). `homelab.yml` separates the Proxmox
+host and photo guest from VPS provisioning. Deploy with explicit inventory hosts
+and tags.
 
 Notes:
 
@@ -94,8 +102,8 @@ Notes:
 ### TODO
 
 * [ ] **High priority:** Deploy SearXNG and configure it as web search for the local AI agent.
-* [ ] Homelab follow-ups: backup/restore tests, NetBird enrollment/DNS automation,
-      bare-metal network bootstrap, and off-host backups. See [HOMELAB.md](./HOMELAB.md).
+* [ ] Apple Home access for wife: choose a second HomeKit Bridge for her separate Apple Home, or buy a HomePod for shared-home access.
+* [ ] Homelab follow-up: bare-metal network bootstrap. See [HOMELAB.md](./HOMELAB.md).
 
 ### On hold
 

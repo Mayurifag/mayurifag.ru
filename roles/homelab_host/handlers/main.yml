@@ -14,3 +14,9 @@
     name: home-assistant-dnsmasq
     daemon_reload: true
     state: restarted
+
+- name: Restart homelab LAN DNS
+  ansible.builtin.systemd_service:
+    name: homelab-lan-dnsmasq
+    daemon_reload: true
+    state: restarted

@@ -1,0 +1,12 @@
+[Unit]
+Description=Homelab LAN DNS overrides
+After=network-online.target pve-firewall.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/dnsmasq --keep-in-foreground --conf-file=/etc/dnsmasq.d/homelab-lan.conf --pid-file=/run/dnsmasq-homelab-lan.pid
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

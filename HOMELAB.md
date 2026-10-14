@@ -31,7 +31,7 @@ make deploy immich HOST='<photo-guest>'
 
 - `homelab_access`: NetBird HTTPS policy and Home Assistant trusted proxy.
 - `homelab_netbird`: only NetBird policies, including proxy-only Qwen backend access on TCP 3000.
-- `homelab_host`: laptop power policy, DHCP/DNS, existing VM resources and startup.
+- `homelab_host`: laptop power policy, guest DHCP/DNS, private LAN DNS, VM resources and startup.
 - `homelab_proxy`: Traefik, private firewall access, DNS and TLS.
 - `home_assistant`: YAML from `homelab/home-assistant/`; validates before restart and rolls back failures.
 - `immich`: requires the existing database/library; recreates containers only when needed. Do not also use Compose.
@@ -56,5 +56,6 @@ make deploy immich HOST='<photo-guest>'
 ## Local quirks
 
 - Home Assistant serves HTTP on **80**. HTTP proxy settings live in Settings > System > Network, not YAML.
+- LAN dnsmasq maps `*.home.mayurifag.ru` to the reserved Proxmox Wi-Fi IP. Configure router DHCP to advertise that IP as its only DNS server; router remains the DHCP server.
 - DNS interception requires the production Traefik propagation override: 30-second delay, local checks disabled.
 - Proxmox owns firewall-file permissions. Create missing `host.fw` through `pvesh`; do not chmod it.

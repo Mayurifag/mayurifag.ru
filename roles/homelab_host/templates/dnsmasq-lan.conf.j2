@@ -1,0 +1,9 @@
+interface={{ homelab_proxy_lan_interface }}
+except-interface=lo
+bind-interfaces
+listen-address={{ homelab_proxy_lan_address }}
+no-dhcp-interface={{ homelab_proxy_lan_interface }}
+no-resolv
+no-hosts
+server=1.1.1.1
+address=/{{ homelab_proxy_domain }}/{{ homelab_proxy_lan_address }}

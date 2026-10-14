@@ -80,6 +80,28 @@
     enabled: true
     state: started
 
+- name: Configure private LAN DNS overrides
+  ansible.builtin.template:
+    src: dnsmasq-lan.conf.j2
+    dest: /etc/dnsmasq.d/homelab-lan.conf
+    mode: "0644"
+    validate: /usr/sbin/dnsmasq --test --conf-file=%s
+  notify: Restart homelab LAN DNS
+
+- name: Configure private LAN DNS service
+  ansible.builtin.copy:
+    src: homelab-lan-dnsmasq.service
+    dest: /etc/systemd/system/homelab-lan-dnsmasq.service
+    mode: "0644"
+  notify: Restart homelab LAN DNS
+
+- name: Enable private LAN DNS
+  ansible.builtin.systemd_service:
+    name: homelab-lan-dnsmasq
+    daemon_reload: true
+    enabled: true
+    state: started
+
 - name: Read existing VM configurations
   ansible.builtin.command: "qm config {{ item.id | quote }}"
   changed_when: false

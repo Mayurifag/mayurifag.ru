@@ -15,7 +15,7 @@
     line: '[RULES]'
     unsafe_writes: true
 
-- name: Allow private HTTPS through the Proxmox node firewall
+- name: Allow private HTTPS and LAN DNS through the Proxmox node firewall
   ansible.builtin.blockinfile:
     path: "/etc/pve/nodes/{{ ansible_facts.hostname }}/host.fw"
     insertafter: '^\[RULES\]$'
@@ -24,6 +24,8 @@
       {% for network in homelab_proxy_allowed_networks %}
       IN ACCEPT -source {{ network }} -p tcp -dport 443
       {% endfor %}
+      IN ACCEPT -i {{ homelab_proxy_lan_interface }} -source {{ homelab_proxy_homekit_lan_network }} -p udp -dport 53
+      IN ACCEPT -i {{ homelab_proxy_lan_interface }} -source {{ homelab_proxy_homekit_lan_network }} -p tcp -dport 53
     unsafe_writes: true
 
 - name: Validate Proxmox firewall configuration
