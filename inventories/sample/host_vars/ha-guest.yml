@@ -9,3 +9,5 @@ ansible_ssh_common_args: >-
   -o UserKnownHostsFile={{ inventory_dir }}/files/homelab_known_hosts
   -o ProxyCommand="netbird ssh --no-browser root@100.64.0.10 nc %h %p"
 home_assistant_enabled: true
+home_assistant_xiaomi_miot_enabled: true
+home_assistant_vacuum_map_source: ""

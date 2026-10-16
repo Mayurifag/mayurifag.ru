@@ -4,6 +4,7 @@ listen-address={{ homelab_host_gateway }}
 no-resolv
 no-hosts
 server=1.1.1.1
+address=/{{ homelab_proxy_domain }}/{{ homelab_proxy_lan_address }}
 dhcp-range={{ homelab_host_ha_address }},{{ homelab_host_ha_address }},255.255.255.0,12h
 dhcp-option=3,{{ homelab_host_gateway }}
 dhcp-option=6,{{ homelab_host_gateway }}

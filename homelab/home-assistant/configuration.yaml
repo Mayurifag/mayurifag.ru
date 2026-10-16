@@ -8,6 +8,22 @@ frontend:
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+rest: !include homelab-health.yaml
+
+lovelace:
+  dashboards:
+    homelab-dashboard:
+      mode: yaml
+      title: Хомлаб
+      icon: mdi:server-network
+      show_in_sidebar: true
+      filename: dashboards/homelab.yaml
+    vacuum-dashboard:
+      mode: yaml
+      title: Пылесос
+      icon: mdi:robot-vacuum
+      show_in_sidebar: true
+      filename: dashboards/vacuum.yaml
 
 template:
   - switch:

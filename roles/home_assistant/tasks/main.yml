@@ -12,6 +12,14 @@
       - home_assistant_tree | selectattr('path', 'equalto', 'configuration.yaml') | selectattr('state', 'equalto', 'file') | list | length == 1
       - home_assistant_tree | selectattr('state', 'equalto', 'link') | list | length == 0
 
+- name: Copy the private vacuum map into native media storage
+  ansible.builtin.copy:
+    src: "{{ home_assistant_vacuum_map_source }}"
+    dest: /media/s20-room-map.png
+    mode: "0600"
+    follow: false
+  when: home_assistant_vacuum_map_source | length > 0
+
 - name: Create declared configuration directories
   ansible.builtin.file:
     path: "{{ home_assistant_config_directory }}/{{ item.path }}"
@@ -110,3 +118,7 @@
     state: absent
   loop: "{{ home_assistant_deployment.results | selectattr('backup_file', 'defined') | list }}"
   no_log: true
+
+- name: Install Xiaomi Miot
+  ansible.builtin.import_tasks: xiaomi_miot.yml
+  when: home_assistant_xiaomi_miot_enabled | bool

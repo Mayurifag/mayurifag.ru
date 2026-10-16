@@ -14,6 +14,7 @@
 
 - name: Configure private HTTPS firewall access
   ansible.builtin.import_tasks: firewall.yml
+  tags: homelab_monitoring
 
 - name: Configure LAN access to HomeKit
   ansible.builtin.import_tasks: homekit.yml

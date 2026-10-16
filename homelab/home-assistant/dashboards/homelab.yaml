@@ -1,0 +1,148 @@
+---
+views:
+  - title: "\u0425\u043e\u043c\u043b\u0430\u0431"
+    path: overview
+    type: sections
+    theme: Slate Studio
+    max_columns: 3
+    header:
+      layout: start
+      card:
+        type: heading
+        heading: "\u0418\u043d\u0444\u0440\u0430\u0441\u0442\u0440\u0443\u043a\u0442\u0443\u0440\u0430"
+        heading_style: title
+        icon: mdi:server-network
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: "\u0421\u0435\u0440\u0432\u0438\u0441\u044b"
+            heading_style: subtitle
+            icon: mdi:lan-connect
+          - type: tile
+            entity: binary_sensor.homelab_proxmox_web
+            name: Proxmox / HTTPS
+            icon: mdi:server
+            color: primary
+            grid_options: {columns: 12, rows: 2}
+            tap_action:
+              action: url
+              url_path: https://proxmox.home.mayurifag.ru
+          - type: tile
+            entity: binary_sensor.homelab_immich_api
+            name: Immich / API
+            icon: mdi:image-multiple-outline
+            color: primary
+            grid_options: {columns: 12, rows: 2}
+            tap_action:
+              action: url
+              url_path: https://immich.home.mayurifag.ru
+          - type: button
+            name: "Qwen / \u043f\u043e \u0437\u0430\u043f\u0440\u043e\u0441\u0443"
+            icon: mdi:brain
+            icon_height: 32px
+            show_state: false
+            grid_options: {columns: 6, rows: 2}
+            tap_action:
+              action: url
+              url_path: https://qwen.home.mayurifag.ru
+          - type: button
+            name: "\u041f\u044b\u043b\u0435\u0441\u043e\u0441"
+            icon: mdi:robot-vacuum
+            icon_height: 32px
+            show_state: false
+            grid_options: {columns: 6, rows: 2}
+            tap_action:
+              action: navigate
+              navigation_path: /vacuum-dashboard/s20
+          - type: markdown
+            content: "Proxmox: \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u043e\u0441\u0442\u044c \u0432\u0435\u0431-\u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430. Immich: API ping. Qwen \u0437\u0430\u043f\u0443\u0441\u043a\u0430\u0435\u0442\u0441\u044f \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u043e."
+            grid_options: {columns: 12, rows: auto}
+      - type: grid
+        cards:
+          - type: heading
+            heading: Home Assistant / VM 100
+            heading_style: subtitle
+            icon: mdi:chip
+          - type: tile
+            entity: sensor.home_assistant_core_cpu_percent
+            name: CPU / Core
+            icon: mdi:cpu-64-bit
+            color: primary
+            grid_options: {columns: 6, rows: 2}
+          - type: tile
+            entity: sensor.home_assistant_core_memory_percent
+            name: RAM / Core
+            icon: mdi:memory
+            color: primary
+            grid_options: {columns: 6, rows: 2}
+          - type: tile
+            entity: sensor.home_assistant_host_disk_used
+            name: "\u0414\u0438\u0441\u043a / \u0437\u0430\u043d\u044f\u0442\u043e"
+            icon: mdi:harddisk
+            grid_options: {columns: 6, rows: 2}
+          - type: tile
+            entity: sensor.home_assistant_host_disk_free
+            name: "\u0414\u0438\u0441\u043a / \u0441\u0432\u043e\u0431\u043e\u0434\u043d\u043e"
+            icon: mdi:database-outline
+            grid_options: {columns: 6, rows: 2}
+          - type: history-graph
+            title: "\u041d\u0430\u0433\u0440\u0443\u0437\u043a\u0430 Core / 6 \u0447\u0430\u0441\u043e\u0432"
+            hours_to_show: 6
+            entities:
+              - entity: sensor.home_assistant_core_cpu_percent
+                name: CPU
+              - entity: sensor.home_assistant_core_memory_percent
+                name: RAM
+            grid_options: {columns: 12, rows: 3}
+          - type: markdown
+            content: "CPU \u0438 RAM \u043e\u0442\u043d\u043e\u0441\u044f\u0442\u0441\u044f \u043a Core. \u0414\u0438\u0441\u043a: \u0434\u0430\u043d\u043d\u044b\u0435 HA OS \u0432 VM 100, \u043d\u0435 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043a\u0438\u0439 \u0434\u0438\u0441\u043a Proxmox."
+            grid_options: {columns: 12, rows: auto}
+      - type: grid
+        cards:
+          - type: heading
+            heading: "\u041e\u0431\u0441\u043b\u0443\u0436\u0438\u0432\u0430\u043d\u0438\u0435"
+            heading_style: subtitle
+            icon: mdi:shield-check-outline
+          - type: tile
+            entity: sensor.backup_last_successful_automatic_backup
+            name: "\u041f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0439 \u0430\u0432\u0442\u043e\u0431\u044d\u043a\u0430\u043f"
+            icon: mdi:backup-restore
+            grid_options: {columns: 12, rows: 2}
+          - type: tile
+            entity: sensor.backup_next_scheduled_automatic_backup
+            name: "\u0421\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 \u0437\u0430\u043f\u0443\u0441\u043a"
+            icon: mdi:calendar-clock-outline
+            grid_options: {columns: 12, rows: 2}
+          - type: button
+            name: "\u0420\u0435\u0437\u0435\u0440\u0432\u043d\u044b\u0435 \u043a\u043e\u043f\u0438\u0438"
+            icon: mdi:cloud-upload-outline
+            icon_height: 32px
+            show_state: false
+            grid_options: {columns: 6, rows: 2}
+            tap_action:
+              action: navigate
+              navigation_path: /config/backup
+          - type: button
+            name: "\u0416\u0443\u0440\u043d\u0430\u043b\u044b"
+            icon: mdi:text-box-search-outline
+            icon_height: 32px
+            show_state: false
+            grid_options: {columns: 6, rows: 2}
+            tap_action:
+              action: navigate
+              navigation_path: /config/logs
+          - type: tile
+            entity: update.home_assistant_core_update
+            name: Home Assistant Core
+            icon: mdi:home-assistant
+            grid_options: {columns: 12, rows: 2}
+          - type: tile
+            entity: switch.kabinet_rozetka
+            name: "\u0420\u043e\u0437\u0435\u0442\u043a\u0430 \u043a\u0430\u0431\u0438\u043d\u0435\u0442\u0430"
+            icon: mdi:power-socket-eu
+            grid_options: {columns: 12, rows: 2}
+            tap_action:
+              action: more-info
+            icon_tap_action:
+              action: none

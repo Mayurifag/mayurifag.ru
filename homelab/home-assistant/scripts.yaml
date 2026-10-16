@@ -71,3 +71,33 @@ kabinet_antikomarinka:
             time: "00:00:00"
   alias: Кабинет антикомаринка
   description: ''
+
+xiaomi_s20_clean_room_10:
+  alias: "Xiaomi S20: уборка сверху справа (ID 10)"
+  sequence:
+    - action: xiaomi_miot.call_action
+      data:
+        entity_id: vacuum.xiaomi_d106gl_89cd_robot_cleaner
+        siid: 7
+        aiid: 3
+        params: ["10", 0, 1]
+
+xiaomi_s20_clean_room_11:
+  alias: "Xiaomi S20: уборка справа посередине (ID 11)"
+  sequence:
+    - action: xiaomi_miot.call_action
+      data:
+        entity_id: vacuum.xiaomi_d106gl_89cd_robot_cleaner
+        siid: 7
+        aiid: 3
+        params: ["11", 0, 1]
+
+xiaomi_s20_clean_room_12:
+  alias: "Xiaomi S20: уборка слева / снизу (ID 12)"
+  sequence:
+    - action: xiaomi_miot.call_action
+      data:
+        entity_id: vacuum.xiaomi_d106gl_89cd_robot_cleaner
+        siid: 7
+        aiid: 3
+        params: ["12", 0, 1]

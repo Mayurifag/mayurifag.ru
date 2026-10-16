@@ -21,3 +21,4 @@ homelab_proxy_proxmox_server_name: hypervisor.home.arpa
 homelab_proxy_allowed_networks:
   - "192.168.1.0/24"
   - "100.64.0.0/10"
+  - "10.10.10.20/32"

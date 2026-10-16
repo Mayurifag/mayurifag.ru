@@ -66,6 +66,7 @@
     - traefik.yml
     - dynamic/services.yml
   notify: Restart homelab proxy
+  tags: homelab_monitoring
 
 - name: Configure native proxy service
   ansible.builtin.template:

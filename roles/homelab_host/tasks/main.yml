@@ -65,6 +65,7 @@
     mode: "0644"
     validate: /usr/sbin/dnsmasq --test --conf-file=%s
   notify: Restart homelab dnsmasq
+  tags: homelab_monitoring
 
 - name: Configure guest DHCP and DNS service
   ansible.builtin.copy:

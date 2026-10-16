@@ -11,6 +11,7 @@ homelab_proxy_allowed_networks:
   - "192.168.69.0/24"
   - "100.113.0.0/16"
   - "127.0.0.1/32"
+  - "10.10.10.20/32"
 homelab_proxy_acme_email: "{{ admin_email }}"
 homelab_proxy_dns_api_token: "{{ traefik_environment_variables.CF_DNS_API_TOKEN }}"
 homelab_proxy_acme_server: https://acme-v02.api.letsencrypt.org/directory

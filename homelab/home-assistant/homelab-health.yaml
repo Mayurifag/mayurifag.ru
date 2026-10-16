@@ -1,0 +1,20 @@
+---
+- resource: https://proxmox.home.mayurifag.ru/
+  scan_interval: 60
+  timeout: 5
+  verify_ssl: true
+  binary_sensor:
+    - name: Homelab Proxmox Web
+      unique_id: homelab_proxmox_web
+      device_class: connectivity
+      value_template: "{{ 'Proxmox Virtual Environment' in value }}"
+
+- resource: https://immich.home.mayurifag.ru/api/server/ping
+  scan_interval: 60
+  timeout: 5
+  verify_ssl: true
+  binary_sensor:
+    - name: Homelab Immich API
+      unique_id: homelab_immich_api
+      device_class: connectivity
+      value_template: "{{ value_json.res | default('') == 'pong' }}"

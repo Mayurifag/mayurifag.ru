@@ -2,3 +2,8 @@
 home_assistant_enabled: false
 home_assistant_config_directory: /config
 home_assistant_config_source: "{{ playbook_dir }}/homelab/home-assistant"
+home_assistant_vacuum_map_source: ""
+home_assistant_xiaomi_miot_enabled: false
+# Includes the upstream post-verification signing fix from PR #2948, absent from v1.1.5.
+home_assistant_xiaomi_miot_revision: e02bec2b31cdf900b62258e1a649200a28ac7932
+home_assistant_xiaomi_miot_checksum: sha256:75f69ed022037692857db616811a2a2fb65955f9451de8f305dcdc570896d2d3

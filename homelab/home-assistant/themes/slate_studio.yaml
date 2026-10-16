@@ -1,0 +1,69 @@
+---
+Slate Studio:
+  modes:
+    dark:
+      primary-background-color: "#0b1118"
+      secondary-background-color: "#101923"
+      card-background-color: "#16212d"
+      clear-background-color: var(--primary-background-color)
+      sidebar-background-color: "#080e15"
+      divider-color: "#2a3a49"
+      primary-text-color: "#eef3f8"
+      secondary-text-color: "#b0becb"
+      disabled-text-color: "#657789"
+      state-icon-color: var(--secondary-text-color)
+      primary-color: "#94d2ba"
+      accent-color: "#efc27a"
+      success-color: var(--primary-color)
+      warning-color: var(--accent-color)
+      error-color: "#f18e85"
+      info-color: "#91b9e7"
+
+      ha-color-surface-default: var(--card-background-color)
+      ha-color-surface-low: var(--primary-background-color)
+      ha-color-surface-lower: var(--sidebar-background-color)
+      ha-color-text-primary: var(--primary-text-color)
+      ha-color-text-secondary: var(--secondary-text-color)
+      ha-color-text-disabled: var(--disabled-text-color)
+      ha-color-border-neutral-quiet: var(--divider-color)
+      ha-color-border-neutral-normal: var(--divider-color)
+
+      sidebar-text-color: var(--secondary-text-color)
+      sidebar-icon-color: var(--secondary-text-color)
+      sidebar-selected-text-color: var(--primary-color)
+      sidebar-selected-icon-color: var(--primary-color)
+      sidebar-selected-background-color: var(--card-background-color)
+      app-header-background-color: var(--primary-background-color)
+      app-header-text-color: var(--primary-text-color)
+      app-header-border-bottom: 1px solid var(--divider-color)
+
+      ha-card-background: var(--card-background-color)
+      ha-card-border-width: 1px
+      ha-card-border-color: var(--divider-color)
+      ha-card-border-radius: 18px
+      ha-card-box-shadow: none
+      ha-card-header-font-family: var(--ha-font-family-heading)
+      ha-card-header-font-size: 18px
+
+      ha-font-family-body: system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
+      ha-font-family-heading: var(--ha-font-family-body)
+      ha-font-family-code: ui-monospace,SFMono-Regular,Consolas,monospace
+      ha-font-weight-normal: 400
+      ha-font-weight-medium: 500
+      ha-font-weight-bold: 700
+      ha-font-weight-body: var(--ha-font-weight-normal)
+      ha-font-weight-heading: 600
+      ha-font-weight-action: var(--ha-font-weight-heading)
+
+      ha-heading-card-title-font-size: 28px
+      ha-heading-card-title-font-weight: var(--ha-font-weight-heading)
+      ha-heading-card-subtitle-font-size: 16px
+      ha-heading-card-subtitle-font-weight: var(--ha-font-weight-heading)
+
+      ha-tile-icon-border-radius: 12px
+      ha-tile-info-primary-font-size: 14px
+      ha-tile-info-primary-font-weight: var(--ha-font-weight-medium)
+      ha-tile-info-secondary-font-size: 16px
+      ha-tile-info-secondary-font-weight: var(--ha-font-weight-medium)
+      ha-tile-info-secondary-color: var(--primary-text-color)
+      ha-tile-info-gap: 4px
