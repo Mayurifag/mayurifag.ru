@@ -51,7 +51,7 @@ Host change_that_provider change_that_website.com
     #!! TsshdPort 12345 # change this
 ~~~
 
-## Applications List
+## VPS Applications
 
 This list changed a lot through years, I'm trying to remove things I do not use.
 
@@ -89,9 +89,11 @@ Refer to [POST_INSTALL.md](./POST_INSTALL.md) for after deployment info.
 ## Homelab
 
 Proxmox, Home Assistant, Immich, HomeKit, Qwen, private DNS, and HTTPS are
-documented in [HOMELAB.md](./HOMELAB.md). `homelab.yml` separates the Proxmox
+documented in [HOMELAB.md](./HOMELAB.md) (git-crypt; unlock locally). `homelab.yml` separates the Proxmox
 host and photo guest from VPS provisioning. Deploy with explicit inventory hosts
 and tags.
+
+Personal notes and `homelab/home-assistant/` configuration are git-crypt protected.
 
 Notes:
 
@@ -102,7 +104,6 @@ Notes:
 ### TODO
 
 * [ ] **High priority:** Deploy SearXNG and configure it as web search for the local AI agent.
-* [ ] Apple Home access for wife: choose a second HomeKit Bridge for her separate Apple Home, or buy a HomePod for shared-home access.
 * [ ] Homelab follow-up: bare-metal network bootstrap. See [HOMELAB.md](./HOMELAB.md).
 
 ### On hold

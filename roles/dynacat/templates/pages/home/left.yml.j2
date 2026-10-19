@@ -15,7 +15,10 @@
             Authorization: Bearer ${GITHUB_NOTIFICATIONS_TOKEN}
             Accept: application/vnd.github+json
           template: |
-            {% raw %}{{ $notifications := .JSON.Array "" }}
+            {% raw %}{{ if ne .Response.StatusCode 200 }}
+              <div class="size-h6 color-subdue">GitHub notifications unavailable (HTTP {{ .Response.StatusCode }})</div>
+            {{ else }}
+            {{ $notifications := .JSON.Array "" }}
             {{ if eq (len $notifications) 0 }}
               <div data-hide-widget></div>
             {{ else }}
@@ -43,6 +46,7 @@
               </li>
             {{ end }}
             </ul>
+            {{ end }}
             {{ end }}{% endraw %}
 
 {% if dynacat_github_releases_repos %}
@@ -68,5 +72,6 @@
               hide-system-info: true
               hide-mountpoints-by-default: true
               mountpoints:
-                "/":
+                "/host":
+                  name: "/"
                   hide: false

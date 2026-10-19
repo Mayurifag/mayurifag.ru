@@ -32,11 +32,6 @@
       Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)
       Chrome/{{ dynacat_chrome_versions.json.channels.Stable.version }} Safari/537.36
 
-- name: Remove Dynacat data directory for clean deployment
-  ansible.builtin.file:
-    path: "{{ dynacat_data_directory }}"
-    state: absent
-
 - name: Create Dynacat directories
   ansible.builtin.file:
     path: "{{ item }}"
@@ -57,11 +52,26 @@
     - favicon.svg
     - dynacat-custom-widgets.js
 
-- name: Create Dynacat configuration
-  ansible.builtin.template:
-    src: dynacat.yml.j2
-    dest: "{{ dynacat_data_directory }}/config/dynacat.yml"
-    mode: "0644"
+- name: Install Dynacat service discovery
+  ansible.builtin.copy:
+    src: discover_services.py
+    dest: /usr/local/bin/dynacat-discover-services
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Refresh discovered Dynacat services
+  ansible.builtin.command:
+    argv:
+      - /usr/local/bin/dynacat-discover-services
+      - "{{ dynacat_data_directory }}/assets/services.json"
+  changed_when: false
+
+- name: Refresh discovered Dynacat services every minute
+  ansible.builtin.cron:
+    name: Dynacat service discovery
+    user: root
+    job: "/usr/local/bin/dynacat-discover-services {{ (dynacat_data_directory ~ '/assets/services.json') | quote }}"
 
 - name: Create Dynacat page configurations
   ansible.builtin.template:
@@ -69,6 +79,14 @@
     dest: "{{ dynacat_data_directory }}/config/pages/{{ item }}.yml"
     mode: "0644"
   loop: "{{ dynacat_pages }}"
+  no_log: true
+  diff: false
+
+- name: Create Dynacat configuration
+  ansible.builtin.template:
+    src: dynacat.yml.j2
+    dest: "{{ dynacat_data_directory }}/config/dynacat.yml"
+    mode: "0644"
 
 - name: Dynacat Docker Container
   community.docker.docker_container:
@@ -95,6 +113,7 @@
       - name: "web"
     labels:
       traefik.enable: "true"
+      dynacat.hide: "true"
       traefik.http.routers.dynacat.rule: "Host(`{{ dynacat_subdomain }}.{{ server_hostname }}`)"
       traefik.http.services.dynacat.loadbalancer.server.port: "8080"
       traefik.http.routers.dynacat.middlewares: "tinyauth@docker"

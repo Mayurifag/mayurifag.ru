@@ -12,6 +12,9 @@
   ],
   "noBanner": true,
   "ignores": [
+    "HOMELAB.md",
+    "airules/home-assistant.md",
+    "homelab/home-assistant/**",
     ".ansible/roles/**",
     ".opencode/browser-mcp-profile/**",
     "**/node_modules/**"

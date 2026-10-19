@@ -19,3 +19,4 @@ ignore: |
   .ansible/roles
   .playwright-mcp/
   inventories/my-provision/
+  homelab/home-assistant/

@@ -10,7 +10,11 @@ homelab_access_enabled: false
 homelab_access_netbird_host: "<control-host>"
 homelab_access_netbird_url: https://netbird.example.com
 homelab_access_qwen_peer_address: "100.64.0.20"
+homelab_access_opencode_peer_addresses:
+  linux: "100.64.0.20"
 homelab_proxy_qwen_url: "http://100.64.0.20:3000"
+homelab_proxy_opencode_backends:
+  linux: "http://100.64.0.20:49374"
 homelab_host_enabled: true
 homelab_proxy_enabled: true
 homelab_proxy_homekit_enabled: true

@@ -1,0 +1,26 @@
+        - type: custom-api
+          title: Services
+          cache: 30s
+          update-interval: 30s
+          url: http://127.0.0.1:8080/assets/services.json
+          template: |
+            {% raw %}{{ if ne .Response.StatusCode 200 }}
+              <div class="color-negative">Service discovery unavailable</div>
+            {{ else }}
+              {{ $stale := gt ((now).Sub (parseTime "unix" (.JSON.String "updated_at"))) (duration "180s") }}
+              {{ if $stale }}<div class="color-negative margin-bottom-10">Service discovery is stale</div>{{ end }}
+              <ul class="list list-gap-10" data-discovered-services>
+              {{ range .JSON.Array "services" }}
+                {{ $status := .String "status" }}
+                {{ $normal := or (eq $status "running") (eq $status "healthy") (eq $status "sleeping") }}
+                <li class="flex justify-between items-center gap-10">
+                  <a class="color-primary-if-not-visited text-truncate min-width-0" href="{{ .String "url" }}" target="_blank" rel="noreferrer">{{ .String "name" }}</a>
+                  {{ if and (not $stale) (not $normal) }}
+                    <span class="size-h6 shrink-0 color-negative" data-service-status>{{ $status }}</span>
+                  {{ end }}
+                </li>
+              {{ else }}
+                <li class="color-subdue">No deployed app routes found</li>
+              {{ end }}
+              </ul>
+            {{ end }}{% endraw %}

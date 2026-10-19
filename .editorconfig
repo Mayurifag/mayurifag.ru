@@ -20,7 +20,7 @@ indent_style = tab
 [Dockerfile]
 indent_size = 4
 
-[{.git-crypt/**,inventories/my-provision/**}]
+[{.git-crypt/**,inventories/my-provision/**,HOMELAB.md,airules/home-assistant.md,homelab/home-assistant/**}]
 charset = unset
 end_of_line = unset
 indent_size = unset

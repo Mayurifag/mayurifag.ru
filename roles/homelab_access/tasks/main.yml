@@ -8,6 +8,16 @@
   when: homelab_access_qwen_peer_address | length > 0
   tags: homelab_netbird
 
+- name: Allow the private proxy to reach OpenCode backends
+  ansible.builtin.include_tasks:
+    file: opencode.yml
+    apply:
+      tags: homelab_netbird
+  loop: "{{ homelab_access_opencode_peer_addresses | dict2items }}"
+  loop_control:
+    loop_var: homelab_access_opencode_backend
+  tags: homelab_netbird
+
 - name: Create homelab console automation directory
   ansible.builtin.file:
     path: /opt/homelab

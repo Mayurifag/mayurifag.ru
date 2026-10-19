@@ -11,12 +11,14 @@
   register: docker_bin
 
 - name: Schedule weekly docker cleanup
+  # Sablier needs stopped service containers and their images to remain available.
   ansible.builtin.cron:
     name: "Weekly docker cleanup"
     special_time: weekly
     job: >-
-      docker system prune --all --force
+      docker image prune --all --force
       --filter "label!=keep"
+      && docker builder prune --force
       && docker volume prune --force --filter "label!=keep"
   when: docker_bin.stat.exists
 

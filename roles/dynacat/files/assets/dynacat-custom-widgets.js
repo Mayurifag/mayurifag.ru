@@ -45,20 +45,6 @@
     }
   }
 
-  function setupHiddenWidgets(root = document) {
-    const widgets = new Set();
-
-    if (root.matches?.(".widget")) widgets.add(root);
-    root.querySelectorAll?.(".widget").forEach((widget) => widgets.add(widget));
-    if (root.closest?.(".widget")) {
-      widgets.add(root.closest(".widget"));
-    }
-
-    for (const widget of widgets) {
-      widget.hidden = !!widget.querySelector("[data-hide-widget]");
-    }
-  }
-
   function showCustomPopover(target) {
     const text = target.dataset.customPopoverText;
     if (!text) return;
@@ -209,18 +195,26 @@
         key,
         fetch(
           `https://date.nager.at/api/v3/PublicHolidays/${year}/${countryCode}`,
+          { signal: AbortSignal.timeout(5000) },
         )
-          .then((response) => (response.ok ? response.json() : []))
-          .then(
-            (holidays) =>
-              new Map(
-                holidays.map((holiday) => [
-                  holiday.date,
-                  holiday.name || holiday.localName,
-                ]),
-              ),
-          )
-          .catch(() => new Map()),
+          .then((response) => {
+            if (!response.ok) throw new Error("Holiday lookup failed");
+            return response.json();
+          })
+          .then((holidays) => {
+            if (!Array.isArray(holidays) || holidays.length === 0)
+              throw new Error("Holiday calendar unavailable");
+            return new Map(
+              holidays.map((holiday) => [
+                holiday.date,
+                holiday.name || holiday.localName,
+              ]),
+            );
+          })
+          .catch((error) => {
+            holidayCache.delete(key);
+            throw error;
+          }),
       );
     }
 
@@ -242,6 +236,16 @@
     if (isWeekend || apiHolidayName)
       return { holidayName: apiHolidayName || "Weekend" };
 
+    // US equity early closes; full holidays have already returned above.
+    const earlyClose =
+      exchange.countryCode === "US" &&
+      ((parts.month === 7 && parts.day === 3) ||
+        (parts.month === 12 && parts.day === 24) ||
+        (parts.month === 11 &&
+          parts.weekday === "Fri" &&
+          parts.day >= 23 &&
+          parts.day <= 29));
+
     return {
       open: exchangeLocalDateToDate(
         exchange.timeZone,
@@ -256,8 +260,8 @@
         parts.year,
         parts.month,
         parts.day,
-        exchange.closeHour,
-        exchange.closeMinute,
+        earlyClose ? 13 : exchange.closeHour,
+        earlyClose ? 0 : exchange.closeMinute,
       ),
       holidayName: "",
     };
@@ -349,7 +353,17 @@
       const exchange = exchanges[item.dataset.exchangeClock];
       if (!exchange) continue;
 
-      const status = await exchangeStatus(exchange, now);
+      let status;
+      try {
+        status = await exchangeStatus(exchange, now);
+      } catch {
+        status = {
+          isOpen: false,
+          label: "Unknown",
+          detail: "schedule unavailable",
+          popoverText: "",
+        };
+      }
       const state = item.querySelector("[data-exchange-state]");
       const detail = item.querySelector("[data-exchange-detail]");
 
@@ -366,12 +380,15 @@
       item.dataset.customPopoverText = status.popoverText;
       if (status.popoverText)
         item.setAttribute("aria-label", status.popoverText);
+      else {
+        item.removeAttribute("aria-label");
+        if (customPopover.activeTarget === item) hideCustomPopover();
+      }
     }
   }
 
   function setup() {
     setupCustomWidgetTitles();
-    setupHiddenWidgets();
     updateExchangeClocks();
 
     document.addEventListener(
@@ -398,7 +415,6 @@
         for (const node of mutation.addedNodes) {
           if (node.nodeType !== Node.ELEMENT_NODE) continue;
           setupCustomWidgetTitles(node);
-          setupHiddenWidgets(node);
           if (
             node.matches?.("[data-exchange-clock]") ||
             node.querySelector?.("[data-exchange-clock]")

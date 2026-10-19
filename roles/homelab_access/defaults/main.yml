@@ -8,6 +8,8 @@ homelab_access_destination_group: proxmox-routing
 homelab_access_peer_address: "100.113.201.147"
 homelab_access_policy_name: Homelab HTTPS
 homelab_access_qwen_peer_address: ""
+# Same host labels as homelab_proxy_opencode_backends, mapped to NetBird peer IPs.
+homelab_access_opencode_peer_addresses: {}
 homelab_access_ha_vm: 100
 homelab_access_ha_proxy: "10.10.10.1"
 homelab_access_ha_address: "10.10.10.20"

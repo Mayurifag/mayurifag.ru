@@ -29,10 +29,14 @@ Use lazy loading for detailed repo-specific rules. When a task matches one of th
 
 Load these files only when relevant:
 
+`HOMELAB.md`, `airules/home-assistant.md`, and `homelab/home-assistant/` are
+git-crypt-protected personal notes/configuration. Unlock locally.
+
 - OpenCloud config, POSIX storage, NATS state -> `./airules/opencloud.md`
 - Docker daemon options, live restore -> `./airules/docker.md`
 - Traefik CrowdSec plugin and Traefik startup warnings -> `./airules/traefik.md`
 - Homelab, Proxmox, Home Assistant, Immich, private DNS/TLS -> `./HOMELAB.md`
+- Home Assistant configuration, HomeKit, dashboards, vacuum -> `./airules/home-assistant.md`
 
 If several areas apply, load all matching files. Do not preemptively load unrelated rule files.
 

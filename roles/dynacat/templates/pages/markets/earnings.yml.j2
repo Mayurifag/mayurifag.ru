@@ -1,0 +1,54 @@
+        - type: custom-api
+          title: Earnings this week
+          cache: 30m
+          update-interval: 6h
+          template: |
+            {% raw %}{{ $r := newRequest "https://finnhub.io/api/v1/calendar/earnings"
+              | withParameter "from" (now | formatTime "DateOnly")
+              | withParameter "to" (offsetNow "168h" | formatTime "DateOnly")
+              | withHeader "X-Finnhub-Token" "${FINNHUB_TOKEN}"
+              | getResponse }}
+
+            {{ if ne $r.Response.StatusCode 200 }}
+              <div class="color-negative">Failed: {{ $r.Response.Status }}</div>
+            {{ else }}
+              {{ $entries := $r.JSON.Array "earningsCalendar" }}
+              {{ $n := len $entries }}
+              {{ $shown := 0 }}
+              {{ $seenReports := list }}
+              {{ if eq $n 0 }}
+                <div class="color-subdue">No earnings scheduled</div>
+              {{ else }}
+                <ul class="list list-gap-10">
+                {{ range $i, $_ := $entries }}
+                  {{ $e := index $entries (toInt (sub (toFloat $n) (add (toFloat $i) 1.0))) }}
+                  {{ $rev := $e.Float "revenueEstimate" }}
+                  {{ $sym := $e.String "symbol" }}
+                  {{ $date := $e.String "date" }}
+                  {{ $year := $e.String "year" }}
+                  {{ $dateYear := $date | parseTime "DateOnly" | formatTime "2006" }}
+                  {{ $reportKey := printf "%s|%s|%s|%d|%s" $sym $date ($e.String "hour") ($e.Int "quarter") $year }}
+                  {{ $candidateReports := append $seenReports $reportKey }}
+                  {{ $isNewReport := eq (len ($candidateReports | uniq)) (add (toFloat (len ($seenReports | uniq))) 1.0 | toInt) }}
+                  {{ if and (lt $shown 10) (gt $rev 5000000000.0) (le $year $dateYear) $isNewReport }}
+                    {{ $seenReports = $candidateReports }}
+                    {{ $profile := newRequest (printf "https://finnhub.io/api/v1/stock/profile2?symbol=%s" $sym)
+                      | withHeader "X-Finnhub-Token" "${FINNHUB_TOKEN}"
+                      | getResponse }}
+                    {{ if eq $profile.Response.StatusCode 200 }}
+                      {{ $marketCap := $profile.JSON.Float "marketCapitalization" }}
+                      {{ if gt $marketCap 100000.0 }}
+                        {{ $name := $profile.JSON.String "name" | replaceMatches "[ ,]+(Inc\\.?|Corporation|Corp\\.?|Co\\.?|Company|Ltd\\.?|Limited|plc|PLC|S\\.A\\.?|SA|AG|N\\.V\\.?|NV|Holdings|Holding|Group)$" "" | replaceMatches "[ ,&]+$" "" }}
+                        {{ $weekday := $e.String "date" | parseTime "DateOnly" | formatTime "Mon" }}
+                        <li>
+                          <div class="size-h5"><span class="color-highlight">{{ $sym }}</span>{{ if $name }} <span class="size-h6 color-subdue">{{ $name }}</span>{{ end }}</div>
+                          <div class="size-h6 color-subdue">{{ $weekday }} {{ $e.String "date" }}{{ if eq ($e.String "hour") "bmo" }} &middot; pre-market{{ else if eq ($e.String "hour") "amc" }} &middot; after-close{{ end }}</div>
+                        </li>
+                        {{ $shown = add (toFloat $shown) 1.0 | toInt }}
+                      {{ end }}
+                    {{ end }}
+                  {{ end }}
+                {{ end }}
+                </ul>
+              {{ end }}
+            {{ end }}{% endraw %}

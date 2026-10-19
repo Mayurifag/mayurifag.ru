@@ -1,0 +1,35 @@
+- name: Markets
+  key-bind: "3"
+  columns:
+    - size: small
+      widgets:
+        - type: markets
+          title: Indices
+          cache: 5m
+          update-interval: 5m
+          markets:
+{% for market in dynacat_markets %}
+            - symbol: {{ market.symbol | to_json }}
+              name: {{ market.name | to_json }}
+{% endfor %}
+
+{% include 'markets/sidebar.yml.j2' %}
+
+    - size: full
+      widgets:
+        - type: rss
+          title: Market wire
+          css-class: market-wire
+          cache: 1m
+          update-interval: 1m
+          limit: 20
+          collapse-after: 8
+          feeds:
+            - url: https://www.newsquawk.com/headlines-feed.xml
+              title: Newsquawk
+
+    - size: small
+      widgets:
+{% include 'markets/exchanges.yml.j2' %}
+
+{% include 'markets/earnings.yml.j2' %}

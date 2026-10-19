@@ -13,13 +13,12 @@
 
     - size: small
       widgets:
-        - type: markets
-          hide-header: true
-          cache: 5m
-          update-interval: 5m
-          markets:
-{% for market in dynacat_markets %}
-            - symbol: {{ market.symbol | to_json }}
-              name: {{ market.name | to_json }}
-{% endfor %}
-{% include 'home/financials.yml.j2' %}
+{% set homelab_links = lookup('ansible.builtin.file', inventory_dir ~ '/files/dynacat-bookmarks.yml') | from_yaml %}
+{% if homelab_links %}
+        - type: bookmarks
+          title: Homelab
+          groups:
+            - links: {{ homelab_links | to_json }}
+{% endif %}
+
+{% include 'home/services.yml.j2' %}

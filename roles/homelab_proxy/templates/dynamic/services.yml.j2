@@ -22,6 +22,12 @@ http:
       service: qwen
       entryPoints: [lan, vpn]
 {% endif %}
+{% for name in homelab_proxy_opencode_backends %}
+    opencode-{{ name }}:
+      rule: "Host(`{{ name }}.{{ homelab_proxy_domain }}`)"
+      service: opencode-{{ name }}
+      entryPoints: [lan, vpn]
+{% endfor %}
   services:
     proxmox:
       loadBalancer:
@@ -42,6 +48,12 @@ http:
         servers:
           - url: "{{ homelab_proxy_qwen_url }}"
 {% endif %}
+{% for name, url in homelab_proxy_opencode_backends.items() %}
+    opencode-{{ name }}:
+      loadBalancer:
+        servers:
+          - url: "{{ url }}"
+{% endfor %}
   serversTransports:
     proxmox:
       serverName: "{{ homelab_proxy_proxmox_server_name }}"

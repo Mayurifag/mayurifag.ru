@@ -1,1 +1,4 @@
 /inventories/my-provision/** filter=git-crypt diff=git-crypt
+/HOMELAB.md filter=git-crypt diff=git-crypt
+/airules/home-assistant.md filter=git-crypt diff=git-crypt
+/homelab/home-assistant/** filter=git-crypt diff=git-crypt
