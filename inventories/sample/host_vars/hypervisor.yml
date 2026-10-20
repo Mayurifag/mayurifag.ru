@@ -12,9 +12,13 @@ homelab_access_netbird_url: https://netbird.example.com
 homelab_access_qwen_peer_address: "100.64.0.20"
 homelab_access_opencode_peer_addresses:
   linux: "100.64.0.20"
+  mac: "100.64.0.30"
+  win: "100.64.0.40"
 homelab_proxy_qwen_url: "http://100.64.0.20:3000"
 homelab_proxy_opencode_backends:
   linux: "http://100.64.0.20:49374"
+  mac: "http://100.64.0.30:49374"
+  win: "http://100.64.0.40:49374"
 homelab_host_enabled: true
 homelab_proxy_enabled: true
 homelab_proxy_homekit_enabled: true
