@@ -1,0 +1,40 @@
+---
+- name: Validate the Bluetooth USB identifier
+  ansible.builtin.assert:
+    that:
+      - homelab_host_bluetooth_usb is match('^[0-9a-f]{4}:[0-9a-f]{4}$')
+
+- name: Find the host Bluetooth adapter
+  ansible.builtin.command:
+    argv:
+      - lsusb
+      - -d
+      - "{{ homelab_host_bluetooth_usb }}"
+  register: homelab_host_bluetooth_device
+  changed_when: false
+
+- name: Read the Bluetooth guest configuration
+  ansible.builtin.command: "qm config {{ homelab_host_bluetooth_vm_id | int }}"
+  register: homelab_host_bluetooth_config
+  changed_when: false
+
+- name: Require one adapter and an unused or matching USB slot
+  ansible.builtin.assert:
+    that:
+      - homelab_host_bluetooth_device.stdout_lines | length == 1
+      - >-
+        not (homelab_host_bluetooth_config.stdout_lines | select('match', '^usb0:') | list) or
+        ('usb0: host=' ~ homelab_host_bluetooth_usb) in homelab_host_bluetooth_config.stdout_lines
+    fail_msg: "Bluetooth passthrough requires a unique adapter and must not replace another USB device."
+
+- name: Pass the Bluetooth adapter through to Home Assistant
+  ansible.builtin.command:
+    argv:
+      - qm
+      - set
+      - "{{ homelab_host_bluetooth_vm_id | int | string }}"
+      - --usb0
+      - "host={{ homelab_host_bluetooth_usb }}"
+  when: >-
+    ('usb0: host=' ~ homelab_host_bluetooth_usb) not in homelab_host_bluetooth_config.stdout_lines
+  changed_when: true

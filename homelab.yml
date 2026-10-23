@@ -46,3 +46,26 @@
     - role: home_assistant
       tags: home_assistant
       when: home_assistant_enabled | default(false) | bool
+  tasks:
+    - name: Reboot only the Home Assistant guest
+      ansible.builtin.reboot:
+        reboot_command: ha host reboot
+        boot_time_command: cat /proc/sys/kernel/random/boot_id
+        reboot_timeout: 300
+        post_reboot_delay: 10
+      tags:
+        - never
+        - home_assistant_reboot
+
+    - name: Wait for Home Assistant after the guest reboot
+      ansible.builtin.uri:
+        url: "http://{{ ansible_host }}:80/manifest.json"
+        use_proxy: false
+        status_code: 200
+      register: home_assistant_reboot_health
+      until: home_assistant_reboot_health.status == 200
+      retries: 60
+      delay: 2
+      tags:
+        - never
+        - home_assistant_reboot

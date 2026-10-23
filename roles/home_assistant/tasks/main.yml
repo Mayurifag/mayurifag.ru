@@ -12,6 +12,10 @@
       - home_assistant_tree | selectattr('path', 'equalto', 'configuration.yaml') | selectattr('state', 'equalto', 'file') | list | length == 1
       - home_assistant_tree | selectattr('state', 'equalto', 'link') | list | length == 0
 
+- name: Determine whether the lamp startup check is required
+  ansible.builtin.set_fact:
+    home_assistant_lamp_health_required: "{{ lookup('ansible.builtin.file', home_assistant_config_source ~ '/configuration.yaml') is search('(?m)^thunderobot_l2:') }}"
+
 - name: Copy the private vacuum map into native media storage
   ansible.builtin.copy:
     src: "{{ home_assistant_vacuum_map_source }}"
@@ -30,16 +34,16 @@
   loop_control:
     label: "{{ item.path }}"
 
-- name: Inspect existing YAML files
+- name: Inspect existing YAML and repo-owned integration files
   ansible.builtin.stat:
     path: "{{ home_assistant_config_directory }}/{{ item.path }}"
     follow: false
-  loop: "{{ home_assistant_tree | selectattr('state', 'equalto', 'file') | selectattr('path', 'search', '\\.(yaml|yml)$') | list }}"
+  loop: "{{ home_assistant_tree | selectattr('state', 'equalto', 'file') | selectattr('path', 'search', '\\.(yaml|yml)$|^custom_components/.*\\.(py|json)$') | list }}"
   loop_control:
     label: "{{ item.path }}"
   register: home_assistant_existing
 
-- name: Reject non-file YAML targets
+- name: Reject non-file configuration targets
   ansible.builtin.assert:
     that:
       - not item.stat.exists or item.stat.isreg
@@ -48,9 +52,9 @@
     label: "{{ item.item.path }}"
   no_log: true
 
-- name: Deploy and validate YAML
+- name: Deploy and validate Home Assistant configuration
   block:
-    - name: Copy declared YAML with backups
+    - name: Copy declared configuration with backups
       ansible.builtin.copy:
         src: "{{ item.item.src }}"
         dest: "{{ home_assistant_config_directory }}/{{ item.item.path }}"
@@ -71,7 +75,13 @@
           ansible.builtin.command: ha core check
           changed_when: false
 
-        - name: Restart Home Assistant for changed YAML
+        - name: Clear the previous lamp startup marker
+          ansible.builtin.file:
+            path: "{{ home_assistant_config_directory }}/.storage/thunderobot_l2.health"
+            state: absent
+          when: home_assistant_lamp_health_required
+
+        - name: Restart Home Assistant for changed configuration
           ansible.builtin.command: ha core restart
           changed_when: true
           register: home_assistant_restart
@@ -85,8 +95,16 @@
           until: home_assistant_health.status == 200
           retries: 60
           delay: 2
+
+        - name: Wait for the lamp integration and all three controls
+          ansible.builtin.wait_for:
+            path: "{{ home_assistant_config_directory }}/.storage/thunderobot_l2.health"
+            state: present
+            timeout: 120
+            sleep: 2
+          when: home_assistant_lamp_health_required
   rescue:
-    - name: Restore previous YAML files
+    - name: Restore previous configuration files
       ansible.builtin.copy:
         src: "{{ item.backup_file }}"
         dest: "{{ item.dest }}"
@@ -95,7 +113,7 @@
       loop: "{{ home_assistant_deployment.results | default([]) | selectattr('backup_file', 'defined') | list }}"
       no_log: true
 
-    - name: Remove YAML files created by the failed deployment
+    - name: Remove configuration files created by the failed deployment
       ansible.builtin.file:
         path: "{{ home_assistant_config_directory }}/{{ item.item.item.path }}"
         state: absent
@@ -108,17 +126,13 @@
       changed_when: true
       when: home_assistant_restart is defined and not (home_assistant_restart.skipped | default(false))
 
-    - name: Report failed YAML deployment
+    - name: Report failed configuration deployment
       ansible.builtin.fail:
-        msg: "Home Assistant YAML deployment failed; previous files were restored."
+        msg: "Home Assistant configuration deployment failed; previous files were restored."
 
-- name: Remove YAML backups after successful deployment
+- name: Remove configuration backups after successful deployment
   ansible.builtin.file:
     path: "{{ item.backup_file }}"
     state: absent
   loop: "{{ home_assistant_deployment.results | selectattr('backup_file', 'defined') | list }}"
   no_log: true
-
-- name: Install Xiaomi Miot
-  ansible.builtin.import_tasks: xiaomi_miot.yml
-  when: home_assistant_xiaomi_miot_enabled | bool

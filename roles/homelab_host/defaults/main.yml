@@ -4,6 +4,8 @@ homelab_host_bridge: vmbr0
 homelab_host_gateway: 10.10.10.1
 homelab_host_ha_address: 10.10.10.20
 homelab_host_ha_mac: "BC:24:11:13:4D:39"
+homelab_host_bluetooth_usb: ""
+homelab_host_bluetooth_vm_id: 100
 homelab_host_vms:
   - id: 100
     name: home-assistant

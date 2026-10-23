@@ -1,4 +1,9 @@
 ---
+- name: Configure Home Assistant Bluetooth passthrough
+  ansible.builtin.import_tasks: bluetooth.yml
+  when: homelab_host_bluetooth_usb | length > 0
+  tags: homelab_bluetooth
+
 - name: Verify Proxmox installation
   ansible.builtin.stat:
     path: /usr/sbin/qm
