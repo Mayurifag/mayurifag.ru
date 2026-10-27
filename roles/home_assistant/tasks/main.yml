@@ -54,6 +54,10 @@
 
 - name: Deploy and validate Home Assistant configuration
   block:
+    - name: Configure read-only Proxmox storage monitoring
+      ansible.builtin.import_tasks: proxmox-monitoring.yml
+      when: home_assistant_proxmox_monitoring_enabled | bool
+
     - name: Copy declared configuration with backups
       ansible.builtin.copy:
         src: "{{ item.item.src }}"
@@ -69,7 +73,7 @@
 
     - name: Apply changed Home Assistant configuration
       # Validation and restart must run inside the transaction so rescue can roll back failures.
-      when: home_assistant_deployment.changed # noqa no-handler
+      when: home_assistant_deployment.changed or (home_assistant_proxmox_secret.changed | default(false)) # noqa no-handler
       block:
         - name: Check Home Assistant configuration
           ansible.builtin.command: ha core check
@@ -104,6 +108,24 @@
             sleep: 2
           when: home_assistant_lamp_health_required
   rescue:
+    - name: Restore the previous monitoring secrets file
+      ansible.builtin.copy:
+        src: "{{ home_assistant_proxmox_secret.backup }}"
+        dest: "{{ home_assistant_config_directory }}/secrets.yaml"
+        remote_src: true
+        mode: preserve
+      when: home_assistant_proxmox_secret.backup | default('') | length > 0
+      no_log: true
+
+    - name: Remove a secrets file created by the failed deployment
+      ansible.builtin.file:
+        path: "{{ home_assistant_config_directory }}/secrets.yaml"
+        state: absent
+      when:
+        - home_assistant_proxmox_secret.changed | default(false)
+        - not (home_assistant_proxmox_secret_existing.stat.exists | default(true))
+      no_log: true
+
     - name: Restore previous configuration files
       ansible.builtin.copy:
         src: "{{ item.backup_file }}"
@@ -135,4 +157,11 @@
     path: "{{ item.backup_file }}"
     state: absent
   loop: "{{ home_assistant_deployment.results | selectattr('backup_file', 'defined') | list }}"
+  no_log: true
+
+- name: Remove the monitoring secrets backup after successful deployment
+  ansible.builtin.file:
+    path: "{{ home_assistant_proxmox_secret.backup }}"
+    state: absent
+  when: home_assistant_proxmox_secret.backup | default('') | length > 0
   no_log: true

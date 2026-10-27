@@ -1,0 +1,114 @@
+---
+- name: Require an explicit pool extension and known storage identities
+  ansible.builtin.assert:
+    that:
+      - lookup('ansible.builtin.env', 'HOMELAB_STORAGE_CONFIRM') == 'extend-pool'
+      - homelab_host_storage_reserve_gib | int >= 8
+      - homelab_host_storage_vg_uuid | length > 0
+      - homelab_host_storage_root_uuid | length > 0
+      - homelab_host_storage_pool_uuid | length > 0
+
+- name: Read existing logical volumes without changing them
+  ansible.builtin.command: lvs --reportformat json --units b --nosuffix -o lv_name,lv_uuid,lv_size,segtype,data_percent,metadata_percent pve
+  changed_when: false
+  register: homelab_host_storage_lvs
+
+- name: Read existing volume group extents
+  ansible.builtin.command: vgs --reportformat json --units b --nosuffix -o vg_uuid,vg_extent_size,vg_free_count pve
+  changed_when: false
+  register: homelab_host_storage_vgs
+
+- name: Decode current storage state
+  ansible.builtin.set_fact:
+    homelab_host_storage_volumes: "{{ (homelab_host_storage_lvs.stdout | from_json).report[0].lv }}"
+    homelab_host_storage_vg: "{{ (homelab_host_storage_vgs.stdout | from_json).report[0].vg[0] }}"
+
+- name: Require the existing root and thin pool
+  ansible.builtin.assert:
+    that:
+      - homelab_host_storage_volumes | selectattr('lv_name', 'equalto', 'root') | list | length == 1
+      - homelab_host_storage_volumes | selectattr('lv_name', 'equalto', 'data') | list | length == 1
+
+- name: Select the existing root and pool
+  ansible.builtin.set_fact:
+    homelab_host_storage_root: "{{ homelab_host_storage_volumes | selectattr('lv_name', 'equalto', 'root') | first }}"
+    homelab_host_storage_pool: "{{ homelab_host_storage_volumes | selectattr('lv_name', 'equalto', 'data') | first }}"
+
+- name: Reject unexpected devices, root sizes or unhealthy pool usage
+  ansible.builtin.assert:
+    that:
+      - homelab_host_storage_vg.vg_uuid == homelab_host_storage_vg_uuid
+      - homelab_host_storage_root.lv_uuid == homelab_host_storage_root_uuid
+      - homelab_host_storage_pool.lv_uuid == homelab_host_storage_pool_uuid
+      - homelab_host_storage_root.lv_size | int == (homelab_host_storage_root_gib | int) * 1024 ** 3
+      - homelab_host_storage_pool.segtype == 'thin-pool'
+      - homelab_host_storage_pool.data_percent | float < 80
+      - homelab_host_storage_pool.metadata_percent | float < 50
+
+- name: Calculate the reserved extents without rounding the reserve down
+  ansible.builtin.set_fact:
+    homelab_host_storage_reserve_extents: >-
+      {{ ((homelab_host_storage_reserve_gib | int) * 1024 ** 3 +
+          (homelab_host_storage_vg.vg_extent_size | int) - 1) //
+          (homelab_host_storage_vg.vg_extent_size | int) }}
+
+- name: Require the agreed reserve to remain available
+  ansible.builtin.assert:
+    that:
+      - homelab_host_storage_vg.vg_free_count | int >= homelab_host_storage_reserve_extents | int
+
+- name: Calculate only positive pool growth
+  ansible.builtin.set_fact:
+    homelab_host_storage_add_extents: >-
+      {{ (homelab_host_storage_vg.vg_free_count | int) - (homelab_host_storage_reserve_extents | int) }}
+
+- name: Validate the pool extension using LVM test mode
+  ansible.builtin.command:
+    argv: [lvextend, --test, --extents, "+{{ homelab_host_storage_add_extents }}", pve/data]
+  changed_when: false
+  when: homelab_host_storage_add_extents | int > 0
+
+- name: Extend only the existing thin pool
+  ansible.builtin.command:
+    argv: [lvextend, --extents, "+{{ homelab_host_storage_add_extents }}", pve/data]
+  changed_when: true
+  when: homelab_host_storage_add_extents | int > 0
+
+- name: Re-read logical volumes after the extension
+  ansible.builtin.command: lvs --reportformat json --units b --nosuffix -o lv_name,lv_uuid,lv_size,segtype,data_percent,metadata_percent pve
+  changed_when: false
+  register: homelab_host_storage_lvs_after
+
+- name: Re-read the remaining volume group extents
+  ansible.builtin.command: vgs --reportformat json --units b --nosuffix -o vg_uuid,vg_extent_size,vg_free_count pve
+  changed_when: false
+  register: homelab_host_storage_vgs_after
+
+- name: Confirm that root, swap and every VM disk are unchanged
+  ansible.builtin.assert:
+    that:
+      - >-
+        ((homelab_host_storage_lvs_after.stdout | from_json).report[0].lv |
+        rejectattr('lv_name', 'equalto', 'data') | map(attribute='lv_name') | list | sort)
+        == (homelab_host_storage_volumes | rejectattr('lv_name', 'equalto', 'data') | map(attribute='lv_name') | list | sort)
+      - >-
+        ((homelab_host_storage_lvs_after.stdout | from_json).report[0].lv |
+        selectattr('lv_name', 'equalto', item.lv_name) | first).lv_size == item.lv_size
+      - >-
+        ((homelab_host_storage_lvs_after.stdout | from_json).report[0].lv |
+        selectattr('lv_name', 'equalto', item.lv_name) | first).lv_uuid == item.lv_uuid
+  loop: "{{ homelab_host_storage_volumes | rejectattr('lv_name', 'equalto', 'data') | list }}"
+  loop_control:
+    label: "{{ item.lv_name }}"
+
+- name: Confirm the pool's new size and the retained reserve
+  ansible.builtin.assert:
+    that:
+      - >-
+        ((homelab_host_storage_lvs_after.stdout | from_json).report[0].lv |
+        selectattr('lv_name', 'equalto', 'data') | first).lv_size | int ==
+        (homelab_host_storage_pool.lv_size | int) +
+        (homelab_host_storage_add_extents | int) * (homelab_host_storage_vg.vg_extent_size | int)
+      - >-
+        (homelab_host_storage_vgs_after.stdout | from_json).report[0].vg[0].vg_free_count | int
+        == homelab_host_storage_reserve_extents | int

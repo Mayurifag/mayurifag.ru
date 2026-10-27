@@ -1,0 +1,181 @@
+---
+- name: Require HTTPS for the Proxmox monitoring API
+  ansible.builtin.assert:
+    that:
+      - home_assistant_proxmox_api_url is match('^https://')
+
+- name: Provision a privilege-separated monitoring credential
+  delegate_to: "{{ home_assistant_proxmox_inventory_host }}"
+  no_log: true
+  block:
+    - name: Read existing Proxmox users
+      ansible.builtin.command: pveum user list --output-format json
+      changed_when: false
+      register: home_assistant_proxmox_users
+
+    - name: Create a passwordless API-only monitoring account
+      ansible.builtin.command:
+        argv:
+          - pveum
+          - user
+          - add
+          - "{{ home_assistant_proxmox_monitor_user }}"
+          - --comment
+          - Home Assistant read-only storage monitoring
+      when: >-
+        home_assistant_proxmox_monitor_user not in
+        (home_assistant_proxmox_users.stdout | from_json | map(attribute='userid') | list)
+      changed_when: true
+
+    - name: Read Proxmox access rules
+      ansible.builtin.command: pveum acl list --output-format json
+      changed_when: false
+      register: home_assistant_proxmox_acls
+
+    - name: Give the monitoring user read-only access
+      ansible.builtin.command:
+        argv:
+          - pveum
+          - acl
+          - modify
+          - /
+          - --users
+          - "{{ home_assistant_proxmox_monitor_user }}"
+          - --roles
+          - PVEAuditor
+          - --propagate
+          - "1"
+      when: >-
+        home_assistant_proxmox_acls.stdout | from_json |
+        selectattr('path', 'equalto', '/') | selectattr('type', 'equalto', 'user') |
+        selectattr('ugid', 'equalto', home_assistant_proxmox_monitor_user) |
+        selectattr('roleid', 'equalto', 'PVEAuditor') |
+        selectattr('propagate', 'equalto', 1) | list | length == 0
+      changed_when: true
+
+    - name: Read existing monitoring tokens
+      ansible.builtin.command:
+        argv: [pveum, user, token, list, "{{ home_assistant_proxmox_monitor_user }}", --output-format, json]
+      changed_when: false
+      register: home_assistant_proxmox_tokens
+
+    - name: Inspect the saved monitoring credential
+      ansible.builtin.stat:
+        path: "{{ home_assistant_proxmox_token_file }}"
+      register: home_assistant_proxmox_saved_token
+
+    - name: Require a consistent token and saved secret without silently rotating credentials
+      ansible.builtin.assert:
+        that:
+          - >-
+            (home_assistant_proxmox_monitor_token in
+            (home_assistant_proxmox_tokens.stdout | from_json | map(attribute='tokenid') | list))
+            == home_assistant_proxmox_saved_token.stat.exists
+        fail_msg: Restore the saved monitoring credential or explicitly rotate its API token.
+
+    - name: Create the private monitoring credential directory
+      ansible.builtin.file:
+        path: "{{ home_assistant_proxmox_token_file | dirname }}"
+        state: directory
+        mode: "0700"
+
+    - name: Generate the monitoring token once
+      ansible.builtin.command:
+        argv:
+          - pveum
+          - user
+          - token
+          - add
+          - "{{ home_assistant_proxmox_monitor_user }}"
+          - "{{ home_assistant_proxmox_monitor_token }}"
+          - --privsep
+          - "1"
+          - --output-format
+          - json
+      when: not home_assistant_proxmox_saved_token.stat.exists
+      register: home_assistant_proxmox_generated_token
+      changed_when: true
+
+    - name: Save the generated authorization on Proxmox
+      ansible.builtin.copy:
+        content: >-
+          PVEAPIToken={{ home_assistant_proxmox_monitor_user }}!{{ home_assistant_proxmox_monitor_token }}={{ (home_assistant_proxmox_generated_token.stdout | from_json).value }}
+        dest: "{{ home_assistant_proxmox_token_file }}"
+        mode: "0600"
+      when: not home_assistant_proxmox_saved_token.stat.exists
+
+    - name: Limit the token itself to read-only access
+      ansible.builtin.command:
+        argv:
+          - pveum
+          - acl
+          - modify
+          - /
+          - --tokens
+          - "{{ home_assistant_proxmox_monitor_user }}!{{ home_assistant_proxmox_monitor_token }}"
+          - --roles
+          - PVEAuditor
+          - --propagate
+          - "1"
+      when: >-
+        home_assistant_proxmox_acls.stdout | from_json |
+        selectattr('path', 'equalto', '/') | selectattr('type', 'equalto', 'token') |
+        selectattr('ugid', 'equalto', home_assistant_proxmox_monitor_user ~ '!' ~ home_assistant_proxmox_monitor_token) |
+        selectattr('roleid', 'equalto', 'PVEAuditor') |
+        selectattr('propagate', 'equalto', 1) | list | length == 0
+      changed_when: true
+
+    - name: Read the private monitoring authorization
+      ansible.builtin.slurp:
+        src: "{{ home_assistant_proxmox_token_file }}"
+      register: home_assistant_proxmox_authorization
+
+- name: Verify effective monitoring permissions through the private HTTPS proxy
+  ansible.builtin.uri:
+    url: "{{ home_assistant_proxmox_api_url }}/api2/json/access/permissions"
+    headers:
+      Authorization: "{{ home_assistant_proxmox_authorization.content | b64decode | trim }}"
+    use_proxy: false
+    validate_certs: true
+    return_content: true
+  register: home_assistant_proxmox_permissions
+  no_log: true
+
+- name: Require storage and node audit access
+  ansible.builtin.assert:
+    that:
+      - home_assistant_proxmox_permissions.json.data['/']['Datastore.Audit'] | default(0) | int == 1
+      - home_assistant_proxmox_permissions.json.data['/']['Sys.Audit'] | default(0) | int == 1
+  no_log: true
+
+- name: Reject effective write or VM control permissions
+  ansible.builtin.assert:
+    that:
+      - >-
+        item | dict2items |
+        rejectattr('key', 'match', '^.+\.Audit$') |
+        selectattr('value') | list | length == 0
+  loop: "{{ home_assistant_proxmox_permissions.json.data | dict2items | map(attribute='value') | list }}"
+  no_log: true
+
+- name: Inspect the existing HA secrets file before updating it
+  ansible.builtin.stat:
+    path: "{{ home_assistant_config_directory }}/secrets.yaml"
+    follow: false
+  register: home_assistant_proxmox_secret_existing
+
+- name: Require a regular HA secrets file or a new file
+  ansible.builtin.assert:
+    that:
+      - not home_assistant_proxmox_secret_existing.stat.exists or home_assistant_proxmox_secret_existing.stat.isreg
+
+- name: Preserve existing HA secrets and add the monitoring authorization
+  ansible.builtin.lineinfile:
+    path: "{{ home_assistant_config_directory }}/secrets.yaml"
+    regexp: '^proxmox_storage_authorization:'
+    line: "proxmox_storage_authorization: {{ home_assistant_proxmox_authorization.content | b64decode | trim | to_json }}"
+    create: true
+    mode: "0600"
+    backup: true
+  register: home_assistant_proxmox_secret
+  no_log: true

@@ -3,3 +3,9 @@ home_assistant_enabled: false
 home_assistant_config_directory: /config
 home_assistant_config_source: "{{ playbook_dir }}/homelab/home-assistant"
 home_assistant_vacuum_map_source: ""
+home_assistant_proxmox_monitoring_enabled: false
+home_assistant_proxmox_api_url: ""
+home_assistant_proxmox_inventory_host: "{{ groups['homelab'] | first }}"
+home_assistant_proxmox_monitor_user: ha-storage@pve
+home_assistant_proxmox_monitor_token: storage
+home_assistant_proxmox_token_file: /var/lib/home-assistant-monitoring/proxmox-authorization

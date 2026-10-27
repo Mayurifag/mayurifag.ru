@@ -8,7 +8,7 @@ On VPS - Debian 12+.
 On VPS provider - opened ports: SSH (`server_ssh_port`), `80/tcp`, `443/tcp`,
 `443/udp`, and role-specific public ports such as 3x-ui Hysteria2 UDP.
 On Cloudflare - token (DNS propagated during setup)
-On PC - just `ansible`. For MacOS also `passlib` because of some `crypto` module.
+On Linux/macOS - `ansible` and GNU Make. For macOS also `passlib` because of some `crypto` module.
 
 ## Instructions
 
@@ -27,8 +27,31 @@ ansible-galaxy install -r requirements.yml
 
 ~~~sh
 make bootstrap HOST=hostname # run once, its cleaning known_hosts and makes ssh configuration
-make deploy hostname "traefik,mus" # or make deploy-all if you are sure
+make deploy traefik,mus HOST='<host>' # or make deploy-all if you are sure
 ~~~
+
+#### Remote deployment (Windows)
+
+Windows needs Git, OpenSSH, GNU Make and Python 3.11+. Use a trusted Linux SSH controller with Python 3.11+,
+GNU Make, Ansible and the dependencies from `make install-deps`.
+
+Create the ignored `makefiles/private.mk` (create `makefiles/` first):
+
+~~~make
+DEPLOY_REMOTE = <controller-ssh-destination>
+# Only if the trusted controller needs your SSH agent:
+# DEPLOY_FORWARD_AGENT = yes
+~~~
+
+~~~sh
+make deploy <role> HOST='<production-host>'
+make remote-sync # sync only
+make remote-ci   # sync and run checks; requires the controller's CI tools
+~~~
+
+Unlock git-crypt locally first. Sync includes uncommitted and nonignored files and retains decrypted secrets under
+`~/.cache/mayurifag-deploy/` on the controller. Agent forwarding is off by default. Bootstrap and secret-sync targets
+remain local; Linux/macOS deployment stays local unless `DEPLOY_REMOTE` is set.
 
 #### Optional steps
 

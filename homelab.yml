@@ -19,6 +19,26 @@
         - beszel_agent
       when: beszel_agent_enabled | default(false) | bool
   tasks:
+    - name: Extend the existing VM pool after explicitly confirmed storage maintenance
+      ansible.builtin.include_role:
+        name: homelab_host
+        tasks_from: storage-grow
+        apply:
+          tags: homelab_storage_grow
+      tags:
+        - never
+        - homelab_storage_grow
+
+    - name: Gracefully stop guests for explicitly confirmed maintenance
+      ansible.builtin.include_role:
+        name: homelab_host
+        tasks_from: maintenance-stop
+        apply:
+          tags: homelab_maintenance_stop
+      tags:
+        - never
+        - homelab_maintenance_stop
+
     - name: Reboot and verify the homelab
       ansible.builtin.include_role:
         name: homelab_host
