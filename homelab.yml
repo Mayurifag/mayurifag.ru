@@ -1,9 +1,23 @@
 ---
+- name: Home LAN router
+  hosts: homelab_routers
+  gather_facts: no
+  become: no
+  roles:
+    - role: homelab_dns
+      tags: homelab_dns
+      vars:
+        homelab_dns_endpoint: router
+
 - name: Proxmox homelab
   hosts: homelab
   gather_facts: yes
   become: no
   roles:
+    - role: homelab_dns
+      tags: homelab_dns
+      vars:
+        homelab_dns_endpoint: host
     - role: homelab_access
       tags: homelab_access
       when: homelab_access_enabled | default(false) | bool
@@ -54,6 +68,10 @@
   gather_facts: yes
   become: yes
   roles:
+    - role: homelab_dns
+      tags: homelab_dns
+      vars:
+        homelab_dns_endpoint: guest
     - role: immich
       tags: immich
       when: immich_enabled | default(false) | bool

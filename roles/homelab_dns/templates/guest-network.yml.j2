@@ -1,0 +1,16 @@
+# Managed by Ansible. Cloud-init network generation is disabled separately.
+network:
+  version: 2
+  ethernets:
+    {{ homelab_dns_guest_interface }}:
+      match:
+        macaddress: "{{ ansible_facts[homelab_dns_guest_interface].macaddress }}"
+      set-name: "{{ homelab_dns_guest_interface }}"
+      addresses:
+        - "{{ homelab_dns_guest_address }}"
+      nameservers:
+        addresses:
+          - "{{ homelab_dns_guest_gateway }}"
+      routes:
+        - to: default
+          via: "{{ homelab_dns_guest_gateway }}"

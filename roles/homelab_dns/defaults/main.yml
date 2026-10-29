@@ -1,0 +1,5 @@
+---
+homelab_dns_guest_vm_id: 101
+homelab_dns_guest_address: 10.10.10.30/24
+homelab_dns_guest_gateway: 10.10.10.1
+homelab_dns_guest_interface: eth0

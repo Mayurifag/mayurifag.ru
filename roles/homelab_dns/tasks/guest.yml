@@ -1,0 +1,26 @@
+---
+- name: Preserve the guest hostname and Ansible-owned hosts and network configuration
+  ansible.builtin.copy:
+    dest: /etc/cloud/cloud.cfg.d/99-homelab-network.cfg
+    content: |
+      preserve_hostname: true
+      manage_etc_hosts: false
+      network:
+        config: disabled
+    mode: "0644"
+
+- name: Resolve the existing guest node name without a search suffix
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.0\.1\.1\s+'
+    line: "127.0.1.1 {{ ansible_facts.hostname }}"
+
+- name: Own the existing guest static network without a DNS search suffix
+  ansible.builtin.template:
+    src: guest-network.yml.j2
+    dest: /etc/netplan/50-cloud-init.yaml
+    mode: "0600"
+  notify:
+    - Generate homelab guest network configuration
+    - Reload homelab guest network definitions
+    - Apply homelab guest network configuration

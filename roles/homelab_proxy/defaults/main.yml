@@ -18,7 +18,7 @@ homelab_proxy_acme_server: https://acme-v02.api.letsencrypt.org/directory
 homelab_proxy_dns_propagation:
   delayBeforeChecks: 0s
   disableChecks: false
-homelab_proxy_proxmox_server_name: pve.home.arpa
+homelab_proxy_proxmox_server_name: "{{ ansible_facts.hostname }}"
 homelab_proxy_ha_url: http://10.10.10.20:80
 homelab_proxy_immich_url: http://10.10.10.30:80
 homelab_proxy_qwen_url: ""
@@ -26,3 +26,5 @@ homelab_proxy_qwen_url: ""
 homelab_proxy_opencode_backends: {}
 homelab_proxy_homekit_enabled: false
 homelab_proxy_homekit_lan_network: "192.168.69.0/24"
+homelab_proxy_homekit_ports:
+  - 21063

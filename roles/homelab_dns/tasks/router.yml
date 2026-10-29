@@ -1,0 +1,22 @@
+---
+- name: Stop advertising a DNS search suffix without changing DNS forwarding
+  ansible.builtin.raw: |
+    set -eu
+    changed=0
+    for option in domain local; do
+      if uci -q get "dhcp.@dnsmasq[0].$option" >/dev/null; then
+        uci -q delete "dhcp.@dnsmasq[0].$option"
+        changed=1
+      fi
+    done
+    if [ "$(uci -q get 'dhcp.@dnsmasq[0].expandhosts')" != 0 ]; then
+      uci set 'dhcp.@dnsmasq[0].expandhosts=0'
+      changed=1
+    fi
+    if [ "$changed" = 1 ]; then
+      uci commit dhcp
+      /etc/init.d/dnsmasq restart
+      echo dns-settings-changed
+    fi
+  register: homelab_dns_router
+  changed_when: "'dns-settings-changed' in homelab_dns_router.stdout"

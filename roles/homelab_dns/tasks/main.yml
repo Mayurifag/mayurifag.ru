@@ -1,0 +1,12 @@
+---
+- name: Configure router DNS without a private search suffix
+  ansible.builtin.import_tasks: router.yml
+  when: homelab_dns_endpoint == 'router'
+
+- name: Configure the existing hypervisor DNS identity
+  ansible.builtin.import_tasks: host.yml
+  when: homelab_dns_endpoint == 'host'
+
+- name: Configure the existing guest DNS identity
+  ansible.builtin.import_tasks: guest.yml
+  when: homelab_dns_endpoint == 'guest'

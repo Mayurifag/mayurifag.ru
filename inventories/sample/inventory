@@ -14,7 +14,7 @@ server_ssh_port=22 # you might want to change this per prod btw
 ansible_port="{{ server_ssh_port }}"
 
 [homelab]
-# hypervisor ansible_host=100.64.0.10 server_hostname=hypervisor.home.arpa
+# hypervisor ansible_host=100.64.0.10 server_hostname=hypervisor
 
 [homelab:vars]
 ansible_user=root
@@ -22,7 +22,10 @@ ansible_become=false
 ansible_port=22
 
 [homelab_immich]
-# photo-guest ansible_host=10.10.10.30 server_hostname=immich.home.arpa
+# photo-guest ansible_host=10.10.10.30 server_hostname=immich
 
 [homelab_home_assistant]
 # ha-guest ansible_host=10.10.10.20
+
+[homelab_routers]
+# home-router ansible_host=192.168.1.1

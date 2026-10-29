@@ -1,0 +1,16 @@
+---
+- name: Regenerate homelab guest cloud-init drive
+  ansible.builtin.command: "qm cloudinit update {{ homelab_dns_guest_vm_id }}"
+  changed_when: true
+
+- name: Generate homelab guest network configuration
+  ansible.builtin.command: /usr/sbin/netplan generate
+  changed_when: true
+
+- name: Reload homelab guest network definitions
+  ansible.builtin.command: networkctl reload
+  changed_when: true
+
+- name: Apply homelab guest network configuration
+  ansible.builtin.command: "networkctl reconfigure {{ homelab_dns_guest_interface }}"
+  changed_when: true

@@ -27,6 +27,47 @@
   ansible.builtin.command: pve-firewall compile
   changed_when: false
 
+- name: Read previously managed HomeKit forwarding ports
+  ansible.builtin.slurp:
+    src: /etc/network/interfaces
+  register: homelab_proxy_homekit_interfaces
+
+- name: Remove forwarding for ports no longer shared with HomeKit
+  vars:
+    homelab_proxy_homekit_removed_ports: >-
+      {{ homelab_proxy_homekit_interfaces.content | b64decode
+        | regex_findall('(?ms)^# BEGIN ANSIBLE HOMELAB HOMEKIT\r?\n(.*?)^# END ANSIBLE HOMELAB HOMEKIT\r?$')
+        | join('\n') | regex_findall('--dport ([0-9]+)')
+        | difference(homelab_proxy_homekit_ports | map('string') | list) }}
+  block:
+    - name: Remove obsolete LAN HomeKit destination translations
+      ansible.builtin.iptables:
+        table: nat
+        chain: PREROUTING
+        in_interface: "{{ homelab_proxy_lan_interface }}"
+        source: "{{ homelab_proxy_homekit_lan_network }}"
+        destination: "{{ homelab_proxy_lan_address }}"
+        protocol: tcp
+        destination_port: "{{ item }}"
+        jump: DNAT
+        to_destination: "{{ homelab_proxy_ha_url | urlsplit('hostname') }}:{{ item }}"
+        state: absent
+      loop: "{{ homelab_proxy_homekit_removed_ports }}"
+
+    - name: Remove obsolete LAN HomeKit forwarding permissions
+      ansible.builtin.iptables:
+        chain: FORWARD
+        in_interface: "{{ homelab_proxy_lan_interface }}"
+        out_interface: "{{ homelab_host_bridge }}"
+        source: "{{ homelab_proxy_homekit_lan_network }}"
+        destination: "{{ homelab_proxy_ha_url | urlsplit('hostname') }}"
+        protocol: tcp
+        destination_port: "{{ item }}"
+        ctstate: NEW,ESTABLISHED,RELATED
+        jump: ACCEPT
+        state: absent
+      loop: "{{ homelab_proxy_homekit_removed_ports }}"
+
 - name: Forward LAN HomeKit connections to Home Assistant
   ansible.builtin.iptables:
     table: nat
@@ -35,9 +76,10 @@
     source: "{{ homelab_proxy_homekit_lan_network }}"
     destination: "{{ homelab_proxy_lan_address }}"
     protocol: tcp
-    destination_port: "21063"
+    destination_port: "{{ item | string }}"
     jump: DNAT
-    to_destination: "{{ homelab_proxy_ha_url | urlsplit('hostname') }}:21063"
+    to_destination: "{{ homelab_proxy_ha_url | urlsplit('hostname') }}:{{ item }}"
+  loop: "{{ homelab_proxy_homekit_ports }}"
 
 - name: Allow forwarded LAN HomeKit connections
   ansible.builtin.iptables:
@@ -47,9 +89,10 @@
     source: "{{ homelab_proxy_homekit_lan_network }}"
     destination: "{{ homelab_proxy_ha_url | urlsplit('hostname') }}"
     protocol: tcp
-    destination_port: "21063"
+    destination_port: "{{ item | string }}"
     ctstate: NEW,ESTABLISHED,RELATED
     jump: ACCEPT
+  loop: "{{ homelab_proxy_homekit_ports }}"
 
 - name: Keep HomeKit forwarding after network restarts
   ansible.builtin.blockinfile:
@@ -57,10 +100,12 @@
     insertafter: '^iface {{ homelab_host_bridge }} inet static$'
     marker: '# {mark} ANSIBLE HOMELAB HOMEKIT'
     block: |
-          post-up /usr/sbin/iptables -t nat -A PREROUTING -i {{ homelab_proxy_lan_interface }} -s {{ homelab_proxy_homekit_lan_network }} -d {{ homelab_proxy_lan_address }} -p tcp --dport 21063 -j DNAT --to-destination {{ homelab_proxy_ha_url | urlsplit('hostname') }}:21063
-          post-up /usr/sbin/iptables -A FORWARD -i {{ homelab_proxy_lan_interface }} -o {{ homelab_host_bridge }} -s {{ homelab_proxy_homekit_lan_network }} -d {{ homelab_proxy_ha_url | urlsplit('hostname') }} -p tcp --dport 21063 -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT
-          post-down /usr/sbin/iptables -D FORWARD -i {{ homelab_proxy_lan_interface }} -o {{ homelab_host_bridge }} -s {{ homelab_proxy_homekit_lan_network }} -d {{ homelab_proxy_ha_url | urlsplit('hostname') }} -p tcp --dport 21063 -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT || true
-          post-down /usr/sbin/iptables -t nat -D PREROUTING -i {{ homelab_proxy_lan_interface }} -s {{ homelab_proxy_homekit_lan_network }} -d {{ homelab_proxy_lan_address }} -p tcp --dport 21063 -j DNAT --to-destination {{ homelab_proxy_ha_url | urlsplit('hostname') }}:21063 || true
+      {% for port in homelab_proxy_homekit_ports %}
+          post-up /usr/sbin/iptables -t nat -A PREROUTING -i {{ homelab_proxy_lan_interface }} -s {{ homelab_proxy_homekit_lan_network }} -d {{ homelab_proxy_lan_address }} -p tcp --dport {{ port }} -j DNAT --to-destination {{ homelab_proxy_ha_url | urlsplit('hostname') }}:{{ port }}
+          post-up /usr/sbin/iptables -A FORWARD -i {{ homelab_proxy_lan_interface }} -o {{ homelab_host_bridge }} -s {{ homelab_proxy_homekit_lan_network }} -d {{ homelab_proxy_ha_url | urlsplit('hostname') }} -p tcp --dport {{ port }} -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT
+          post-down /usr/sbin/iptables -D FORWARD -i {{ homelab_proxy_lan_interface }} -o {{ homelab_host_bridge }} -s {{ homelab_proxy_homekit_lan_network }} -d {{ homelab_proxy_ha_url | urlsplit('hostname') }} -p tcp --dport {{ port }} -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT || true
+          post-down /usr/sbin/iptables -t nat -D PREROUTING -i {{ homelab_proxy_lan_interface }} -s {{ homelab_proxy_homekit_lan_network }} -d {{ homelab_proxy_lan_address }} -p tcp --dport {{ port }} -j DNAT --to-destination {{ homelab_proxy_ha_url | urlsplit('hostname') }}:{{ port }} || true
+      {% endfor %}
     backup: true
 
 - name: Enable HomeKit discovery relay

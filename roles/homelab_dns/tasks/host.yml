@@ -1,0 +1,17 @@
+---
+- name: Keep the hypervisor node name independent of DNS search suffixes
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^{{ homelab_proxy_lan_address | regex_escape }}\s+'
+    line: "{{ homelab_proxy_lan_address }} {{ ansible_facts.hostname }}"
+
+- name: Read the photo guest cloud-init settings
+  ansible.builtin.command: "qm config {{ homelab_dns_guest_vm_id }}"
+  register: homelab_dns_guest_config
+  changed_when: false
+
+- name: Keep the photo guest cloud-init seed free of a search suffix
+  ansible.builtin.command: "qm set {{ homelab_dns_guest_vm_id }} --delete searchdomain"
+  changed_when: true
+  when: "'searchdomain:' in homelab_dns_guest_config.stdout"
+  notify: Regenerate homelab guest cloud-init drive
