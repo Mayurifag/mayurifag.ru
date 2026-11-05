@@ -1,0 +1,42 @@
+---
+- name: Configure the NAS DNS record and retire the old private alias
+  ansible.builtin.raw: |
+    set -eu
+    changed=0
+    section_type=$(uci -q get dhcp.homelab_nas_public || true)
+    if [ -n "$section_type" ] && [ "$section_type" != domain ]; then
+      echo 'Conflicting router DNS section: homelab_nas_public' >&2
+      exit 1
+    fi
+    legacy_type=$(uci -q get dhcp.homelab_nas_private || true)
+    if [ -n "$legacy_type" ] && {
+      [ "$legacy_type" != domain ] ||
+      [ "$(uci -q get dhcp.homelab_nas_private.name || true)" != nas-private.test ] ||
+      [ "$(uci -q get dhcp.homelab_nas_private.ip || true)" != {{ homelab_nas_lan_address | quote }} ]
+    }; then
+      echo 'Conflicting router DNS section: homelab_nas_private' >&2
+      exit 1
+    fi
+    if [ "$section_type" != domain ]; then
+      uci set dhcp.homelab_nas_public=domain
+      changed=1
+    fi
+    if [ "$(uci -q get dhcp.homelab_nas_public.name || true)" != {{ homelab_nas_dns_name | quote }} ]; then
+      uci set {{ ('dhcp.homelab_nas_public.name=' ~ homelab_nas_dns_name) | quote }}
+      changed=1
+    fi
+    if [ "$(uci -q get dhcp.homelab_nas_public.ip || true)" != {{ homelab_nas_lan_address | quote }} ]; then
+      uci set {{ ('dhcp.homelab_nas_public.ip=' ~ homelab_nas_lan_address) | quote }}
+      changed=1
+    fi
+    if [ -n "$legacy_type" ]; then
+      uci delete dhcp.homelab_nas_private
+      changed=1
+    fi
+    if [ "$changed" = 1 ]; then
+      uci commit dhcp
+      /etc/init.d/dnsmasq reload
+      echo nas-dns-changed
+    fi
+  register: homelab_nas_router_dns
+  changed_when: "'nas-dns-changed' in homelab_nas_router_dns.stdout"

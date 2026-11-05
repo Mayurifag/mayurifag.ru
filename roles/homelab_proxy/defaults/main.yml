@@ -24,6 +24,10 @@ homelab_proxy_immich_url: http://10.10.10.30:80
 homelab_proxy_qwen_url: ""
 # Host label to native-auth OpenCode v2 URL on TCP 49374.
 homelab_proxy_opencode_backends: {}
+homelab_proxy_shortcut_labels: >-
+  {{ ['proxmox', 'ha', 'immich'] +
+    (['qwen'] if homelab_proxy_qwen_url | length > 0 else []) +
+    (homelab_proxy_opencode_backends | list) }}
 homelab_proxy_homekit_enabled: false
 homelab_proxy_homekit_lan_network: "192.168.69.0/24"
 homelab_proxy_homekit_ports:

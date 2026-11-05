@@ -8,22 +8,30 @@
       - homelab_proxy_dns_api_token | length > 20
       - homelab_proxy_domain == 'home.' ~ homelab_proxy_zone
   no_log: true
+  tags: homelab_shortcuts
 
 - name: Validate native-auth OpenCode backend routes
   ansible.builtin.assert:
     that:
       - item.key is match('^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$')
-      - item.key not in ['proxmox', 'ha', 'immich', 'qwen']
+      - item.key not in ['proxmox', 'ha', 'immich', 'qwen', 'nas', 'nas-private']
       - item.value is match('^http://([0-9]{1,3}\.){3}[0-9]{1,3}:49374$')
     fail_msg: OpenCode routes require a unique host label and a private peer HTTP URL on TCP 49374 without credentials.
   loop: "{{ homelab_proxy_opencode_backends | dict2items }}"
+  tags: homelab_shortcuts
 
 - name: Install and configure the private proxy
   ansible.builtin.import_tasks: install.yml
 
 - name: Configure private HTTPS firewall access
   ansible.builtin.import_tasks: firewall.yml
-  tags: homelab_monitoring
+  tags:
+    - homelab_monitoring
+    - homelab_shortcuts
+
+- name: Configure LAN web shortcuts
+  ansible.builtin.import_tasks: shortcuts.yml
+  tags: homelab_shortcuts
 
 - name: Configure LAN access to HomeKit
   ansible.builtin.import_tasks: homekit.yml

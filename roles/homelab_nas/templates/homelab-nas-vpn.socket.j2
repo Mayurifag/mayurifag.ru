@@ -1,0 +1,16 @@
+[Unit]
+Description=NetBird-only NAS SMB listener
+DefaultDependencies=no
+Requires=netbird.service
+After=netbird.service
+Before=shutdown.target
+Conflicts=shutdown.target
+
+[Socket]
+ListenStream={{ homelab_nas_vpn_address }}:445
+BindToDevice={{ homelab_nas_vpn_interface }}
+FreeBind=yes
+
+[Install]
+WantedBy=netbird.service
+WantedBy={{ homelab_nas_vpn_device_unit.stdout }}

@@ -1,4 +1,10 @@
 entryPoints:
+  lan-http:
+    address: "{{ homelab_proxy_lan_address }}:80"
+    http:
+      aliasHeadersStrategy: delete
+      middlewares:
+        - private-clients@file
 {% for name, address in [('lan', homelab_proxy_lan_address), ('vpn', homelab_proxy_vpn_address)] %}
   {{ name }}:
     address: "{{ address }}:443"

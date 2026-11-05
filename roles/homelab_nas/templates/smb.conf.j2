@@ -1,0 +1,25 @@
+[global]
+    server role = standalone server
+    server string = Homelab files
+    server min protocol = SMB2_02
+    smb ports = 445
+    interfaces = 127.0.0.1/8 {{ homelab_nas_address }}/24
+    bind interfaces only = yes
+    hosts allow = 127.0.0.1 {{ homelab_nas_gateway }} {{ homelab_nas_lan_network }}
+    map to guest = Bad User
+    guest account = {{ homelab_nas_guest_user }}
+    load printers = no
+    printing = bsd
+    printcap name = /dev/null
+    disable spoolss = yes
+    vfs objects = catia fruit streams_xattr
+
+[Public]
+    path = /srv/share/public
+    browseable = yes
+    guest ok = yes
+    guest only = yes
+    read only = no
+    force user = {{ homelab_nas_guest_user }}
+    create mask = 0666
+    directory mask = 0777

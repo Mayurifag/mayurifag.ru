@@ -1,0 +1,111 @@
+---
+- name: Require one LAN router for shortcut verification
+  ansible.builtin.assert:
+    that:
+      - groups['homelab_routers'] | length == 1
+    fail_msg: LAN shortcuts require one inventory router to verify access before persisting the forwarding change.
+
+- name: Wait for the LAN HTTP listener
+  ansible.builtin.wait_for:
+    host: "{{ homelab_proxy_lan_address }}"
+    port: 80
+    timeout: 30
+  when: not ansible_check_mode
+
+- name: Verify each shortcut redirects to its trusted HTTPS destination
+  ansible.builtin.uri:
+    url: "http://{{ homelab_proxy_lan_address }}/shortcut-probe?check=1"
+    headers:
+      Host: "{{ item }}.test"
+    use_proxy: false
+    follow_redirects: none
+    status_code: 302
+  loop: "{{ homelab_proxy_shortcut_labels }}"
+  register: homelab_proxy_shortcut_local
+  until: >-
+    homelab_proxy_shortcut_local.status | default(0) == 302 and
+    homelab_proxy_shortcut_local.location | default('') ==
+    'https://' ~ item ~ '.' ~ homelab_proxy_domain ~ '/shortcut-probe?check=1'
+  retries: 12
+  delay: 1
+  when: not ansible_check_mode
+
+- name: Verify the legacy Home Assistant HTTP route before switching traffic
+  ansible.builtin.uri:
+    url: "http://{{ homelab_proxy_lan_address }}/manifest.json"
+    use_proxy: false
+    status_code: 200
+  register: homelab_proxy_legacy_http_local
+  until: homelab_proxy_legacy_http_local.status | default(0) == 200
+  retries: 12
+  delay: 1
+  when: not ansible_check_mode
+
+- name: Switch and verify LAN HTTP without removing the existing Home Assistant forwarding
+  when: not ansible_check_mode
+  block:
+    - name: Direct LAN HTTP for the proxy address to Traefik
+      ansible.builtin.iptables:
+        table: nat
+        chain: PREROUTING
+        action: insert
+        in_interface: "{{ homelab_proxy_lan_interface }}"
+        source: "{{ homelab_proxy_homekit_lan_network }}"
+        destination: "{{ homelab_proxy_lan_address }}"
+        protocol: tcp
+        destination_port: "80"
+        jump: ACCEPT
+        state: present
+      register: homelab_proxy_shortcut_rule
+
+    - name: Verify redirects and existing Home Assistant HTTP from the router
+      ansible.builtin.raw: |
+        set -eu
+        {% for label in homelab_proxy_shortcut_labels %}
+        actual=$(curl --noproxy '*' --silent --show-error --max-time 5 --output /dev/null \
+          --write-out '%{http_code} %{redirect_url}' \
+          --resolve '{{ label }}.test:80:{{ homelab_proxy_lan_address }}' \
+          'http://{{ label }}.test/shortcut-probe?check=1')
+        if [ "$actual" != '302 https://{{ label }}.{{ homelab_proxy_domain }}/shortcut-probe?check=1' ]; then
+          echo 'Unexpected redirect for {{ label }}.test' >&2
+          exit 1
+        fi
+        {% endfor %}
+        curl --noproxy '*' --fail --silent --show-error --max-time 5 --output /dev/null \
+          'http://{{ homelab_proxy_lan_address }}/manifest.json'
+        curl --noproxy '*' --fail --silent --show-error --max-time 5 --output /dev/null \
+          'http://{{ homelab_proxy_lan_address }}:8123/manifest.json'
+      delegate_to: "{{ groups['homelab_routers'] | first }}"
+      register: homelab_proxy_shortcut_lan
+      changed_when: false
+      until: homelab_proxy_shortcut_lan.rc == 0
+      retries: 12
+      delay: 2
+
+    - name: Persist the LAN HTTP shortcut rule across network restarts
+      ansible.builtin.blockinfile:
+        path: /etc/network/interfaces
+        insertafter: '^iface {{ homelab_host_bridge }} inet static$'
+        marker: '# {mark} ANSIBLE HOMELAB SHORTCUTS'
+        block: |
+              post-up /usr/sbin/iptables -t nat -C PREROUTING -i {{ homelab_proxy_lan_interface }} -s {{ homelab_proxy_homekit_lan_network }} -d {{ homelab_proxy_lan_address }} -p tcp --dport 80 -j ACCEPT || /usr/sbin/iptables -t nat -I PREROUTING -i {{ homelab_proxy_lan_interface }} -s {{ homelab_proxy_homekit_lan_network }} -d {{ homelab_proxy_lan_address }} -p tcp --dport 80 -j ACCEPT
+              post-down /usr/sbin/iptables -t nat -D PREROUTING -i {{ homelab_proxy_lan_interface }} -s {{ homelab_proxy_homekit_lan_network }} -d {{ homelab_proxy_lan_address }} -p tcp --dport 80 -j ACCEPT || true
+  rescue:
+    - name: Restore the existing LAN HTTP forwarding
+      ansible.builtin.iptables:
+        table: nat
+        chain: PREROUTING
+        in_interface: "{{ homelab_proxy_lan_interface }}"
+        source: "{{ homelab_proxy_homekit_lan_network }}"
+        destination: "{{ homelab_proxy_lan_address }}"
+        protocol: tcp
+        destination_port: "80"
+        jump: ACCEPT
+        state: absent
+      when:
+        - homelab_proxy_shortcut_rule is defined
+        - homelab_proxy_shortcut_rule is changed
+
+    - name: Report the failed LAN shortcut verification
+      ansible.builtin.fail:
+        msg: Shortcut deployment failed; pre-existing forwarding and persistent configuration have been preserved.

@@ -1,0 +1,217 @@
+---
+- name: Check the installed Samba packages
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, dpkg-query, -W, "-f=${Status}", "{{ item }}"]
+  loop: [samba, samba-vfs-modules]
+  register: homelab_nas_packages
+  changed_when: false
+  failed_when: false
+
+- name: Refresh Debian package metadata when Samba is missing
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, apt-get, update]
+  when: homelab_nas_packages.results | selectattr('stdout', 'equalto', 'install ok installed') | list | length != 2
+  changed_when: true
+
+- name: Install the Debian Samba server and macOS VFS modules
+  ansible.builtin.command:
+    argv:
+      - pct
+      - exec
+      - "{{ homelab_nas_ctid | string }}"
+      - --
+      - env
+      - DEBIAN_FRONTEND=noninteractive
+      - apt-get
+      - install
+      - -y
+      - --no-install-recommends
+      - samba
+      - samba-vfs-modules
+  when: homelab_nas_packages.results | selectattr('stdout', 'equalto', 'install ok installed') | list | length != 2
+  changed_when: true
+
+- name: Check the guest Unix identity
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, getent, passwd, "{{ homelab_nas_guest_user }}"]
+  register: homelab_nas_guest_identity
+  changed_when: false
+  failed_when: homelab_nas_guest_identity.rc not in [0, 2]
+
+- name: Reject an existing guest identity with an unexpected mapping
+  ansible.builtin.assert:
+    that:
+      - homelab_nas_guest_identity.rc != 0 or (homelab_nas_guest_identity.stdout.split(':')[2] | int == homelab_nas_guest_uid | int and homelab_nas_guest_identity.stdout.split(':')[3] | int == homelab_nas_guest_uid | int)
+
+- name: Create the non-login guest identity
+  ansible.builtin.command:
+    argv:
+      - pct
+      - exec
+      - "{{ homelab_nas_ctid | string }}"
+      - --
+      - useradd
+      - --uid
+      - "{{ homelab_nas_guest_uid | string }}"
+      - --user-group
+      - --no-create-home
+      - --shell
+      - /usr/sbin/nologin
+      - "{{ homelab_nas_guest_user }}"
+  when: homelab_nas_guest_identity.rc != 0
+  changed_when: true
+
+- name: Render the Samba configuration on the hypervisor
+  ansible.builtin.template:
+    src: smb.conf.j2
+    dest: /etc/homelab-nas/smb.conf
+    owner: root
+    group: root
+    mode: "0644"
+  register: homelab_nas_smb_template
+  tags: homelab_nas_shares
+
+- name: Read the installed Samba configuration checksum
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, sha256sum, /etc/samba/smb.conf]
+  register: homelab_nas_installed_config
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags: homelab_nas_shares
+
+- name: Read the desired Samba configuration checksum
+  ansible.builtin.stat:
+    path: /etc/homelab-nas/smb.conf
+    checksum_algorithm: sha256
+  register: homelab_nas_config_checksum
+  tags: homelab_nas_shares
+
+- name: Copy the candidate Samba configuration
+  ansible.builtin.command:
+    argv: [pct, push, "{{ homelab_nas_ctid | string }}", /etc/homelab-nas/smb.conf, /etc/samba/smb.conf.ansible, --perms, "0644"]
+  when: homelab_nas_installed_config.rc != 0 or homelab_nas_installed_config.stdout.split(' ')[0] != homelab_nas_config_checksum.stat.checksum
+  changed_when: true
+  register: homelab_nas_config_pushed
+  tags: homelab_nas_shares
+
+- name: Validate the candidate Samba configuration
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, testparm, -s, /etc/samba/smb.conf.ansible]
+  when: homelab_nas_config_pushed is changed # noqa: no-handler
+  changed_when: false
+  tags: homelab_nas_shares
+
+- name: Install the validated Samba configuration
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, mv, /etc/samba/smb.conf.ansible, /etc/samba/smb.conf]
+  when: homelab_nas_config_pushed is changed # noqa: no-handler
+  changed_when: true
+  tags: homelab_nas_shares
+
+- name: Check Samba startup and runtime status
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, systemctl, "{{ item }}", smbd]
+  loop: [is-enabled, is-active]
+  register: homelab_nas_smb_status
+  changed_when: false
+  failed_when: false
+
+- name: Enable and start Samba
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, systemctl, enable, --now, smbd]
+  when: homelab_nas_smb_status.results | selectattr('rc', 'equalto', 0) | list | length != 2
+  changed_when: true
+
+- name: Check whether unneeded services are enabled
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, systemctl, is-enabled, "{{ item }}"]
+  loop: [nmbd, ssh.socket, ssh.service]
+  register: homelab_nas_unneeded_enabled
+  changed_when: false
+  failed_when: false
+
+- name: Check whether unneeded services are running
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, systemctl, is-active, "{{ item }}"]
+  loop: [nmbd, ssh.socket, ssh.service]
+  register: homelab_nas_unneeded_active
+  changed_when: false
+  failed_when: false
+
+- name: Disable legacy NetBIOS and unused container SSH
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, systemctl, disable, --now, "{{ item }}"]
+  loop: [nmbd, ssh.socket, ssh.service]
+  loop_control:
+    index_var: homelab_nas_service_index
+  when: >-
+    homelab_nas_unneeded_enabled.results[homelab_nas_service_index].rc == 0 or
+    homelab_nas_unneeded_active.results[homelab_nas_service_index].rc == 0
+  changed_when: true
+
+- name: Reload the validated Samba configuration without disconnecting clients
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, smbcontrol, smbd, reload-config]
+  when: homelab_nas_config_pushed is changed # noqa: no-handler
+  changed_when: true
+  tags: homelab_nas_shares
+
+- name: Inspect Samba TCP listeners
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, ss, -H, -lnt, '( sport = :445 or sport = :139 )']
+  register: homelab_nas_listeners
+  changed_when: false
+  check_mode: false
+  tags: homelab_nas_shares
+
+- name: Restart Samba when its listeners need updating
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, systemctl, restart, smbd]
+  when: >-
+    '0.0.0.0:445' in homelab_nas_listeners.stdout or
+    '[::]:445' in homelab_nas_listeners.stdout or
+    ':139 ' in homelab_nas_listeners.stdout or
+    (homelab_nas_address ~ ':445') not in homelab_nas_listeners.stdout or
+    '127.0.0.1:445' not in homelab_nas_listeners.stdout
+  changed_when: true
+  tags: homelab_nas_shares
+
+- name: Recheck Samba TCP listeners
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, ss, -H, -lnt, '( sport = :445 or sport = :139 )']
+  register: homelab_nas_verified_listeners
+  changed_when: false
+  check_mode: false
+  tags: homelab_nas_shares
+
+- name: Require only the intended SMB listeners
+  ansible.builtin.assert:
+    that:
+      - "(homelab_nas_address ~ ':445') in homelab_nas_verified_listeners.stdout"
+      - "'127.0.0.1:445' in homelab_nas_verified_listeners.stdout"
+      - "'0.0.0.0:445' not in homelab_nas_verified_listeners.stdout"
+      - "'[::]:445' not in homelab_nas_verified_listeners.stdout"
+      - "':139 ' not in homelab_nas_verified_listeners.stdout"
+  tags: homelab_nas_shares
+
+- name: Check Debian's optional popularity survey
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, dpkg-query, -W, "-f=${Status}", popularity-contest]
+  register: homelab_nas_popcon
+  changed_when: false
+  failed_when: false
+
+- name: Check whether Debian package usage reporting is enabled
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, grep, -E, '^PARTICIPATE="?yes"?$', /etc/popularity-contest.conf]
+  register: homelab_nas_popcon_enabled
+  when: homelab_nas_popcon.stdout == 'install ok installed'
+  changed_when: false
+  failed_when: homelab_nas_popcon_enabled.rc not in [0, 1]
+
+- name: Disable Debian package usage reporting when enabled
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, sed, -i, 's/^PARTICIPATE=.*/PARTICIPATE="no"/', /etc/popularity-contest.conf]
+  when: homelab_nas_popcon_enabled.rc | default(1) == 0
+  changed_when: true

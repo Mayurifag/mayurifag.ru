@@ -69,6 +69,7 @@
   tags:
     - homelab_monitoring
     - homelab_dns_proxy
+    - homelab_shortcuts
 
 - name: Configure native proxy service
   ansible.builtin.template:
@@ -86,6 +87,7 @@
 
 - name: Apply proxy configuration before switching LAN HTTPS
   ansible.builtin.meta: flush_handlers
+  tags: homelab_shortcuts
 
 - name: Wait for private HTTPS listeners
   ansible.builtin.wait_for:
@@ -95,3 +97,4 @@
   loop:
     - "{{ homelab_proxy_lan_address }}"
     - "{{ homelab_proxy_vpn_address }}"
+  tags: homelab_shortcuts

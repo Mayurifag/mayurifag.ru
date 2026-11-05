@@ -1,0 +1,69 @@
+---
+- name: Select the managed NAS access policy
+  ansible.builtin.set_fact:
+    homelab_access_nas_policies: "{{ homelab_access_api.results[2].json | selectattr('name', 'equalto', 'Homelab NAS') | list }}"
+
+- name: Require an unambiguous NAS access policy
+  ansible.builtin.assert:
+    that:
+      - homelab_access_nas_policies | length <= 1
+
+- name: Define the authorized-device NAS policy
+  ansible.builtin.set_fact:
+    homelab_access_nas_policy:
+      name: Homelab NAS
+      description: Authorized devices to the public NAS through NetBird
+      enabled: true
+      source_posture_checks: []
+      rules:
+        - name: homelab-nas
+          description: Authorized devices to NAS SMB
+          enabled: true
+          action: accept
+          bidirectional: false
+          protocol: tcp
+          port_ranges:
+            - start: 445
+              end: 445
+          sources:
+            - "{{ homelab_access_sources[0].id }}"
+          destinations:
+            - "{{ homelab_access_destinations[0].id }}"
+    homelab_access_nas_current: "{{ homelab_access_nas_policies[0] if homelab_access_nas_policies else {} }}"
+
+- name: Select the current NAS access rule
+  ansible.builtin.set_fact:
+    homelab_access_nas_rule: "{{ (homelab_access_nas_current.rules | default([]) | first) | default({}) }}"
+
+- name: Normalize the current NAS access rule
+  ansible.builtin.set_fact:
+    homelab_access_nas_normalized_rule:
+      name: "{{ homelab_access_nas_rule.name | default('') }}"
+      description: "{{ homelab_access_nas_rule.description | default('') }}"
+      enabled: "{{ homelab_access_nas_rule.enabled | default(false) }}"
+      action: "{{ homelab_access_nas_rule.action | default('') }}"
+      bidirectional: "{{ homelab_access_nas_rule.bidirectional | default(true) }}"
+      protocol: "{{ homelab_access_nas_rule.protocol | default('') }}"
+      port_ranges: "{{ homelab_access_nas_rule.port_ranges | default([], true) }}"
+      sources: "{{ homelab_access_nas_rule.sources | default([], true) | map(attribute='id') | list }}"
+      destinations: "{{ homelab_access_nas_rule.destinations | default([], true) | map(attribute='id') | list }}"
+
+- name: Manage the authorized-device NAS policy
+  ansible.builtin.uri:
+    url: "{{ homelab_access_netbird_url }}/api/policies{{ '/' ~ homelab_access_nas_current.id if homelab_access_nas_current.id is defined else '' }}"
+    method: "{{ 'PUT' if homelab_access_nas_current.id is defined else 'POST' }}"
+    headers:
+      Authorization: "Token {{ homelab_access_pat.content | b64decode | trim }}"
+    body_format: json
+    body: "{{ homelab_access_nas_policy }}"
+    status_code: 200
+  when: >-
+    homelab_access_nas_normalized_rule != homelab_access_nas_policy.rules[0] or
+    homelab_access_nas_current.rules | default([]) | length != 1 or
+    homelab_access_nas_current.description | default('') != homelab_access_nas_policy.description or
+    not (homelab_access_nas_current.enabled | default(false)) or
+    homelab_access_nas_current.source_posture_checks | default([], true) | length != 0
+  delegate_to: localhost
+  become: false
+  changed_when: true
+  no_log: true

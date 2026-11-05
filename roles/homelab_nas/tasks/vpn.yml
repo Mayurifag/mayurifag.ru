@@ -1,0 +1,86 @@
+---
+- name: Require NetBird access policy management for the NAS
+  ansible.builtin.assert:
+    that:
+      - homelab_access_enabled | default(false) | bool
+      - homelab_nas_vpn_address == homelab_access_peer_address
+      - homelab_nas_vpn_interface | length > 0
+
+- name: Check the Proxmox node firewall file
+  ansible.builtin.stat:
+    path: "/etc/pve/nodes/{{ ansible_facts.hostname }}/host.fw"
+  register: homelab_nas_node_firewall
+
+- name: Initialize missing node firewall through Proxmox
+  ansible.builtin.command: "pvesh set {{ ('/nodes/' ~ ansible_facts.hostname ~ '/firewall/options') | quote }} --enable 1"
+  when: not homelab_nas_node_firewall.stat.exists
+  changed_when: true
+
+- name: Ensure the node firewall has a rules section
+  ansible.builtin.lineinfile:
+    path: "/etc/pve/nodes/{{ ansible_facts.hostname }}/host.fw"
+    line: '[RULES]'
+    unsafe_writes: true
+
+- name: Allow NetBird SMB through the Proxmox node firewall
+  ansible.builtin.blockinfile:
+    path: "/etc/pve/nodes/{{ ansible_facts.hostname }}/host.fw"
+    insertafter: '^\[RULES\]$'
+    marker: '# {mark} ANSIBLE HOMELAB NAS VPN'
+    block: |
+      IN ACCEPT -i {{ homelab_nas_vpn_interface }} -source {{ homelab_nas_vpn_network }} -p tcp -dport 445
+    unsafe_writes: true
+
+- name: Validate the Proxmox node firewall
+  ansible.builtin.command: pve-firewall compile
+  changed_when: false
+
+- name: Derive the systemd unit for the NetBird interface
+  ansible.builtin.command:
+    argv: [systemd-escape, --path, --suffix=device, "/sys/subsystem/net/devices/{{ homelab_nas_vpn_interface }}"]
+  register: homelab_nas_vpn_device_unit
+  changed_when: false
+  check_mode: false
+
+- name: Install the NetBird-only SMB socket and proxy units
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - homelab-nas-vpn.socket
+    - homelab-nas-vpn.service
+  register: homelab_nas_vpn_units
+
+- name: Validate the NAS socket and proxy units
+  ansible.builtin.command:
+    argv: [systemd-analyze, verify, /etc/systemd/system/homelab-nas-vpn.socket, /etc/systemd/system/homelab-nas-vpn.service]
+  changed_when: false
+
+- name: Check the socket activation links
+  ansible.builtin.stat:
+    path: "/etc/systemd/system/{{ item }}.wants/homelab-nas-vpn.socket"
+  loop:
+    - netbird.service
+    - "{{ homelab_nas_vpn_device_unit.stdout }}"
+  register: homelab_nas_vpn_links
+
+- name: Disable the socket before refreshing its activation links
+  ansible.builtin.systemd_service:
+    name: homelab-nas-vpn.socket
+    enabled: false
+  when:
+    - not ansible_check_mode
+    - >-
+      homelab_nas_vpn_units is changed or
+      homelab_nas_vpn_links.results | selectattr('stat.lnk_source', 'defined') |
+      selectattr('stat.lnk_source', 'equalto', '/etc/systemd/system/homelab-nas-vpn.socket') | list | length != 2
+
+- name: Enable the NetBird-only NAS socket
+  ansible.builtin.systemd_service:
+    name: homelab-nas-vpn.socket
+    enabled: true
+    state: "{{ 'restarted' if homelab_nas_vpn_units is changed else 'started' }}"
+    daemon_reload: "{{ homelab_nas_vpn_units is changed }}"

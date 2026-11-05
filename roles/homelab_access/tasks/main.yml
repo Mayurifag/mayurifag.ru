@@ -1,7 +1,16 @@
 ---
 - name: Manage private NetBird HTTPS access
   ansible.builtin.import_tasks: netbird.yml
-  tags: homelab_netbird
+  tags:
+    - homelab_netbird
+    - homelab_nas_vpn
+
+- name: Allow authorized NetBird devices to reach the NAS
+  ansible.builtin.import_tasks: nas.yml
+  when: homelab_nas_enabled | default(false) | bool
+  tags:
+    - homelab_netbird
+    - homelab_nas_vpn
 
 - name: Allow the private proxy to reach Qwen
   ansible.builtin.import_tasks: qwen.yml

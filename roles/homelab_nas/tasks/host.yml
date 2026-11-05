@@ -1,0 +1,18 @@
+---
+- name: Require known storage identities
+  ansible.builtin.assert:
+    that:
+      - homelab_host_storage_vg_uuid | default('') | length > 0
+      - homelab_host_storage_pool_uuid | default('') | length > 0
+
+- name: Prepare the shared storage filesystem
+  ansible.builtin.import_tasks: storage.yml
+
+- name: Prepare the isolated Samba container
+  ansible.builtin.import_tasks: container.yml
+
+- name: Configure Samba and its guest user
+  ansible.builtin.import_tasks: service.yml
+
+- name: Expose SMB only to the local network
+  ansible.builtin.import_tasks: network.yml

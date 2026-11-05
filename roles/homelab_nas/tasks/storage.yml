@@ -1,0 +1,188 @@
+---
+- name: Read volume group and thin-pool identities
+  ansible.builtin.command:
+    argv: [vgs, --reportformat, json, -o, vg_uuid, "{{ homelab_nas_vg }}"]
+  register: homelab_nas_vg_report
+  changed_when: false
+
+- name: Read existing logical volumes
+  ansible.builtin.command:
+    argv:
+      - lvs
+      - --reportformat
+      - json
+      - -o
+      - lv_name,lv_uuid,segtype,pool_lv,data_percent,metadata_percent
+      - "{{ homelab_nas_vg }}"
+  register: homelab_nas_lvs_report
+  changed_when: false
+
+- name: Select the expected thin pool and NAS volume
+  ansible.builtin.set_fact:
+    homelab_nas_vg_info: "{{ (homelab_nas_vg_report.stdout | from_json).report[0].vg[0] }}"
+    homelab_nas_lvs: "{{ (homelab_nas_lvs_report.stdout | from_json).report[0].lv }}"
+
+- name: Require the intended healthy storage pool
+  ansible.builtin.assert:
+    that:
+      - homelab_nas_vg_info.vg_uuid == homelab_host_storage_vg_uuid
+      - homelab_nas_lvs | selectattr('lv_name', 'equalto', homelab_nas_pool) | list | length == 1
+      - (homelab_nas_lvs | selectattr('lv_name', 'equalto', homelab_nas_pool) | first).lv_uuid == homelab_host_storage_pool_uuid
+      - (homelab_nas_lvs | selectattr('lv_name', 'equalto', homelab_nas_pool) | first).segtype == 'thin-pool'
+      - (homelab_nas_lvs | selectattr('lv_name', 'equalto', homelab_nas_pool) | first).data_percent | float < 80
+      - (homelab_nas_lvs | selectattr('lv_name', 'equalto', homelab_nas_pool) | first).metadata_percent | float < 50
+
+- name: Check for an existing NAS volume and its ownership marker
+  ansible.builtin.stat:
+    path: /etc/homelab-nas/volume.uuid
+  register: homelab_nas_volume_marker
+
+- name: Select an existing NAS logical volume
+  ansible.builtin.set_fact:
+    homelab_nas_existing_volume: "{{ homelab_nas_lvs | selectattr('lv_name', 'equalto', homelab_nas_volume) | list }}"
+
+- name: Refuse to adopt or recreate an unexpected volume
+  ansible.builtin.assert:
+    that:
+      - homelab_nas_existing_volume | length <= 1
+      - (homelab_nas_existing_volume | length == 1) == homelab_nas_volume_marker.stat.exists
+    fail_msg: "The NAS volume or its identity marker is unexpected; inspect it before proceeding."
+
+- name: Read the recorded NAS volume identity
+  ansible.builtin.slurp:
+    src: /etc/homelab-nas/volume.uuid
+  register: homelab_nas_recorded_volume
+  when: homelab_nas_volume_marker.stat.exists
+
+- name: Verify the existing NAS volume identity and pool
+  ansible.builtin.assert:
+    that:
+      - homelab_nas_existing_volume[0].lv_uuid == (homelab_nas_recorded_volume.content | b64decode | trim)
+      - homelab_nas_existing_volume[0].segtype == 'thin'
+      - homelab_nas_existing_volume[0].pool_lv == homelab_nas_pool
+  when: homelab_nas_volume_marker.stat.exists
+
+- name: Create the NAS metadata directory
+  ansible.builtin.file:
+    path: /etc/homelab-nas
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Create one thin-provisioned shared volume
+  community.general.lvol:
+    vg: "{{ homelab_nas_vg }}"
+    thinpool: "{{ homelab_nas_pool }}"
+    lv: "{{ homelab_nas_volume }}"
+    size: "{{ homelab_nas_volume_size }}"
+    shrink: false
+    force: false
+  when: homelab_nas_existing_volume | length == 0
+  register: homelab_nas_created_volume
+
+- name: Create ext4 only on the newly created NAS volume
+  community.general.filesystem:
+    dev: "/dev/{{ homelab_nas_vg }}/{{ homelab_nas_volume }}"
+    fstype: ext4
+    opts: -m 0 -L homelab-nas
+    force: false
+  when: homelab_nas_created_volume is changed # noqa: no-handler
+
+- name: Read the newly created NAS volume identity
+  ansible.builtin.command:
+    argv: [lvs, --noheadings, -o, lv_uuid, "/dev/{{ homelab_nas_vg }}/{{ homelab_nas_volume }}"]
+  register: homelab_nas_new_volume_uuid
+  changed_when: false
+  when: homelab_nas_created_volume is changed # noqa: no-handler
+
+- name: Record the identity of the new NAS volume
+  ansible.builtin.copy:
+    dest: /etc/homelab-nas/volume.uuid
+    content: "{{ homelab_nas_new_volume_uuid.stdout | trim }}\n"
+    owner: root
+    group: root
+    mode: "0600"
+  when: homelab_nas_created_volume is changed # noqa: no-handler
+
+- name: Check whether the NAS mount path already exists
+  ansible.builtin.stat:
+    path: "{{ homelab_nas_mount }}"
+  register: homelab_nas_mount_path
+
+- name: Check the current NAS mount
+  ansible.builtin.command:
+    argv: [findmnt, -n, -o, SOURCE, --mountpoint, "{{ homelab_nas_mount }}"]
+  register: homelab_nas_existing_mount
+  changed_when: false
+  failed_when: homelab_nas_existing_mount.rc not in [0, 1]
+
+- name: Check an unmounted NAS path for existing files
+  ansible.builtin.command:
+    argv: [find, "{{ homelab_nas_mount }}", -mindepth, "1", -maxdepth, "1", -print, -quit]
+  register: homelab_nas_mount_contents
+  changed_when: false
+  when: homelab_nas_mount_path.stat.exists and homelab_nas_existing_mount.rc != 0
+
+- name: Refuse to cover an existing directory or unexpected mount
+  ansible.builtin.assert:
+    that:
+      - not homelab_nas_mount_path.stat.exists or homelab_nas_mount_path.stat.isdir
+      - homelab_nas_existing_mount.rc != 0 or homelab_nas_existing_mount.stdout == '/dev/mapper/' ~ homelab_nas_vg ~ '-' ~ (homelab_nas_volume | replace('-', '--'))
+      - homelab_nas_mount_contents.stdout | default('') | length == 0
+
+- name: Mount the shared filesystem and configure it for boot
+  ansible.posix.mount:
+    path: "{{ homelab_nas_mount }}"
+    src: "/dev/{{ homelab_nas_vg }}/{{ homelab_nas_volume }}"
+    fstype: ext4
+    opts: defaults,nofail,x-systemd.device-timeout=10s
+    passno: "2"
+    state: mounted
+
+- name: Confirm the expected filesystem is mounted before creating directories
+  ansible.builtin.command:
+    argv: [findmnt, -n, -o, SOURCE, --mountpoint, "{{ homelab_nas_mount }}"]
+  register: homelab_nas_mounted_source
+  changed_when: false
+  failed_when: homelab_nas_mounted_source.stdout != '/dev/mapper/' ~ homelab_nas_vg ~ '-' ~ (homelab_nas_volume | replace('-', '--'))
+
+- name: Create the container bind source on the mounted filesystem
+  ansible.builtin.file:
+    path: "{{ homelab_nas_mount }}/share"
+    state: directory
+    owner: "{{ homelab_nas_idmap_offset }}"
+    group: "{{ homelab_nas_idmap_offset }}"
+    mode: "0755"
+
+- name: Create the public share directory
+  ansible.builtin.file:
+    path: "{{ homelab_nas_mount }}/share/public"
+    state: directory
+    owner: "{{ homelab_nas_idmap_offset | int + homelab_nas_guest_uid | int }}"
+    group: "{{ homelab_nas_idmap_offset | int + homelab_nas_guest_uid | int }}"
+    mode: "0700"
+
+- name: Create guest startup ordering directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/pve-guests.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Order guest startup after the optional NAS mount
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/pve-guests.service.d/homelab-nas.conf
+    content: |
+      [Unit]
+      After=mnt-bindmounts-nas.mount
+    owner: root
+    group: root
+    mode: "0644"
+  register: homelab_nas_guest_order
+
+- name: Reload systemd after updating guest ordering
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+  when: homelab_nas_guest_order is changed # noqa: no-handler

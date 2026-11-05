@@ -1,0 +1,17 @@
+---
+- name: Configure NAS storage and Samba
+  ansible.builtin.include_tasks: host.yml
+  when: homelab_nas_endpoint == 'host'
+  tags: homelab_nas_shares
+
+- name: Configure NAS local DNS
+  ansible.builtin.include_tasks: router.yml
+  when: homelab_nas_endpoint == 'router'
+
+- name: Expose the NAS to authorized NetBird devices
+  ansible.builtin.include_tasks:
+    file: vpn.yml
+    apply:
+      tags: homelab_nas_vpn
+  when: homelab_nas_endpoint == 'host'
+  tags: homelab_nas_vpn

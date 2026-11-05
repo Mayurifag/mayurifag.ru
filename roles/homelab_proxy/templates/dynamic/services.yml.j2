@@ -3,7 +3,21 @@ http:
     private-clients:
       ipAllowList:
         sourceRange: {{ homelab_proxy_allowed_networks | to_json }}
+    local-shortcut:
+      redirectRegex:
+        regex: '(?i)^http://([a-z0-9-]+)\.test(:80)?(/.*)$'
+        replacement: 'https://${1}.{{ homelab_proxy_domain }}${3}'
   routers:
+    local-shortcuts:
+      rule: "{% for label in homelab_proxy_shortcut_labels %}{{ ' || ' if not loop.first else '' }}Host(`{{ label }}.test`){% endfor %}"
+      entryPoints: [lan-http]
+      middlewares: [local-shortcut]
+      service: noop@internal
+    home-assistant-legacy-http:
+      rule: "PathPrefix(`/`)"
+      priority: 1
+      service: home-assistant
+      entryPoints: [lan-http]
     proxmox:
       rule: "Host(`proxmox.{{ homelab_proxy_domain }}`)"
       service: proxmox

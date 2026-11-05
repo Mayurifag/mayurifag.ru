@@ -1,0 +1,24 @@
+---
+homelab_nas_enabled: false
+homelab_nas_endpoint: host
+homelab_nas_ctid: 102
+homelab_nas_hostname: nas
+homelab_nas_address: 10.10.10.40
+homelab_nas_gateway: 10.10.10.1
+homelab_nas_bridge: vmbr0
+homelab_nas_lan_interface: wlp2s0
+homelab_nas_lan_network: 192.168.69.0/24
+homelab_nas_lan_address: 192.168.69.139
+homelab_nas_dns_name: nas.test
+homelab_nas_vpn_address: "{{ homelab_access_peer_address }}"
+homelab_nas_vpn_interface: wt0
+homelab_nas_vpn_network: 100.113.0.0/16
+homelab_nas_template: debian-13-standard_13.6-1_amd64.tar.zst
+homelab_nas_vg: pve
+homelab_nas_pool: data
+homelab_nas_volume: nas-shared
+homelab_nas_volume_size: 420g
+homelab_nas_mount: /mnt/bindmounts/nas
+homelab_nas_guest_user: nasguest
+homelab_nas_guest_uid: 1100
+homelab_nas_idmap_offset: 100000

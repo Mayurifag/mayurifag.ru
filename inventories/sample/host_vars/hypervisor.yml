@@ -20,6 +20,7 @@ homelab_proxy_opencode_backends:
   mac: "http://100.64.0.30:49374"
   win: "http://100.64.0.40:49374"
 homelab_host_enabled: true
+homelab_nas_enabled: false
 homelab_proxy_enabled: true
 homelab_proxy_homekit_enabled: true
 homelab_proxy_homekit_lan_network: "192.168.1.0/24"

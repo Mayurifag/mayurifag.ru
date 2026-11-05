@@ -1,0 +1,38 @@
+---
+- name: Forward local SMB traffic to the NAS container
+  ansible.builtin.iptables:
+    table: nat
+    chain: PREROUTING
+    in_interface: "{{ homelab_nas_lan_interface }}"
+    source: "{{ homelab_nas_lan_network }}"
+    destination: "{{ homelab_nas_lan_address }}"
+    protocol: tcp
+    destination_port: "445"
+    jump: DNAT
+    to_destination: "{{ homelab_nas_address }}:445"
+    state: present
+
+- name: Allow local SMB forwarding to the NAS container
+  ansible.builtin.iptables:
+    chain: FORWARD
+    action: insert
+    in_interface: "{{ homelab_nas_lan_interface }}"
+    out_interface: "{{ homelab_nas_bridge }}"
+    source: "{{ homelab_nas_lan_network }}"
+    destination: "{{ homelab_nas_address }}"
+    protocol: tcp
+    destination_port: "445"
+    ctstate: [NEW, ESTABLISHED, RELATED]
+    jump: ACCEPT
+    state: present
+
+- name: Persist local SMB forwarding across network restarts
+  ansible.builtin.blockinfile:
+    path: /etc/network/interfaces
+    insertafter: '^iface {{ homelab_nas_bridge }} inet static$'
+    marker: '# {mark} ANSIBLE HOMELAB NAS'
+    block: |
+          post-up /usr/sbin/iptables -t nat -C PREROUTING -i {{ homelab_nas_lan_interface }} -s {{ homelab_nas_lan_network }} -d {{ homelab_nas_lan_address }} -p tcp --dport 445 -j DNAT --to-destination {{ homelab_nas_address }}:445 || /usr/sbin/iptables -t nat -A PREROUTING -i {{ homelab_nas_lan_interface }} -s {{ homelab_nas_lan_network }} -d {{ homelab_nas_lan_address }} -p tcp --dport 445 -j DNAT --to-destination {{ homelab_nas_address }}:445
+          post-up /usr/sbin/iptables -C FORWARD -i {{ homelab_nas_lan_interface }} -o {{ homelab_nas_bridge }} -s {{ homelab_nas_lan_network }} -d {{ homelab_nas_address }} -p tcp --dport 445 -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT || /usr/sbin/iptables -I FORWARD -i {{ homelab_nas_lan_interface }} -o {{ homelab_nas_bridge }} -s {{ homelab_nas_lan_network }} -d {{ homelab_nas_address }} -p tcp --dport 445 -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT
+          post-down /usr/sbin/iptables -D FORWARD -i {{ homelab_nas_lan_interface }} -o {{ homelab_nas_bridge }} -s {{ homelab_nas_lan_network }} -d {{ homelab_nas_address }} -p tcp --dport 445 -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT || true
+          post-down /usr/sbin/iptables -t nat -D PREROUTING -i {{ homelab_nas_lan_interface }} -s {{ homelab_nas_lan_network }} -d {{ homelab_nas_lan_address }} -p tcp --dport 445 -j DNAT --to-destination {{ homelab_nas_address }}:445 || true

@@ -1,0 +1,136 @@
+---
+- name: Check the intended container and VM identifiers
+  ansible.builtin.stat:
+    path: "{{ item }}"
+  loop:
+    - "/etc/pve/lxc/{{ homelab_nas_ctid }}.conf"
+    - "/etc/pve/qemu-server/{{ homelab_nas_ctid }}.conf"
+    - /etc/homelab-nas/container.id
+  register: homelab_nas_container_paths
+
+- name: Require the expected unprivileged container ID mapping
+  ansible.builtin.command:
+    argv: [grep, -Fx, "root:{{ homelab_nas_idmap_offset }}:65536", "{{ item }}"]
+  loop: [/etc/subuid, /etc/subgid]
+  changed_when: false
+
+- name: Refuse to adopt an unrelated guest
+  ansible.builtin.assert:
+    that:
+      - not homelab_nas_container_paths.results[1].stat.exists
+      - homelab_nas_container_paths.results[0].stat.exists == homelab_nas_container_paths.results[2].stat.exists
+    fail_msg: "The NAS guest identifier is already in use or its identity marker is missing."
+
+- name: Read the recorded NAS container identity
+  ansible.builtin.slurp:
+    src: /etc/homelab-nas/container.id
+  register: homelab_nas_recorded_container
+  when: homelab_nas_container_paths.results[2].stat.exists
+
+- name: Require the recorded NAS container identifier
+  ansible.builtin.assert:
+    that:
+      - homelab_nas_recorded_container.content | b64decode | trim == homelab_nas_ctid | string
+  when: homelab_nas_container_paths.results[2].stat.exists
+
+- name: Check for the requested Proxmox template
+  ansible.builtin.stat:
+    path: "/var/lib/vz/template/cache/{{ homelab_nas_template }}"
+  register: homelab_nas_template_file
+  when: not homelab_nas_container_paths.results[0].stat.exists
+
+- name: Download the official Debian container template
+  ansible.builtin.command:
+    argv: [pveam, download, local, "{{ homelab_nas_template }}"]
+  register: homelab_nas_download
+  changed_when: true
+  when:
+    - not homelab_nas_container_paths.results[0].stat.exists
+    - not homelab_nas_template_file.stat.exists
+
+- name: Create the unprivileged Samba container
+  ansible.builtin.command:
+    argv:
+      - pct
+      - create
+      - "{{ homelab_nas_ctid | string }}"
+      - "local:vztmpl/{{ homelab_nas_template }}"
+      - --hostname
+      - "{{ homelab_nas_hostname }}"
+      - --unprivileged
+      - "1"
+      - --rootfs
+      - local-lvm:8
+      - --cores
+      - "2"
+      - --memory
+      - "512"
+      - --swap
+      - "256"
+      - --net0
+      - "name=eth0,bridge={{ homelab_nas_bridge }},ip={{ homelab_nas_address }}/24,gw={{ homelab_nas_gateway }}"
+      - --nameserver
+      - "{{ homelab_nas_gateway }}"
+      - --mp0
+      - "{{ homelab_nas_mount }}/share,mp=/srv/share"
+      - --onboot
+      - "1"
+      - --startup
+      - order=1
+  when: not homelab_nas_container_paths.results[0].stat.exists
+  changed_when: true
+  register: homelab_nas_container_created
+
+- name: Record the new NAS container identity
+  ansible.builtin.copy:
+    dest: /etc/homelab-nas/container.id
+    content: "{{ homelab_nas_ctid }}\n"
+    owner: root
+    group: root
+    mode: "0600"
+  when: not homelab_nas_container_paths.results[0].stat.exists
+
+- name: Remove the template downloaded for this container
+  ansible.builtin.file:
+    path: "/var/lib/vz/template/cache/{{ homelab_nas_template }}"
+    state: absent
+  when:
+    - homelab_nas_download is changed
+    - homelab_nas_container_created is changed
+
+- name: Read the NAS container configuration
+  ansible.builtin.command:
+    argv: [pct, config, "{{ homelab_nas_ctid | string }}"]
+  register: homelab_nas_container_config
+  changed_when: false
+
+- name: Validate the container isolation, network and bind mount
+  ansible.builtin.assert:
+    that:
+      - "'hostname: ' ~ homelab_nas_hostname in homelab_nas_container_config.stdout_lines"
+      - "'unprivileged: 1' in homelab_nas_container_config.stdout_lines"
+      - "'onboot: 1' in homelab_nas_container_config.stdout_lines"
+      - "'mp0: ' ~ homelab_nas_mount ~ '/share,mp=/srv/share' in homelab_nas_container_config.stdout_lines"
+      - "'ip=' ~ homelab_nas_address ~ '/24' in homelab_nas_container_config.stdout"
+
+- name: Check whether the NAS container is running
+  ansible.builtin.command:
+    argv: [pct, status, "{{ homelab_nas_ctid | string }}"]
+  register: homelab_nas_container_status
+  changed_when: false
+
+- name: Start the NAS container
+  ansible.builtin.command:
+    argv: [pct, start, "{{ homelab_nas_ctid | string }}"]
+  when: "'status: running' not in homelab_nas_container_status.stdout"
+  changed_when: true
+
+- name: Wait for the container init system
+  ansible.builtin.command:
+    argv: [pct, exec, "{{ homelab_nas_ctid | string }}", --, systemctl, is-system-running]
+  register: homelab_nas_container_ready
+  until: homelab_nas_container_ready.stdout in ['running', 'degraded']
+  retries: 30
+  delay: 2
+  changed_when: false
+  failed_when: false

@@ -8,6 +8,11 @@
       tags: homelab_dns
       vars:
         homelab_dns_endpoint: router
+    - role: homelab_nas
+      tags: homelab_nas
+      vars:
+        homelab_nas_endpoint: router
+      when: homelab_nas_enabled | default(false) | bool
 
 - name: Proxmox homelab
   hosts: homelab
@@ -24,6 +29,11 @@
     - role: homelab_host
       tags: homelab_host
       when: homelab_host_enabled | default(false) | bool
+    - role: homelab_nas
+      tags: homelab_nas
+      vars:
+        homelab_nas_endpoint: host
+      when: homelab_nas_enabled | default(false) | bool
     - role: homelab_proxy
       tags: homelab_proxy
       when: homelab_proxy_enabled | default(false) | bool

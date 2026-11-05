@@ -1,0 +1,9 @@
+[Unit]
+Description=Forward NetBird NAS connections to the Samba container
+
+[Service]
+ExecStart=/usr/lib/systemd/systemd-socket-proxyd --exit-idle-time=1min {{ homelab_nas_address }}:445
+DynamicUser=yes
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
