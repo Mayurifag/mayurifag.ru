@@ -41,6 +41,7 @@
   register: homelab_nas_vpn_device_unit
   changed_when: false
   check_mode: false
+  tags: homelab_nas_proxy
 
 - name: Install the NetBird-only SMB socket and proxy units
   ansible.builtin.template:
@@ -53,11 +54,13 @@
     - homelab-nas-vpn.socket
     - homelab-nas-vpn.service
   register: homelab_nas_vpn_units
+  tags: homelab_nas_proxy
 
 - name: Validate the NAS socket and proxy units
   ansible.builtin.command:
     argv: [systemd-analyze, verify, /etc/systemd/system/homelab-nas-vpn.socket, /etc/systemd/system/homelab-nas-vpn.service]
   changed_when: false
+  tags: homelab_nas_proxy
 
 - name: Check the socket activation links
   ansible.builtin.stat:
@@ -66,6 +69,7 @@
     - netbird.service
     - "{{ homelab_nas_vpn_device_unit.stdout }}"
   register: homelab_nas_vpn_links
+  tags: homelab_nas_proxy
 
 - name: Disable the socket before refreshing its activation links
   ansible.builtin.systemd_service:
@@ -77,6 +81,7 @@
       homelab_nas_vpn_units is changed or
       homelab_nas_vpn_links.results | selectattr('stat.lnk_source', 'defined') |
       selectattr('stat.lnk_source', 'equalto', '/etc/systemd/system/homelab-nas-vpn.socket') | list | length != 2
+  tags: homelab_nas_proxy
 
 - name: Enable the NetBird-only NAS socket
   ansible.builtin.systemd_service:
@@ -84,3 +89,4 @@
     enabled: true
     state: "{{ 'restarted' if homelab_nas_vpn_units is changed else 'started' }}"
     daemon_reload: "{{ homelab_nas_vpn_units is changed }}"
+  tags: homelab_nas_proxy

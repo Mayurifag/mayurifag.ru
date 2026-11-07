@@ -43,6 +43,41 @@
         - beszel_agent
       when: beszel_agent_enabled | default(false) | bool
   tasks:
+    - name: Reconcile the NAS NetBird policy after NAS deployment
+      ansible.builtin.include_role:
+        name: homelab_access
+        tasks_from: nas-standalone
+        apply:
+          tags: homelab_nas
+      when:
+        - homelab_nas_enabled | default(false) | bool
+        - homelab_access_enabled | default(false) | bool
+      tags:
+        - never
+        - homelab_nas
+
+    - name: Configure the authenticated NAS account
+      ansible.builtin.include_role:
+        name: homelab_nas
+        tasks_from: auth
+        apply:
+          tags: homelab_nas_auth
+      when: homelab_nas_enabled | default(false) | bool
+      tags:
+        - never
+        - homelab_nas_auth
+
+    - name: Update the Proxmox NetBird client
+      ansible.builtin.include_role:
+        name: homelab_access
+        tasks_from: client
+        apply:
+          tags: homelab_netbird_client
+      when: homelab_access_enabled | default(false) | bool
+      tags:
+        - never
+        - homelab_netbird_client
+
     - name: Extend the existing VM pool after explicitly confirmed storage maintenance
       ansible.builtin.include_role:
         name: homelab_host

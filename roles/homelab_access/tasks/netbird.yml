@@ -1,47 +1,6 @@
 ---
-- name: Read existing NetBird administration token
-  ansible.builtin.slurp:
-    src: "{{ homelab_access_netbird_pat_path }}"
-  delegate_to: "{{ homelab_access_netbird_host }}"
-  become: true
-  register: homelab_access_pat
-  no_log: true
-
-- name: Read NetBird access configuration
-  ansible.builtin.uri:
-    url: "{{ homelab_access_netbird_url }}/api/{{ item }}"
-    headers:
-      Authorization: "Token {{ homelab_access_pat.content | b64decode | trim }}"
-    return_content: true
-  loop:
-    - groups
-    - peers
-    - policies
-  delegate_to: localhost
-  become: false
-  register: homelab_access_api
-  no_log: true
-
-- name: Select named NetBird groups and managed policy
-  ansible.builtin.set_fact:
-    homelab_access_sources: >-
-      {{ homelab_access_api.results[0].json | selectattr('name', 'equalto', homelab_access_source_group) | list }}
-    homelab_access_destinations: >-
-      {{ homelab_access_api.results[0].json | selectattr('name', 'equalto', homelab_access_destination_group) | list }}
-    homelab_access_peers: >-
-      {{ homelab_access_api.results[1].json | selectattr('ip', 'equalto', homelab_access_peer_address) | list }}
-    homelab_access_policies: >-
-      {{ homelab_access_api.results[2].json | selectattr('name', 'equalto', homelab_access_policy_name) | list }}
-
-- name: Require unambiguous private access groups
-  ansible.builtin.assert:
-    that:
-      - homelab_access_sources | length == 1
-      - homelab_access_destinations | length == 1
-      - homelab_access_peers | length == 1
-      - homelab_access_policies | length <= 1
-      - homelab_access_destinations[0].peers | map(attribute='id') | list == [homelab_access_peers[0].id]
-    fail_msg: "HTTPS destination group must contain only the expected Proxmox peer."
+- name: Read the NetBird access state
+  ansible.builtin.import_tasks: netbird-data.yml
 
 - name: Define narrowly scoped HTTPS policy
   ansible.builtin.set_fact:

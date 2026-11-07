@@ -1,0 +1,43 @@
+---
+- name: Check for the NetBird NAS units
+  ansible.builtin.stat:
+    path: "/etc/systemd/system/{{ item }}"
+  loop:
+    - homelab-nas-vpn.socket
+    - homelab-nas-vpn.service
+  register: homelab_nas_vpn_disabled_units
+  tags: homelab_nas_proxy
+
+- name: Stop and disable the NetBird NAS socket
+  ansible.builtin.systemd_service:
+    name: homelab-nas-vpn.socket
+    enabled: false
+    state: stopped
+  when: homelab_nas_vpn_disabled_units.results[0].stat.exists
+  tags: homelab_nas_proxy
+
+- name: Stop active NetBird NAS proxy connections
+  ansible.builtin.systemd_service:
+    name: homelab-nas-vpn.service
+    state: stopped
+  when: homelab_nas_vpn_disabled_units.results[1].stat.exists
+  tags: homelab_nas_proxy
+
+- name: Check the Proxmox node firewall file
+  ansible.builtin.stat:
+    path: "/etc/pve/nodes/{{ ansible_facts.hostname }}/host.fw"
+  register: homelab_nas_vpn_disabled_firewall
+
+- name: Remove the NetBird NAS firewall rule
+  ansible.builtin.blockinfile:
+    path: "/etc/pve/nodes/{{ ansible_facts.hostname }}/host.fw"
+    marker: '# {mark} ANSIBLE HOMELAB NAS VPN'
+    state: absent
+    unsafe_writes: true
+  when: homelab_nas_vpn_disabled_firewall.stat.exists
+  register: homelab_nas_vpn_disabled_rule
+
+- name: Validate the Proxmox node firewall after removing the NAS rule
+  ansible.builtin.command: pve-firewall compile
+  when: homelab_nas_vpn_disabled_rule is changed # noqa: no-handler
+  changed_when: false

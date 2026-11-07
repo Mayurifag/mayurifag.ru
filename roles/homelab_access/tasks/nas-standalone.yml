@@ -1,0 +1,6 @@
+---
+- name: Read the NetBird access state
+  ansible.builtin.import_tasks: netbird-data.yml
+
+- name: Manage the NAS access policy
+  ansible.builtin.import_tasks: nas.yml

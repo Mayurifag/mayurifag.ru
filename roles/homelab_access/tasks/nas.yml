@@ -13,7 +13,7 @@
     homelab_access_nas_policy:
       name: Homelab NAS
       description: Authorized devices to the public NAS through NetBird
-      enabled: true
+      enabled: "{{ homelab_nas_vpn_enabled | default(false) | bool }}"
       source_posture_checks: []
       rules:
         - name: homelab-nas
@@ -57,12 +57,14 @@
     body_format: json
     body: "{{ homelab_access_nas_policy }}"
     status_code: 200
-  when: >-
-    homelab_access_nas_normalized_rule != homelab_access_nas_policy.rules[0] or
-    homelab_access_nas_current.rules | default([]) | length != 1 or
-    homelab_access_nas_current.description | default('') != homelab_access_nas_policy.description or
-    not (homelab_access_nas_current.enabled | default(false)) or
-    homelab_access_nas_current.source_posture_checks | default([], true) | length != 0
+  when:
+    - homelab_access_nas_current.id is defined or homelab_access_nas_policy.enabled
+    - >-
+      homelab_access_nas_normalized_rule != homelab_access_nas_policy.rules[0] or
+      homelab_access_nas_current.rules | default([]) | length != 1 or
+      homelab_access_nas_current.description | default('') != homelab_access_nas_policy.description or
+      (homelab_access_nas_current.enabled | default(false) | bool) != homelab_access_nas_policy.enabled or
+      homelab_access_nas_current.source_posture_checks | default([], true) | length != 0
   delegate_to: localhost
   become: false
   changed_when: true

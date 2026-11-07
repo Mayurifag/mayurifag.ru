@@ -1,0 +1,18 @@
+[Unit]
+Description=Advertise the homelab NAS on the local network
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+ExecStart=/usr/bin/wsdd -4 -i {{ homelab_nas_lan_interface }} -n {{ homelab_nas_hostname }} -w WORKGROUP -s
+Restart=on-failure
+RestartSec=10s
+DynamicUser=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

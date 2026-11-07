@@ -1,4 +1,16 @@
 ---
+- name: Disable the NetBird NAS listener
+  ansible.builtin.include_tasks:
+    file: vpn-disabled.yml
+    apply:
+      tags: homelab_nas_vpn
+  when:
+    - homelab_nas_endpoint == 'host'
+    - not homelab_nas_vpn_enabled | bool
+  tags:
+    - homelab_nas_vpn
+    - homelab_nas_proxy
+
 - name: Configure NAS storage and Samba
   ansible.builtin.include_tasks: host.yml
   when: homelab_nas_endpoint == 'host'
@@ -8,10 +20,22 @@
   ansible.builtin.include_tasks: router.yml
   when: homelab_nas_endpoint == 'router'
 
+- name: Advertise the NAS on the local network
+  ansible.builtin.include_tasks:
+    file: discovery.yml
+    apply:
+      tags: homelab_nas_discovery
+  when: homelab_nas_endpoint == 'host'
+  tags: homelab_nas_discovery
+
 - name: Expose the NAS to authorized NetBird devices
   ansible.builtin.include_tasks:
     file: vpn.yml
     apply:
       tags: homelab_nas_vpn
-  when: homelab_nas_endpoint == 'host'
-  tags: homelab_nas_vpn
+  when:
+    - homelab_nas_endpoint == 'host'
+    - homelab_nas_vpn_enabled | bool
+  tags:
+    - homelab_nas_vpn
+    - homelab_nas_proxy

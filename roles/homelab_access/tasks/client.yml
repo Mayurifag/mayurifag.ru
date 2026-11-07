@@ -1,0 +1,74 @@
+---
+- name: Check the installed NetBird client version
+  ansible.builtin.command: netbird version
+  register: homelab_netbird_version
+  changed_when: false
+  check_mode: false
+
+- name: Create the NetBird service override directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/netbird.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Disable optional NetBird client metrics push
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/netbird.service.d/homelab-metrics.conf
+    content: |
+      [Service]
+      Environment=NB_METRICS_PUSH_ENABLED=false
+    owner: root
+    group: root
+    mode: "0644"
+  register: homelab_netbird_metrics
+
+- name: Load the NetBird service override
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+  when: homelab_netbird_metrics is changed # noqa: no-handler
+
+# The package restarts NetBird directly, including when policy_rc_d is set.
+- name: Upgrade NetBird if it predates the ICE negotiation fix
+  ansible.builtin.apt:
+    name: netbird=0.81.5
+    state: present
+    policy_rc_d: 101
+  when: homelab_netbird_version.stdout is version('0.81.5', '<')
+  register: homelab_netbird_upgrade
+  async: "{{ 0 if ansible_check_mode else 1200 }}"
+  poll: 0
+
+- name: Wait for the NetBird upgrade to finish
+  ansible.builtin.include_tasks: wait-client-job.yml
+  vars:
+    homelab_netbird_job_id: "{{ homelab_netbird_upgrade.ansible_job_id }}"
+  when: homelab_netbird_upgrade.ansible_job_id is defined
+
+- name: Record whether NetBird was upgraded
+  ansible.builtin.set_fact:
+    homelab_netbird_upgrade_changed: >-
+      {{ (homelab_netbird_upgrade if ansible_check_mode else homelab_netbird_job_result | default({})) is changed }}
+
+- name: Restart NetBird when only the override changed
+  ansible.builtin.systemd_service:
+    name: netbird
+    state: restarted
+  when:
+    - homelab_netbird_metrics is changed
+    - not homelab_netbird_upgrade_changed
+  register: homelab_netbird_restart
+  async: "{{ 0 if ansible_check_mode else 120 }}"
+  poll: 0
+
+- name: Wait for the NetBird restart to finish
+  ansible.builtin.include_tasks: wait-client-job.yml
+  vars:
+    homelab_netbird_job_id: "{{ homelab_netbird_restart.ansible_job_id }}"
+  when: homelab_netbird_restart.ansible_job_id is defined
+
+- name: Ensure the NetBird client is running
+  ansible.builtin.systemd_service:
+    name: netbird
+    state: started

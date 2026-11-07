@@ -1,0 +1,27 @@
+---
+- name: Wait for the NetBird management connection
+  ansible.builtin.wait_for_connection:
+    timeout: 600
+    connect_timeout: 5
+    sleep: 5
+
+- name: Check the background NetBird operation
+  ansible.builtin.async_status:
+    jid: "{{ homelab_netbird_job_id }}"
+  register: homelab_netbird_job_result
+  ignore_unreachable: true
+
+- name: Remove the completed NetBird job status
+  ansible.builtin.async_status:
+    jid: "{{ homelab_netbird_job_id }}"
+    mode: cleanup
+  when: homelab_netbird_job_result.finished | default(false) | bool
+
+- name: Wait before checking the NetBird operation again
+  ansible.builtin.pause:
+    seconds: 5
+  when: not (homelab_netbird_job_result.finished | default(false) | bool)
+
+- name: Retry until the NetBird operation completes
+  ansible.builtin.include_tasks: wait-client-job.yml
+  when: not (homelab_netbird_job_result.finished | default(false) | bool)

@@ -1,0 +1,134 @@
+---
+- name: Check whether host SMB or packaged discovery services are enabled
+  ansible.builtin.command:
+    argv: [systemctl, is-enabled, "{{ item }}"]
+  loop: [ksmbd.service, wsdd2.service, wsdd.service, wsdd-server.service]
+  register: homelab_nas_discovery_enabled
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Check whether host SMB or packaged discovery services are running
+  ansible.builtin.command:
+    argv: [systemctl, is-active, "{{ item }}"]
+  loop: [ksmbd.service, wsdd2.service, wsdd.service, wsdd-server.service]
+  register: homelab_nas_discovery_active
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Refuse to mask an existing host SMB or discovery service
+  ansible.builtin.assert:
+    that:
+      - item.stdout in ['not-found', 'masked']
+      - homelab_nas_discovery_active.results[index].rc != 0
+    fail_msg: "An existing host service must be reviewed before enabling NAS discovery."
+  loop: "{{ homelab_nas_discovery_enabled.results }}"
+  loop_control:
+    index_var: index
+    label: "{{ item.item }}"
+
+- name: Mask the unused host SMB server and packaged discovery unit
+  ansible.builtin.file:
+    src: /dev/null
+    dest: "/etc/systemd/system/{{ item }}"
+    state: link
+  loop: [ksmbd.service, wsdd2.service]
+
+- name: Check the cached discovery package in check mode
+  ansible.builtin.stat:
+    path: /var/cache/apt/archives/wsdd_0.8-5_all.deb
+  register: homelab_nas_discovery_cached_package
+  when: ansible_check_mode
+
+# shortcut: Debian 13 lacks wsdd; replace this pinned testing package when a supported backport is available.
+- name: Download the Debian discovery package
+  ansible.builtin.get_url:
+    url: https://deb.debian.org/debian/pool/main/w/wsdd/wsdd_0.8-5_all.deb
+    dest: /var/cache/apt/archives/wsdd_0.8-5_all.deb
+    checksum: sha256:c1bf28ff3af289db3fb96b0fcbea7c2aaac6edbc225e15221b21f7b2194332bc
+    owner: root
+    group: root
+    mode: "0644"
+  register: homelab_nas_discovery_download
+
+- name: Install hardened XML parsing for discovery messages
+  ansible.builtin.apt:
+    name: python3-defusedxml
+    state: present
+    install_recommends: false
+    policy_rc_d: 101
+    fail_on_autoremove: true
+  register: homelab_nas_discovery_xml_package
+
+- name: Install the Debian discovery daemon without starting package services
+  ansible.builtin.apt:
+    deb: /var/cache/apt/archives/wsdd_0.8-5_all.deb
+    install_recommends: false
+    policy_rc_d: 101
+    fail_on_autoremove: true
+  register: homelab_nas_discovery_package
+  when: >-
+    not ansible_check_mode or
+    (homelab_nas_discovery_cached_package.stat.exists and homelab_nas_discovery_download is not changed)
+
+- name: Check the Proxmox node firewall file
+  ansible.builtin.stat:
+    path: "/etc/pve/nodes/{{ ansible_facts.hostname }}/host.fw"
+  register: homelab_nas_discovery_firewall
+
+- name: Initialize a missing node firewall through Proxmox
+  ansible.builtin.command: "pvesh set {{ ('/nodes/' ~ ansible_facts.hostname ~ '/firewall/options') | quote }} --enable 1"
+  when: not homelab_nas_discovery_firewall.stat.exists
+  changed_when: true
+
+- name: Ensure the node firewall has a rules section
+  ansible.builtin.lineinfile:
+    path: "/etc/pve/nodes/{{ ansible_facts.hostname }}/host.fw"
+    line: '[RULES]'
+    unsafe_writes: true
+  when: homelab_nas_discovery_firewall.stat.exists or not ansible_check_mode
+
+- name: Allow NAS discovery from the local network only
+  ansible.builtin.blockinfile:
+    path: "/etc/pve/nodes/{{ ansible_facts.hostname }}/host.fw"
+    insertafter: '^\[RULES\]$'
+    marker: '# {mark} ANSIBLE HOMELAB NAS DISCOVERY'
+    block: |
+      IN ACCEPT -i {{ homelab_nas_lan_interface }} -source {{ homelab_nas_lan_network }} -p udp -dport 3702
+      IN ACCEPT -i {{ homelab_nas_lan_interface }} -source {{ homelab_nas_lan_network }} -p tcp -dport 5357
+    unsafe_writes: true
+  when: homelab_nas_discovery_firewall.stat.exists or not ansible_check_mode
+
+- name: Validate the Proxmox firewall configuration
+  ansible.builtin.command: pve-firewall compile
+  changed_when: false
+
+- name: Configure LAN-only NAS discovery
+  ansible.builtin.template:
+    src: homelab-nas-discovery.service.j2
+    dest: /etc/systemd/system/homelab-nas-discovery.service
+    owner: root
+    group: root
+    mode: "0644"
+  register: homelab_nas_discovery_unit
+
+- name: Validate the NAS discovery service
+  ansible.builtin.command: systemd-analyze verify /etc/systemd/system/homelab-nas-discovery.service
+  changed_when: false
+
+- name: Check the existing NAS discovery service
+  ansible.builtin.stat:
+    path: /etc/systemd/system/homelab-nas-discovery.service
+  register: homelab_nas_discovery_existing_unit
+  when: ansible_check_mode
+
+- name: Enable and start LAN-only NAS discovery
+  ansible.builtin.systemd_service:
+    name: homelab-nas-discovery.service
+    enabled: true
+    daemon_reload: "{{ homelab_nas_discovery_unit is changed }}"
+    state: >-
+      {{ 'restarted' if homelab_nas_discovery_unit is changed or homelab_nas_discovery_package is changed or
+        homelab_nas_discovery_xml_package is changed else 'started' }}
+  when: not ansible_check_mode or homelab_nas_discovery_existing_unit.stat.exists
