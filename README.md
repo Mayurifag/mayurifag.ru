@@ -128,6 +128,8 @@ Notes:
 
 * [ ] **High priority:** Deploy SearXNG and configure it as web search for the local AI agent.
 * [ ] Homelab follow-up: bare-metal network bootstrap. See [HOMELAB.md](./HOMELAB.md).
+* [ ] 3x-ui: first add the Russian inbound to existing subscriptions; preserve Italian profiles and URLs.
+  * [ ] Later test a Russia → Italy cascade and client migration; consider removing the Italian profile, not the server.
 
 ### On hold
 
