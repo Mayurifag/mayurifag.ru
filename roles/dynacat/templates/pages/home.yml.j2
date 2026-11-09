@@ -11,14 +11,12 @@
       widgets:
 {% include 'home/main.yml.j2' %}
 
-    - size: small
-      widgets:
 {% set homelab_links = lookup('ansible.builtin.file', inventory_dir ~ '/files/dynacat-bookmarks.yml') | from_yaml %}
 {% if homelab_links %}
+    - size: small
+      widgets:
         - type: bookmarks
           title: Homelab
           groups:
             - links: {{ homelab_links | to_json }}
 {% endif %}
-
-{% include 'home/services.yml.j2' %}
