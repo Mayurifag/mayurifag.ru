@@ -7,7 +7,13 @@ allow-interfaces={{ homelab_proxy_lan_interface }},{{ homelab_host_bridge }}
 enable-wide-area=no
 
 [publish]
-disable-publishing=yes
+disable-publishing={{ 'no' if homelab_nas_enabled | default(false) | bool else 'yes' }}
+disable-user-service-publishing=yes
+publish-addresses=yes
+publish-aaaa-on-ipv4=no
+publish-hinfo=no
+publish-workstation=no
+publish-domain=no
 
 [reflector]
 enable-reflector=yes

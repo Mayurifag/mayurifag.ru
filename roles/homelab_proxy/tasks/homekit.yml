@@ -5,6 +5,7 @@
       - avahi-daemon
       - avahi-utils
     state: present
+  tags: [homelab_nas_discovery, homelab_nas_bonjour]
 
 - name: Configure HomeKit-only discovery between Wi-Fi and guests
   ansible.builtin.template:
@@ -12,6 +13,24 @@
     dest: /etc/avahi/avahi-daemon.conf
     mode: "0644"
   notify: Restart homelab HomeKit discovery
+  tags: [homelab_nas_discovery, homelab_nas_bonjour]
+
+- name: Advertise the NAS over Bonjour
+  ansible.builtin.copy:
+    src: homelab-nas.service
+    dest: /etc/avahi/services/homelab-nas.service
+    mode: "0644"
+  when: homelab_nas_enabled | default(false) | bool
+  notify: Restart homelab HomeKit discovery
+  tags: [homelab_nas_discovery, homelab_nas_bonjour]
+
+- name: Remove the Bonjour advertisement when the NAS is disabled
+  ansible.builtin.file:
+    path: /etc/avahi/services/homelab-nas.service
+    state: absent
+  when: not homelab_nas_enabled | default(false) | bool
+  notify: Restart homelab HomeKit discovery
+  tags: [homelab_nas_discovery, homelab_nas_bonjour]
 
 - name: Allow private HomeKit discovery through the node firewall
   ansible.builtin.blockinfile:
@@ -22,10 +41,12 @@
       IN ACCEPT -i {{ homelab_proxy_lan_interface }} -source {{ homelab_proxy_homekit_lan_network }} -p udp -dport 5353
       IN ACCEPT -i {{ homelab_host_bridge }} -source 10.10.10.0/24 -p udp -dport 5353
     unsafe_writes: true
+  tags: [homelab_nas_discovery, homelab_nas_bonjour]
 
 - name: Validate HomeKit firewall configuration
   ansible.builtin.command: pve-firewall compile
   changed_when: false
+  tags: [homelab_nas_discovery, homelab_nas_bonjour]
 
 - name: Read previously managed HomeKit forwarding ports
   ansible.builtin.slurp:
@@ -113,3 +134,4 @@
     name: avahi-daemon
     enabled: true
     state: started
+  tags: [homelab_nas_discovery, homelab_nas_bonjour]
