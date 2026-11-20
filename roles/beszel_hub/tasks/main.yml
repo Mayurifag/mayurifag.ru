@@ -5,6 +5,7 @@
       - beszel_agent_token | length > 0
       - beszel_agent_token | length <= 64
       - beszel_hub_user_password | length >= 8
+  no_log: true
 
 - name: Create Beszel Hub Directories
   ansible.builtin.file:
@@ -68,6 +69,12 @@
   delay: 5
   until: beszel_hub_auth.status == 200
   no_log: true
+  tags: beszel_notifications
+
+- name: Configure Beszel notifications
+  ansible.builtin.import_tasks: notifications.yml
+  when: beszel_hub_telegram_enabled | bool
+  tags: beszel_notifications
 
 - name: Read Beszel permanent universal token
   ansible.builtin.uri:

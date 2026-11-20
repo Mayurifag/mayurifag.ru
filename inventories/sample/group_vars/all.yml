@@ -84,6 +84,9 @@ beszel_hub_enabled: "{{ inventory_hostname == beszel_hub_inventory_host }}"
 beszel_hub_subdomain: "beszel"
 beszel_hub_user_email: "{{ admin_email }}"
 beszel_hub_user_password: "{{ admin_userldappassword }}"
+beszel_hub_telegram_enabled: false
+beszel_hub_telegram_url: "telegram://change_this@telegram?chats=change_this&preview=false"
+beszel_hub_status_alerts_enabled: false
 beszel_agent_enabled: true
 beszel_agent_hub_url: >-
   {{ 'http://127.0.0.1:8090' if inventory_hostname == beszel_hub_inventory_host else 'https://' ~ beszel_hub_subdomain ~ '.' ~ hostvars[beszel_hub_inventory_host].server_hostname }}

@@ -7,3 +7,7 @@ beszel_hub_data_directory: "{{ docker_home }}/beszel"
 beszel_hub_app_url: "https://{{ beszel_hub_subdomain }}.{{ server_hostname }}"
 beszel_hub_user_email: "{{ admin_email }}"
 beszel_hub_user_password: "{{ admin_userldappassword }}"
+beszel_hub_telegram_enabled: false
+beszel_hub_telegram_url: ""
+beszel_hub_status_alerts_enabled: false
+beszel_hub_status_alert_minutes: 1

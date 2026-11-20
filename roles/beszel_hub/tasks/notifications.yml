@@ -1,0 +1,103 @@
+---
+- name: Validate Beszel Telegram destination
+  ansible.builtin.assert:
+    that:
+      - beszel_hub_telegram_url | length > 0
+      - beszel_hub_telegram_url.startswith('telegram://')
+  no_log: true
+
+- name: Read Beszel user settings
+  ansible.builtin.uri:
+    url: >-
+      http://127.0.0.1:8090/api/collections/user_settings/records?filter={{ ('user="' ~ beszel_hub_auth.json.record.id ~ '"') | urlencode }}
+    headers:
+      Authorization: "{{ beszel_hub_auth.json.token }}"
+    return_content: true
+  register: beszel_hub_user_settings
+  no_log: true
+
+- name: Initialize missing Beszel user settings
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:8090/api/collections/user_settings/records"
+    method: POST
+    headers:
+      Authorization: "{{ beszel_hub_auth.json.token }}"
+    body_format: json
+    body:
+      user: "{{ beszel_hub_auth.json.record.id }}"
+    status_code: 200
+  when: beszel_hub_user_settings.json.totalItems == 0
+  register: beszel_hub_created_user_settings
+  changed_when: true
+  no_log: true
+
+- name: Add Telegram destination without changing other Beszel settings
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:8090/api/collections/user_settings/records/{{ beszel_hub_settings_record.id }}"
+    method: PATCH
+    headers:
+      Authorization: "{{ beszel_hub_auth.json.token }}"
+    body_format: json
+    body:
+      settings: >-
+        {{ beszel_hub_settings_record.settings | combine({
+          'webhooks': (beszel_hub_settings_record.settings.webhooks | default([])) + [beszel_hub_telegram_url]
+        }) }}
+    status_code: 200
+  vars:
+    beszel_hub_settings_record: >-
+      {{ beszel_hub_created_user_settings.json if beszel_hub_user_settings.json.totalItems == 0
+          else beszel_hub_user_settings.json['items'][0] }}
+  when: beszel_hub_telegram_url not in (beszel_hub_settings_record.settings.webhooks | default([]))
+  changed_when: true
+  no_log: true
+
+- name: Configure host availability alerts
+  when: beszel_hub_status_alerts_enabled | bool
+  block:
+    - name: Read monitored Beszel systems
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:8090/api/collections/systems/records?perPage=500&fields=id"
+        headers:
+          Authorization: "{{ beszel_hub_auth.json.token }}"
+      register: beszel_hub_systems
+      no_log: true
+
+    - name: Read existing Beszel status alerts
+      ansible.builtin.uri:
+        url: >-
+          http://127.0.0.1:8090/api/collections/alerts/records?perPage=500&filter={{ 'name="Status"' | urlencode }}&fields=system
+        headers:
+          Authorization: "{{ beszel_hub_auth.json.token }}"
+      register: beszel_hub_status_alerts
+      no_log: true
+
+    - name: Require complete Beszel system and status alert lists
+      ansible.builtin.assert:
+        that:
+          - beszel_hub_systems.json.totalPages <= 1
+          - beszel_hub_status_alerts.json.totalPages <= 1
+          - beszel_hub_status_alert_minutes | int >= 1
+      no_log: true
+
+    - name: Add missing Beszel host down and recovery alerts
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:8090/api/beszel/user-alerts"
+        method: POST
+        headers:
+          Authorization: "{{ beszel_hub_auth.json.token }}"
+        body_format: json
+        body:
+          name: Status
+          value: 0
+          min: "{{ beszel_hub_status_alert_minutes | int }}"
+          systems: "{{ beszel_hub_missing_status_systems }}"
+          overwrite: false
+        status_code: 200
+      vars:
+        beszel_hub_missing_status_systems: >-
+          {{ beszel_hub_systems.json['items'] | map(attribute='id')
+              | difference(beszel_hub_status_alerts.json['items'] | map(attribute='system')) }}
+      when: beszel_hub_missing_status_systems | length > 0
+      changed_when: true
+      no_log: true
